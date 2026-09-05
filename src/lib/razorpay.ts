@@ -1,17 +1,27 @@
 import Razorpay from 'razorpay';
 import crypto, { timingSafeEqual } from 'crypto';
 
-export const razorpay = new Razorpay({
-  key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || 'rzp_test_placeholder',
-  key_secret: process.env.RAZORPAY_KEY_SECRET || 'placeholder_secret'
-});
+export const getRazorpay = () => {
+  const key_id = (process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || '').trim();
+  const key_secret = (process.env.RAZORPAY_KEY_SECRET || '').trim();
+  return new Razorpay({ key_id, key_secret });
+};
+
+export const razorpay = {
+  get orders() {
+    return getRazorpay().orders;
+  },
+  get payments() {
+    return getRazorpay().payments;
+  }
+};
 
 export const verifySignature = (
   orderId: string, 
   paymentId: string, 
   signature: string
 ): boolean => {
-  const secret = process.env.RAZORPAY_KEY_SECRET || '';
+  const secret = (process.env.RAZORPAY_KEY_SECRET || '').trim();
   const body = orderId + "|" + paymentId;
   const expectedSignature = crypto
     .createHmac('sha256', secret)
@@ -25,7 +35,7 @@ export const verifyWebhookSignature = (
   rawBody: string,
   signature: string
 ): boolean => {
-  const secret = process.env.RAZORPAY_WEBHOOK_SECRET || '';
+  const secret = (process.env.RAZORPAY_WEBHOOK_SECRET || '').trim();
   const expectedSignature = crypto
     .createHmac('sha256', secret)
     .update(rawBody)

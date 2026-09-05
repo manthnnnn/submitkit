@@ -80,6 +80,11 @@ export async function POST(req: NextRequest) {
     
   } catch (error: any) {
     console.error('Order creation error:', error);
-    return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
+    const errorMsg = error?.error?.description 
+      || error?.description 
+      || error?.message 
+      || (typeof error === 'string' ? error : JSON.stringify(error))
+      || 'Internal Server Error';
+    return NextResponse.json({ error: errorMsg }, { status: 500 });
   }
 }
