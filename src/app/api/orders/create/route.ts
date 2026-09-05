@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
       razorpayOrderId: rzpOrder.id,
       amount: rzpOrder.amount,
       currency: rzpOrder.currency,
-      key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID
+      key: (process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || '').trim()
     });
     
   } catch (error: any) {
