@@ -48,7 +48,27 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600; // Cache for 1 hour
+
+export async function generateStaticParams() {
+  try {
+    const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/projects?select=slug&is_active=eq.true`;
+    const res = await fetch(url, {
+      headers: {
+        'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
+        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`
+      }
+    });
+    
+    const projects = await res.json();
+    if (!Array.isArray(projects)) return [];
+    
+    return projects.map((p: any) => ({ slug: p.slug }));
+  } catch (error) {
+    console.error("Failed to generate static params for projects:", error);
+    return [];
+  }
+}
 
 // Sample Viva Q&As (blurred teaser)
 const vivaQuestions = [

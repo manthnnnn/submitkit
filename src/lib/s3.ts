@@ -1,19 +1,20 @@
 import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { env } from '@/lib/env';
 
 export const s3 = new S3Client({
   region: 'auto',
-  endpoint: `https://${(process.env.CLOUDFLARE_ACCOUNT_ID || '').trim()}.r2.cloudflarestorage.com`,
+  endpoint: `https://${env.R2_ACCOUNT_ID || ''}.r2.cloudflarestorage.com`,
   credentials: {
-    accessKeyId: (process.env.R2_ACCESS_KEY_ID || '').trim(),
-    secretAccessKey: (process.env.R2_SECRET_ACCESS_KEY || '').trim()
+    accessKeyId: env.R2_ACCESS_KEY_ID || '',
+    secretAccessKey: env.R2_SECRET_ACCESS_KEY || ''
   }
 });
 
 export async function generateDownloadUrl(key: string, filename: string): Promise<string> {
   // Graceful fallback for local testing if R2 is not configured yet
-  if (!process.env.R2_BUCKET_NAME || !process.env.CLOUDFLARE_ACCOUNT_ID) {
-    console.warn('⚠️ R2_BUCKET_NAME or CLOUDFLARE_ACCOUNT_ID is not set. Returning dummy download URL for testing.');
+  if (!env.R2_BUCKET_NAME || !env.R2_ACCOUNT_ID) {
+    console.warn('⚠️ R2_BUCKET_NAME or R2_ACCOUNT_ID is not set. Returning dummy download URL for testing.');
     return `https://example.com/dummy-download?file=${encodeURIComponent(filename)}`;
   }
 
@@ -21,7 +22,7 @@ export async function generateDownloadUrl(key: string, filename: string): Promis
   const sanitizedFilename = filename.replace(/[^a-zA-Z0-9.-]/g, '_');
 
   const command = new GetObjectCommand({
-    Bucket: process.env.R2_BUCKET_NAME,
+    Bucket: env.R2_BUCKET_NAME,
     Key: key,
     ResponseContentDisposition: `attachment; filename="${sanitizedFilename}"`
   });

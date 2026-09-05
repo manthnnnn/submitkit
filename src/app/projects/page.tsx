@@ -6,7 +6,7 @@ import { Project } from "@/lib/types";
 import { Terminal, Database, Server, Cpu, Layers, Zap, Clock, CheckCircle2, Sparkles } from "lucide-react";
 import { isProjectAvailable, AVAILABLE_PROJECT_SLUGS } from "@/lib/available-projects";
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600; // Cache for 1 hour
 
 export default async function ProjectsPage({
   searchParams,
