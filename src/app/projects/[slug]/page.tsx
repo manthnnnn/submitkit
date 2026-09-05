@@ -13,12 +13,27 @@ import { getProjectLiveUrl } from "@/lib/available-projects";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const resolvedParams = await params;
-  const supabase = await createClient();
-  const { data: project } = await supabase
-    .from('projects')
-    .select('*')
-    .eq('slug', resolvedParams.slug)
-    .single();
+  let project = null;
+
+  const fetchProject = async () => {
+    const supabase = await createClient();
+    const { data } = await supabase
+      .from('projects')
+      .select('*')
+      .eq('slug', resolvedParams.slug)
+      .single();
+    return data;
+  };
+
+  try {
+    project = await fetchProject();
+  } catch (err) {
+    try {
+      project = await fetchProject();
+    } catch (retryErr) {
+      project = null;
+    }
+  }
 
   if (!project) return { title: 'Project Not Found' };
 
@@ -48,15 +63,31 @@ export default async function ProjectDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const slug = (await params).slug;
-  const supabase = await createClient();
+  let project = null;
+  let queryError = null;
 
-  const { data: project, error } = await supabase
-    .from('projects')
-    .select('*')
-    .eq('slug', slug)
-    .single();
+  const fetchProjectDetail = async () => {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from('projects')
+      .select('*')
+      .eq('slug', slug)
+      .single();
+    if (error) throw error;
+    return data;
+  };
 
-  if (error || !project) {
+  try {
+    project = await fetchProjectDetail();
+  } catch (err) {
+    try {
+      project = await fetchProjectDetail();
+    } catch (retryErr) {
+      queryError = retryErr;
+    }
+  }
+
+  if (queryError || !project) {
     notFound();
   }
 
