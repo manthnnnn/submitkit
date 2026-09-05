@@ -1,0 +1,42 @@
+{
+  "godId": "god",
+  "agents": {
+    "god": {
+      "id": "god",
+      "name": "Michael",
+      "provider": "antigravity",
+      "cwd": "C:\\Users\\ASUS\\OneDrive\\Desktop\\aipro",
+      "isGod": true,
+      "role": "orchestrator (god)",
+      "capabilities": [],
+      "status": "idle",
+      "cwdValid": true,
+      "archived": true,
+      "lastSeen": 1788502769699
+    },
+    "jim-mtmjv421": {
+      "id": "jim-mtmjv421",
+      "name": "Jim",
+      "provider": "antigravity",
+      "cwd": "C:\\Users\\ASUS\\OneDrive\\Desktop\\aipro",
+      "role": "agent",
+      "capabilities": [],
+      "status": "idle",
+      "cwdValid": true,
+      "archived": true,
+      "lastSeen": 1788502770499
+    },
+    "jim-mtmjsdvo": {
+      "id": "jim-mtmjsdvo",
+      "name": "Jim",
+      "provider": "antigravity",
+      "cwd": "C:\\Users\\ASUS\\OneDrive\\Desktop\\aipro",
+      "role": "agent",
+      "capabilities": [],
+      "status": "idle",
+      "cwdValid": true,
+      "archived": true,
+      "lastSeen": 1788502771826
+    }
+  }
+}

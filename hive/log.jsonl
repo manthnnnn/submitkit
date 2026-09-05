@@ -1,0 +1,21 @@
+{"ts":1788501563969,"kind":"app-start","version":"0.4.6","packaged":true,"appPath":"C:\\Users\\ASUS\\AppData\\Local\\Programs\\Munder Difflin\\resources\\app.asar","exePath":"C:\\Users\\ASUS\\AppData\\Local\\Programs\\Munder Difflin\\Munder Difflin.exe","electron":"32.3.3","platform":"win32"}
+{"ts":1788501566458,"kind":"spawn","agentId":"god","name":"Michael","isGod":true}
+{"ts":1788501752742,"kind":"app-start","version":"0.4.6","packaged":true,"appPath":"C:\\Users\\ASUS\\AppData\\Local\\Programs\\Munder Difflin\\resources\\app.asar","exePath":"C:\\Users\\ASUS\\AppData\\Local\\Programs\\Munder Difflin\\Munder Difflin.exe","electron":"32.3.3","platform":"win32"}
+{"ts":1788501763880,"kind":"spawn","agentId":"god","name":"Michael","isGod":true}
+{"ts":1788501969565,"kind":"archive","agentId":"god","archived":true}
+{"ts":1788502149445,"kind":"app-start","version":"0.4.6","packaged":true,"appPath":"C:\\Users\\ASUS\\AppData\\Local\\Programs\\Munder Difflin\\resources\\app.asar","exePath":"C:\\Users\\ASUS\\AppData\\Local\\Programs\\Munder Difflin\\Munder Difflin.exe","electron":"32.3.3","platform":"win32"}
+{"ts":1788502154089,"kind":"spawn","agentId":"god","name":"Michael","isGod":true}
+{"ts":1788502155854,"kind":"spawn","agentId":"jim-mtmjv421","name":"Jim","isGod":false}
+{"ts":1788502157075,"kind":"spawn","agentId":"jim-mtmjsdvo","name":"Jim","isGod":false}
+{"ts":1788502161263,"kind":"archive","agentId":"god","archived":true}
+{"ts":1788502161541,"kind":"archive","agentId":"jim-mtmjv421","archived":true}
+{"ts":1788502161815,"kind":"archive","agentId":"jim-mtmjsdvo","archived":true}
+{"ts":1788502405794,"kind":"spawn","agentId":"god","name":"Michael","isGod":true}
+{"ts":1788502410061,"kind":"archive","agentId":"god","archived":true}
+{"ts":1788502746728,"kind":"app-start","version":"0.4.6","packaged":true,"appPath":"C:\\Program Files\\Munder Difflin\\resources\\app.asar","exePath":"C:\\Program Files\\Munder Difflin\\Munder Difflin.exe","electron":"32.3.3","platform":"win32"}
+{"ts":1788502764214,"kind":"spawn","agentId":"god","name":"Michael","isGod":true}
+{"ts":1788502766054,"kind":"spawn","agentId":"jim-mtmjv421","name":"Jim","isGod":false}
+{"ts":1788502767334,"kind":"spawn","agentId":"jim-mtmjsdvo","name":"Jim","isGod":false}
+{"ts":1788502769702,"kind":"archive","agentId":"god","archived":true}
+{"ts":1788502770501,"kind":"archive","agentId":"jim-mtmjv421","archived":true}
+{"ts":1788502771828,"kind":"archive","agentId":"jim-mtmjsdvo","archived":true}
