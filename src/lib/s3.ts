@@ -12,10 +12,11 @@ export const s3 = new S3Client({
 });
 
 export async function generateDownloadUrl(key: string, filename: string): Promise<string> {
-  // Graceful fallback for local testing if R2 is not configured yet
+  // Fail loudly in production if R2 is not configured — never silently redirect to example.com
   if (!env.R2_BUCKET_NAME || !env.R2_ACCOUNT_ID) {
-    console.warn('⚠️ R2_BUCKET_NAME or R2_ACCOUNT_ID is not set. Returning dummy download URL for testing.');
-    return `https://example.com/dummy-download?file=${encodeURIComponent(filename)}`;
+    throw new Error(
+      'R2 storage is not configured on this server. Please set R2_BUCKET_NAME, R2_ACCOUNT_ID, R2_ACCESS_KEY_ID and R2_SECRET_ACCESS_KEY in your environment variables.'
+    );
   }
 
   // Sanitize filename to prevent HTTP Header Injection or corrupted downloads

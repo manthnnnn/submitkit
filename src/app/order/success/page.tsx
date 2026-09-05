@@ -54,16 +54,43 @@ function SuccessContent() {
     };
   }, [searchParams]);
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     if (downloading) return;
     if (!orderId) {
       setError("Missing order details. Please contact support@submitkit.in with your payment details.");
       return;
     }
     setDownloading(true);
-    // Directly hit the tracked endpoint. Do NOT reset downloading to false here.
-    // The page will navigate to the download anyway.
-    window.location.href = `/api/downloads/${orderId}`;
+    setError(null);
+
+    try {
+      // Check the API response before redirecting so we can show errors
+      const res = await fetch(`/api/downloads/${orderId}`, { redirect: 'manual' });
+
+      if (res.type === 'opaqueredirect' || res.status === 0 || (res.status >= 300 && res.status < 400)) {
+        // Successful redirect to R2 presigned URL — follow it
+        window.location.href = `/api/downloads/${orderId}`;
+        // Leave downloading=true so button shows "Preparing..." while browser navigates
+        return;
+      }
+
+      if (!res.ok) {
+        let errMsg = 'Download failed. Please try again or contact support@submitkit.in.';
+        try {
+          const body = await res.json();
+          if (body?.error) errMsg = body.error;
+        } catch { /* not JSON */ }
+        setError(errMsg);
+        setDownloading(false);
+        return;
+      }
+
+      // 2xx — should not happen for this endpoint, but handle gracefully
+      window.location.href = `/api/downloads/${orderId}`;
+    } catch {
+      setError('Network error. Please check your connection and try again.');
+      setDownloading(false);
+    }
   };
 
   const handleShare = () => {
@@ -141,9 +168,18 @@ function SuccessContent() {
 
             {/* Download Box */}
             {error ? (
-              <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-2xl flex items-start gap-3 text-sm mb-4">
+              <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-5 rounded-2xl flex items-start gap-3 text-sm">
                 <AlertCircle className="h-5 w-5 shrink-0 mt-0.5" />
-                <p className="leading-relaxed">{error}</p>
+                <div>
+                  <p className="font-semibold mb-1">Download unavailable</p>
+                  <p className="leading-relaxed text-red-300/80">{error}</p>
+                  <button
+                    onClick={() => { setError(null); setDownloading(false); }}
+                    className="mt-3 text-xs font-bold text-red-400 hover:text-white underline underline-offset-2"
+                  >
+                    Try again
+                  </button>
+                </div>
               </div>
             ) : (
               <div className="bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 border border-emerald-500/20 rounded-2xl p-6 relative overflow-hidden group">

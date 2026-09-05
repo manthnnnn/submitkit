@@ -53,8 +53,17 @@ export async function GET(
 
     // 6. Generate Pre-signed S3 URL
     const filename = `${order.projects.slug}-complete-bundle.zip`;
-    const downloadUrl = await generateDownloadUrl(order.projects.s3_storage_key, filename);
-    
+    let downloadUrl: string;
+    try {
+      downloadUrl = await generateDownloadUrl(order.projects.s3_storage_key, filename);
+    } catch (s3Error: any) {
+      console.error('S3/R2 URL generation failed:', s3Error);
+      return NextResponse.json({
+        error: 'File storage is not configured. Please contact support@submitkit.in with your Order ID.',
+        orderId: order.id,
+      }, { status: 503 });
+    }
+
     // 7. Redirect to the pre-signed URL to start download automatically
     return NextResponse.redirect(downloadUrl);
     

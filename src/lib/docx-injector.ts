@@ -2,6 +2,7 @@ import PizZip from 'pizzip';
 import Docxtemplater from 'docxtemplater';
 import { GetObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
 import { s3 } from './s3';
+import { env } from './env';
 
 interface PersonalizationData {
   studentName: string;
@@ -19,7 +20,7 @@ export async function generatePersonalizedDocx(
 ): Promise<string> {
   // 1. Download template from S3
   const getCommand = new GetObjectCommand({
-    Bucket: process.env.AWS_S3_BUCKET_NAME,
+    Bucket: env.R2_BUCKET_NAME,
     Key: templateKey,
   });
   
@@ -57,7 +58,7 @@ export async function generatePersonalizedDocx(
   
   // 5. Upload back to S3 in a temporary/personal folder
   const putCommand = new PutObjectCommand({
-    Bucket: process.env.AWS_S3_BUCKET_NAME,
+    Bucket: env.R2_BUCKET_NAME,
     Key: outputKey,
     Body: buf,
     ContentType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
