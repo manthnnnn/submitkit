@@ -9,6 +9,7 @@ import { StickyBuyBar } from "@/components/ui/sticky-buy-bar";
 import { CheckCircle2, ChevronRight, FileText, MonitorPlay, Presentation, TerminalSquare, Lock, Star } from "lucide-react";
 import Link from "next/link";
 import { Metadata } from 'next';
+import { getProjectLiveUrl } from "@/lib/available-projects";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const resolvedParams = await params;
@@ -102,6 +103,19 @@ export default async function ProjectDetailPage({
                 {p.title}
               </h1>
               <p className="text-zinc-400 text-base leading-relaxed mb-5">{p.description}</p>
+
+              {getProjectLiveUrl(p.slug) && (
+                <div className="mb-6">
+                  <Link
+                    href={getProjectLiveUrl(p.slug)!}
+                    className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500/20 to-teal-500/20 hover:from-emerald-500/30 hover:to-teal-500/30 border border-emerald-500/40 text-emerald-400 font-bold text-sm transition-all shadow-lg shadow-emerald-500/10 group"
+                  >
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
+                    <span>⚡ Launch Live Interactive Demo (Web Simulator)</span>
+                    <span className="text-emerald-400 group-hover:translate-x-1 transition-transform">→</span>
+                  </Link>
+                </div>
+              )}
 
               {/* Trust Row */}
               <div className="flex flex-wrap items-center gap-4 text-xs text-zinc-500">
