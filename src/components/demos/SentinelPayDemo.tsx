@@ -123,7 +123,7 @@ export default function SentinelPayLandingPage() {
           </a>
 
           <Link
-            href="/dashboard"
+            href="#"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -193,7 +193,7 @@ export default function SentinelPayLandingPage() {
 
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
             <Link
-              href="/dashboard"
+              href="#"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',

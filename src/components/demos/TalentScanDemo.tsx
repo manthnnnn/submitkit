@@ -97,7 +97,7 @@ export default function TalentScanLandingPage() {
         {/* Hero CTAs */}
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
           <Link
-            href="/dashboard"
+            href="#"
             className="btn-primary"
             style={{
               padding: '14px 32px',
@@ -441,7 +441,7 @@ export default function TalentScanLandingPage() {
               Want to parse your own candidate files or custom benchmark texts?
             </div>
             <Link
-              href="/dashboard"
+              href="#"
               className="btn-primary"
               style={{
                 padding: '8px 20px',
@@ -524,7 +524,7 @@ export default function TalentScanLandingPage() {
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.6, marginBottom: '16px' }}>
               Intelligently bifurcate skills into Languages, Frameworks, Cloud & DevOps, Databases, and Tools. Eliminates keyword stuffing by validating context across career timeline highlights.
             </p>
-            <Link href="/dashboard" style={{ fontSize: '0.82rem', color: 'var(--accent-cyan)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '5px', textDecoration: 'none' }}>
+            <Link href="#" style={{ fontSize: '0.82rem', color: 'var(--accent-cyan)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '5px', textDecoration: 'none' }}>
               <span>Explore Taxonomies</span>
               <ChevronRight size={14} />
             </Link>
@@ -670,7 +670,7 @@ export default function TalentScanLandingPage() {
         </p>
 
         <Link
-          href="/dashboard"
+          href="#"
           className="btn-primary"
           style={{
             padding: '14px 36px',

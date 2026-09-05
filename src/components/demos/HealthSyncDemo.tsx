@@ -144,7 +144,7 @@ export default function HealthSyncLandingPage() {
           {/* Action CTAs */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <Link
-              href="/dashboard"
+              href="#"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -231,7 +231,7 @@ export default function HealthSyncLandingPage() {
         {/* Action Buttons */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
           <Link
-            href="/dashboard"
+            href="#"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -759,7 +759,7 @@ export default function HealthSyncLandingPage() {
               Complete clinical chart records, longitudinal vitals graphs, and appointment rosters ready.
             </div>
             <Link
-              href="/dashboard"
+              href="#"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -981,7 +981,7 @@ export default function HealthSyncLandingPage() {
 
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
             <Link
-              href="/dashboard"
+              href="#"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',

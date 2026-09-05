@@ -45,7 +45,7 @@ export default function FinFlowLandingPage() {
         <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
           <span style={{ fontSize: '0.85rem', color: '#a1a1aa', fontWeight: 500, cursor: 'pointer' }}>Features</span>
           <span style={{ fontSize: '0.85rem', color: '#a1a1aa', fontWeight: 500, cursor: 'pointer' }}>Security</span>
-          <Link href="/dashboard" style={{
+          <Link href="#" style={{
             background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)',
             padding: '8px 16px', borderRadius: '99px', fontSize: '0.85rem', fontWeight: 600,
             display: 'flex', alignItems: 'center', gap: '6px', color: '#fff', textDecoration: 'none'
@@ -79,7 +79,7 @@ export default function FinFlowLandingPage() {
           </p>
           
           <div style={{ display: 'flex', gap: '16px', justifyContent: 'center' }}>
-            <Link href="/dashboard" style={{
+            <Link href="#" style={{
               background: '#fff', color: '#09090b', padding: '14px 28px', borderRadius: '12px',
               fontSize: '1rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px',
               textDecoration: 'none', boxShadow: '0 4px 14px rgba(255,255,255,0.25)',
@@ -136,7 +136,7 @@ export default function FinFlowLandingPage() {
                 ))}
               </ul>
             </div>
-            <Link href="/dashboard" style={{
+            <Link href="#" style={{
               background: '#10b981', color: '#09090b', padding: '16px 32px', borderRadius: '12px',
               fontSize: '1rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none'
             }}>

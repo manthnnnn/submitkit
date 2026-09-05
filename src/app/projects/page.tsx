@@ -19,21 +19,39 @@ export default async function ProjectsPage({
   const categoryFilter = typeof params.category === 'string' ? params.category : null;
   const statusFilter = typeof params.status === 'string' ? params.status : 'ALL';
 
-  let query = supabase
-    .from('projects')
-    .select('*')
-    .eq('is_active', true)
-    .order('created_at', { ascending: false });
+  let allProjects: Project[] = [];
 
-  if (tierFilter) {
-    query = query.eq('tier', tierFilter);
-  }
-  if (categoryFilter) {
-    query = query.eq('category', categoryFilter);
-  }
+  // Helper to build and run the query
+  const runQuery = async () => {
+    let query = supabase
+      .from('projects')
+      .select('*')
+      .eq('is_active', true)
+      .order('created_at', { ascending: false });
 
-  const { data: projects, error } = await query;
-  let allProjects = (projects as Project[]) || [];
+    if (tierFilter) {
+      query = query.eq('tier', tierFilter);
+    }
+    if (categoryFilter) {
+      query = query.eq('category', categoryFilter);
+    }
+
+    const { data, error } = await query;
+    if (error) throw error;
+    return (data as Project[]) || [];
+  };
+
+  try {
+    allProjects = await runQuery();
+  } catch (err) {
+    console.error('Supabase query failed on /projects, retrying:', err);
+    try {
+      allProjects = await runQuery();
+    } catch (retryErr) {
+      console.error('Retry also failed:', retryErr);
+      allProjects = [];
+    }
+  }
 
   // Filter based on status
   let displayProjects = allProjects;

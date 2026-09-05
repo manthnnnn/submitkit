@@ -161,7 +161,7 @@ HAVING AVG(e.salary) > 85000;`
           </a>
 
           <Link
-            href="/dashboard"
+            href="#"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -230,7 +230,7 @@ HAVING AVG(e.salary) > 85000;`
 
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
             <Link
-              href="/dashboard"
+              href="#"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -395,7 +395,7 @@ HAVING AVG(e.salary) > 85000;`
 
               <div style={{ marginTop: 'auto', paddingTop: '16px', borderTop: '1px solid rgba(255, 255, 255, 0.06)', fontSize: '0.75rem', color: '#64748b' }}>
                 Memory Isolation: 64MB cgroup • Sandbox Bounds Checked •{' '}
-                <Link href="/dashboard" style={{ color: '#a78bfa', textDecoration: 'none' }}>Open in Full IDE →</Link>
+                <Link href="#" style={{ color: '#a78bfa', textDecoration: 'none' }}>Open in Full IDE →</Link>
               </div>
             </div>
           </div>

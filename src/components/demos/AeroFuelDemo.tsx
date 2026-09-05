@@ -13,7 +13,7 @@ export default function AeroFuelLandingPage() {
 
   const sectors = {
     'jfk-lhr': {
-      name: 'JFK ➔ LHR (Transatlantic High-Density)',
+      name: 'JFK âž” LHR (Transatlantic High-Density)',
       distance: '3,451 NM',
       aircraft: 'Boeing 787-9 Dreamliner',
       baselineBurn: '42,800 kg',
@@ -21,11 +21,11 @@ export default function AeroFuelLandingPage() {
       savingsKg: '1,420 kg',
       savingsUsd: '$2,840',
       co2Reduction: '4.48 tons',
-      optimalAltitude: 'FL370 ➔ FL390 at 30°W',
+      optimalAltitude: 'FL370 âž” FL390 at 30Â°W',
       windComponent: '+42 kts Tail-Jet'
     },
     'dxb-sin': {
-      name: 'DXB ➔ SIN (Equatorial Trade Route)',
+      name: 'DXB âž” SIN (Equatorial Trade Route)',
       distance: '3,178 NM',
       aircraft: 'Airbus A350-900 Ultra',
       baselineBurn: '39,400 kg',
@@ -33,11 +33,11 @@ export default function AeroFuelLandingPage() {
       savingsKg: '1,250 kg',
       savingsUsd: '$2,500',
       co2Reduction: '3.95 tons',
-      optimalAltitude: 'FL390 ➔ FL410 over Bay of Bengal',
+      optimalAltitude: 'FL390 âž” FL410 over Bay of Bengal',
       windComponent: '+18 kts Cross-Equatorial'
     },
     'hnd-sfo': {
-      name: 'HND ➔ SFO (Pacific Great Circle)',
+      name: 'HND âž” SFO (Pacific Great Circle)',
       distance: '4,475 NM',
       aircraft: 'Boeing 777-300ER Long-Haul',
       baselineBurn: '68,200 kg',
@@ -45,7 +45,7 @@ export default function AeroFuelLandingPage() {
       savingsKg: '2,080 kg',
       savingsUsd: '$4,160',
       co2Reduction: '6.57 tons',
-      optimalAltitude: 'FL330 ➔ FL360 at Dateline',
+      optimalAltitude: 'FL330 âž” FL360 at Dateline',
       windComponent: '+78 kts Polar Jet-Stream'
     }
   };
@@ -86,7 +86,7 @@ export default function AeroFuelLandingPage() {
         }}>
           <Sparkles size={15} color="var(--color-primary)" />
           <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--color-primary)', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
-            ICAO Annex 16 & CORSIA Verified • Flight Intelligence v4.0
+            ICAO Annex 16 & CORSIA Verified â€¢ Flight Intelligence v4.0
           </span>
         </div>
 
@@ -121,7 +121,7 @@ export default function AeroFuelLandingPage() {
         {/* Action Buttons */}
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
           <Link
-            href="/dashboard"
+            href="#"
             className="btn-premium"
             style={{
               padding: '14px 34px',
@@ -241,7 +241,7 @@ export default function AeroFuelLandingPage() {
               }}
             >
               <Globe2 size={15} color="var(--color-primary)" />
-              <span>JFK ➔ LHR (Transatlantic)</span>
+              <span>JFK âž” LHR (Transatlantic)</span>
             </button>
 
             <button
@@ -261,7 +261,7 @@ export default function AeroFuelLandingPage() {
               }}
             >
               <Compass size={15} color="var(--color-secondary)" />
-              <span>DXB ➔ SIN (Equatorial)</span>
+              <span>DXB âž” SIN (Equatorial)</span>
             </button>
 
             <button
@@ -281,7 +281,7 @@ export default function AeroFuelLandingPage() {
               }}
             >
               <Wind size={15} color="#00ff80" />
-              <span>HND ➔ SFO (Pacific Great Circle)</span>
+              <span>HND âž” SFO (Pacific Great Circle)</span>
             </button>
           </div>
         </div>
@@ -308,7 +308,7 @@ export default function AeroFuelLandingPage() {
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--color-primary)', boxShadow: '0 0 10px var(--color-primary)' }} />
               <span style={{ fontSize: '0.82rem', fontFamily: 'monospace', color: 'rgba(255, 255, 255, 0.7)' }}>
-                SECTOR: {current.name} • AIRCRAFT: {current.aircraft}
+                SECTOR: {current.name} â€¢ AIRCRAFT: {current.aircraft}
               </span>
             </div>
 
@@ -347,7 +347,7 @@ export default function AeroFuelLandingPage() {
                 {current.savingsKg}
               </div>
               <div style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.6)', marginTop: '4px' }}>
-                Baseline: {current.baselineBurn} ➔ Optimized: {current.optimizedBurn}
+                Baseline: {current.baselineBurn} âž” Optimized: {current.optimizedBurn}
               </div>
             </div>
 
@@ -411,7 +411,7 @@ export default function AeroFuelLandingPage() {
             </div>
 
             <Link
-              href="/dashboard"
+              href="#"
               className="btn-premium"
               style={{
                 padding: '8px 20px',
@@ -559,7 +559,7 @@ export default function AeroFuelLandingPage() {
         </p>
 
         <Link
-          href="/dashboard"
+          href="#"
           className="btn-premium"
           style={{
             padding: '14px 36px',

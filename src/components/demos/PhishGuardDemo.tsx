@@ -105,7 +105,7 @@ export default function PhishGuardLandingPage() {
           <a href="#pricing" style={{ fontSize: '0.85rem', color: '#94a3b8', fontWeight: 600, textDecoration: 'none', transition: 'color 0.2s' }}>
             Enterprise Tiers
           </a>
-          <Link href="/dashboard" style={{
+          <Link href="#" style={{
             background: 'linear-gradient(135deg, #e11d48, #be123c)',
             boxShadow: '0 0 20px rgba(225, 29, 72, 0.4)',
             padding: '8px 18px', borderRadius: '999px', fontSize: '0.85rem', fontWeight: 700,
@@ -142,7 +142,7 @@ export default function PhishGuardLandingPage() {
           </p>
           
           <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href="/dashboard" style={{
+            <Link href="#" style={{
               background: 'linear-gradient(135deg, #e11d48, #9f1239)',
               color: '#ffffff', padding: '14px 28px', borderRadius: '10px',
               fontSize: '0.98rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px',
@@ -362,7 +362,7 @@ export default function PhishGuardLandingPage() {
 
                 {/* Direct Action Link */}
                 <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-                  <Link href="/dashboard" style={{
+                  <Link href="#" style={{
                     padding: '8px 18px',
                     borderRadius: '6px',
                     background: 'linear-gradient(135deg, #e11d48, #be123c)',
@@ -491,7 +491,7 @@ export default function PhishGuardLandingPage() {
                   ))}
                 </div>
               </div>
-              <Link href="/dashboard" style={{
+              <Link href="#" style={{
                 marginTop: '28px',
                 padding: '12px',
                 borderRadius: '8px',
@@ -558,7 +558,7 @@ export default function PhishGuardLandingPage() {
                   ))}
                 </div>
               </div>
-              <Link href="/dashboard" style={{
+              <Link href="#" style={{
                 marginTop: '28px',
                 padding: '12px',
                 borderRadius: '8px',
@@ -607,7 +607,7 @@ export default function PhishGuardLandingPage() {
                   ))}
                 </div>
               </div>
-              <Link href="/dashboard" style={{
+              <Link href="#" style={{
                 marginTop: '28px',
                 padding: '12px',
                 borderRadius: '8px',
