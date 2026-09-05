@@ -13,7 +13,6 @@ export default async function ProjectsPage({
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
-  const supabase = await createClient();
   const params = await searchParams;
   const tierFilter = typeof params.tier === 'string' ? params.tier : null;
   const categoryFilter = typeof params.category === 'string' ? params.category : null;
@@ -23,6 +22,7 @@ export default async function ProjectsPage({
 
   // Helper to build and run the query
   const runQuery = async () => {
+    const supabase = await createClient();
     let query = supabase
       .from('projects')
       .select('*')
