@@ -160,8 +160,8 @@ HAVING AVG(e.salary) > 85000;`
             Big-O Guide
           </a>
 
-          <Link
-            href="#"
+          <a
+            href="#playground"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -178,7 +178,7 @@ HAVING AVG(e.salary) > 85000;`
           >
             <span>Launch Cloud IDE</span>
             <ArrowRight size={15} />
-          </Link>
+          </a>
         </div>
       </nav>
 
@@ -229,8 +229,8 @@ HAVING AVG(e.salary) > 85000;`
           </p>
 
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
-            <Link
-              href="#"
+            <a
+              href="#playground"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -247,7 +247,7 @@ HAVING AVG(e.salary) > 85000;`
             >
               <span>Launch Full Cloud IDE</span>
               <ArrowRight size={18} />
-            </Link>
+            </a>
 
             <a
               href="#playground"

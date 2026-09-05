@@ -105,8 +105,8 @@ export default function PhishGuardLandingPage() {
           <a href="#pricing" style={{ fontSize: '0.85rem', color: '#94a3b8', fontWeight: 600, textDecoration: 'none', transition: 'color 0.2s' }}>
             Enterprise Tiers
           </a>
-          <Link href="#" style={{
-            background: 'linear-gradient(135deg, #e11d48, #be123c)',
+          <a href="#demo" style={{
+            background: 'linear-gradient(135deg, #e11d48, #9f1239)',
             boxShadow: '0 0 20px rgba(225, 29, 72, 0.4)',
             padding: '8px 18px', borderRadius: '999px', fontSize: '0.85rem', fontWeight: 700,
             display: 'flex', alignItems: 'center', gap: '6px', color: '#fff', textDecoration: 'none',
@@ -114,7 +114,7 @@ export default function PhishGuardLandingPage() {
           }}>
             <span>Launch SOC Radar</span>
             <ArrowRight size={14} />
-          </Link>
+          </a>
         </div>
       </nav>
 
@@ -142,7 +142,7 @@ export default function PhishGuardLandingPage() {
           </p>
           
           <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href="#" style={{
+            <a href="#demo" style={{
               background: 'linear-gradient(135deg, #e11d48, #9f1239)',
               color: '#ffffff', padding: '14px 28px', borderRadius: '10px',
               fontSize: '0.98rem', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px',
@@ -152,7 +152,7 @@ export default function PhishGuardLandingPage() {
               <ShieldAlert size={18} />
               <span>Enter Security Operations Center</span>
               <ArrowRight size={16} />
-            </Link>
+            </a>
             <a href="#demo" style={{
               background: 'rgba(255, 255, 255, 0.05)', color: '#fff', padding: '14px 26px', borderRadius: '10px',
               border: '1px solid rgba(255, 255, 255, 0.12)', fontSize: '0.98rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px',

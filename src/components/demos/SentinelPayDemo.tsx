@@ -122,8 +122,8 @@ export default function SentinelPayLandingPage() {
             How It Works
           </a>
 
-          <Link
-            href="#"
+          <a
+            href="#simulator"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -141,7 +141,7 @@ export default function SentinelPayLandingPage() {
           >
             <span>Launch Threat Radar</span>
             <ArrowRight size={15} />
-          </Link>
+          </a>
         </div>
       </nav>
 
@@ -192,8 +192,8 @@ export default function SentinelPayLandingPage() {
           </p>
 
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
-            <Link
-              href="#"
+            <a
+              href="#simulator"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -208,9 +208,9 @@ export default function SentinelPayLandingPage() {
                 boxShadow: '0 0 30px rgba(16, 185, 129, 0.4)'
               }}
             >
-              <span>Launch Live Fraud Radar</span>
+              <span>Launch Threat Radar</span>
               <ArrowRight size={18} />
-            </Link>
+            </a>
 
             <Link
               href="/rules"

@@ -96,8 +96,8 @@ export default function TalentScanLandingPage() {
 
         {/* Hero CTAs */}
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
-          <Link
-            href="#"
+          <a
+            href="#simulator"
             className="btn-primary"
             style={{
               padding: '14px 32px',
@@ -107,12 +107,13 @@ export default function TalentScanLandingPage() {
               boxShadow: '0 0 35px rgba(99, 102, 241, 0.5)',
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '10px'
+              gap: '10px',
+              textDecoration: 'none'
             }}
           >
             <span>Launch Parser Studio</span>
             <ArrowRight size={18} />
-          </Link>
+          </a>
 
           <Link
             href="/matcher"
@@ -185,7 +186,7 @@ export default function TalentScanLandingPage() {
       </section>
 
       {/* 2. INTERACTIVE LIVE EXTRACTION WORKBENCH PREVIEW */}
-      <section style={{ margin: '30px 0 70px' }}>
+      <section id="simulator" style={{ margin: '30px 0 70px' }}>
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--accent-cyan)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
             Live Inference Simulator
@@ -440,21 +441,22 @@ export default function TalentScanLandingPage() {
             <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
               Want to parse your own candidate files or custom benchmark texts?
             </div>
-            <Link
-              href="#"
+            <a
+              href="#simulator"
               className="btn-primary"
               style={{
                 padding: '8px 20px',
                 fontSize: '0.85rem',
                 borderRadius: '8px',
-                display: 'flex',
+                display: 'inline-flex',
                 alignItems: 'center',
-                gap: '8px'
+                gap: '8px',
+                textDecoration: 'none'
               }}
             >
-              <span>Open in Parser Studio</span>
+              <span>Launch Studio</span>
               <ArrowRight size={15} />
-            </Link>
+            </a>
           </div>
         </div>
 
@@ -524,10 +526,10 @@ export default function TalentScanLandingPage() {
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.6, marginBottom: '16px' }}>
               Intelligently bifurcate skills into Languages, Frameworks, Cloud & DevOps, Databases, and Tools. Eliminates keyword stuffing by validating context across career timeline highlights.
             </p>
-            <Link href="#" style={{ fontSize: '0.82rem', color: 'var(--accent-cyan)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '5px', textDecoration: 'none' }}>
+            <a href="#simulator" style={{ fontSize: '0.82rem', color: 'var(--accent-cyan)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '5px', textDecoration: 'none' }}>
               <span>Explore Taxonomies</span>
               <ChevronRight size={14} />
-            </Link>
+            </a>
           </div>
 
           {/* Card 3: Viva & Technical Interview Synthesis */}
@@ -669,23 +671,24 @@ export default function TalentScanLandingPage() {
           Jump straight into the Parser Studio to test raw text resumes, extract structured taxonomy graphs, and calculate candidate ATS scores in real-time.
         </p>
 
-        <Link
-          href="#"
+        <a
+          href="#simulator"
           className="btn-primary"
           style={{
             padding: '14px 36px',
             fontSize: '1.05rem',
             fontWeight: 800,
             borderRadius: '12px',
-            boxShadow: '0 0 35px rgba(99, 102, 241, 0.6)',
+            boxShadow: '0 0 35px rgba(99, 102, 241, 0.45)',
             display: 'inline-flex',
             alignItems: 'center',
-            gap: '10px'
+            gap: '10px',
+            textDecoration: 'none'
           }}
         >
-          <span>Launch Parser Studio</span>
+          <span>Open TalentScan Studio</span>
           <ArrowRight size={18} />
-        </Link>
+        </a>
       </section>
 
     </div>

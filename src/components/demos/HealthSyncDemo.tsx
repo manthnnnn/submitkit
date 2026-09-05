@@ -143,8 +143,8 @@ export default function HealthSyncLandingPage() {
 
           {/* Action CTAs */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <Link
-              href="#"
+            <a
+              href="#simulator"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -162,7 +162,7 @@ export default function HealthSyncLandingPage() {
             >
               <span>Launch Clinical Portal</span>
               <ArrowUpRight size={15} />
-            </Link>
+            </a>
           </div>
 
         </div>
@@ -230,8 +230,8 @@ export default function HealthSyncLandingPage() {
 
         {/* Action Buttons */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
-          <Link
-            href="#"
+          <a
+            href="#simulator"
             style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -249,7 +249,7 @@ export default function HealthSyncLandingPage() {
           >
             <span>Launch Clinical Portal</span>
             <ArrowRight size={18} />
-          </Link>
+          </a>
 
           <Link
             href="/records"
@@ -341,7 +341,7 @@ export default function HealthSyncLandingPage() {
       </section>
 
       {/* 3. INTERACTIVE CLINICAL TELEMETRY WORKBENCH */}
-      <section style={{
+      <section id="simulator" style={{
         maxWidth: '1160px',
         margin: '0 auto',
         padding: '32px 24px 48px',

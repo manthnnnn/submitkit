@@ -45,13 +45,13 @@ export default function FinFlowLandingPage() {
         <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
           <span style={{ fontSize: '0.85rem', color: '#a1a1aa', fontWeight: 500, cursor: 'pointer' }}>Features</span>
           <span style={{ fontSize: '0.85rem', color: '#a1a1aa', fontWeight: 500, cursor: 'pointer' }}>Security</span>
-          <Link href="#" style={{
+          <a href="#features" style={{
             background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)',
             padding: '8px 16px', borderRadius: '99px', fontSize: '0.85rem', fontWeight: 600,
             display: 'flex', alignItems: 'center', gap: '6px', color: '#fff', textDecoration: 'none'
           }}>
             Dashboard Login <ArrowRight size={14} />
-          </Link>
+          </a>
         </div>
       </nav>
 
@@ -79,14 +79,14 @@ export default function FinFlowLandingPage() {
           </p>
           
           <div style={{ display: 'flex', gap: '16px', justifyContent: 'center' }}>
-            <Link href="#" style={{
+            <a href="#features" style={{
               background: '#fff', color: '#09090b', padding: '14px 28px', borderRadius: '12px',
               fontSize: '1rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px',
               textDecoration: 'none', boxShadow: '0 4px 14px rgba(255,255,255,0.25)',
               transition: 'transform 0.2s'
             }} onMouseOver={(e) => e.currentTarget.style.transform = 'translateY(-2px)'} onMouseOut={(e) => e.currentTarget.style.transform = 'translateY(0)'}>
               Launch Dashboard <ArrowRight size={18} />
-            </Link>
+            </a>
             <a href="#features" style={{
               background: 'rgba(255,255,255,0.05)', color: '#fff', padding: '14px 28px', borderRadius: '12px',
               border: '1px solid rgba(255,255,255,0.1)', fontSize: '1rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px',
@@ -136,12 +136,12 @@ export default function FinFlowLandingPage() {
                 ))}
               </ul>
             </div>
-            <Link href="#" style={{
+            <a href="#features" style={{
               background: '#10b981', color: '#09090b', padding: '16px 32px', borderRadius: '12px',
               fontSize: '1rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none'
             }}>
               Launch Dashboard <ChevronRight size={18} />
-            </Link>
+            </a>
           </div>
           
         </div>

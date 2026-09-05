@@ -120,8 +120,11 @@ export default function AeroFuelLandingPage() {
 
         {/* Action Buttons */}
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
-          <Link
-            href="#"
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById('simulator')?.scrollIntoView({ behavior: 'smooth' });
+            }}
             className="btn-premium"
             style={{
               padding: '14px 34px',
@@ -131,12 +134,14 @@ export default function AeroFuelLandingPage() {
               display: 'inline-flex',
               alignItems: 'center',
               gap: '10px',
-              boxShadow: '0 0 35px rgba(0, 240, 255, 0.45)'
+              boxShadow: '0 0 35px rgba(0, 240, 255, 0.45)',
+              border: 'none',
+              cursor: 'pointer'
             }}
           >
             <span>Launch Fuel Predictor</span>
             <ArrowRight size={18} />
-          </Link>
+          </button>
 
           <Link
             href="/analytics"
@@ -210,7 +215,7 @@ export default function AeroFuelLandingPage() {
       </section>
 
       {/* 2. INTERACTIVE FLIGHT FUEL BURN REDUCTION SIMULATOR */}
-      <section style={{ margin: '30px 0 70px' }}>
+      <section id="simulator" style={{ margin: '30px 0 70px' }}>
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
           <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-primary)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
             Interactive Route Telemetry Simulator
