@@ -38,7 +38,7 @@ async function sendReservationEmail(email: string, projectName: string): Promise
     </p>
   </div>
   <div style="text-align:center;border-top:1px solid rgba(255,255,255,0.05);padding-top:18px;margin-top:20px;">
-    <p style="margin:0;font-size:0.7rem;color:#52525b;">&#169; ${new Date().getFullYear()} SubmitKit.in &mdash; Educational reference material</p>
+    <p style="margin:0;font-size:0.7rem;color:#52525b;">© ${new Date().getFullYear()} SubmitKit.in -- Educational reference material</p>
   </div>
 </div></body></html>`;
 
@@ -49,7 +49,7 @@ async function sendReservationEmail(email: string, projectName: string): Promise
       body: JSON.stringify({
         sender: { name: 'SubmitKit', email: 'team@submitkit.in' },
         to: [{ email }],
-        subject: `&#127919; Reserved: ${projectName} | SubmitKit Early Access`,
+        subject: `Reserved: ${projectName} | SubmitKit Early Access`,
         htmlContent: html,
       }),
     });
