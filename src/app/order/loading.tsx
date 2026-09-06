@@ -1,5 +1,5 @@
 import { PageLoader } from "@/components/ui/page-loader";
 
-export default function ProjectDetailLoading() {
+export default function OrderLoading() {
   return <PageLoader />;
 }

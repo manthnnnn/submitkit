@@ -136,3 +136,8 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #3f3f46;
 }
+
+/* Shimmer sweep animation for skeleton loaders */
+@keyframes shimmer {
+  100% { transform: translateX(200%); }
+}
