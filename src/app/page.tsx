@@ -78,7 +78,7 @@ export default function Home() {
                 className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 text-zinc-300 text-xs mb-5"
               >
                 <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                Trusted by 15,000+ students across India
+                Trusted by 1,200+ students across India
               </motion.div>
 
               <motion.h1
@@ -109,7 +109,7 @@ export default function Home() {
               >
                 <div className="flex">{[1, 2, 3, 4, 5].map(s => <Star key={s} className="w-4 h-4 fill-amber-400 text-amber-400" />)}</div>
                 <span className="text-zinc-300 text-sm font-medium">4.9/5</span>
-                <span className="text-zinc-600 text-sm">from 1,200+ students</span>
+                <span className="text-zinc-600 text-sm">from 500+ students</span>
               </motion.div>
 
               <motion.div
@@ -161,10 +161,10 @@ export default function Home() {
       <section className="py-10 border-y border-white/5 bg-white/[0.01]">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto">
-            <StatCounter target={15000} suffix="+" label="Students Helped" />
-            <StatCounter target={51} suffix="+" label="Ready Projects" />
-            <StatCounter target={99} suffix="%" label="Run On First Try" />
-            <StatCounter target={4} suffix=" min" label="Avg Delivery Time" />
+            <StatCounter target={1200} suffix="+" label="Students Helped" />
+            <StatCounter target={9}    suffix=""   label="Available Projects" />
+            <StatCounter target={99}   suffix="%"  label="Run On First Try" />
+            <StatCounter target={5}    suffix=" min" label="Avg Delivery Time" />
           </div>
         </div>
       </section>

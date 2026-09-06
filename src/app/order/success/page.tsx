@@ -34,6 +34,7 @@ function SuccessContent() {
 
   // Personalization form
   const [showPersonalForm, setShowPersonalForm] = useState(false);
+  const [studentName, setStudentName] = useState('');
   const [rollNumber,  setRollNumber]  = useState('');
   const [guideName,   setGuideName]   = useState('');
   const [customerEmailForPersonal, setCustomerEmailForPersonal] = useState('');
@@ -85,7 +86,7 @@ function SuccessContent() {
       const res = await fetch('/api/personalize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ orderId, customerEmail: customerEmailForPersonal, rollNumber, guideName }),
+        body: JSON.stringify({ orderId, customerEmail: customerEmailForPersonal, studentName, rollNumber, guideName }),
       });
       const data = await res.json();
       if (!res.ok || !data.downloadUrl) {
@@ -158,7 +159,7 @@ function SuccessContent() {
                 <div className="bg-emerald-500/8 border border-emerald-500/20 rounded-xl p-5">
                   <div className="flex items-center justify-between text-xs text-emerald-400/70 mb-4 font-medium">
                     <span className="flex items-center gap-1.5"><Zap className="w-3 h-3" /> Link expires in 10 minutes</span>
-                    <span>3 downloads remaining</span>
+                    <span>Up to 3 downloads included</span>
                   </div>
                   <button onClick={handleDownload} disabled={downloading} className="w-full bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold py-4 rounded-xl flex items-center justify-center gap-2.5 transition-all disabled:opacity-50 text-base shadow-[0_0_25px_rgba(16,185,129,0.35)] hover:shadow-[0_0_35px_rgba(16,185,129,0.5)]">
                     <Download className="h-5 w-5" />
@@ -201,13 +202,15 @@ function SuccessContent() {
                   <form onSubmit={handlePersonalize} className="mt-4 space-y-3">
                     <input required type="email" placeholder="Your email (same as order)" value={customerEmailForPersonal} onChange={e => setCustomerEmailForPersonal(e.target.value)}
                       className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder:text-zinc-500 text-sm focus:outline-none focus:border-brand-500/50" />
-                    <input required type="text" placeholder="Your Full Name (as on cover)" value={rollNumber} onChange={e => setRollNumber(e.target.value)}
+                    <input required type="text" placeholder="Your Full Name (as it should appear on the cover)" value={studentName} onChange={e => setStudentName(e.target.value)}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder:text-zinc-500 text-sm focus:outline-none focus:border-brand-500/50" />
+                    <input type="text" placeholder="Roll Number (e.g. 1RV21CS045)" value={rollNumber} onChange={e => setRollNumber(e.target.value)}
                       className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder:text-zinc-500 text-sm focus:outline-none focus:border-brand-500/50" />
                     <input type="text" placeholder="Guide / Professor Name (optional)" value={guideName} onChange={e => setGuideName(e.target.value)}
                       className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder:text-zinc-500 text-sm focus:outline-none focus:border-brand-500/50" />
                     {personalError && <p className="text-red-400 text-xs">{personalError}</p>}
                     <button type="submit" disabled={personalizing} className="w-full py-2.5 bg-brand-500 hover:bg-brand-400 text-white font-bold text-sm rounded-xl flex items-center justify-center gap-2 disabled:opacity-50">
-                      {personalizing ? <><Loader2 className="w-4 h-4 animate-spin" /> Generatingâ€¦</> : 'Generate My Personalised Report'}
+                      {personalizing ? <><Loader2 className="w-4 h-4 animate-spin" /> Generating...</> : 'Generate My Personalised Report'}
                     </button>
                   </form>
                 )}
@@ -258,7 +261,7 @@ function SuccessContent() {
 
             {/* Actions */}
             <div className="flex flex-col sm:flex-row gap-3">
-              <button onClick={() => { const t = 'Just got my final year project bundle from SubmitKit! ðŸš€'; if (navigator.share) navigator.share({ title: 'SubmitKit', text: t, url: 'https://submitkit.in' }).catch(() => {}); else { navigator.clipboard.writeText(t + ' https://submitkit.in'); setCopied(true); setTimeout(() => setCopied(false), 2000); } }} className="flex-1 flex items-center justify-center gap-2 text-sm text-zinc-400 hover:text-white bg-white/[0.02] hover:bg-white/[0.06] border border-white/5 py-3 rounded-xl transition-all">
+              <button onClick={() => { const t = 'Just got my final year project bundle from SubmitKit! Running perfectly!'; if (navigator.share) navigator.share({ title: 'SubmitKit', text: t, url: 'https://submitkit.in' }).catch(() => {}); else { navigator.clipboard.writeText(t + ' https://submitkit.in'); setCopied(true); setTimeout(() => setCopied(false), 2000); } }} className="flex-1 flex items-center justify-center gap-2 text-sm text-zinc-400 hover:text-white bg-white/[0.02] hover:bg-white/[0.06] border border-white/5 py-3 rounded-xl transition-all">
                 <Share2 className="w-4 h-4" />{copied ? 'Copied!' : 'Recommend to classmates'}
               </button>
               <Link href="/projects" className="flex-1 flex items-center justify-center gap-2 text-sm text-zinc-400 hover:text-white bg-white/[0.02] hover:bg-white/[0.06] border border-white/5 py-3 rounded-xl transition-all group">

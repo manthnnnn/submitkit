@@ -117,9 +117,18 @@ export function FleetSection() {
     return p.category === selectedCategory;
   });
 
-  const handleReserveSubmit = (e: React.FormEvent) => {
+  const handleReserveSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!reservedEmail.includes('@')) return;
+    if (!reservedEmail.includes('@') || !reserveModalProject) return;
+    try {
+      // Find slug for the project name
+      const slug = UPCOMING_CATALOG.find(p => p.name === reserveModalProject)?.slug ?? reserveModalProject.toLowerCase().replace(/\s+/g, '-');
+      await fetch('/api/reservations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: reservedEmail, projectName: reserveModalProject, projectSlug: slug }),
+      });
+    } catch { /* silent — success UI still shows */ }
     setReserveSuccess(true);
     setTimeout(() => {
       setReserveModalProject(null);

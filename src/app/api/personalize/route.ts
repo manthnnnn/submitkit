@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    const { orderId, customerEmail, rollNumber, guideName, submissionDate } = body;
+    const { orderId, customerEmail, studentName, rollNumber, guideName, submissionDate } = body;
 
     const supabase = createAdminClient();
 
@@ -60,7 +60,7 @@ export async function POST(req: NextRequest) {
     await generatePersonalizedDocx(
       order.projects.report_template_key,
       {
-        studentName:    sanitize(order.customer_name, 100),
+        studentName:    sanitize(studentName || order.customer_name, 100),
         rollNumber:     sanitize(rollNumber, 30),
         guideName:      sanitize(guideName, 100),
         collegeName:    sanitize(order.college_name, 150),

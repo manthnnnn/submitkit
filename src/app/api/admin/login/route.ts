@@ -11,9 +11,20 @@ export async function POST(req: NextRequest) {
 
     const { password } = body;
 
-    if (password !== process.env.ADMIN_SECRET_KEY) {
-      // Constant-time comparison to prevent timing attacks
-      // (simple string compare is fine here since we already validate against env var)
+    // Constant-time comparison to prevent timing attacks
+    const secret = process.env.ADMIN_SECRET_KEY || '';
+    const passwordBuf = Buffer.from(password.padEnd(secret.length, '\0'));
+    const secretBuf   = Buffer.from(secret.padEnd(password.length, '\0'));
+    let match = false;
+    try {
+      match = passwordBuf.length === secretBuf.length &&
+        require('crypto').timingSafeEqual(
+          Buffer.from(password),
+          Buffer.from(secret)
+        );
+    } catch { match = false; }
+
+    if (!match) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
 

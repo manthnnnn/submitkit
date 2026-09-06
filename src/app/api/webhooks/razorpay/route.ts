@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { verifyWebhookSignature } from '@/lib/razorpay';
+import { sendOrderConfirmationEmail } from '@/lib/email';
 
 export async function POST(req: NextRequest) {
   let rawBody = '';
@@ -49,8 +50,33 @@ export async function POST(req: NextRequest) {
 
       if (error) {
         console.error('Webhook DB update failed (payment.captured):', error.message);
-        // Return 500 so Razorpay retries the webhook
         return NextResponse.json({ error: 'DB write failed' }, { status: 500 });
+      }
+
+      // Safety net: fetch order details and send confirmation email
+      // (the client-side verify route also does this — this catches network-interrupted checkouts)
+      try {
+        const { data: order } = await supabase
+          .from('orders')
+          .select('*, projects(title, tier)')
+          .eq('order_id', razorpayOrderId)
+          .single();
+
+        if (order) {
+          await sendOrderConfirmationEmail({
+            customerName:       order.customer_name,
+            customerEmail:      order.customer_email,
+            projectTitle:       order.projects?.title ?? 'Your Project Bundle',
+            orderId:            order.id,
+            amountPaid:         order.amount_paid,
+            tier:               order.projects?.tier ?? 'MINI',
+            hasPersonalization: !!order.has_personalization,
+            hasPlagiarismCert:  !!order.has_plagiarism_cert,
+            hasVivaCall:        !!order.has_viva_call,
+          });
+        }
+      } catch (emailErr) {
+        console.error('Webhook: email send failed (non-blocking):', emailErr);
       }
 
     } else if (event === 'payment.failed' && payment) {

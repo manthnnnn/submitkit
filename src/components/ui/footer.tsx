@@ -1,4 +1,4 @@
-﻿import Link from 'next/link';
+﻿﻿import Link from 'next/link';
 import { Layers } from 'lucide-react';
 
 // Inline SVG icons for Instagram & WhatsApp (lucide-react version doesn't include them)
@@ -37,7 +37,7 @@ export function Footer() {
               </span>
             </Link>
             <p className="text-zinc-500 text-sm leading-relaxed max-w-xs mb-5">
-              India's premier digital marketplace for academic project bundles. Get working code, a 60-page Black Book, and Viva PPTs â€” instantly.
+              India's premier digital marketplace for academic project bundles. Get working code, a 60-page Black Book, and Viva PPTs -- instantly.
             </p>
             <div className="flex gap-3">
               <a
