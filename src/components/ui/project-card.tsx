@@ -2,18 +2,16 @@ import Link from "next/link";
 import { Project } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 import { TechBadge } from "./tech-badge";
-import { ArrowRight, Flame, Sparkles, CheckCircle2, ExternalLink, Clock, Zap } from "lucide-react";
-import { isProjectAvailable, getProjectMeta, getProjectLiveUrl } from "@/lib/available-projects";
+import { ArrowRight, Flame, CheckCircle2, Clock, Zap } from "lucide-react";
+import { isProjectAvailable, getProjectMeta } from "@/lib/available-projects";
 
-// Slugs that are trending
 const TRENDING_SLUGS = ['spam-classifier-nlp', 'face-attendance-system', 'crypto-portfolio-tracker', 'spaceshield-ai', 'crop-disease-detector'];
 
 export function ProjectCard({ project }: { project: Project }) {
-  const isMajor = project.tier === 'MAJOR';
-  const isTrending = TRENDING_SLUGS.includes(project.slug);
+  const isMajor     = project.tier === 'MAJOR';
+  const isTrending  = TRENDING_SLUGS.includes(project.slug);
   const isAvailable = isProjectAvailable(project.slug);
-  const meta = getProjectMeta(project.slug);
-  const liveUrl = getProjectLiveUrl(project.slug);
+  const meta        = getProjectMeta(project.slug);
 
   return (
     <div className={`glass-card flex flex-col hover-glow group transition-all duration-500 hover:-translate-y-1 relative overflow-hidden ${
@@ -111,35 +109,19 @@ export function ProjectCard({ project }: { project: Project }) {
               <span className="font-bold text-white text-sm">{formatCurrency(project.price_inr)}</span>
               <span className="text-[10px] text-zinc-500 ml-1">one-time</span>
             </div>
-
-            <div className="flex items-center gap-2">
-              {liveUrl && (
-                <a
-                  href={liveUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-1 text-[11px] font-semibold text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 px-2.5 py-1.5 rounded-lg transition-all"
-                  title="Test-drive the actual running software in a new tab"
-                >
-                  <span>Live Demo</span>
-                  <ExternalLink className="h-2.5 w-2.5" />
-                </a>
-              )}
-
-              <Link
-                href={`/projects/${project.slug}`}
-                className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all group/btn ${
-                  isAvailable
-                    ? 'text-zinc-950 bg-white hover:bg-zinc-200 shadow-md shadow-white/10'
-                    : 'text-zinc-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10'
-                }`}
-              >
-                <span>{isAvailable ? 'Get Kit' : 'Reserve'}</span>
-                <ArrowRight className={`h-3 w-3 transition-all group-hover/btn:translate-x-0.5 ${
-                  isAvailable ? 'text-zinc-950' : 'text-zinc-500 group-hover/btn:text-white'
-                }`} />
-              </Link>
-            </div>
+            <Link
+              href={`/projects/${project.slug}`}
+              className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all group/btn ${
+                isAvailable
+                  ? 'text-zinc-950 bg-white hover:bg-zinc-200 shadow-md shadow-white/10'
+                  : 'text-zinc-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10'
+              }`}
+            >
+              <span>{isAvailable ? 'Get Kit' : 'Reserve'}</span>
+              <ArrowRight className={`h-3 w-3 transition-all group-hover/btn:translate-x-0.5 ${
+                isAvailable ? 'text-zinc-950' : 'text-zinc-500 group-hover/btn:text-white'
+              }`} />
+            </Link>
           </div>
         </div>
       </div>

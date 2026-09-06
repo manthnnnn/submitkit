@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Zap, Clock, CheckCircle2, ArrowRight, ExternalLink,
+  Zap, Clock, CheckCircle2, ArrowRight,
   Sparkles, Check, Bell, Star, Tag, Users
 } from 'lucide-react';
 import { READY_PROJECTS } from '@/lib/available-projects';
@@ -287,28 +287,13 @@ export function FleetSection() {
                           <span className="text-lg font-bold text-white">₹{price}</span>
                           <span className="text-[10px] text-zinc-500 ml-1">one-time</span>
                         </div>
-
-                        <div className="flex items-center gap-2">
-                          {/* Live Demo — stays in same tab (internal route) */}
-                          {project.liveUrl && (
-                            <Link
-                              href={project.liveUrl}
-                              className="flex items-center gap-1.5 text-xs font-bold text-emerald-400 hover:text-emerald-300 bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 px-3 py-2 rounded-xl transition-all"
-                              title="Open the interactive web demo"
-                            >
-                              <span>Demo</span>
-                              <ExternalLink className="w-3 h-3" />
-                            </Link>
-                          )}
-
-                          <Link
-                            href={`/projects/${project.slug}`}
-                            className="flex items-center gap-1 text-xs font-bold text-zinc-950 bg-white hover:bg-zinc-100 px-4 py-2 rounded-xl transition-all shadow-md shadow-white/10 group-hover:shadow-[0_0_15px_rgba(255,255,255,0.2)]"
-                          >
-                            Get Kit
-                            <ArrowRight className="w-3.5 h-3.5" />
-                          </Link>
-                        </div>
+                        <Link
+                          href={`/projects/${project.slug}`}
+                          className="flex items-center gap-1 text-xs font-bold text-zinc-950 bg-white hover:bg-zinc-100 px-4 py-2 rounded-xl transition-all shadow-md shadow-white/10 group-hover:shadow-[0_0_15px_rgba(255,255,255,0.2)]"
+                        >
+                          Get Kit
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </Link>
                       </div>
                     </div>
                   );
