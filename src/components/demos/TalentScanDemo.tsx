@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -49,21 +49,15 @@ export default function TalentScanLandingPage() {
       {/* 1. HERO SECTION */}
       <section style={{ textAlign: 'center', padding: '48px 16px 64px', position: 'relative' }}>
         
-        {/* Glow Badge */}
         <div style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '8px',
-          padding: '6px 16px',
-          borderRadius: '999px',
-          background: 'rgba(99, 102, 241, 0.12)',
-          border: '1px solid rgba(99, 102, 241, 0.3)',
-          marginBottom: '24px',
-          boxShadow: '0 0 20px rgba(99, 102, 241, 0.2)'
+          display: 'inline-flex', alignItems: 'center', gap: '8px',
+          padding: '6px 16px', borderRadius: '999px',
+          background: 'rgba(99,102,241,0.12)', border: '1px solid rgba(99,102,241,0.3)',
+          marginBottom: '24px', boxShadow: '0 0 20px rgba(99,102,241,0.2)'
         }}>
-          <Sparkles size={15} color="var(--primary-light)" />
-          <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--primary-light)', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
-            Autonomous Talent Intelligence v4.2 • Next-Gen ATS
+          <Sparkles size={15} color="#a5b4fc" />
+          <span style={{ fontSize: '0.82rem', fontWeight: 700, color: '#a5b4fc', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+            Autonomous Talent Intelligence v4.2 â€¢ Next-Gen ATS
           </span>
         </div>
 
@@ -85,7 +79,7 @@ export default function TalentScanLandingPage() {
         {/* Hero Subtitle */}
         <p style={{
           fontSize: 'clamp(1rem, 2vw, 1.25rem)',
-          color: 'var(--text-secondary)',
+          color: '#94a3b8',
           maxWidth: '780px',
           margin: '0 auto 36px',
           lineHeight: 1.6,
@@ -98,7 +92,6 @@ export default function TalentScanLandingPage() {
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
           <a
             href="#simulator"
-            className="btn-primary"
             style={{
               padding: '14px 32px',
               fontSize: '1rem',
@@ -108,6 +101,8 @@ export default function TalentScanLandingPage() {
               display: 'inline-flex',
               alignItems: 'center',
               gap: '10px',
+              background: 'linear-gradient(135deg,#6366f1,#4f46e5)',
+              color: '#ffffff',
               textDecoration: 'none'
             }}
           >
@@ -116,21 +111,22 @@ export default function TalentScanLandingPage() {
           </a>
 
           <Link
-            href="/matcher"
-            className="btn-secondary"
+            href="#simulator"
             style={{
               padding: '14px 28px',
               fontSize: '1rem',
               fontWeight: 600,
               borderRadius: '12px',
-              background: 'rgba(255, 255, 255, 0.05)',
-              border: '1px solid var(--border-subtle)',
+              background: 'rgba(255,255,255,0.05)',
+              border: '1px solid rgba(255,255,255,0.12)',
+              color: '#f8fafc',
               display: 'inline-flex',
               alignItems: 'center',
-              gap: '8px'
+              gap: '8px',
+              textDecoration: 'none'
             }}
           >
-            <Target size={18} color="var(--primary-light)" />
+            <Target size={18} color="#a5b4fc" />
             <span>Score ATS Matcher</span>
           </Link>
         </div>
@@ -145,39 +141,39 @@ export default function TalentScanLandingPage() {
           padding: '24px',
           borderRadius: '18px',
           background: 'rgba(18, 22, 40, 0.65)',
-          border: '1px solid var(--border-subtle)',
+          border: '1px solid rgba(255,255,255,0.1)',
           backdropFilter: 'blur(16px)',
           boxShadow: '0 20px 40px -15px rgba(0, 0, 0, 0.6)'
         }}>
           <div>
-            <div style={{ fontSize: '2.1rem', fontWeight: 900, color: '#ffffff', fontFamily: 'var(--font-mono)' }}>
+            <div style={{ fontSize: '2.1rem', fontWeight: 900, color: '#ffffff', fontFamily: 'monospace' }}>
               99.4%
             </div>
-            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '4px' }}>
+            <div style={{ fontSize: '0.78rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '4px' }}>
               Entity Extraction Accuracy
             </div>
           </div>
           <div>
-            <div style={{ fontSize: '2.1rem', fontWeight: 900, color: 'var(--primary-light)', fontFamily: 'var(--font-mono)' }}>
+            <div style={{ fontSize: '2.1rem', fontWeight: 900, color: '#a5b4fc', fontFamily: 'monospace' }}>
               &lt; 380ms
             </div>
-            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '4px' }}>
+            <div style={{ fontSize: '0.78rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '4px' }}>
               Average Inference Speed
             </div>
           </div>
           <div>
-            <div style={{ fontSize: '2.1rem', fontWeight: 900, color: 'var(--accent-emerald)', fontFamily: 'var(--font-mono)' }}>
+            <div style={{ fontSize: '2.1rem', fontWeight: 900, color: '#34d399', fontFamily: 'monospace' }}>
               150+
             </div>
-            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '4px' }}>
+            <div style={{ fontSize: '0.78rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '4px' }}>
               Standard Tech Taxonomies
             </div>
           </div>
           <div>
-            <div style={{ fontSize: '2.1rem', fontWeight: 900, color: 'var(--accent-cyan)', fontFamily: 'var(--font-mono)' }}>
+            <div style={{ fontSize: '2.1rem', fontWeight: 900, color: '#38bdf8', fontFamily: 'monospace' }}>
               100%
             </div>
-            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '4px' }}>
+            <div style={{ fontSize: '0.78rem', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '4px' }}>
               Bias-Free Blind Screening
             </div>
           </div>
@@ -188,13 +184,13 @@ export default function TalentScanLandingPage() {
       {/* 2. INTERACTIVE LIVE EXTRACTION WORKBENCH PREVIEW */}
       <section id="simulator" style={{ margin: '30px 0 70px' }}>
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--accent-cyan)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#38bdf8', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
             Live Inference Simulator
           </span>
           <h2 style={{ fontSize: '2rem', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.02em', marginTop: '6px' }}>
             Watch the Heuristic Engine Deconstruct Resumes
           </h2>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem', marginTop: '6px' }}>
+          <p style={{ color: '#64748b', fontSize: '0.92rem', marginTop: '6px' }}>
             Choose a benchmark profile below to see instant taxonomy tagging and vector representation:
           </p>
 
@@ -205,9 +201,9 @@ export default function TalentScanLandingPage() {
               style={{
                 padding: '8px 18px',
                 borderRadius: '8px',
-                border: activePreset === 'ai' ? '1px solid var(--primary-light)' : '1px solid var(--border-subtle)',
+                border: activePreset === 'ai' ? '1px solid #a5b4fc' : '1px solid rgba(255,255,255,0.1)',
                 background: activePreset === 'ai' ? 'rgba(99, 102, 241, 0.25)' : 'rgba(255, 255, 255, 0.03)',
-                color: activePreset === 'ai' ? '#ffffff' : 'var(--text-secondary)',
+                color: activePreset === 'ai' ? '#ffffff' : '#94a3b8',
                 fontWeight: 600,
                 fontSize: '0.85rem',
                 cursor: 'pointer',
@@ -216,7 +212,7 @@ export default function TalentScanLandingPage() {
                 gap: '8px'
               }}
             >
-              <Cpu size={15} color="var(--primary-light)" />
+              <Cpu size={15} color="#a5b4fc" />
               <span>AI / ML Lead Profile</span>
             </button>
 
@@ -225,9 +221,9 @@ export default function TalentScanLandingPage() {
               style={{
                 padding: '8px 18px',
                 borderRadius: '8px',
-                border: activePreset === 'fullstack' ? '1px solid var(--primary-light)' : '1px solid var(--border-subtle)',
+                border: activePreset === 'fullstack' ? '1px solid #a5b4fc' : '1px solid rgba(255,255,255,0.1)',
                 background: activePreset === 'fullstack' ? 'rgba(99, 102, 241, 0.25)' : 'rgba(255, 255, 255, 0.03)',
-                color: activePreset === 'fullstack' ? '#ffffff' : 'var(--text-secondary)',
+                color: activePreset === 'fullstack' ? '#ffffff' : '#94a3b8',
                 fontWeight: 600,
                 fontSize: '0.85rem',
                 cursor: 'pointer',
@@ -236,7 +232,7 @@ export default function TalentScanLandingPage() {
                 gap: '8px'
               }}
             >
-              <Code2 size={15} color="var(--accent-cyan)" />
+              <Code2 size={15} color="#38bdf8" />
               <span>Full-Stack Architect</span>
             </button>
 
@@ -245,9 +241,9 @@ export default function TalentScanLandingPage() {
               style={{
                 padding: '8px 18px',
                 borderRadius: '8px',
-                border: activePreset === 'devops' ? '1px solid var(--primary-light)' : '1px solid var(--border-subtle)',
+                border: activePreset === 'devops' ? '1px solid #a5b4fc' : '1px solid rgba(255,255,255,0.1)',
                 background: activePreset === 'devops' ? 'rgba(99, 102, 241, 0.25)' : 'rgba(255, 255, 255, 0.03)',
-                color: activePreset === 'devops' ? '#ffffff' : 'var(--text-secondary)',
+                color: activePreset === 'devops' ? '#ffffff' : '#94a3b8',
                 fontWeight: 600,
                 fontSize: '0.85rem',
                 cursor: 'pointer',
@@ -256,7 +252,7 @@ export default function TalentScanLandingPage() {
                 gap: '8px'
               }}
             >
-              <Cloud size={15} color="var(--accent-emerald)" />
+              <Cloud size={15} color="#34d399" />
               <span>Cloud & DevOps Engineer</span>
             </button>
           </div>
@@ -266,7 +262,7 @@ export default function TalentScanLandingPage() {
         <div style={{
           borderRadius: '20px',
           background: 'rgba(18, 22, 40, 0.85)',
-          border: '1px solid var(--border-subtle)',
+          border: '1px solid rgba(255,255,255,0.1)',
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.7)',
           overflow: 'hidden'
         }}>
@@ -274,7 +270,7 @@ export default function TalentScanLandingPage() {
           <div style={{
             padding: '14px 20px',
             background: 'rgba(9, 10, 16, 0.9)',
-            borderBottom: '1px solid var(--border-subtle)',
+            borderBottom: '1px solid rgba(255,255,255,0.1)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between'
@@ -283,7 +279,7 @@ export default function TalentScanLandingPage() {
               <div style={{ width: '11px', height: '11px', borderRadius: '50%', background: '#f43f5e' }} />
               <div style={{ width: '11px', height: '11px', borderRadius: '50%', background: '#f59e0b' }} />
               <div style={{ width: '11px', height: '11px', borderRadius: '50%', background: '#10b981' }} />
-              <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginLeft: '8px', fontFamily: 'var(--font-mono)' }}>
+              <span style={{ fontSize: '0.78rem', color: '#64748b', marginLeft: '8px', fontFamily: 'monospace' }}>
                 talentscan_engine_v4.2 // live-stream-evaluator
               </span>
             </div>
@@ -294,11 +290,11 @@ export default function TalentScanLandingPage() {
                 borderRadius: '6px',
                 fontSize: '0.72rem',
                 background: 'rgba(16, 185, 129, 0.15)',
-                color: 'var(--accent-emerald)',
+                color: '#34d399',
                 border: '1px solid rgba(16, 185, 129, 0.3)',
                 fontWeight: 700
               }}>
-                ● NLP MODEL ONLINE
+                â— NLP MODEL ONLINE
               </span>
             </div>
           </div>
@@ -309,14 +305,14 @@ export default function TalentScanLandingPage() {
             {/* Left Pane: Raw Ingest Stream */}
             <div style={{
               padding: '24px',
-              borderRight: '1px solid var(--border-subtle)',
+              borderRight: '1px solid rgba(255,255,255,0.1)',
               background: 'rgba(9, 10, 16, 0.4)'
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748b', textTransform: 'uppercase' }}>
                   Raw Document Buffer
                 </span>
-                <span style={{ fontSize: '0.72rem', color: 'var(--accent-amber)', fontFamily: 'var(--font-mono)' }}>
+                <span style={{ fontSize: '0.72rem', color: '#f59e0b', fontFamily: 'monospace' }}>
                   Unstructured Text
                 </span>
               </div>
@@ -325,21 +321,21 @@ export default function TalentScanLandingPage() {
                 padding: '16px',
                 borderRadius: '10px',
                 background: 'rgba(0, 0, 0, 0.5)',
-                border: '1px solid var(--border-subtle)',
-                fontFamily: 'var(--font-mono)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                fontFamily: 'monospace',
                 fontSize: '0.82rem',
-                color: 'var(--text-secondary)',
+                color: '#94a3b8',
                 lineHeight: 1.7,
                 minHeight: '220px'
               }}>
-                <div style={{ color: 'var(--primary-light)', fontWeight: 600, marginBottom: '6px' }}>
+                <div style={{ color: '#a5b4fc', fontWeight: 600, marginBottom: '6px' }}>
                   # RAW PARSE INPUT STREAM:
                 </div>
                 <p>{current.rawSnippet}</p>
-                <div style={{ marginTop: '16px', color: 'var(--text-muted)', fontSize: '0.75rem' }}>
-                  → Longevity vectors extracted: {current.experience}<br />
-                  → Entity confidence interval: 0.984<br />
-                  → Parsing token count: 48 tokens
+                <div style={{ marginTop: '16px', color: '#64748b', fontSize: '0.75rem' }}>
+                  â†’ Longevity vectors extracted: {current.experience}<br />
+                  â†’ Entity confidence interval: 0.984<br />
+                  â†’ Parsing token count: 48 tokens
                 </div>
               </div>
             </div>
@@ -347,14 +343,14 @@ export default function TalentScanLandingPage() {
             {/* Right Pane: Structured Output & Vector Match */}
             <div style={{ padding: '24px', background: 'rgba(18, 22, 40, 0.4)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--primary-light)', textTransform: 'uppercase' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#a5b4fc', textTransform: 'uppercase' }}>
                   Structured Candidate Entity
                 </span>
                 <span style={{
                   padding: '3px 9px',
                   borderRadius: '999px',
                   background: 'rgba(99, 102, 241, 0.2)',
-                  color: 'var(--primary-light)',
+                  color: '#a5b4fc',
                   fontSize: '0.75rem',
                   fontWeight: 800
                 }}>
@@ -374,15 +370,15 @@ export default function TalentScanLandingPage() {
                     <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#ffffff' }}>
                       {current.name}
                     </h4>
-                    <p style={{ fontSize: '0.82rem', color: 'var(--primary-light)', fontWeight: 600 }}>
-                      {current.title} • {current.experience} Longevity
+                    <p style={{ fontSize: '0.82rem', color: '#a5b4fc', fontWeight: 600 }}>
+                      {current.title} â€¢ {current.experience} Longevity
                     </p>
                   </div>
                   <div style={{
                     padding: '4px 10px',
                     borderRadius: '6px',
                     background: 'rgba(16, 185, 129, 0.15)',
-                    color: 'var(--accent-emerald)',
+                    color: '#34d399',
                     fontSize: '0.72rem',
                     fontWeight: 700
                   }}>
@@ -391,7 +387,7 @@ export default function TalentScanLandingPage() {
                 </div>
 
                 <div style={{ marginTop: '16px' }}>
-                  <div style={{ fontSize: '0.74rem', color: 'var(--text-muted)', fontWeight: 700, textTransform: 'uppercase', marginBottom: '8px' }}>
+                  <div style={{ fontSize: '0.74rem', color: '#64748b', fontWeight: 700, textTransform: 'uppercase', marginBottom: '8px' }}>
                     Categorized Skills Taxonomy:
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
@@ -416,8 +412,8 @@ export default function TalentScanLandingPage() {
 
                 <div style={{ marginTop: '16px', display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
                   {current.highlights.map((h, i) => (
-                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
-                      <CheckCircle2 size={13} color="var(--accent-emerald)" />
+                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '0.75rem', color: '#94a3b8' }}>
+                      <CheckCircle2 size={13} color="#34d399" />
                       <span>{h}</span>
                     </div>
                   ))}
@@ -431,19 +427,18 @@ export default function TalentScanLandingPage() {
           <div style={{
             padding: '16px 24px',
             background: 'rgba(9, 10, 16, 0.8)',
-            borderTop: '1px solid var(--border-subtle)',
+            borderTop: '1px solid rgba(255,255,255,0.1)',
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
             flexWrap: 'wrap',
             gap: '12px'
           }}>
-            <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
+            <div style={{ fontSize: '0.82rem', color: '#64748b' }}>
               Want to parse your own candidate files or custom benchmark texts?
             </div>
             <a
               href="#simulator"
-              className="btn-primary"
               style={{
                 padding: '8px 20px',
                 fontSize: '0.85rem',
@@ -451,6 +446,8 @@ export default function TalentScanLandingPage() {
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '8px',
+                background: 'linear-gradient(135deg,#6366f1,#4f46e5)',
+                color: '#ffffff',
                 textDecoration: 'none'
               }}
             >
@@ -465,13 +462,13 @@ export default function TalentScanLandingPage() {
       {/* 3. BENTO GRID CAPABILITIES */}
       <section style={{ margin: '60px 0 80px' }}>
         <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-          <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--primary-light)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+          <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#a5b4fc', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
             Enterprise Architecture
           </span>
           <h2 style={{ fontSize: '2.2rem', fontWeight: 800, color: '#ffffff', letterSpacing: '-0.02em', marginTop: '6px' }}>
             Engineered for Modern Talent Operations
           </h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', maxWidth: '650px', margin: '8px auto 0' }}>
+          <p style={{ color: '#94a3b8', fontSize: '0.95rem', maxWidth: '650px', margin: '8px auto 0' }}>
             Replace manual resume screening with structured entity graphs, semantic vector matching, and automated interview question synthesis.
           </p>
         </div>
@@ -479,7 +476,7 @@ export default function TalentScanLandingPage() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
           
           {/* Card 1: Vector ATS Scoring */}
-          <div className="glass-panel" style={{ padding: '28px' }}>
+          <div style={{ background: "rgba(18,22,40,0.7)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "16px", padding: "28px" }}>
             <div style={{
               width: '44px',
               height: '44px',
@@ -491,22 +488,22 @@ export default function TalentScanLandingPage() {
               justifyContent: 'center',
               marginBottom: '18px'
             }}>
-              <Target size={22} color="var(--primary-light)" />
+              <Target size={22} color="#a5b4fc" />
             </div>
             <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#ffffff', marginBottom: '8px' }}>
               Vector Semantic ATS Matching
             </h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.6, marginBottom: '16px' }}>
+            <p style={{ color: '#94a3b8', fontSize: '0.85rem', lineHeight: 1.6, marginBottom: '16px' }}>
               Compare candidate credentials directly against detailed job descriptions using high-dimensional cosine similarity. Detect missing requirements and score candidate suitability instantly.
             </p>
-            <Link href="/matcher" style={{ fontSize: '0.82rem', color: 'var(--primary-light)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '5px', textDecoration: 'none' }}>
+            <Link href="#simulator" style={{ fontSize: '0.82rem', color: '#a5b4fc', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '5px', textDecoration: 'none' }}>
               <span>Try Job Matcher</span>
               <ChevronRight size={14} />
             </Link>
           </div>
 
           {/* Card 2: Deep Entity & Taxonomy Detection */}
-          <div className="glass-panel" style={{ padding: '28px' }}>
+          <div style={{ background: "rgba(18,22,40,0.7)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "16px", padding: "28px" }}>
             <div style={{
               width: '44px',
               height: '44px',
@@ -518,22 +515,22 @@ export default function TalentScanLandingPage() {
               justifyContent: 'center',
               marginBottom: '18px'
             }}>
-              <Layers size={22} color="var(--accent-cyan)" />
+              <Layers size={22} color="#38bdf8" />
             </div>
             <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#ffffff', marginBottom: '8px' }}>
               Multi-Tier Skill Taxonomies
             </h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.6, marginBottom: '16px' }}>
+            <p style={{ color: '#94a3b8', fontSize: '0.85rem', lineHeight: 1.6, marginBottom: '16px' }}>
               Intelligently bifurcate skills into Languages, Frameworks, Cloud & DevOps, Databases, and Tools. Eliminates keyword stuffing by validating context across career timeline highlights.
             </p>
-            <a href="#simulator" style={{ fontSize: '0.82rem', color: 'var(--accent-cyan)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '5px', textDecoration: 'none' }}>
+            <a href="#simulator" style={{ fontSize: '0.82rem', color: '#38bdf8', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '5px', textDecoration: 'none' }}>
               <span>Explore Taxonomies</span>
               <ChevronRight size={14} />
             </a>
           </div>
 
           {/* Card 3: Viva & Technical Interview Synthesis */}
-          <div className="glass-panel" style={{ padding: '28px' }}>
+          <div style={{ background: "rgba(18,22,40,0.7)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "16px", padding: "28px" }}>
             <div style={{
               width: '44px',
               height: '44px',
@@ -545,22 +542,22 @@ export default function TalentScanLandingPage() {
               justifyContent: 'center',
               marginBottom: '18px'
             }}>
-              <Sparkles size={22} color="var(--accent-emerald)" />
+              <Sparkles size={22} color="#34d399" />
             </div>
             <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#ffffff', marginBottom: '8px' }}>
               Automated Viva & Question Synthesis
             </h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.6, marginBottom: '16px' }}>
+            <p style={{ color: '#94a3b8', fontSize: '0.85rem', lineHeight: 1.6, marginBottom: '16px' }}>
               Automatically generate customized technical interview questions, system design probes, and behavioral scenarios tailored specifically to the candidate&apos;s claimed stack.
             </p>
-            <Link href="/interview" style={{ fontSize: '0.82rem', color: 'var(--accent-emerald)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '5px', textDecoration: 'none' }}>
+            <Link href="#simulator" style={{ fontSize: '0.82rem', color: '#34d399', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '5px', textDecoration: 'none' }}>
               <span>Generate Viva Questions</span>
               <ChevronRight size={14} />
             </Link>
           </div>
 
           {/* Card 4: Bias-Free Compliance */}
-          <div className="glass-panel" style={{ padding: '28px' }}>
+          <div style={{ background: "rgba(18,22,40,0.7)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "16px", padding: "28px" }}>
             <div style={{
               width: '44px',
               height: '44px',
@@ -577,16 +574,16 @@ export default function TalentScanLandingPage() {
             <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#ffffff', marginBottom: '8px' }}>
               Bias-Free Anonymized Screening
             </h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.6, marginBottom: '16px' }}>
+            <p style={{ color: '#94a3b8', fontSize: '0.85rem', lineHeight: 1.6, marginBottom: '16px' }}>
               Ensure EEOC and GDPR compliance with automated PII masking. Evaluate applicants purely based on verified competencies, engineering impact, and quantifiable accomplishments.
             </p>
-            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+            <div style={{ fontSize: '0.78rem', color: '#64748b' }}>
               GDPR & SOC2 Ready
             </div>
           </div>
 
           {/* Card 5: High-Speed Document Pipeline */}
-          <div className="glass-panel" style={{ padding: '28px' }}>
+          <div style={{ background: "rgba(18,22,40,0.7)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "16px", padding: "28px" }}>
             <div style={{
               width: '44px',
               height: '44px',
@@ -598,21 +595,21 @@ export default function TalentScanLandingPage() {
               justifyContent: 'center',
               marginBottom: '18px'
             }}>
-              <Zap size={22} color="var(--accent-amber)" />
+              <Zap size={22} color="#f59e0b" />
             </div>
             <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#ffffff', marginBottom: '8px' }}>
               Sub-Second Ingestion Speed
             </h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.6, marginBottom: '16px' }}>
+            <p style={{ color: '#94a3b8', fontSize: '0.85rem', lineHeight: 1.6, marginBottom: '16px' }}>
               Built for massive high-volume hiring sprints. Ingest thousands of resumes in parallel with our low-latency parsing microservice running on edge infrastructure.
             </p>
-            <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+            <div style={{ fontSize: '0.78rem', color: '#64748b' }}>
               Parallel Batch Ingestion
             </div>
           </div>
 
           {/* Card 6: Candidate Pool Directory */}
-          <div className="glass-panel" style={{ padding: '28px' }}>
+          <div style={{ background: "rgba(18,22,40,0.7)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "16px", padding: "28px" }}>
             <div style={{
               width: '44px',
               height: '44px',
@@ -629,10 +626,10 @@ export default function TalentScanLandingPage() {
             <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#ffffff', marginBottom: '8px' }}>
               Benchmarked Candidate Directory
             </h3>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem', lineHeight: 1.6, marginBottom: '16px' }}>
+            <p style={{ color: '#94a3b8', fontSize: '0.85rem', lineHeight: 1.6, marginBottom: '16px' }}>
               Search across pre-indexed candidate pools with filterable skill parameters, longevity thresholds, and role-based taxonomy clustering.
             </p>
-            <Link href="/candidates" style={{ fontSize: '0.82rem', color: '#a78bfa', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '5px', textDecoration: 'none' }}>
+            <Link href="#simulator" style={{ fontSize: '0.82rem', color: '#a78bfa', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '5px', textDecoration: 'none' }}>
               <span>View Candidate Pool</span>
               <ChevronRight size={14} />
             </Link>
@@ -662,7 +659,7 @@ export default function TalentScanLandingPage() {
           Ready to Screen Top Engineering Talent?
         </h2>
         <p style={{
-          color: 'var(--text-secondary)',
+          color: '#94a3b8',
           fontSize: '1rem',
           maxWidth: '600px',
           margin: '0 auto 28px',
@@ -673,7 +670,6 @@ export default function TalentScanLandingPage() {
 
         <a
           href="#simulator"
-          className="btn-primary"
           style={{
             padding: '14px 36px',
             fontSize: '1.05rem',
@@ -683,6 +679,8 @@ export default function TalentScanLandingPage() {
             display: 'inline-flex',
             alignItems: 'center',
             gap: '10px',
+            background: 'linear-gradient(135deg,#6366f1,#4f46e5)',
+            color: '#ffffff',
             textDecoration: 'none'
           }}
         >
@@ -694,3 +692,10 @@ export default function TalentScanLandingPage() {
     </div>
   );
 }
+
+
+
+
+
+
+

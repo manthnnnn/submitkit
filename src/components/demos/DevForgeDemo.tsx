@@ -1,11 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { 
-  Play, Terminal, Cpu, Zap, Code2, Layers, CheckCircle2, 
-  ArrowRight, Sparkles, BookOpen, ShieldCheck, Database, 
-  Users, Check, ExternalLink, HardDrive, Clock
+  Play, Terminal, Zap, Code2,
+  ArrowRight, Sparkles, ShieldCheck, Database
 } from 'lucide-react';
 
 export default function DevForgeLandingPage() {
@@ -101,86 +99,7 @@ HAVING AVG(e.salary) > 85000;`
         zIndex: 0
       }} />
 
-      {/* Top Header Navigation */}
-      <nav style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 50,
-        background: 'rgba(7, 9, 14, 0.9)',
-        backdropFilter: 'blur(16px)',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-        padding: '16px 32px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div style={{
-            width: '40px',
-            height: '40px',
-            borderRadius: '12px',
-            background: 'linear-gradient(135deg, #8b5cf6, #6366f1)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 0 20px rgba(139, 92, 246, 0.4)'
-          }}>
-            <Code2 size={22} color="#ffffff" />
-          </div>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '1.25rem', fontWeight: 900, color: '#ffffff', letterSpacing: '-0.02em' }}>
-                DevForge<span style={{ color: '#a78bfa' }}>.IDE</span>
-              </span>
-              <span style={{
-                fontSize: '0.65rem',
-                fontWeight: 800,
-                textTransform: 'uppercase',
-                padding: '2px 8px',
-                borderRadius: '999px',
-                background: 'rgba(139, 92, 246, 0.15)',
-                color: '#c4b5fd',
-                border: '1px solid rgba(139, 92, 246, 0.35)'
-              }}>
-                CLOUD SANDBOX v4.5
-              </span>
-            </div>
-            <p style={{ fontSize: '0.72rem', color: '#64748b', margin: 0 }}>Next-Gen Code Runner & Algorithm Visualizer</p>
-          </div>
-        </div>
-
-        <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
-          <a href="#playground" style={{ fontSize: '0.85rem', color: '#94a3b8', textDecoration: 'none', fontWeight: 600 }}>
-            Instant Playground
-          </a>
-          <a href="#features" style={{ fontSize: '0.85rem', color: '#94a3b8', textDecoration: 'none', fontWeight: 600 }}>
-            Code Doctor
-          </a>
-          <a href="#guide" style={{ fontSize: '0.85rem', color: '#94a3b8', textDecoration: 'none', fontWeight: 600 }}>
-            Big-O Guide
-          </a>
-
-          <a
-            href="#playground"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              padding: '10px 20px',
-              borderRadius: '10px',
-              background: 'linear-gradient(135deg, #8b5cf6, #6366f1)',
-              color: '#ffffff',
-              fontWeight: 700,
-              fontSize: '0.85rem',
-              textDecoration: 'none',
-              boxShadow: '0 0 20px rgba(139, 92, 246, 0.35)'
-            }}
-          >
-            <span>Launch Cloud IDE</span>
-            <ArrowRight size={15} />
-          </a>
-        </div>
-      </nav>
+      {/* Top Header Navigation — REMOVED (DemoBanner already provides sticky top nav) */}
 
       {/* Main Hero Section */}
       <main style={{ position: 'relative', zIndex: 10, maxWidth: '1240px', margin: '0 auto', padding: '60px 24px 100px' }}>
@@ -279,7 +198,8 @@ HAVING AVG(e.salary) > 85000;`
           overflow: 'hidden',
           backdropFilter: 'blur(20px)',
           marginBottom: '64px',
-          boxShadow: '0 20px 50px rgba(0, 0, 0, 0.6)'
+          boxShadow: '0 20px 50px rgba(0, 0, 0, 0.6)',
+          scrollMarginTop: '80px'
         }}>
           {/* Top IDE Toolbar */}
           <div style={{
@@ -394,8 +314,8 @@ HAVING AVG(e.salary) > 85000;`
               )}
 
               <div style={{ marginTop: 'auto', paddingTop: '16px', borderTop: '1px solid rgba(255, 255, 255, 0.06)', fontSize: '0.75rem', color: '#64748b' }}>
-                Memory Isolation: 64MB cgroup • Sandbox Bounds Checked •{' '}
-                <Link href="#" style={{ color: '#a78bfa', textDecoration: 'none' }}>Open in Full IDE →</Link>
+                Memory Isolation: 64MB cgroup &bull; Sandbox Bounds Checked &bull;{' '}
+                <a href="#playground" style={{ color: '#a78bfa', textDecoration: 'none' }}>Run Another Snippet ↑</a>
               </div>
             </div>
           </div>
@@ -510,28 +430,7 @@ HAVING AVG(e.salary) > 85000;`
 
       </main>
 
-      {/* Footer */}
-      <footer style={{
-        borderTop: '1px solid rgba(255, 255, 255, 0.08)',
-        padding: '24px 32px',
-        textAlign: 'center',
-        fontSize: '0.8rem',
-        color: '#64748b',
-        background: '#040609'
-      }}>
-        <div style={{ maxWidth: '1240px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
-          <div>
-            <strong>DevForge Cloud IDE</strong> — Next-Gen Code Runner & Algorithm Complexity Doctor
-          </div>
-          <div style={{ display: 'flex', gap: '16px', color: '#94a3b8' }}>
-            <span>Sub-20ms JIT Execution</span>
-            <span>•</span>
-            <span>Zero-Install Sandbox</span>
-            <span>•</span>
-            <span>Python 3.12 & SQL</span>
-          </div>
-        </div>
-      </footer>
+      {/* Footer removed — global SubmitKit footer is shown instead */}
     </div>
   );
 }

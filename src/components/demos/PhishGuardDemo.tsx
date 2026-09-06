@@ -56,67 +56,7 @@ export default function PhishGuardLandingPage() {
         zIndex: 0, pointerEvents: 'none'
       }} />
 
-      {/* Top Header Navigation */}
-      <nav style={{
-        position: 'sticky', top: 0, zIndex: 50,
-        background: 'rgba(6, 8, 14, 0.85)',
-        backdropFilter: 'blur(16px)',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.07)',
-        padding: '16px 36px',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div style={{
-            width: '36px', height: '36px', borderRadius: '10px',
-            background: 'linear-gradient(135deg, #e11d48, #9f1239)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            boxShadow: '0 0 16px rgba(225, 29, 72, 0.45)'
-          }}>
-            <Shield size={20} color="#fff" />
-          </div>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '1.25rem', fontWeight: 900, letterSpacing: '-0.03em', color: '#ffffff' }}>
-                PhishGuard<span style={{ color: '#f43f5e' }}>AI</span>
-              </span>
-              <span style={{
-                fontSize: '0.65rem',
-                fontWeight: 800,
-                textTransform: 'uppercase',
-                padding: '2px 8px',
-                borderRadius: '999px',
-                background: 'rgba(244, 63, 94, 0.15)',
-                color: '#f43f5e',
-                border: '1px solid rgba(244, 63, 94, 0.35)'
-              }}>
-                Radar v4.2
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div style={{ display: 'flex', gap: '28px', alignItems: 'center' }}>
-          <a href="#demo" style={{ fontSize: '0.85rem', color: '#94a3b8', fontWeight: 600, textDecoration: 'none', transition: 'color 0.2s' }}>
-            Live Detonator
-          </a>
-          <a href="#homograph" style={{ fontSize: '0.85rem', color: '#94a3b8', fontWeight: 600, textDecoration: 'none', transition: 'color 0.2s' }}>
-            Homoglyph AI
-          </a>
-          <a href="#pricing" style={{ fontSize: '0.85rem', color: '#94a3b8', fontWeight: 600, textDecoration: 'none', transition: 'color 0.2s' }}>
-            Enterprise Tiers
-          </a>
-          <a href="#demo" style={{
-            background: 'linear-gradient(135deg, #e11d48, #9f1239)',
-            boxShadow: '0 0 20px rgba(225, 29, 72, 0.4)',
-            padding: '8px 18px', borderRadius: '999px', fontSize: '0.85rem', fontWeight: 700,
-            display: 'flex', alignItems: 'center', gap: '6px', color: '#fff', textDecoration: 'none',
-            border: '1px solid rgba(255, 255, 255, 0.2)'
-          }}>
-            <span>Launch SOC Radar</span>
-            <ArrowRight size={14} />
-          </a>
-        </div>
-      </nav>
+      {/* Top Header Navigation — REMOVED: DemoBanner already provides sticky top nav */}
 
       <main style={{ position: 'relative', zIndex: 10, flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '60px 20px 100px' }}>
         
@@ -127,7 +67,7 @@ export default function PhishGuardLandingPage() {
             borderRadius: '999px', background: 'rgba(225, 29, 72, 0.12)', border: '1px solid rgba(225, 29, 72, 0.3)',
             color: '#f43f5e', fontSize: '0.78rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '24px'
           }}>
-            <Radio size={14} className="pulse-glow" /> Autonomous Zero-Day Threat Interception
+            <Radio size={14} style={{ animation: 'pulse 1.5s ease-in-out infinite' }} /> Autonomous Zero-Day Threat Interception
           </div>
           
           <h1 style={{ fontSize: '4.2rem', fontWeight: 900, lineHeight: 1.08, letterSpacing: '-0.04em', marginBottom: '20px' }}>
@@ -362,7 +302,7 @@ export default function PhishGuardLandingPage() {
 
                 {/* Direct Action Link */}
                 <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-                  <Link href="#" style={{
+                  <a href="#demo" style={{
                     padding: '8px 18px',
                     borderRadius: '6px',
                     background: 'linear-gradient(135deg, #e11d48, #be123c)',
@@ -376,7 +316,7 @@ export default function PhishGuardLandingPage() {
                   }}>
                     <span>Open in SOC Dashboard with Visual Detonation</span>
                     <ArrowRight size={14} />
-                  </Link>
+                  </a>
                 </div>
               </div>
             )}
@@ -491,7 +431,7 @@ export default function PhishGuardLandingPage() {
                   ))}
                 </div>
               </div>
-              <Link href="#" style={{
+              <Link href="#demo" style={{
                 marginTop: '28px',
                 padding: '12px',
                 borderRadius: '8px',
@@ -558,7 +498,7 @@ export default function PhishGuardLandingPage() {
                   ))}
                 </div>
               </div>
-              <Link href="#" style={{
+              <Link href="#demo" style={{
                 marginTop: '28px',
                 padding: '12px',
                 borderRadius: '8px',
@@ -607,7 +547,7 @@ export default function PhishGuardLandingPage() {
                   ))}
                 </div>
               </div>
-              <Link href="#" style={{
+              <Link href="#demo" style={{
                 marginTop: '28px',
                 padding: '12px',
                 borderRadius: '8px',

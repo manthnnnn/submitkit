@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { READY_PROJECTS, AVAILABLE_PROJECT_SLUGS } from '@/lib/available-projects';
+import { CONSTANTS } from '@/lib/constants';
 import { DemoBanner } from '@/components/demos/DemoBanner';
 import BloodBankDemo from '@/components/demos/BloodBankDemo';
 import HealthSyncDemo from '@/components/demos/HealthSyncDemo';
@@ -11,6 +12,19 @@ import SmartExpenseDemo from '@/components/demos/SmartExpenseDemo';
 import AeroFuelDemo from '@/components/demos/AeroFuelDemo';
 import PhishGuardDemo from '@/components/demos/PhishGuardDemo';
 import QuickBiteDemo from '@/components/demos/QuickBiteDemo';
+
+// Derive price from CONSTANTS — same source of truth as project cards
+const DEMO_PRICES: Record<string, number> = {
+  'healthcare-ehr-portal':  CONSTANTS.PRICING.MAJOR_PROJECT,
+  'blood-bank-management':  CONSTANTS.PRICING.MINI_PROJECT,
+  'resume-parsing-engine':  CONSTANTS.PRICING.MAJOR_PROJECT,
+  'online-code-compiler':   CONSTANTS.PRICING.MAJOR_PROJECT,
+  'credit-card-fraud':      CONSTANTS.PRICING.MAJOR_PROJECT,
+  'phishing-detector-ai':   CONSTANTS.PRICING.MAJOR_PROJECT,
+  'restaurant-qr-ordering': CONSTANTS.PRICING.MINI_PROJECT,
+  'aerofuel-predictor':     CONSTANTS.PRICING.MAJOR_PROJECT,
+  'smart-expense-tracker':  CONSTANTS.PRICING.MINI_PROJECT,
+};
 
 interface DemoPageProps {
   params: Promise<{
@@ -75,10 +89,10 @@ export default async function DemoPage({ params }: DemoPageProps) {
 
   return (
     <div className="min-h-screen bg-[#07090e] text-white flex flex-col">
-      <DemoBanner 
-        title={project.name} 
-        slug={slug} 
-        price={slug === 'healthcare-ehr-portal' || slug === 'resume-parsing-engine' || slug === 'aerofuel-predictor' ? 499 : 299} 
+      <DemoBanner
+        title={project.name}
+        slug={slug}
+        price={DEMO_PRICES[slug] ?? CONSTANTS.PRICING.MINI_PROJECT}
       />
       <main className="flex-1 w-full">
         {renderDemoContent()}

@@ -1,25 +1,49 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
+import { useState, useEffect } from 'react';
 import { 
   Heart, Shield, Activity, ArrowRight, 
   CheckCircle2, PlusCircle, 
-  ChevronRight, ArrowUpRight, Radio, Zap
+  ChevronRight, Radio, Zap
 } from 'lucide-react';
+
+// Static class map — avoids Tailwind purging dynamic class strings
+const STATUS_STYLES: Record<string, string> = {
+  CRITICAL:   'bg-rose-500/20 text-rose-400 border-rose-500/30',
+  MONITORING: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
+  LOW:        'bg-rose-500/20 text-rose-400 border-rose-500/30',
+  HEALTHY:    'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
+};
+
+const TICKER_MESSAGES = [
+  { msg: 'O- Negative requisition routed to Metro General Trauma ICU', units: '4 units assigned', time: 'JUST NOW' },
+  { msg: 'B+ dispatch confirmed to City Children\'s Hospital NICU',     units: '2 units en route', time: '1 MIN AGO' },
+  { msg: 'AB- critical low alert — Donor mobilisation SMS sent to 23 volunteers', units: 'Awaiting response', time: '3 MIN AGO' },
+  { msg: 'O+ platelet pack transferred from Central Vault to South Memorial ER', units: '6 units assigned', time: '5 MIN AGO' },
+  { msg: 'A- voluntary donation recorded at Riverside Camp — cold-chain sealed', units: '1 unit added', time: '8 MIN AGO' },
+];
 
 export default function BloodBankDemo() {
   const [selectedGroup, setSelectedGroup] = useState<string>('O-');
+  const [tickerIdx,     setTickerIdx]     = useState(0);
+
+  // Cycle through ticker messages every 3 seconds
+  useEffect(() => {
+    const id = setInterval(() => setTickerIdx(i => (i + 1) % TICKER_MESSAGES.length), 3000);
+    return () => clearInterval(id);
+  }, []);
+
+  const ticker = TICKER_MESSAGES[tickerIdx];
 
   const bloodInventory = [
-    { group: 'O-', units: 8, status: 'CRITICAL', statusColor: 'bg-rose-500/20 text-rose-400 border-rose-500/30', giveTo: 'All Types (Universal Donor)', receiveFrom: 'O- Only' },
-    { group: 'O+', units: 42, status: 'HEALTHY', statusColor: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30', giveTo: 'O+, A+, B+, AB+', receiveFrom: 'O+, O-' },
-    { group: 'A-', units: 14, status: 'MONITORING', statusColor: 'bg-amber-500/20 text-amber-400 border-amber-500/30', giveTo: 'A-, A+, AB-, AB+', receiveFrom: 'A-, O-' },
-    { group: 'A+', units: 68, status: 'HEALTHY', statusColor: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30', giveTo: 'A+, AB+', receiveFrom: 'A+, A-, O+, O-' },
-    { group: 'B-', units: 9, status: 'LOW', statusColor: 'bg-rose-500/20 text-rose-400 border-rose-500/30', giveTo: 'B-, B+, AB-, AB+', receiveFrom: 'B-, O-' },
-    { group: 'B+', units: 51, status: 'HEALTHY', statusColor: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30', giveTo: 'B+, AB+', receiveFrom: 'B+, B-, O+, O-' },
-    { group: 'AB-', units: 6, status: 'CRITICAL', statusColor: 'bg-rose-500/20 text-rose-400 border-rose-500/30', giveTo: 'AB-, AB+', receiveFrom: 'All Negative Types' },
-    { group: 'AB+', units: 35, status: 'HEALTHY', statusColor: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30', giveTo: 'AB+ Only', receiveFrom: 'All Types (Universal Recipient)' },
+    { group: 'O-',  units: 8,  status: 'CRITICAL',   giveTo: 'All Types (Universal Donor)', receiveFrom: 'O- Only' },
+    { group: 'O+',  units: 42, status: 'HEALTHY',     giveTo: 'O+, A+, B+, AB+',             receiveFrom: 'O+, O-' },
+    { group: 'A-',  units: 14, status: 'MONITORING',  giveTo: 'A-, A+, AB-, AB+',            receiveFrom: 'A-, O-' },
+    { group: 'A+',  units: 68, status: 'HEALTHY',     giveTo: 'A+, AB+',                     receiveFrom: 'A+, A-, O+, O-' },
+    { group: 'B-',  units: 9,  status: 'LOW',         giveTo: 'B-, B+, AB-, AB+',            receiveFrom: 'B-, O-' },
+    { group: 'B+',  units: 51, status: 'HEALTHY',     giveTo: 'B+, AB+',                     receiveFrom: 'B+, B-, O+, O-' },
+    { group: 'AB-', units: 6,  status: 'CRITICAL',    giveTo: 'AB-, AB+',                    receiveFrom: 'All Negative Types' },
+    { group: 'AB+', units: 35, status: 'HEALTHY',     giveTo: 'AB+ Only',                    receiveFrom: 'All Types (Universal Recipient)' },
   ];
 
   const activeBlood = bloodInventory.find(b => b.group === selectedGroup) || bloodInventory[0];
@@ -54,7 +78,7 @@ export default function BloodBankDemo() {
           An autonomous national blood supply operating system. Connect volunteer donor networks, trauma centers, and hospital cold-chains with sub-second requisition matching and dispatch intelligence.
         </p>
 
-        {/* Live Requisition Alert Ticker */}
+        {/* Live Requisition Alert Ticker — cycles every 3 seconds */}
         <div className="mt-8 max-w-2xl mx-auto p-3.5 rounded-2xl bg-slate-900/90 border border-slate-800/90 flex items-center justify-between gap-4 backdrop-blur-xl text-left shadow-xl">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-rose-500/20 border border-rose-500/40 flex items-center justify-center shrink-0">
@@ -63,10 +87,10 @@ export default function BloodBankDemo() {
             <div>
               <div className="text-xs font-bold text-white flex items-center gap-2">
                 <span>EMERGENCY DISPATCH TICKER</span>
-                <span className="text-[10px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded font-mono">JUST NOW</span>
+                <span className="text-[10px] bg-red-500/20 text-red-400 px-2 py-0.5 rounded font-mono">{ticker.time}</span>
               </div>
-              <div className="text-xs text-slate-300 mt-0.5">
-                O- Negative requisition routed to Metro General Trauma ICU • 4 units assigned
+              <div className="text-xs text-slate-300 mt-0.5 transition-all duration-500">
+                {ticker.msg} • <span className="text-emerald-400 font-semibold">{ticker.units}</span>
               </div>
             </div>
           </div>
@@ -112,6 +136,7 @@ export default function BloodBankDemo() {
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3 mb-8">
           {bloodInventory.map((item) => {
             const isSelected = selectedGroup === item.group;
+            const sc = STATUS_STYLES[item.status] ?? STATUS_STYLES.HEALTHY;
             return (
               <button
                 key={item.group}
@@ -124,7 +149,7 @@ export default function BloodBankDemo() {
               >
                 <div className="text-2xl font-black text-white font-mono">{item.group}</div>
                 <div className="text-sm font-extrabold text-red-400 mt-1 font-mono">{item.units} <span className="text-[10px] text-slate-400 font-normal">units</span></div>
-                <div className={`text-[10px] font-bold px-2 py-0.5 rounded-full border mt-2 ${item.statusColor}`}>
+                <div className={`text-[10px] font-bold px-2 py-0.5 rounded-full border mt-2 ${sc}`}>
                   {item.status}
                 </div>
               </button>
@@ -142,7 +167,7 @@ export default function BloodBankDemo() {
               <div>
                 <div className="flex items-center gap-3">
                   <h3 className="text-2xl font-black text-white">Group {activeBlood.group} Blood Reserve</h3>
-                  <span className={`text-xs font-bold px-3 py-1 rounded-full border ${activeBlood.statusColor}`}>
+                  <span className={`text-xs font-bold px-3 py-1 rounded-full border ${STATUS_STYLES[activeBlood.status] ?? STATUS_STYLES.HEALTHY}`}>
                     {activeBlood.status} RESERVE
                   </span>
                 </div>

@@ -1,16 +1,30 @@
-'use client';
+﻿'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
+import { useState, useEffect } from 'react';
 import { 
-  Activity, ShieldCheck, HeartPulse, Stethoscope, FileText, 
-  Users, ArrowRight, CheckCircle2, Lock, Sparkles, Calendar, 
-  AlertTriangle, Clock, ChevronRight, ArrowUpRight, Zap, Check,
-  BookOpen, Pill, Thermometer, Droplet
+  Activity, ShieldCheck, HeartPulse, Stethoscope, FileText,
+  ArrowRight, CheckCircle2, Lock, Sparkles,
+  ArrowUpRight, Zap, Check,
+  BookOpen, Pill, Thermometer, AlertTriangle
 } from 'lucide-react';
-
 export default function HealthSyncLandingPage() {
   const [selectedPatientTab, setSelectedPatientTab] = useState<'vitals' | 'labs' | 'meds'>('vitals');
+
+  // Animate vitals so they feel "live"
+  const [hr,  setHr]  = useState(72);
+  const [spo2,setSpo2]= useState(98);
+  const [bp,  setBp]  = useState({ s: 118, d: 76 });
+  const [temp,setTemp]= useState(98.6);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setHr(v  => Math.max(60, Math.min(90,  v + (Math.random() > 0.5 ? 1 : -1))));
+      setSpo2(v => Math.max(95, Math.min(100, v + (Math.random() > 0.6 ? 0 : -1))));
+      setBp(v  => ({ s: Math.max(110, Math.min(130, v.s + (Math.random() > 0.5 ? 1 : -1))), d: Math.max(70, Math.min(85, v.d + (Math.random() > 0.5 ? 1 : -1))) }));
+      setTemp(v => Math.round((Math.max(98.0, Math.min(99.2, v + (Math.random() > 0.5 ? 0.1 : -0.1)))) * 10) / 10);
+    }, 1800);
+    return () => clearInterval(id);
+  }, []);
 
   return (
     <div style={{
@@ -251,26 +265,18 @@ export default function HealthSyncLandingPage() {
             <ArrowRight size={18} />
           </a>
 
-          <Link
-            href="/records"
+          <a href="#simulator"
             style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '10px',
-              padding: '16px 30px',
-              borderRadius: '14px',
-              backgroundColor: 'rgba(15, 23, 42, 0.8)',
-              color: '#e2e8f0',
-              border: '1px solid rgba(255, 255, 255, 0.15)',
-              fontSize: '15px',
-              fontWeight: 700,
-              textDecoration: 'none',
-              transition: 'all 0.2s ease'
+              display: 'inline-flex', alignItems: 'center', gap: '10px',
+              padding: '16px 30px', borderRadius: '14px',
+              backgroundColor: 'rgba(15, 23, 42, 0.8)', color: '#e2e8f0',
+              border: '1px solid rgba(255, 255, 255, 0.15)', fontSize: '15px', fontWeight: 700,
+              textDecoration: 'none', transition: 'all 0.2s ease'
             }}
           >
             <Lock size={16} color="#38bdf8" />
             <span>Secure Clinician Sign-In</span>
-          </Link>
+          </a>
         </div>
 
         {/* KPI Strip */}
@@ -399,7 +405,7 @@ export default function HealthSyncLandingPage() {
               color: '#34d399',
               border: '1px solid rgba(16, 185, 129, 0.3)'
             }}>
-              ● CLINICIAN SECURE SESSION ACTIVE
+              â— CLINICIAN SECURE SESSION ACTIVE
             </span>
           </div>
 
@@ -447,10 +453,10 @@ export default function HealthSyncLandingPage() {
                   }}>
                     MRN: 9482-B
                   </span>
-                  <span style={{ fontSize: '12px', color: '#94a3b8' }}>Age: 48 • Female</span>
+                  <span style={{ fontSize: '12px', color: '#94a3b8' }}>Age: 48 â€¢ Female</span>
                 </div>
                 <p style={{ fontSize: '12px', color: '#94a3b8', marginTop: '4px', margin: '4px 0 0' }}>
-                  Primary Diagnosis: <strong style={{ color: '#e2e8f0' }}>Acute Bronchitis</strong> • Attending: Dr. Aris Thorne, MD (Pulmonology)
+                  Primary Diagnosis: <strong style={{ color: '#e2e8f0' }}>Acute Bronchitis</strong> â€¢ Attending: Dr. Aris Thorne, MD (Pulmonology)
                 </p>
               </div>
             </div>
@@ -531,10 +537,10 @@ export default function HealthSyncLandingPage() {
                     <HeartPulse size={16} color="#f43f5e" />
                   </div>
                   <div style={{ fontSize: '28px', fontWeight: 900, color: '#ffffff', fontFamily: 'monospace', margin: '10px 0 4px' }}>
-                    72 <span style={{ fontSize: '13px', fontWeight: 500, color: '#94a3b8' }}>bpm</span>
+                    {hr} <span style={{ fontSize: '13px', fontWeight: 500, color: '#94a3b8' }}>bpm</span>
                   </div>
-                  <div style={{ fontSize: '11px', color: '#34d399', fontWeight: 700 }}>
-                    Normal Sinus Rhythm
+                  <div style={{ fontSize: '11px', color: hr > 85 ? '#f59e0b' : '#34d399', fontWeight: 700 }}>
+                    {hr > 85 ? 'Mild Tachycardia' : 'Normal Sinus Rhythm'}
                   </div>
                 </div>
 
@@ -549,10 +555,10 @@ export default function HealthSyncLandingPage() {
                     <Activity size={16} color="#38bdf8" />
                   </div>
                   <div style={{ fontSize: '28px', fontWeight: 900, color: '#ffffff', fontFamily: 'monospace', margin: '10px 0 4px' }}>
-                    98% <span style={{ fontSize: '13px', fontWeight: 500, color: '#94a3b8' }}>SpO2</span>
+                    {spo2}% <span style={{ fontSize: '13px', fontWeight: 500, color: '#94a3b8' }}>SpO2</span>
                   </div>
-                  <div style={{ fontSize: '11px', color: '#34d399', fontWeight: 700 }}>
-                    Room Air Ambient
+                  <div style={{ fontSize: '11px', color: spo2 < 96 ? '#f43f5e' : '#34d399', fontWeight: 700 }}>
+                    {spo2 < 96 ? 'Low â€” Monitor Closely' : 'Room Air Ambient'}
                   </div>
                 </div>
 
@@ -567,7 +573,7 @@ export default function HealthSyncLandingPage() {
                     <Activity size={16} color="#fbbf24" />
                   </div>
                   <div style={{ fontSize: '28px', fontWeight: 900, color: '#ffffff', fontFamily: 'monospace', margin: '10px 0 4px' }}>
-                    118/76 <span style={{ fontSize: '13px', fontWeight: 500, color: '#94a3b8' }}>mmHg</span>
+                    {bp.s}/{bp.d} <span style={{ fontSize: '13px', fontWeight: 500, color: '#94a3b8' }}>mmHg</span>
                   </div>
                   <div style={{ fontSize: '11px', color: '#34d399', fontWeight: 700 }}>
                     Optimal Normotensive
@@ -585,10 +591,10 @@ export default function HealthSyncLandingPage() {
                     <Thermometer size={16} color="#2dd4bf" />
                   </div>
                   <div style={{ fontSize: '28px', fontWeight: 900, color: '#ffffff', fontFamily: 'monospace', margin: '10px 0 4px' }}>
-                    98.6 <span style={{ fontSize: '13px', fontWeight: 500, color: '#94a3b8' }}>°F</span>
+                    {temp} <span style={{ fontSize: '13px', fontWeight: 500, color: '#94a3b8' }}>Â°F</span>
                   </div>
-                  <div style={{ fontSize: '11px', color: '#34d399', fontWeight: 700 }}>
-                    Afebrile Baseline
+                  <div style={{ fontSize: '11px', color: temp > 98.8 ? '#f59e0b' : '#34d399', fontWeight: 700 }}>
+                    {temp > 98.8 ? 'Low-Grade Fever' : 'Afebrile Baseline'}
                   </div>
                 </div>
 
@@ -615,7 +621,7 @@ export default function HealthSyncLandingPage() {
                         Complete Blood Count (CBC with Differential)
                       </div>
                       <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '2px' }}>
-                        WBC: 6.8 K/uL • Hemoglobin: 14.2 g/dL • Platelets: 240 K/uL
+                        WBC: 6.8 K/uL â€¢ Hemoglobin: 14.2 g/dL â€¢ Platelets: 240 K/uL
                       </div>
                     </div>
                   </div>
@@ -633,38 +639,40 @@ export default function HealthSyncLandingPage() {
                 </div>
 
                 <div style={{
-                  padding: '16px 20px',
-                  borderRadius: '14px',
-                  backgroundColor: 'rgba(7, 11, 20, 0.7)',
-                  border: '1px solid rgba(255, 255, 255, 0.08)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  flexWrap: 'wrap',
-                  gap: '12px'
+                  padding: '16px 20px', borderRadius: '14px',
+                  backgroundColor: 'rgba(7, 11, 20, 0.7)', border: '1px solid rgba(255, 255, 255, 0.08)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px'
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <CheckCircle2 size={20} color="#34d399" />
+                    <AlertTriangle size={20} color="#f59e0b" />
                     <div>
                       <div style={{ fontSize: '14px', fontWeight: 800, color: '#ffffff' }}>
-                        Comprehensive Metabolic Panel (CMP-14)
+                        D-Dimer (Fibrin Degradation Products)
                       </div>
                       <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '2px' }}>
-                        eGFR: &gt;90 • Creatinine: 0.85 mg/dL • Glucose: 92 mg/dL
+                        Result: <strong style={{ color: '#f59e0b' }}>1.84 mg/L FEU</strong> â€” Reference Range: &lt;0.50 mg/L
                       </div>
                     </div>
                   </div>
-                  <span style={{
-                    fontSize: '11px',
-                    fontWeight: 800,
-                    padding: '4px 12px',
-                    borderRadius: '999px',
-                    backgroundColor: 'rgba(16, 185, 129, 0.15)',
-                    color: '#34d399',
-                    border: '1px solid rgba(16, 185, 129, 0.3)'
-                  }}>
-                    ALL NORMAL
+                  <span style={{ fontSize: '11px', fontWeight: 800, padding: '4px 12px', borderRadius: '999px', backgroundColor: 'rgba(245,158,11,0.15)', color: '#f59e0b', border: '1px solid rgba(245,158,11,0.3)' }}>
+                    âš  ELEVATED â€” DVT Risk
                   </span>
+                </div>
+
+                <div style={{
+                  padding: '16px 20px', borderRadius: '14px',
+                  backgroundColor: 'rgba(244,63,94,0.06)', border: '1px solid rgba(244,63,94,0.3)',
+                  display: 'flex', alignItems: 'center', gap: '12px'
+                }}>
+                  <AlertTriangle size={20} color="#f43f5e" />
+                  <div>
+                    <div style={{ fontSize: '14px', fontWeight: 800, color: '#f43f5e' }}>
+                      ðŸ›‘ Drug-Drug Interaction Alert (AI Detected)
+                    </div>
+                    <div style={{ fontSize: '12px', color: '#fca5a5', marginTop: '2px' }}>
+                      Warfarin (5mg OD) + Amoxicillin/Clavulanate: HIGH RISK â€” potentiates anticoagulation. CDS system flagged prescribing physician for review.
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
@@ -689,7 +697,7 @@ export default function HealthSyncLandingPage() {
                         Albuterol HFA Inhaler 90mcg
                       </div>
                       <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '2px' }}>
-                        1-2 puffs every 4-6 hours PRN wheezing • Refills: 2
+                        1-2 puffs every 4-6 hours PRN wheezing â€¢ Refills: 2
                       </div>
                     </div>
                   </div>
@@ -724,7 +732,7 @@ export default function HealthSyncLandingPage() {
                         Amoxicillin / Clavulanate 875-125mg
                       </div>
                       <div style={{ fontSize: '12px', color: '#94a3b8', marginTop: '2px' }}>
-                        1 tablet BID with food x 7 days • Zero interaction warnings
+                        1 tablet BID with food x 7 days â€¢ Zero interaction warnings
                       </div>
                     </div>
                   </div>
@@ -758,24 +766,18 @@ export default function HealthSyncLandingPage() {
             <div style={{ fontSize: '12px', color: '#94a3b8' }}>
               Complete clinical chart records, longitudinal vitals graphs, and appointment rosters ready.
             </div>
-            <Link
-              href="#"
+            <button
+              onClick={() => document.getElementById('simulator')?.scrollIntoView({ behavior: 'smooth' })}
               style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                padding: '8px 18px',
-                borderRadius: '10px',
-                backgroundColor: '#0284c7',
-                color: '#ffffff',
-                fontSize: '12px',
-                fontWeight: 800,
-                textDecoration: 'none'
+                display: 'inline-flex', alignItems: 'center', gap: '8px',
+                padding: '8px 18px', borderRadius: '10px',
+                backgroundColor: '#0284c7', color: '#ffffff',
+                fontSize: '12px', fontWeight: 800, border: 'none', cursor: 'pointer'
               }}
             >
               <span>Open Full Patient Dashboard</span>
               <ArrowRight size={14} />
-            </Link>
+            </button>
           </div>
 
         </div>
@@ -877,7 +879,7 @@ export default function HealthSyncLandingPage() {
               </p>
             </div>
             <div style={{ fontSize: '12px', fontWeight: 800, color: '#38bdf8', marginTop: '24px' }}>
-              ✓ Automated Patient Safeguards
+              âœ“ Automated Patient Safeguards
             </div>
           </div>
 
@@ -913,7 +915,7 @@ export default function HealthSyncLandingPage() {
               </p>
             </div>
             <div style={{ fontSize: '12px', fontWeight: 800, color: '#818cf8', marginTop: '24px' }}>
-              ✓ Universal Data Federation
+              âœ“ Universal Data Federation
             </div>
           </div>
 
@@ -949,7 +951,7 @@ export default function HealthSyncLandingPage() {
               </p>
             </div>
             <div style={{ fontSize: '12px', fontWeight: 800, color: '#34d399', marginTop: '24px' }}>
-              ✓ Cryptographic Compliance Engine
+              âœ“ Cryptographic Compliance Engine
             </div>
           </div>
 
@@ -980,8 +982,7 @@ export default function HealthSyncLandingPage() {
           </p>
 
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', flexWrap: 'wrap' }}>
-            <Link
-              href="#"
+            <a href="#simulator"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -998,10 +999,9 @@ export default function HealthSyncLandingPage() {
             >
               <span>Launch Clinical Portal</span>
               <ArrowRight size={16} color="#0369a1" />
-            </Link>
+            </a>
 
-            <Link
-              href="/records"
+            <a href="#simulator"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -1018,7 +1018,7 @@ export default function HealthSyncLandingPage() {
             >
               <FileText size={16} color="#38bdf8" />
               <span>Browse EHR Records</span>
-            </Link>
+            </a>
           </div>
         </div>
       </section>
@@ -1026,3 +1026,4 @@ export default function HealthSyncLandingPage() {
     </div>
   );
 }
+
