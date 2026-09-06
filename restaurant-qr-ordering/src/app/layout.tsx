@@ -5,8 +5,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "BiteQR | Smart Restaurant Menu",
-  description: "Scan to order seamlessly from your table.",
+  title: "QuickBite | Smart Restaurant QR Ordering & Kitchen KDS",
+  description: "Contactless table-side QR ordering, live kitchen display system, and digital receipts.",
 };
 
 export default function RootLayout({
@@ -16,7 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-slate-50 text-slate-900 antialiased`}>
+      <body className={`${inter.className} antialiased`} style={{ background: '#0B0F19', color: '#ffffff', minHeight: '100vh' }}>
         {children}
       </body>
     </html>
