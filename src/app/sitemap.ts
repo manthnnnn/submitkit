@@ -1,64 +1,38 @@
 import { MetadataRoute } from 'next';
 import { createAdminClient } from '@/lib/supabase/admin';
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://submitkit.in';
+const BASE_URL = (process.env.NEXT_PUBLIC_BASE_URL || 'https://submitkit.in').replace(/\/$/, '');
 
-  // 1. Static Routes
-  const routes: MetadataRoute.Sitemap = [
-    {
-      url: `${baseUrl}`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/projects`,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/terms`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.5,
-    },
-    {
-      url: `${baseUrl}/privacy`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.5,
-    },
-    {
-      url: `${baseUrl}/refund`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.5,
-    },
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  // Static pages
+  const staticRoutes: MetadataRoute.Sitemap = [
+    { url: BASE_URL,             lastModified: new Date(), changeFrequency: 'weekly',  priority: 1.0 },
+    { url: `${BASE_URL}/projects`, lastModified: new Date(), changeFrequency: 'daily',   priority: 0.9 },
+    { url: `${BASE_URL}/terms`,    lastModified: new Date(), changeFrequency: 'monthly', priority: 0.3 },
+    { url: `${BASE_URL}/privacy`,  lastModified: new Date(), changeFrequency: 'monthly', priority: 0.3 },
+    { url: `${BASE_URL}/refund`,   lastModified: new Date(), changeFrequency: 'monthly', priority: 0.3 },
   ];
 
+  // Dynamic project pages from Supabase
+  let projectRoutes: MetadataRoute.Sitemap = [];
   try {
-    // 2. Fetch all active projects
     const supabase = createAdminClient();
-    const { data: projects } = await supabase
+    const { data } = await supabase
       .from('projects')
       .select('slug, created_at')
       .eq('is_active', true);
 
-    if (projects) {
-      const projectRoutes = projects.map((project) => ({
-        url: `${baseUrl}/projects/${project.slug}`,
-        lastModified: new Date(project.created_at),
+    if (data) {
+      projectRoutes = data.map(p => ({
+        url:             `${BASE_URL}/projects/${p.slug}`,
+        lastModified:    new Date(p.created_at),
         changeFrequency: 'weekly' as const,
-        priority: 0.8,
+        priority:        0.8,
       }));
-      
-      return [...routes, ...projectRoutes];
     }
-  } catch (error) {
-    console.error('Sitemap generation error:', error);
+  } catch (err) {
+    console.error('[sitemap] Failed to fetch projects:', err);
   }
 
-  return routes;
+  return [...staticRoutes, ...projectRoutes];
 }

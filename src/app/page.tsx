@@ -6,6 +6,7 @@ import { ArrowRight, CheckCircle2, Zap, Download, ShieldCheck, Star } from "luci
 import { PricingHook } from "@/components/ui/pricing-hook";
 import { CompareSlider } from "@/components/ui/compare-slider";
 import { FleetSection } from "@/components/ui/fleet-section";
+import { Testimonials } from "@/components/ui/testimonials";
 import { useEffect, useState, useRef } from "react";
 
 // Animated counter hook
@@ -269,6 +270,11 @@ export default function Home() {
           FLEET SECTION: AVAILABLE VS UPCOMING
       ═══════════════════════════════════════ */}
       <FleetSection />
+
+      {/* ═══════════════════════════════════════
+          TESTIMONIALS
+      ═══════════════════════════════════════ */}
+      <Testimonials />
 
       {/* ═══════════════════════════════════════
           PRICING SECTION

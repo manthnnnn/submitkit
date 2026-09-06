@@ -9,6 +9,9 @@ import Script from "next/script";
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-display" });
 
+// GA4 Measurement ID — set NEXT_PUBLIC_GA_ID in your env vars (format: G-XXXXXXXXXX)
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
+
 export const metadata: Metadata = {
   title: {
     template: `%s | ${CONSTANTS.APP_NAME}`,
@@ -26,7 +29,29 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        {/* Razorpay checkout */}
         <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
+
+        {/* Google Analytics 4 — only loads when GA_ID is set */}
+        {GA_ID && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="ga4-init" strategy="afterInteractive">
+              {`
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${GA_ID}', {
+                  page_path: window.location.pathname,
+                  send_page_view: true
+                });
+              `}
+            </Script>
+          </>
+        )}
       </head>
       <body className={`${inter.variable} ${spaceGrotesk.variable} antialiased min-h-screen flex flex-col`}>
         <Navbar />
