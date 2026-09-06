@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import {
@@ -10,8 +10,8 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 
 const STEPS = [
-  { icon: <FolderOpen className="w-4 h-4 text-blue-400" />, bg: 'bg-blue-500/10 border-blue-500/30', title: '1. Extract the ZIP', body: 'Right-click → "Extract All". You\'ll find Code, Report, and PPT folders inside.' },
-  { icon: <Terminal className="w-4 h-4 text-emerald-400" />, bg: 'bg-emerald-500/10 border-emerald-500/30', title: '2. Windows — double-click', body: <span>Double-click <code className="bg-zinc-800 text-emerald-400 px-1.5 py-0.5 rounded font-mono text-[11px]">run.bat</code> in the Code folder. Installs &amp; starts automatically.</span> },
+  { icon: <FolderOpen className="w-4 h-4 text-blue-400" />, bg: 'bg-blue-500/10 border-blue-500/30', title: '1. Extract the ZIP', body: 'Right-click â†’ "Extract All". You\'ll find Code, Report, and PPT folders inside.' },
+  { icon: <Terminal className="w-4 h-4 text-emerald-400" />, bg: 'bg-emerald-500/10 border-emerald-500/30', title: '2. Windows â€” double-click', body: <span>Double-click <code className="bg-zinc-800 text-emerald-400 px-1.5 py-0.5 rounded font-mono text-[11px]">run.bat</code> in the Code folder. Installs &amp; starts automatically.</span> },
   { icon: <Terminal className="w-4 h-4 text-purple-400" />, bg: 'bg-purple-500/10 border-purple-500/30', title: '2. Mac / Linux', body: <span>Open Terminal in Code folder and run: <code className="bg-zinc-800 text-purple-400 px-1.5 py-0.5 rounded font-mono text-[11px]">bash run.sh</code></span> },
   { icon: <Play className="w-4 h-4 text-amber-400" />, bg: 'bg-amber-500/10 border-amber-500/30', title: '3. Open in browser', body: <span>When terminal shows "Ready", open <code className="bg-zinc-800 text-amber-400 px-1.5 py-0.5 rounded font-mono text-[11px]">localhost:3000</code></span> },
   { icon: <GraduationCap className="w-4 h-4 text-rose-400" />, bg: 'bg-rose-500/10 border-rose-500/30', title: '4. Prepare for Viva', body: 'Read PPT speaker notes, print the IEEE Black Book, use the 25 Q&A answers.' },
@@ -61,7 +61,7 @@ function SuccessContent() {
 
   const handleDownload = async () => {
     if (downloading) return;
-    if (!orderId) { setError('Missing order details. Contact support@submitkit.in.'); return; }
+    if (!orderId) { setError('Missing order details. Contact team@submitkit.in.'); return; }
     setDownloading(true); setError(null);
     try {
       const res = await fetch(`/api/downloads/${orderId}`, { redirect: 'manual' });
@@ -69,7 +69,7 @@ function SuccessContent() {
         window.location.href = `/api/downloads/${orderId}`; return;
       }
       if (!res.ok) {
-        let msg = 'Download failed. Try again or email support@submitkit.in.';
+        let msg = 'Download failed. Try again or email team@submitkit.in.';
         try { const b = await res.json(); if (b?.error) msg = b.error; } catch { /**/ }
         setError(msg); setDownloading(false); return;
       }
@@ -89,7 +89,7 @@ function SuccessContent() {
       });
       const data = await res.json();
       if (!res.ok || !data.downloadUrl) {
-        setPersonalError(data.error || 'Personalisation failed. Contact support@submitkit.in.');
+        setPersonalError(data.error || 'Personalisation failed. Contact team@submitkit.in.');
       } else {
         setPersonalDone(true);
         window.open(data.downloadUrl, '_blank');
@@ -117,13 +117,13 @@ function SuccessContent() {
           <h1 className="text-3xl md:text-4xl font-display font-bold text-white mb-2">Payment Successful!</h1>
           <p className="text-emerald-400 text-sm font-medium flex items-center justify-center gap-1.5">
             <span className="relative flex h-2 w-2"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" /><span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" /></span>
-            Order confirmed — check your email for receipt
+            Order confirmed â€” check your email for receipt
           </p>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
 
-          {/* ── LEFT: Download + Add-ons ── */}
+          {/* â”€â”€ LEFT: Download + Add-ons â”€â”€ */}
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: 0.1 }} className="lg:col-span-3 space-y-4">
 
             {/* Order card */}
@@ -171,7 +171,7 @@ function SuccessContent() {
               )}
             </div>
 
-            {/* ── ADD-ON 1: Personalisation ── */}
+            {/* â”€â”€ ADD-ON 1: Personalisation â”€â”€ */}
             {hasPersonalization && (
               <div className="glass-card p-5 rounded-2xl border border-brand-500/30 bg-brand-500/5">
                 <div className="flex items-center justify-between">
@@ -207,14 +207,14 @@ function SuccessContent() {
                       className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder:text-zinc-500 text-sm focus:outline-none focus:border-brand-500/50" />
                     {personalError && <p className="text-red-400 text-xs">{personalError}</p>}
                     <button type="submit" disabled={personalizing} className="w-full py-2.5 bg-brand-500 hover:bg-brand-400 text-white font-bold text-sm rounded-xl flex items-center justify-center gap-2 disabled:opacity-50">
-                      {personalizing ? <><Loader2 className="w-4 h-4 animate-spin" /> Generating…</> : 'Generate My Personalised Report'}
+                      {personalizing ? <><Loader2 className="w-4 h-4 animate-spin" /> Generatingâ€¦</> : 'Generate My Personalised Report'}
                     </button>
                   </form>
                 )}
               </div>
             )}
 
-            {/* ── ADD-ON 2: Plagiarism Certificate ── */}
+            {/* â”€â”€ ADD-ON 2: Plagiarism Certificate â”€â”€ */}
             {hasPlagiarismCert && (
               <div className="glass-card p-5 rounded-2xl border border-amber-500/30 bg-amber-500/5">
                 <div className="flex items-start gap-3">
@@ -224,7 +224,7 @@ function SuccessContent() {
                   <div>
                     <p className="text-white text-sm font-semibold">Plagiarism-Free Certificate</p>
                     <p className="text-zinc-400 text-xs mt-0.5 leading-relaxed">
-                      Your real Turnitin report (&lt;10% similarity) will be emailed to you within <strong className="text-amber-400">24 hours</strong>. No action needed — we process it automatically.
+                      Your real Turnitin report (&lt;10% similarity) will be emailed to you within <strong className="text-amber-400">24 hours</strong>. No action needed â€” we process it automatically.
                     </p>
                     <p className="text-zinc-500 text-[11px] mt-2">
                       Questions? WhatsApp <a href={waLink} className="text-amber-400 hover:underline">+91 87998 14256</a>
@@ -234,7 +234,7 @@ function SuccessContent() {
               </div>
             )}
 
-            {/* ── ADD-ON 3: Viva Prep Call ── */}
+            {/* â”€â”€ ADD-ON 3: Viva Prep Call â”€â”€ */}
             {hasVivaCall && (
               <div className="glass-card p-5 rounded-2xl border border-emerald-500/30 bg-emerald-500/5">
                 <div className="flex items-start gap-3">
@@ -258,7 +258,7 @@ function SuccessContent() {
 
             {/* Actions */}
             <div className="flex flex-col sm:flex-row gap-3">
-              <button onClick={() => { const t = 'Just got my final year project bundle from SubmitKit! 🚀'; if (navigator.share) navigator.share({ title: 'SubmitKit', text: t, url: 'https://submitkit.in' }).catch(() => {}); else { navigator.clipboard.writeText(t + ' https://submitkit.in'); setCopied(true); setTimeout(() => setCopied(false), 2000); } }} className="flex-1 flex items-center justify-center gap-2 text-sm text-zinc-400 hover:text-white bg-white/[0.02] hover:bg-white/[0.06] border border-white/5 py-3 rounded-xl transition-all">
+              <button onClick={() => { const t = 'Just got my final year project bundle from SubmitKit! ðŸš€'; if (navigator.share) navigator.share({ title: 'SubmitKit', text: t, url: 'https://submitkit.in' }).catch(() => {}); else { navigator.clipboard.writeText(t + ' https://submitkit.in'); setCopied(true); setTimeout(() => setCopied(false), 2000); } }} className="flex-1 flex items-center justify-center gap-2 text-sm text-zinc-400 hover:text-white bg-white/[0.02] hover:bg-white/[0.06] border border-white/5 py-3 rounded-xl transition-all">
                 <Share2 className="w-4 h-4" />{copied ? 'Copied!' : 'Recommend to classmates'}
               </button>
               <Link href="/projects" className="flex-1 flex items-center justify-center gap-2 text-sm text-zinc-400 hover:text-white bg-white/[0.02] hover:bg-white/[0.06] border border-white/5 py-3 rounded-xl transition-all group">
@@ -270,13 +270,13 @@ function SuccessContent() {
             <div className="flex items-start gap-3 p-4 rounded-xl bg-blue-500/5 border border-blue-500/10">
               <AlertCircle className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
               <p className="text-blue-200/60 text-xs leading-relaxed">
-                Issues? Email <a href="mailto:support@submitkit.in" className="text-blue-400 hover:underline font-medium">support@submitkit.in</a> with your Order ID — we respond within 2 hours.
+                Issues? Email <a href="mailto:team@submitkit.in" className="text-blue-400 hover:underline font-medium">team@submitkit.in</a> with your Order ID â€” we respond within 2 hours.
                 For a <strong>custom project</strong>, just email us your requirements.
               </p>
             </div>
           </motion.div>
 
-          {/* ── RIGHT: How to Run ── */}
+          {/* â”€â”€ RIGHT: How to Run â”€â”€ */}
           <motion.div initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4, delay: 0.2 }} className="lg:col-span-2">
             <div className="glass-card p-6 rounded-2xl h-full">
               <h3 className="text-white font-semibold mb-1 flex items-center gap-2">
@@ -310,3 +310,4 @@ export default function OrderSuccessPage() {
     </Suspense>
   );
 }
+

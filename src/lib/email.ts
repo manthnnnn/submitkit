@@ -1,11 +1,11 @@
-/**
+﻿/**
  * Email delivery via Brevo (formerly Sendinblue) Transactional Email API.
- * No SDK required — uses the standard fetch() + Brevo REST API v3.
+ * No SDK required â€” uses the standard fetch() + Brevo REST API v3.
  *
  * To set up:
- *  1. Go to https://app.brevo.com → SMTP & API → API Keys → Create API Key
+ *  1. Go to https://app.brevo.com â†’ SMTP & API â†’ API Keys â†’ Create API Key
  *  2. Add BREVO_API_KEY to your Vercel environment variables
- *  3. In Brevo → Senders & IPs → add and verify orders@submitkit.in (or any sender)
+ *  3. In Brevo â†’ Senders & IPs â†’ add and verify team@submitkit.in (or any sender)
  */
 
 const BREVO_API_URL = 'https://api.brevo.com/v3/smtp/email';
@@ -31,7 +31,7 @@ export async function sendOrderConfirmationEmail(params: OrderEmailParams): Prom
 
   const apiKey = process.env.BREVO_API_KEY;
   if (!apiKey) {
-    console.warn('[email] BREVO_API_KEY not set — skipping confirmation email');
+    console.warn('[email] BREVO_API_KEY not set â€” skipping confirmation email');
     return;
   }
 
@@ -46,21 +46,21 @@ export async function sendOrderConfirmationEmail(params: OrderEmailParams): Prom
   const addonRows: string[] = [];
   if (hasPersonalization) {
     addonRows.push(`<tr><td style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06);">
-      <span style="font-size:1rem;">✏️</span>
+      <span style="font-size:1rem;">âœï¸</span>
       <strong style="color:#a5b4fc;"> Name Personalisation</strong>
-      <p style="margin:4px 0 0;font-size:0.82rem;color:#94a3b8;">Reply to this email with your Roll Number and Guide Name — we'll type them on the Black Book cover and send you the updated file.</p>
+      <p style="margin:4px 0 0;font-size:0.82rem;color:#94a3b8;">Reply to this email with your Roll Number and Guide Name â€” we'll type them on the Black Book cover and send you the updated file.</p>
     </td></tr>`);
   }
   if (hasPlagiarismCert) {
     addonRows.push(`<tr><td style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.06);">
-      <span style="font-size:1rem;">🏆</span>
+      <span style="font-size:1rem;">ðŸ†</span>
       <strong style="color:#fbbf24;"> Plagiarism-Free Certificate</strong>
       <p style="margin:4px 0 0;font-size:0.82rem;color:#94a3b8;">Your real Turnitin report (&lt;10% similarity) will be emailed to you <strong style="color:#fbbf24;">within 24 hours</strong>. No action needed.</p>
     </td></tr>`);
   }
   if (hasVivaCall) {
     addonRows.push(`<tr><td style="padding:10px 0;">
-      <span style="font-size:1rem;">📞</span>
+      <span style="font-size:1rem;">ðŸ“ž</span>
       <strong style="color:#34d399;"> 30-Min Viva Prep Call</strong>
       <p style="margin:4px 0 0;font-size:0.82rem;color:#94a3b8;">
         Book your slot now: <a href="${waLink}" style="color:#34d399;font-weight:600;">Click here to WhatsApp +91 87998 14256</a>
@@ -72,7 +72,7 @@ export async function sendOrderConfirmationEmail(params: OrderEmailParams): Prom
     <tr><td style="padding:20px 0 0;">
       <table width="100%" cellpadding="0" cellspacing="0" style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.25);border-radius:12px;padding:16px;">
         <tr><td style="padding-bottom:10px;">
-          <span style="font-size:0.72rem;font-weight:700;color:#a5b4fc;text-transform:uppercase;letter-spacing:0.06em;">⭐ Your Purchased Add-Ons</span>
+          <span style="font-size:0.72rem;font-weight:700;color:#a5b4fc;text-transform:uppercase;letter-spacing:0.06em;">â­ Your Purchased Add-Ons</span>
         </td></tr>
         ${addonRows.join('')}
       </table>
@@ -94,9 +94,9 @@ export async function sendOrderConfirmationEmail(params: OrderEmailParams): Prom
 
   <!-- Hero -->
   <tr><td style="background:linear-gradient(135deg,rgba(16,185,129,0.15),rgba(16,185,129,0.05));border:1px solid rgba(16,185,129,0.35);border-radius:16px;padding:28px;text-align:center;margin-bottom:0;">
-    <div style="font-size:2.5rem;">🎉</div>
+    <div style="font-size:2.5rem;">ðŸŽ‰</div>
     <h1 style="margin:8px 0 6px;font-size:1.5rem;font-weight:800;color:#ffffff;">Payment Confirmed!</h1>
-    <p style="margin:0;color:#34d399;font-size:0.9rem;">Your bundle is ready — download it now</p>
+    <p style="margin:0;color:#34d399;font-size:0.9rem;">Your bundle is ready â€” download it now</p>
   </td></tr>
 
   <!-- Spacer -->
@@ -134,9 +134,9 @@ export async function sendOrderConfirmationEmail(params: OrderEmailParams): Prom
     <p style="margin:0 0 14px;font-size:0.78rem;font-weight:700;color:#ffffff;text-transform:uppercase;letter-spacing:0.04em;">&#128230; What's In Your Bundle</p>
     <table width="100%" cellpadding="0" cellspacing="0">
       ${[
-        ['&#128187;', 'Working Source Code',              '1-click run.bat launcher — zero manual setup'],
-        ['&#128196;', `${pagesCount}-Page IEEE Black Book`, 'Print-ready .docx — your name on the cover'],
-        ['&#128421;&#65039;', 'Viva Defense PPT',         '15–20 slides with exact speaker notes'],
+        ['&#128187;', 'Working Source Code',              '1-click run.bat launcher â€” zero manual setup'],
+        ['&#128196;', `${pagesCount}-Page IEEE Black Book`, 'Print-ready .docx â€” your name on the cover'],
+        ['&#128421;&#65039;', 'Viva Defense PPT',         '15â€“20 slides with exact speaker notes'],
         ['&#128218;', '25 Viva Q&amp;A Answers',           'Examiner-tested questions with full answers'],
         ['&#9889;',   'Instant ZIP Download',              'Secure Cloudflare R2 CDN delivery'],
       ].map(([icon, title, sub]) => `
@@ -178,7 +178,7 @@ export async function sendOrderConfirmationEmail(params: OrderEmailParams): Prom
 
   <!-- Footer -->
   <tr><td style="text-align:center;border-top:1px solid rgba(255,255,255,0.05);padding-top:20px;">
-    <p style="margin:0 0 3px;font-size:0.72rem;color:#52525b;">&#169; ${new Date().getFullYear()} SubmitKit.in — India's Premier Academic Project Marketplace</p>
+    <p style="margin:0 0 3px;font-size:0.72rem;color:#52525b;">&#169; ${new Date().getFullYear()} SubmitKit.in â€” India's Premier Academic Project Marketplace</p>
     <p style="margin:0;font-size:0.68rem;color:#3f3f46;">Sold as educational reference material only.</p>
   </td></tr>
 
@@ -189,9 +189,9 @@ export async function sendOrderConfirmationEmail(params: OrderEmailParams): Prom
 </html>`;
 
   const payload = {
-    sender:  { name: 'SubmitKit', email: 'orders@submitkit.in' },
+    sender:  { name: 'SubmitKit', email: 'team@submitkit.in' },
     to:      [{ email: customerEmail, name: customerName }],
-    subject: `✅ Order Confirmed — ${projectTitle} | SubmitKit`,
+    subject: `âœ… Order Confirmed â€” ${projectTitle} | SubmitKit`,
     htmlContent,
   };
 
@@ -217,3 +217,4 @@ export async function sendOrderConfirmationEmail(params: OrderEmailParams): Prom
     console.error('[email] Brevo fetch failed:', err);
   }
 }
+

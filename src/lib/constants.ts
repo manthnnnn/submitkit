@@ -1,7 +1,7 @@
-export const CONSTANTS = {
+﻿export const CONSTANTS = {
   APP_NAME: 'SubmitKit',
   APP_URL: process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000',
-  SUPPORT_EMAIL: 'support@submitkit.in',
+  SUPPORT_EMAIL: 'team@submitkit.in',
   
   PRICING: {
     MINI_PROJECT: 299,
@@ -26,3 +26,4 @@ export const CONSTANTS = {
     { value: 'IoT', label: 'Internet of Things' }
   ]
 };
+

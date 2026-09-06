@@ -59,7 +59,7 @@ export async function GET(
     } catch (s3Error: any) {
       console.error('S3/R2 URL generation failed:', s3Error);
       return NextResponse.json({
-        error: 'File storage is not configured. Please contact support@submitkit.in with your Order ID.',
+        error: 'File storage is not configured. Please contact team@submitkit.in with your Order ID.',
         orderId: order.id,
       }, { status: 503 });
     }

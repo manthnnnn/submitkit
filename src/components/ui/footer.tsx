@@ -1,4 +1,4 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 import { Layers } from 'lucide-react';
 
 // Inline SVG icons for Instagram & WhatsApp (lucide-react version doesn't include them)
@@ -37,7 +37,7 @@ export function Footer() {
               </span>
             </Link>
             <p className="text-zinc-500 text-sm leading-relaxed max-w-xs mb-5">
-              India's premier digital marketplace for academic project bundles. Get working code, a 60-page Black Book, and Viva PPTs — instantly.
+              India's premier digital marketplace for academic project bundles. Get working code, a 60-page Black Book, and Viva PPTs â€” instantly.
             </p>
             <div className="flex gap-3">
               <a
@@ -79,13 +79,13 @@ export function Footer() {
               <li><Link href="/privacy" className="hover:text-zinc-300 transition-colors">Privacy Policy</Link></li>
               <li><Link href="/refund" className="hover:text-zinc-300 transition-colors">Refund Policy</Link></li>
               <li>
-                <a href="mailto:support@submitkit.in" className="hover:text-zinc-300 transition-colors">
+                <a href="mailto:team@submitkit.in" className="hover:text-zinc-300 transition-colors">
                   Support
                 </a>
               </li>
               <li>
                 <a
-                  href="mailto:support@submitkit.in?subject=Custom Project Request&body=Hi, I need a custom project. Details: "
+                  href="mailto:team@submitkit.in?subject=Custom Project Request&body=Hi, I need a custom project. Details: "
                   className="hover:text-zinc-300 transition-colors flex items-center gap-1.5"
                 >
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
@@ -98,10 +98,11 @@ export function Footer() {
         </div>
 
         <div className="pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-2 text-xs text-zinc-600">
-          <p>© {new Date().getFullYear()} SubmitKit. All rights reserved.</p>
+          <p>Â© {new Date().getFullYear()} SubmitKit. All rights reserved.</p>
           <p className="text-center">Disclaimer: Sold as educational reference materials only.</p>
         </div>
       </div>
     </footer>
   );
 }
+
