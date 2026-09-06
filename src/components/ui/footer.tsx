@@ -49,7 +49,7 @@ export function Footer() {
                 <InstagramIcon className="w-4 h-4 text-zinc-500 group-hover:text-brand-400 transition-colors" />
               </a>
               <a
-                href="https://wa.me/919876543210"
+                href="https://wa.me/918799814256"
                 target="_blank" rel="noopener noreferrer"
                 className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-emerald-500/20 hover:border-emerald-500/30 transition-all group"
                 aria-label="WhatsApp"
@@ -78,7 +78,20 @@ export function Footer() {
               <li><Link href="/terms" className="hover:text-zinc-300 transition-colors">Terms of Service</Link></li>
               <li><Link href="/privacy" className="hover:text-zinc-300 transition-colors">Privacy Policy</Link></li>
               <li><Link href="/refund" className="hover:text-zinc-300 transition-colors">Refund Policy</Link></li>
-              <li><a href="mailto:support@submitkit.in" className="hover:text-zinc-300 transition-colors">Support</a></li>
+              <li>
+                <a href="mailto:support@submitkit.in" className="hover:text-zinc-300 transition-colors">
+                  Support
+                </a>
+              </li>
+              <li>
+                <a
+                  href="mailto:support@submitkit.in?subject=Custom Project Request&body=Hi, I need a custom project. Details: "
+                  className="hover:text-zinc-300 transition-colors flex items-center gap-1.5"
+                >
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  Custom Project Request
+                </a>
+              </li>
             </ul>
           </div>
 

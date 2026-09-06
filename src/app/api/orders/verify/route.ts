@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { verifySignature } from '@/lib/razorpay';
 import { generateDownloadUrl } from '@/lib/s3';
+import { sendOrderConfirmationEmail } from '@/lib/email';
 
 export async function POST(req: NextRequest) {
   try {
@@ -40,6 +41,19 @@ export async function POST(req: NextRequest) {
           payment_id: razorpay_payment_id
         })
         .eq('id', order.id);
+
+      // 3a. Send confirmation email (non-blocking — never throws)
+      await sendOrderConfirmationEmail({
+        customerName:       order.customer_name,
+        customerEmail:      order.customer_email,
+        projectTitle:       order.projects.title,
+        orderId:            order.id,
+        amountPaid:         order.amount_paid,
+        tier:               order.projects.tier ?? 'MINI',
+        hasPersonalization: !!order.has_personalization,
+        hasPlagiarismCert:  !!order.has_plagiarism_cert,
+        hasVivaCall:        !!order.has_viva_call,
+      });
     }
     
     // 4. Generate Pre-signed Download URL (10-minute expiry)
@@ -60,7 +74,10 @@ export async function POST(req: NextRequest) {
       success: true,
       orderId: order.id,
       projectTitle: order.projects.title,
-      downloadUrl
+      downloadUrl,
+      hasPersonalization: !!order.has_personalization,
+      hasPlagiarismCert:  !!order.has_plagiarism_cert,
+      hasVivaCall:        !!order.has_viva_call,
     });
     
   } catch (error: any) {

@@ -81,6 +81,10 @@ export function CustomerForm({ projectId, price }: CheckoutFormProps) {
               order_id: verifyData.orderId,
               title: verifyData.projectTitle || 'Your Project Bundle',
             });
+            // Pass add-on flags so success page shows correct UI
+            if (verifyData.hasPersonalization) params.set('personalize', '1');
+            if (verifyData.hasPlagiarismCert)  params.set('plagiarism',  '1');
+            if (verifyData.hasVivaCall)         params.set('viva',        '1');
             window.location.href = `/order/success?${params.toString()}`;
           } catch (err) {
             setError('An error occurred after payment. Please contact support immediately.');
