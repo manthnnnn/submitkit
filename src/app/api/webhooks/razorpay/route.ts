@@ -3,58 +3,84 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { verifyWebhookSignature } from '@/lib/razorpay';
 
 export async function POST(req: NextRequest) {
+  let rawBody = '';
+
   try {
-    const rawBody = await req.text();
+    rawBody = await req.text();
     const signature = req.headers.get('x-razorpay-signature');
-    
+
     if (!signature) {
       return NextResponse.json({ error: 'Missing signature' }, { status: 400 });
     }
 
-    // 1. Verify Webhook Signature
+    // 1. Verify signature BEFORE parsing — prevents processing tampered payloads
     const isValid = verifyWebhookSignature(rawBody, signature);
     if (!isValid) {
-      console.error('Razorpay Webhook: Invalid Signature');
-      return NextResponse.json({ error: 'Tampered Signature Detected' }, { status: 400 });
+      console.error('Razorpay Webhook: Invalid signature');
+      return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
     }
 
     const payload = JSON.parse(rawBody);
-    const event = payload.event;
-    const payment = payload.payload.payment.entity;
-    
+    const event = payload?.event as string | undefined;
+
+    if (!event) {
+      return NextResponse.json({ received: true }); // Unknown event, ignore
+    }
+
+    // 2. Safe access — not all events have payment entity
+    const payment = payload?.payload?.payment?.entity;
+
     const supabase = createAdminClient();
-    
-    // 2. Handle Events
-    if (event === 'payment.captured') {
-      const orderId = payment.order_id;
-      const paymentId = payment.id;
-      
-      // Update order status if not already paid
-      await supabase
+
+    if (event === 'payment.captured' && payment) {
+      const razorpayOrderId = payment.order_id as string;
+      const paymentId       = payment.id        as string;
+
+      if (!razorpayOrderId || !paymentId) {
+        console.error('Webhook payment.captured: missing order_id or id', payment);
+        return NextResponse.json({ received: true });
+      }
+
+      const { error } = await supabase
         .from('orders')
-        .update({ 
-          status: 'PAID',
-          payment_id: paymentId
-        })
-        .eq('order_id', orderId)
-        .eq('status', 'PENDING'); // Only update if pending (idempotent)
-        
-    } else if (event === 'payment.failed') {
-      const orderId = payment.order_id;
-      
-      await supabase
+        .update({ status: 'PAID', payment_id: paymentId })
+        .eq('order_id', razorpayOrderId)
+        .eq('status', 'PENDING'); // Idempotent — only update if still pending
+
+      if (error) {
+        console.error('Webhook DB update failed (payment.captured):', error.message);
+        // Return 500 so Razorpay retries the webhook
+        return NextResponse.json({ error: 'DB write failed' }, { status: 500 });
+      }
+
+    } else if (event === 'payment.failed' && payment) {
+      const razorpayOrderId = payment.order_id as string;
+
+      if (!razorpayOrderId) {
+        return NextResponse.json({ received: true });
+      }
+
+      const { error } = await supabase
         .from('orders')
         .update({ status: 'FAILED' })
-        .eq('order_id', orderId)
+        .eq('order_id', razorpayOrderId)
         .eq('status', 'PENDING');
+
+      if (error) {
+        console.error('Webhook DB update failed (payment.failed):', error.message);
+        return NextResponse.json({ error: 'DB write failed' }, { status: 500 });
+      }
+
+    } else {
+      // All other events (refund.created, order.paid, etc.) — acknowledge and ignore
+      console.log(`Razorpay webhook: unhandled event "${event}" — ignored`);
     }
-    
-    // Always return 200 to acknowledge receipt to Razorpay
+
     return NextResponse.json({ received: true });
-    
+
   } catch (error: any) {
-    console.error('Webhook error:', error);
-    // Always return 200 after signature is verified to prevent Razorpay retry storms
+    console.error('Webhook unhandled error:', error);
+    // Only return 200 if we already verified the signature; otherwise let Razorpay retry
     return NextResponse.json({ received: true, error: error.message }, { status: 200 });
   }
 }

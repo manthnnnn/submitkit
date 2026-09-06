@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowLeft, ShoppingBag, Sparkles, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, ShoppingBag, CheckCircle2 } from 'lucide-react';
+import { CONSTANTS } from '@/lib/constants';
 
 interface DemoBannerProps {
   title: string;
@@ -9,99 +10,54 @@ interface DemoBannerProps {
   price?: number;
 }
 
-export function DemoBanner({ title, slug, price = 299 }: DemoBannerProps) {
+export function DemoBanner({ title, slug, price = CONSTANTS.PRICING.MINI_PROJECT }: DemoBannerProps) {
   return (
-    <div style={{
-      position: 'sticky',
-      top: 0,
-      zIndex: 9999,
-      width: '100%',
-      backgroundColor: '#09090b',
-      borderBottom: '1px solid rgba(16, 185, 129, 0.3)',
-      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.6)',
-      padding: '10px 20px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      flexWrap: 'wrap',
-      gap: '12px',
-      fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-    }}>
-      {/* Left: Brand & Back link */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-        <Link
-          href="/projects"
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '6px',
-            padding: '6px 12px',
-            borderRadius: '8px',
-            backgroundColor: 'rgba(255, 255, 255, 0.08)',
-            border: '1px solid rgba(255, 255, 255, 0.15)',
-            color: '#e4e4e7',
-            fontSize: '12px',
-            fontWeight: 700,
-            textDecoration: 'none'
-          }}
-        >
-          <ArrowLeft size={14} />
-          <span>Catalog</span>
-        </Link>
+    <div className="sticky top-0 z-[9999] w-full bg-[#09090b] border-b border-emerald-500/30 shadow-[0_4px_20px_rgba(0,0,0,0.6)]">
+      <div className="flex items-center justify-between flex-wrap gap-3 px-4 py-2.5 max-w-screen-2xl mx-auto">
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ fontSize: '13px', fontWeight: 800, color: '#ffffff' }}>
-            {title}
-          </span>
-          <span style={{
-            fontSize: '10px',
-            fontWeight: 800,
-            padding: '2px 8px',
-            borderRadius: '999px',
-            backgroundColor: 'rgba(16, 185, 129, 0.15)',
-            border: '1px solid rgba(16, 185, 129, 0.4)',
-            color: '#34d399',
-            textTransform: 'uppercase',
-            letterSpacing: '0.05em'
-          }}>
-            ⚡ Live Interactive Demo
-          </span>
+        {/* Left: back + title */}
+        <div className="flex items-center gap-3 min-w-0">
+          <Link
+            href="/projects"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/8 border border-white/15 text-zinc-300 text-xs font-bold hover:bg-white/15 transition-colors shrink-0"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            Catalog
+          </Link>
+
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="text-sm font-bold text-white truncate max-w-[200px] md:max-w-none">
+              {title}
+            </span>
+            <span className="hidden sm:inline-flex items-center text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 uppercase tracking-wide shrink-0">
+              ⚡ Live Demo
+            </span>
+          </div>
         </div>
-      </div>
 
-      {/* Middle: Deliverables pill */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '11px', color: '#a1a1aa' }}>
-        <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-          <CheckCircle2 size={13} color="#34d399" /> 100% Tested Source Code
-        </span>
-        <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-          <CheckCircle2 size={13} color="#34d399" /> 60-Pg Black Book (.docx)
-        </span>
-        <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-          <CheckCircle2 size={13} color="#34d399" /> Viva PPT (.pptx)
-        </span>
-      </div>
+        {/* Middle: deliverables — hidden on small screens */}
+        <div className="hidden lg:flex items-center gap-5 text-xs text-zinc-400">
+          {[
+            '100% Tested Code',
+            '60-Pg IEEE Black Book',
+            'Viva Defense PPT',
+          ].map(item => (
+            <span key={item} className="flex items-center gap-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+              {item}
+            </span>
+          ))}
+        </div>
 
-      {/* Right: Buy Kit button */}
-      <Link
-        href={`/projects/${slug}`}
-        style={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '8px',
-          padding: '8px 18px',
-          borderRadius: '999px',
-          background: 'linear-gradient(135deg, #10b981, #059669)',
-          color: '#ffffff',
-          fontSize: '12px',
-          fontWeight: 800,
-          textDecoration: 'none',
-          boxShadow: '0 4px 14px rgba(16, 185, 129, 0.4)'
-        }}
-      >
-        <ShoppingBag size={14} />
-        <span>Get Complete Kit (₹{price})</span>
-      </Link>
+        {/* Right: buy CTA */}
+        <Link
+          href={`/projects/${slug}`}
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-white text-xs font-bold shadow-[0_4px_14px_rgba(16,185,129,0.4)] hover:shadow-[0_4px_20px_rgba(16,185,129,0.6)] transition-all shrink-0"
+        >
+          <ShoppingBag className="w-3.5 h-3.5" />
+          Get Complete Kit — ₹{price}
+        </Link>
+      </div>
     </div>
   );
 }
