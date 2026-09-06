@@ -6,6 +6,8 @@ import { Terminal, Zap, Clock, CheckCircle2, Sparkles } from "lucide-react";
 import { isProjectAvailable } from "@/lib/available-projects";
 import { useState, useMemo } from 'react';
 import Link from "next/link";
+import { CONSTANTS } from "@/lib/constants";
+import { Bell, Check } from "lucide-react";
 
 type StatusFilter = 'ALL' | 'AVAILABLE' | 'UPCOMING';
 type TierFilter = 'ALL' | 'MINI' | 'MAJOR';
@@ -21,6 +23,31 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
     const cats = Array.from(new Set(initialProjects.map(p => p.category)));
     return cats.sort();
   }, [initialProjects]);
+
+  const [reserveModalProject, setReserveModalProject] = useState<string | null>(null);
+  const [reservedEmail, setReservedEmail] = useState('');
+  const [reserveSuccess, setReserveSuccess] = useState(false);
+
+  const handleReserveSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!reservedEmail.includes('@') || !reserveModalProject) return;
+    try {
+      const slug = reserveModalProject.toLowerCase().replace(/\s+/g, '-');
+      await fetch('/api/reservations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: reservedEmail, projectName: reserveModalProject, projectSlug: slug }),
+      });
+    } catch {
+      /* silent */
+    }
+    setReserveSuccess(true);
+    setTimeout(() => {
+      setReserveModalProject(null);
+      setReserveSuccess(false);
+      setReservedEmail('');
+    }, 3000);
+  };
 
   const availableCount = useMemo(
     () => initialProjects.filter(p => isProjectAvailable(p.slug)).length,
@@ -201,7 +228,7 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
       {displayProjects.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {displayProjects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
+            <ProjectCard key={project.id} project={project} onReserve={setReserveModalProject} />
           ))}
         </div>
       ) : (
@@ -221,6 +248,61 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
           >
             Clear All Filters
           </button>
+        </div>
+      )}
+      {/* Pre-Order Modal */}
+      {reserveModalProject && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
+          onClick={e => { if (e.target === e.currentTarget) setReserveModalProject(null); }}
+        >
+          <div className="glass-card w-full max-w-md p-6 rounded-2xl border border-purple-500/30 shadow-2xl relative z-[101]">
+            <div className="flex items-start gap-3 mb-5">
+              <div className="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-400 shrink-0">
+                <Bell className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="text-base font-bold text-white mb-0.5">Pre-Order & Early Access</h4>
+                <p className="text-xs text-zinc-400 leading-relaxed">{reserveModalProject}</p>
+              </div>
+            </div>
+
+            {reserveSuccess ? (
+              <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-sm flex items-center gap-2">
+                <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                Reserved! You'll get an email as soon as this drops.
+              </div>
+            ) : (
+              <form onSubmit={handleReserveSubmit} className="space-y-4">
+                <p className="text-xs text-zinc-400 leading-relaxed">
+                  Lock in launch-day pricing (₹{CONSTANTS.PRICING.MINI_PROJECT}–₹{CONSTANTS.PRICING.MAJOR_PROJECT}) and get emailed the instant this kit drops.
+                </p>
+                <input
+                  type="email"
+                  required
+                  placeholder="your@email.com"
+                  value={reservedEmail}
+                  onChange={e => setReservedEmail(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl bg-[#09090b] border border-white/10 text-white text-sm outline-none focus:border-purple-500/60 transition-all"
+                />
+                <div className="flex items-center justify-end gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setReserveModalProject(null)}
+                    className="text-xs font-semibold text-zinc-400 hover:text-white px-4 py-2"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="text-xs font-bold text-purple-950 bg-purple-400 hover:bg-purple-300 px-5 py-2.5 rounded-lg transition-all"
+                  >
+                    Join Waitlist
+                  </button>
+                </div>
+              </form>
+            )}
+          </div>
         </div>
       )}
     </>

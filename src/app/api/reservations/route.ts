@@ -5,7 +5,10 @@ const BREVO_API_URL = 'https://api.brevo.com/v3/smtp/email';
 
 async function sendReservationEmail(email: string, projectName: string): Promise<void> {
   const apiKey = process.env.BREVO_API_KEY;
-  if (!apiKey) return;
+  if (!apiKey) {
+    console.warn('[reservation email] BREVO_API_KEY is missing. Skipping email.');
+    return;
+  }
 
   const html = `<!DOCTYPE html><html><head><meta charset="utf-8"/></head>
 <body style="margin:0;padding:0;background:#09090b;font-family:system-ui,sans-serif;color:#f8fafc;">
@@ -43,7 +46,7 @@ async function sendReservationEmail(email: string, projectName: string): Promise
 </div></body></html>`;
 
   try {
-    await fetch(BREVO_API_URL, {
+    const res = await fetch(BREVO_API_URL, {
       method: 'POST',
       headers: { 'accept': 'application/json', 'api-key': apiKey, 'content-type': 'application/json' },
       body: JSON.stringify({
@@ -53,6 +56,13 @@ async function sendReservationEmail(email: string, projectName: string): Promise
         htmlContent: html,
       }),
     });
+    
+    if (!res.ok) {
+      const errText = await res.text().catch(() => '');
+      console.error('[reservation email] Brevo API error:', res.status, errText);
+    } else {
+      console.log('[reservation email] Successfully sent to', email);
+    }
   } catch (err) {
     console.error('[reservation email] Failed:', err);
   }

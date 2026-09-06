@@ -7,7 +7,7 @@ import { isProjectAvailable, getProjectMeta } from "@/lib/available-projects";
 
 const TRENDING_SLUGS = ['spam-classifier-nlp', 'face-attendance-system', 'crypto-portfolio-tracker', 'spaceshield-ai', 'crop-disease-detector'];
 
-export function ProjectCard({ project }: { project: Project }) {
+export function ProjectCard({ project, onReserve }: { project: Project; onReserve?: (projectName: string) => void }) {
   const isMajor     = project.tier === 'MAJOR';
   const isTrending  = TRENDING_SLUGS.includes(project.slug);
   const isAvailable = isProjectAvailable(project.slug);
@@ -15,10 +15,8 @@ export function ProjectCard({ project }: { project: Project }) {
   const href        = `/projects/${project.slug}`;
 
   return (
-    // Entire card is a link — clicking anywhere opens the detail page
-    <Link
-      href={href}
-      className={`glass-card flex flex-col hover-glow group transition-all duration-300 hover:-translate-y-1 relative overflow-hidden cursor-pointer ${
+    <div
+      className={`glass-card flex flex-col hover-glow group transition-all duration-300 hover:-translate-y-1 relative overflow-hidden ${
         isAvailable
           ? 'border-emerald-500/20 hover:border-emerald-500/50 shadow-lg shadow-emerald-500/5'
           : 'border-white/5 hover:border-white/25'
@@ -59,10 +57,11 @@ export function ProjectCard({ project }: { project: Project }) {
               {project.category}
             </span>
           </div>
-          {/* Title — underline on hover to signal clickability */}
-          <h3 className="font-display text-base font-semibold text-white group-hover:text-emerald-200 transition-colors line-clamp-2 leading-snug group-hover:underline decoration-emerald-500/40 underline-offset-2">
-            {project.title}
-          </h3>
+          <Link href={href}>
+            <h3 className="font-display text-base font-semibold text-white hover:text-emerald-200 transition-colors line-clamp-2 leading-snug hover:underline decoration-emerald-500/40 underline-offset-2">
+              {project.title}
+            </h3>
+          </Link>
         </div>
       </div>
 
@@ -105,20 +104,30 @@ export function ProjectCard({ project }: { project: Project }) {
               <span className="text-[10px] text-zinc-500 ml-1">one-time</span>
             </div>
 
-            {/* "View Details" label + arrow — the card itself navigates, so this is purely visual */}
-            <div className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all ${
-              isAvailable
-                ? 'text-zinc-950 bg-white group-hover:bg-emerald-400 shadow-md shadow-white/10'
-                : 'text-zinc-300 bg-white/5 group-hover:bg-white/10 border border-white/10'
-            }`}>
-              <span>{isAvailable ? 'View & Buy' : 'View Details'}</span>
-              <ArrowRight className={`h-3 w-3 group-hover:translate-x-0.5 transition-transform ${
-                isAvailable ? 'text-zinc-950' : 'text-zinc-500'
-              }`} />
+            <div className="flex items-center gap-2">
+              <Link href={href} className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all group/btn ${
+                isAvailable
+                  ? 'text-zinc-950 bg-white hover:bg-emerald-400 shadow-md shadow-white/10'
+                  : 'text-zinc-300 bg-white/5 hover:bg-white/10 border border-white/10'
+              }`}>
+                <span>{isAvailable ? 'View & Buy' : 'View Details'}</span>
+                <ArrowRight className={`h-3 w-3 group-hover/btn:translate-x-0.5 transition-transform ${
+                  isAvailable ? 'text-zinc-950' : 'text-zinc-500 group-hover/btn:text-white'
+                }`} />
+              </Link>
+              
+              {!isAvailable && (
+                <button
+                  onClick={() => onReserve ? onReserve(project.title) : (window.location.href = href)}
+                  className="flex items-center gap-1.5 text-xs font-bold text-purple-200 hover:text-white bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/30 px-3 py-1.5 rounded-lg transition-all"
+                >
+                  Pre-Book
+                </button>
+              )}
             </div>
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
