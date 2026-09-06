@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AeroFuel Predictor AI
+### Academic Project Bundle — SubmitKit.in
 
-## Getting Started
+> Aviation fuel burn telemetry and route optimization neural network for commercial airliners.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Quick Start
+
+### Windows
+```
+Double-click  run.bat
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Mac / Linux
+```bash
+bash run.sh
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**That's it.** Node.js is the only requirement. The launcher installs all packages automatically on first run.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**Runs at:** http://localhost:3010
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Project Pages
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Page | URL | Description |
+|------|-----|-------------|
+| Landing | `/` | Hero with 3-sector flight simulator (JFK→LHR, DXB→SIN, HND→SFO) |
+| Dashboard | `/dashboard` | Full AI fuel burn predictor with payload inputs & route calculator |
+| Analytics | `/analytics` | Fleet analytics charts — burn rates, efficiency trends |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## Tech Stack
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Framework:** Next.js 16 (React 19, TypeScript)
+- **Charts:** Recharts
+- **Icons:** Lucide React
+- **Styling:** Tailwind CSS v4
+- **Computation:** Pure client-side physics engine (no external API)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## System Requirements
+
+- Node.js 18+ (LTS recommended) — https://nodejs.org
+- 512 MB free RAM
+- Modern browser (Chrome, Edge, Firefox)
+
+---
+
+## What's Included in the Bundle
+
+- ✅ Complete source code with 1-click launcher
+- ✅ 60-page IEEE Black Book Report (.docx)
+- ✅ Viva Defense Presentation (.pptx) with speaker notes
+- ✅ Top 25 Viva Q&A Answers
+
+---
+
+*Sold as educational reference material. SubmitKit.in*

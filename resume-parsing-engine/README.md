@@ -1,45 +1,70 @@
-# TalentScan AI — AI Resume Parsing & ATS Scoring Engine
+# TalentScan AI — ATS & Resume Parsing Engine
+### Academic Project Bundle — SubmitKit.in
 
-An enterprise Applicant Tracking System (ATS) intelligence suite that parses raw resumes, extracts structured candidate vectors, calculates job description compatibility scores, and offers a recruiter candidate leaderboard and tailored interview question generator.
+> NLP entity extractor that scores candidates against job descriptions and conducts viva defense question synthesis.
 
-## 🌟 Key Features
+---
 
-1. **Intelligent Resume Parser & Entity Extractor**
-   - Natural Language Processing (NLP) and regex entity recognition.
-   - Extracts candidate contact vectors (Email, Phone, Location, LinkedIn, GitHub, Portfolio).
-   - Categorizes skills into Languages, Frameworks, Cloud & DevOps, Databases, Tools, and Soft Skills.
-   - Computes career duration, highlights work experience tenures, and parses educational degrees.
+## Quick Start
 
-2. **Multi-Dimensional ATS Scoring Engine**
-   - Evaluates overall job compatibility (0–100%) with animated radial score gauges and grades (A+, A, B, C, D).
-   - Breaks down scoring weights: Required Skills (50%), Experience Longevity (30%), Education (10%), Formatting (10%).
-   - Highlights matched mandatory skills vs. missing critical keywords.
-   - Pinpoints concrete, actionable bullet-point suggestions to optimize resumes and beat automated ATS filters.
-
-3. **Recruiter Leaderboard & Candidate Pipeline**
-   - Comparative evaluation of multiple applicants against any job opening.
-   - Sort candidates by ATS score, total years of experience, or name.
-   - Manage hiring lifecycle stages (Applied ➔ Screening ➔ Shortlisted ➔ Interview ➔ Offer).
-
-4. **Tailored Interview & Viva Question Generator**
-   - Automatically constructs contextual technical questions, system architecture inquiries, and viva defense scenarios based on the candidate's exact profile and missing skill gaps.
-   - Includes evaluation rubrics and model answer benchmarks.
-
-## 🚀 Quick Start
-
-### 1-Click Startup (Windows)
-Double-click `run.bat` in the project root.
-
-### Manual Startup
-```bash
-npm install
-npm run dev
+### Windows
+```
+Double-click  run.bat
 ```
 
-Open [http://localhost:3000](http://localhost:3000) (or the assigned port) in your browser.
+### Mac / Linux
+```bash
+bash run.sh
+```
 
-## 🛠️ Tech Stack
-- **Framework**: Next.js 15 (App Router)
-- **Language**: TypeScript
-- **Styling**: Vanilla CSS with modern Glassmorphism and Executive Dark Mode
-- **Icons**: Lucide React
+**Runs at:** http://localhost:3005
+
+---
+
+## Project Pages
+
+| Page | URL | Description |
+|------|-----|-------------|
+| Landing | `/` | Hero with 3 preset candidate profiles |
+| Dashboard | `/dashboard` | Parser Studio: paste/upload resume → structured entity extraction |
+| Candidates | `/candidates` | ATS leaderboard with dynamic scoring + add candidate modal |
+| Job Matcher | `/matcher` | JD vs resume ATS score with skills gap breakdown |
+| Interview | `/interview` | Auto-generated technical viva questions with rubrics |
+
+---
+
+## Features
+
+- **Resume Parser** — Regex-based NLP: email, phone, social links, 50+ skill taxonomy, experience years
+- **ATS Scoring** — Weighted score: 50% skills, 30% experience, 10% education, 10% formatting
+- **Job Matcher** — Cosine-similarity-style skills overlap with circular SVG gauge
+- **Interview Generator** — Questions tailored to candidate's stack
+- **Dossier Export** — Downloads candidate profile as `.txt` file
+
+---
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (React 19, TypeScript)
+- **Styling:** Pure CSS custom design system
+- **Parser:** Pure TypeScript regex NLP — no external API
+- **Charts:** Recharts
+
+---
+
+## System Requirements
+
+- Node.js 18+ — https://nodejs.org
+
+---
+
+## What's Included
+
+- ✅ Complete source code + 1-click launcher
+- ✅ 60-page IEEE Black Book Report (.docx)
+- ✅ Viva Defense Presentation (.pptx)
+- ✅ Top 25 Viva Q&A Answers
+
+---
+
+*Sold as educational reference material. SubmitKit.in*

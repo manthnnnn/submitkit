@@ -1,13 +1,12 @@
 @echo off
 setlocal EnableDelayedExpansion
-title AeroFuel Predictor AI - SubmitKit
+title Smart Expense AI Tracker - SubmitKit
 
 color 0A
 cls
 echo.
 echo  ============================================================
-echo   AEROFUEL PREDICTOR AI
-echo   Aviation Fuel Burn ^& Route Optimization Engine
+echo   SMART EXPENSE AI TRACKER ^& AUDITOR
 echo   Academic Project Bundle ^| SubmitKit.in
 echo  ============================================================
 echo.
@@ -17,6 +16,7 @@ where node >nul 2>nul
 if %errorlevel% neq 0 (
     echo.
     echo  [ERROR] Node.js not found on your system!
+    echo.
     echo  Please install Node.js LTS from: https://nodejs.org/en/download
     echo  Then double-click this run.bat file again.
     echo.
@@ -29,32 +29,35 @@ echo.
 
 echo [CHECK] Verifying dependencies...
 if not exist "node_modules\" (
-    echo [SETUP] First-time setup. Installing packages ~30-60s...
+    echo [SETUP] First-time setup detected. Installing packages...
+    echo [INFO]  This takes 30-60 seconds only on the very first run.
+    echo.
     call npm install --no-audit --no-fund --loglevel=error
     if %errorlevel% neq 0 (
-        echo [ERROR] Package install failed. Check internet connection.
+        echo.
+        echo [ERROR] Package installation failed. Check your internet connection.
         pause
         exit /b 1
     )
-    echo [OK] Packages installed.
+    echo [OK] Packages installed successfully.
 ) else (
     echo [OK] Dependencies already installed.
 )
 echo.
 
-echo [START] Launching AeroFuel Predictor on port 3010...
+echo [START] Launching Smart Expense Tracker on port 3009...
 echo.
 echo  ============================================================
-echo   PROJECT RUNNING AT:  http://localhost:3010
-echo   DASHBOARD:           http://localhost:3010/dashboard
-echo   ANALYTICS:           http://localhost:3010/analytics
+echo   PROJECT RUNNING AT: http://localhost:3009
+echo   DASHBOARD:          http://localhost:3009/dashboard
 echo.
-echo   Keep this window open during your presentation.
+echo   Keep this window open while using the project.
 echo   Press Ctrl+C to stop the server.
 echo  ============================================================
 echo.
 
-start "" "http://localhost:3010"
-call npm run dev -- -p 3010 -H 0.0.0.0
+start "" "http://localhost:3009"
+call npm run dev -- -p 3009 -H 0.0.0.0
 echo.
+echo Server stopped. Press any key to exit.
 pause >nul

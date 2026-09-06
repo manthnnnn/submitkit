@@ -1,36 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# HealthSync EHR & Telehealth Portal
+### Academic Project Bundle — SubmitKit.in
 
-## Getting Started
+> Unified hospital network EHR with live telemetry & FDA Drug-Drug Interaction Safety Scanner.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Quick Start
+
+### Windows
+```
+Double-click  run.bat
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Mac / Linux
+```bash
+bash run.sh
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**Runs at:** http://localhost:3003
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## Project Pages
 
-To learn more about Next.js, take a look at the following resources:
+| Page | URL | Description |
+|------|-----|-------------|
+| Landing | `/` | Commercial landing with patient chart tabs (vitals/labs/meds) |
+| Dashboard | `/dashboard` | 3-patient EHR switcher, vital charts, FDA DDI scanner |
+| Records | `/records` | Patient records listing |
+| Appointments | `/appointments` | Appointment scheduler |
+| Vitals | `/vitals` | Real-time vitals monitoring |
+| Team | `/team` | Clinical staff directory |
+| Settings | `/settings` | System configuration |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Tech Stack
 
-## Deploy on Vercel
+- **Framework:** Next.js 16 (React 19, TypeScript)
+- **Charts:** Recharts
+- **Date Handling:** date-fns
+- **Styling:** Tailwind CSS v4
+- **Data:** All patient/drug data hardcoded — no database or external API required
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## System Requirements
+
+- Node.js 18+ — https://nodejs.org
+
+---
+
+## What's Included
+
+- ✅ Complete source code + 1-click launcher
+- ✅ 60-page IEEE Black Book Report (.docx)
+- ✅ Viva Defense Presentation (.pptx)
+- ✅ Top 25 Viva Q&A Answers
+
+---
+
+*Sold as educational reference material. SubmitKit.in*

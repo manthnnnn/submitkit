@@ -1,18 +1,68 @@
-# DevForge Cloud IDE & Remote Code Compiler
+# DevForge Cloud Sandbox & AI Code Doctor
+### Academic Project Bundle — SubmitKit.in
 
-A full-fledged cloud development environment and algorithm practice sandbox (LeetCode & Replit style).
+> Multi-language instant runner (JS, Python, SQL) with Big-O complexity analyzer and 1-click optimization.
 
-## 🌟 Features
-- **Multi-Language Web IDE**: JavaScript, TypeScript, Python, and SQL with code editing, line numbers, and dark developer aesthetic.
-- **Automated Test Case Runner**: Evaluates submissions against real problem test cases with runtime execution benchmarks (ms) and Pass/Fail verification.
-- **In-Memory SQL Database Playground**: Pre-loaded relational database (`users`, `transactions`, `products`) to run real SQL queries and view formatted output tables.
-- **Algorithmic Challenge Library**: Pre-loaded coding problems with constraints, examples, and starter templates.
-- **Big-O Complexity Heuristic**: Estimates Time and Space complexity.
+---
 
-## 🚀 Quick Start
-Double-click `run.bat` or run:
-```bash
-npm install
-npm run dev
+## Quick Start
+
+### Windows
 ```
-Open [http://localhost:3006](http://localhost:3006).
+Double-click  run.bat
+```
+
+### Mac / Linux
+```bash
+bash run.sh
+```
+
+**Runs at:** http://localhost:3006
+
+---
+
+## Project Pages
+
+| Page | URL | Description |
+|------|-----|-------------|
+| Landing | `/` | Hero with 3-tab code playground (JS / Python / SQL) |
+| Dashboard | `/dashboard` | Full IDE: problem selector, code editor, test runner, AI Code Doctor |
+
+---
+
+## Features
+
+- **JavaScript Execution** — Real JS runs in browser sandbox via `new Function()`
+- **Python (Simulated)** — Python-like syntax executed as JS
+- **SQL Playground** — In-memory relational engine with users/transactions/products tables
+- **AI Code Doctor** — Detects O(N²) patterns, suggests HashMap optimizations
+- **4 LeetCode Problems** — Two Sum, Max Subarray, FizzBuzz, Binary Search with test cases
+- **Step Visualizer** — Algorithm execution step-by-step trace
+
+---
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (React 19, TypeScript)
+- **Styling:** Pure CSS custom design system
+- **Execution:** Browser-side `new Function()` sandbox — no server-side execution
+- **Database:** In-memory JavaScript objects
+
+---
+
+## System Requirements
+
+- Node.js 18+ — https://nodejs.org
+
+---
+
+## What's Included
+
+- ✅ Complete source code + 1-click launcher
+- ✅ 60-page IEEE Black Book Report (.docx)
+- ✅ Viva Defense Presentation (.pptx)
+- ✅ Top 25 Viva Q&A Answers
+
+---
+
+*Sold as educational reference material. SubmitKit.in*

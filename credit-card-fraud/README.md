@@ -1,18 +1,61 @@
-# SentinelPay AI — Credit Card Fraud Detection & Financial Risk Radar
+# SentinelPay AI — Credit Card Fraud Detection Engine
+### Academic Project Bundle — SubmitKit.in
 
-An enterprise-grade autonomous fraud detection and financial risk mitigation platform for modern banking and payment gateways.
+> Sub-12ms financial fraud interceptor with impossible travel detection and card velocity flood analysis.
 
-## 🌟 Key Features
-- **Live Transaction Streaming Simulator**: Real-time simulation of incoming card swipes across global merchants.
-- **Multi-Factor Anomaly Scoring**: Real-time ML calculation of risk scores (0-100%), detecting impossible travel velocity, anomalous amounts, and Tor proxy networks in sub-30ms.
-- **Interactive Security Rule Engine**: Configure custom anti-fraud rules, calibrate dollar thresholds, and simulate block rate impact.
-- **Cardholder Dispute Desk**: Complete workflow for triaging customer chargebacks, reviewing forensic evidence, and issuing refunds.
-- **Forensic Loss Analytics**: Statistical breakdown of fraud vectors, merchant categories, and return-on-investment savings.
+---
 
-## 🚀 Quick Start
-Double-click `run.bat` or run:
-```bash
-npm install
-npm run dev
+## Quick Start
+
+### Windows
 ```
-Open [http://localhost:3007](http://localhost:3007).
+Double-click  run.bat
+```
+
+### Mac / Linux
+```bash
+bash run.sh
+```
+
+**Runs at:** http://localhost:3007
+
+---
+
+## Project Pages
+
+| Page | URL | Description |
+|------|-----|-------------|
+| Landing | `/` | Hero with live fraud interception demo + ROI calculator |
+| Dashboard | `/dashboard` | Live transaction stream, world map, card forensics inspector |
+| Analytics | `/analytics` | Fraud trend charts, detection rates |
+| Disputes | `/disputes` | Dispute management queue with resolution workflow |
+| Rules | `/rules` | Real-time fraud rule engine with toggle/add/sandbox |
+
+---
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (React 19, TypeScript)
+- **Styling:** Pure CSS (no Tailwind — fully custom design system)
+- **Data:** Hardcoded simulation data — no database or external API required
+- **Audio:** Web Audio API (alert sounds on fraud detection)
+
+---
+
+## System Requirements
+
+- Node.js 18+ — https://nodejs.org
+- Modern browser with Web Audio API support (Chrome recommended)
+
+---
+
+## What's Included
+
+- ✅ Complete source code + 1-click launcher
+- ✅ 60-page IEEE Black Book Report (.docx)
+- ✅ Viva Defense Presentation (.pptx)
+- ✅ Top 25 Viva Q&A Answers
+
+---
+
+*Sold as educational reference material. SubmitKit.in*

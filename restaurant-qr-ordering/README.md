@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# QuickBite — Restaurant QR Ordering & Kitchen KDS
+### Academic Project Bundle — SubmitKit.in
 
-## Getting Started
+> Contactless table-side QR ordering, interactive menu, live kitchen display (KDS), and digital receipts.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Quick Start
+
+### Windows
+```
+Double-click  run.bat
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Mac / Linux
+```bash
+bash run.sh
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+**Runs at:** http://localhost:3002
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The launcher automatically:
+1. Installs npm packages (first run only)
+2. Creates the SQLite database
+3. Seeds 2 restaurants, 8 menu items, 2 live orders
+4. Opens your browser
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## Project Pages
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Page | URL | Description |
+|------|-----|-------------|
+| Landing | `/` | QR code generator with table selector |
+| Customer Menu | `/m/spice-lounge?table=1` | Full mobile ordering UI — search, cart, AI taste matcher |
+| Kitchen KDS | `/admin/spice-lounge/kds` | Real-time kitchen display with Kanban columns |
+| QR Manager | `/admin/spice-lounge` | Print QR codes for all tables |
+| Order Tracking | `/m/spice-lounge/order/[id]` | Live order status (polls every 3 seconds) |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## Test on a Mobile Phone
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Make sure your phone is on the same Wi-Fi as your laptop
+2. Open the app at `http://YOUR_LAPTOP_IP:3002` on your phone
+3. Or scan the real QR code shown in the app — it encodes your LAN IP automatically
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## Tech Stack
+
+- **Framework:** Next.js 16 (React 19, TypeScript)
+- **Database:** SQLite via Prisma ORM
+- **QR Generation:** `qrcode` npm package (real, scannable QR codes)
+- **Animations:** Framer Motion
+- **Styling:** Tailwind CSS v4
+
+---
+
+## System Requirements
+
+- Node.js 18+ — https://nodejs.org
+
+---
+
+## What's Included
+
+- ✅ Complete source code + 1-click launcher
+- ✅ 30-page IEEE Black Book Report (.docx)
+- ✅ Viva Defense Presentation (.pptx)
+- ✅ Top 25 Viva Q&A Answers
+
+---
+
+*Sold as educational reference material. SubmitKit.in*
