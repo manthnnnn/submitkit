@@ -225,9 +225,10 @@ export function FleetSection() {
                   const isMajor = price === CONSTANTS.PRICING.MAJOR_PROJECT;
 
                   return (
-                    <div
+                    <Link
                       key={project.slug}
-                      className="glass-card flex flex-col rounded-2xl border border-emerald-500/20 hover:border-emerald-500/45 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden p-6 bg-gradient-to-b from-white/[0.03] to-transparent shadow-xl shadow-emerald-500/5 group"
+                      href={`/projects/${project.slug}`}
+                      className="glass-card flex flex-col rounded-2xl border border-emerald-500/20 hover:border-emerald-500/50 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden p-6 bg-gradient-to-b from-white/[0.03] to-transparent shadow-xl shadow-emerald-500/5 group cursor-pointer"
                     >
                       {/* Tier badge top-right */}
                       <div className="absolute top-3 right-3">
@@ -250,7 +251,7 @@ export function FleetSection() {
                       </div>
 
                       {/* Title */}
-                      <h3 className="text-base font-display font-bold text-white mb-2 leading-snug pr-12 group-hover:text-emerald-50 transition-colors">
+                      <h3 className="text-base font-display font-bold text-white mb-2 leading-snug pr-12 group-hover:text-emerald-100 transition-colors group-hover:underline decoration-emerald-500/40 underline-offset-2">
                         {project.name}
                       </h3>
                       <p className="text-zinc-400 text-xs leading-relaxed mb-4">
@@ -287,15 +288,12 @@ export function FleetSection() {
                           <span className="text-lg font-bold text-white">₹{price}</span>
                           <span className="text-[10px] text-zinc-500 ml-1">one-time</span>
                         </div>
-                        <Link
-                          href={`/projects/${project.slug}`}
-                          className="flex items-center gap-1 text-xs font-bold text-zinc-950 bg-white hover:bg-zinc-100 px-4 py-2 rounded-xl transition-all shadow-md shadow-white/10 group-hover:shadow-[0_0_15px_rgba(255,255,255,0.2)]"
-                        >
-                          Get Kit
-                          <ArrowRight className="w-3.5 h-3.5" />
-                        </Link>
+                        <div className="flex items-center gap-1 text-xs font-bold text-zinc-950 bg-white group-hover:bg-emerald-400 px-4 py-2 rounded-xl transition-all shadow-md shadow-white/10">
+                          View & Buy
+                          <ArrowRight className="w-3.5 h-3.5 ml-0.5" />
+                        </div>
                       </div>
-                    </div>
+                    </Link>
                   );
                 })}
               </div>
