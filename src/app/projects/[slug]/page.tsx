@@ -211,34 +211,39 @@ export default async function ProjectDetailPage({
                 )}
               </div>
 
-              {/* New See It In Action Showcase */}
+              {/* Premium Horizontal Screenshot Showcase */}
               {SHOWCASE_DATA[p.slug] && SHOWCASE_DATA[p.slug].length > 0 && (
-                <div className="mt-10">
-                  <h3 className="text-lg font-display font-semibold text-white mb-6 flex items-center gap-2">
-                    <Sparkles className="h-4 w-4 text-brand-400" />
-                    See It In Action
+                <div className="mt-8">
+                  <h3 className="text-lg font-display font-semibold text-white mb-4 flex items-center gap-2.5">
+                    <div className="p-1.5 bg-zinc-800/50 rounded-lg"><ImageIcon className="h-4 w-4 text-zinc-400" /></div>
+                    Project Screenshots
                   </h3>
-                  <div className="space-y-10">
+                  <div className="flex gap-4 overflow-x-auto pb-6 snap-x snap-mandatory scrollbar-hide">
                     {SHOWCASE_DATA[p.slug].map((item, idx) => (
-                      <div key={idx} className="space-y-3">
-                        <div className="flex items-center gap-3">
-                          <span className="text-xs font-mono font-bold text-brand-400 bg-brand-500/10 px-2 py-1 rounded-md border border-brand-500/20">
-                            0{idx + 1}
-                          </span>
-                          <h4 className="text-base font-medium text-white">{item.title}</h4>
-                        </div>
-                        <div className="aspect-video w-full rounded-2xl border border-white/10 overflow-hidden bg-zinc-900 shadow-xl group">
+                      <div key={idx} className="shrink-0 w-[85%] md:w-[70%] flex flex-col gap-3 snap-start group cursor-pointer">
+                        <div className="aspect-video w-full rounded-2xl border border-white/10 overflow-hidden bg-zinc-950 shadow-xl relative">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img
                             src={item.img}
                             alt={item.title}
                             loading="lazy"
-                            className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-300"
+                            className="w-full h-full object-cover group-hover:scale-105 group-hover:opacity-80 transition-all duration-500"
                           />
+                          <div className="absolute inset-0 bg-gradient-to-t from-[#09090b]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-5">
+                            <span className="text-white font-medium flex items-center gap-2">
+                              <Sparkles className="w-4 h-4 text-brand-400" /> View Fullscreen
+                            </span>
+                          </div>
                         </div>
-                        <p className="text-sm text-zinc-400 leading-relaxed max-w-3xl">
-                          {item.desc}
-                        </p>
+                        <div className="px-1">
+                          <h4 className="text-sm font-semibold text-white mb-1 flex items-center gap-2">
+                            <span className="text-[10px] bg-brand-500/20 text-brand-400 px-1.5 py-0.5 rounded font-mono">0{idx + 1}</span>
+                            {item.title}
+                          </h4>
+                          <p className="text-xs text-zinc-400 leading-relaxed">
+                            {item.desc}
+                          </p>
+                        </div>
                       </div>
                     ))}
                   </div>
