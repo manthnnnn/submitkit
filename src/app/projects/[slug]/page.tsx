@@ -10,11 +10,12 @@ import { HowToRun } from "@/components/ui/how-to-run";
 import {
   CheckCircle2, ChevronRight, FileText, MonitorPlay,
   Presentation, TerminalSquare, Lock, Star, Zap,
-  ShieldCheck, Download, BookOpen, Play, ImageIcon
+  ShieldCheck, Download, BookOpen, Play, ImageIcon, Sparkles
 } from "lucide-react";
 import Link from "next/link";
 import { Metadata } from 'next';
 import { isProjectAvailable } from "@/lib/available-projects";
+import { SHOWCASE_DATA } from "@/lib/project-showcase";
 
 // ─── Metadata ──────────────────────────────────────────────
 export async function generateMetadata(
@@ -210,31 +211,37 @@ export default async function ProjectDetailPage({
                 )}
               </div>
 
-              {/* Screenshots gallery */}
-              {hasShots ? (
-                <div>
-                  <p className="text-xs text-zinc-500 font-medium mb-3 flex items-center gap-1.5">
-                    <ImageIcon className="w-3.5 h-3.5" /> Project Screenshots
-                  </p>
-                  <div className="flex gap-3 overflow-x-auto pb-3 snap-x scrollbar-hide">
-                    {p.demo_screenshots.map((img, i) => (
-                      <div key={i} className="shrink-0 w-56 aspect-video rounded-xl border border-white/10 overflow-hidden bg-zinc-900 snap-center hover:border-white/25 transition-colors group">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={img}
-                          alt={`${p.title} screenshot ${i + 1}`}
-                          className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
-                        />
+              {/* New See It In Action Showcase */}
+              {SHOWCASE_DATA[p.slug] && SHOWCASE_DATA[p.slug].length > 0 && (
+                <div className="mt-10">
+                  <h3 className="text-lg font-display font-semibold text-white mb-6 flex items-center gap-2">
+                    <Sparkles className="h-4 w-4 text-brand-400" />
+                    See It In Action
+                  </h3>
+                  <div className="space-y-10">
+                    {SHOWCASE_DATA[p.slug].map((item, idx) => (
+                      <div key={idx} className="space-y-3">
+                        <div className="flex items-center gap-3">
+                          <span className="text-xs font-mono font-bold text-brand-400 bg-brand-500/10 px-2 py-1 rounded-md border border-brand-500/20">
+                            0{idx + 1}
+                          </span>
+                          <h4 className="text-base font-medium text-white">{item.title}</h4>
+                        </div>
+                        <div className="aspect-video w-full rounded-2xl border border-white/10 overflow-hidden bg-zinc-900 shadow-xl group">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={item.img}
+                            alt={item.title}
+                            loading="lazy"
+                            className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity duration-300"
+                          />
+                        </div>
+                        <p className="text-sm text-zinc-400 leading-relaxed max-w-3xl">
+                          {item.desc}
+                        </p>
                       </div>
                     ))}
                   </div>
-                </div>
-              ) : (
-                <div className="glass-card rounded-xl p-4 flex items-center gap-3">
-                  <ImageIcon className="w-4 h-4 text-zinc-600 shrink-0" />
-                  <p className="text-zinc-500 text-sm">
-                    Screenshots will be added shortly. Download the project to see the full running application.
-                  </p>
                 </div>
               )}
             </section>
