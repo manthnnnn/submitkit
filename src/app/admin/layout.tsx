@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Layers, LayoutDashboard, Package, ShoppingCart } from "lucide-react";
+import { Layers, LayoutDashboard, Package, ShoppingCart, Clock } from "lucide-react";
 import { LogoutButton } from "@/components/ui/logout-button";
 
 const NAV = [
-  { href: '/admin',          label: 'Dashboard', Icon: LayoutDashboard, exact: true },
-  { href: '/admin/projects', label: 'Projects',  Icon: Package,         exact: false },
-  { href: '/admin/orders',   label: 'Orders',    Icon: ShoppingCart,    exact: false },
+  { href: '/admin',          label: 'Dashboard',  Icon: LayoutDashboard, exact: true },
+  { href: '/admin/projects', label: 'Projects',   Icon: Package,         exact: false },
+  { href: '/admin/orders',   label: 'Orders',     Icon: ShoppingCart,    exact: false },
+  { href: '/admin/preorders', label: 'Pre-orders', Icon: Clock,           exact: false },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

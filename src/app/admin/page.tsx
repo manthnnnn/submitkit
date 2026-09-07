@@ -1,6 +1,6 @@
 import { createAdminClient } from '@/lib/supabase/admin';
 import { formatCurrency } from '@/lib/utils';
-import { IndianRupee, Package, ShoppingCart, TrendingUp, AlertTriangle, Activity } from 'lucide-react';
+import { IndianRupee, Package, ShoppingCart, TrendingUp, AlertTriangle, Activity, Clock } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,18 +11,21 @@ async function fetchStats() {
     { count: projectCount, error: e1 },
     { data: paidOrders,    error: e2 },
     { count: pendingOrders,error: e3 },
+    preOrderRes,
   ] = await Promise.all([
     supabase.from('projects').select('*', { count: 'exact', head: true }),
     supabase.from('orders').select('amount_paid').eq('status', 'PAID'),
     supabase.from('orders').select('*', { count: 'exact', head: true }).eq('status', 'PENDING'),
+    supabase.from('pre_orders').select('*', { count: 'exact', head: true }),
   ]);
 
   if (e1 || e2 || e3) throw new Error('Supabase query failed');
 
   const totalRevenue   = paidOrders?.reduce((s, o) => s + o.amount_paid, 0) ?? 0;
   const totalPaidCount = paidOrders?.length ?? 0;
+  const preOrderCount  = preOrderRes?.count ?? 0;
 
-  return { projectCount: projectCount ?? 0, totalRevenue, totalPaidCount, pendingOrders: pendingOrders ?? 0 };
+  return { projectCount: projectCount ?? 0, totalRevenue, totalPaidCount, pendingOrders: pendingOrders ?? 0, preOrderCount };
 }
 
 export default async function AdminDashboard() {
@@ -82,6 +85,13 @@ export default async function AdminDashboard() {
       colorBg:  'bg-orange-500/10',
       colorIcon:'text-orange-400',
     },
+    {
+      label:    'Pre-orders',
+      value:    String(stats.preOrderCount),
+      Icon:     Clock,
+      colorBg:  'bg-indigo-500/10',
+      colorIcon:'text-indigo-400',
+    },
   ];
 
   return (
@@ -94,7 +104,7 @@ export default async function AdminDashboard() {
         </span>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-10">
         {statCards.map(({ label, value, Icon, colorBg, colorIcon }) => (
           <div key={label} className="bg-slate-900 border border-slate-800 p-5 rounded-xl hover:border-slate-700 transition-colors">
             <div className="flex items-center justify-between mb-3">
