@@ -7,6 +7,7 @@ import {
   Layers, LayoutDashboard, Package, ShoppingCart, Clock, BarChart3, LogOut,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import { NavProgress } from './components/nav-progress';
 
 const NAV_SECTIONS: {
   label: string;
@@ -186,6 +187,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   return (
     <div className="min-h-screen flex" style={{ background: '#09090b' }}>
+      <NavProgress />
 
       {/* Ambient glow orbs */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">

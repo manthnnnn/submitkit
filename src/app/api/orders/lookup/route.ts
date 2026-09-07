@@ -2,6 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { checkRateLimit, getClientIP } from '@/lib/rate-limit';
 
+/**
+ * POST /api/orders/lookup
+ * Accepts short ID (A3F9B2C1), full UUID, Razorpay order_id, or payment_id.
+ *
+ * Strategy for short ID: Supabase PostgREST doesn't support ::text casts in
+ * .filter(), so we use a Postgres function via .rpc() instead. If RPC isn't
+ * available we fall back to fetching all IDs and filtering in JS (safe since
+ * we only pull the id column and it's rate-limited).
+ */
 export async function POST(req: NextRequest) {
   const ip = getClientIP(req);
   const rl = checkRateLimit(`lookup:${ip}`, { maxRequests: 15, windowSeconds: 60 });
@@ -16,58 +25,86 @@ export async function POST(req: NextRequest) {
   const raw = (body.query ?? '').trim();
   if (!raw) return NextResponse.json({ error: 'Please enter your Order ID.' }, { status: 400 });
 
-  const lower = raw.toLowerCase();
+  const lower = raw.toLowerCase().replace(/\s+/g, '');
   const supabase = createAdminClient();
 
   const FIELDS = 'id, status, download_count, download_limit, has_personalization, customer_name, projects(title)';
 
-  // ── Strategy 1: full UUID ──────────────────────────────────────────────
+  // ── 1. Full UUID ──────────────────────────────────────────────────────────
   const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(raw);
   if (isUUID) {
     const { data } = await supabase.from('orders').select(FIELDS).eq('id', lower).maybeSingle();
     if (data) return buildResponse(data);
   }
 
-  // ── Strategy 2: Razorpay order_id ─────────────────────────────────────
-  const isRazorpay = /^order_/i.test(raw);
-  if (isRazorpay) {
-    const { data } = await supabase.from('orders').select(FIELDS).ilike('order_id', raw).limit(1).maybeSingle();
+  // ── 2. Razorpay order_id (order_xxx) ─────────────────────────────────────
+  if (/^order_/i.test(raw)) {
+    const { data } = await supabase.from('orders').select(FIELDS).eq('order_id', raw).limit(1).maybeSingle();
     if (data) return buildResponse(data);
   }
 
-  // ── Strategy 3: Short ID (first 8 hex chars of UUID) ──────────────────
-  // UUID format: c2aefc63-xxxx-xxxx-xxxx-xxxxxxxxxxxx
-  // We use a Postgres RPC / raw filter with text cast since ilike on UUID may fail
-  const isShortId = /^[0-9a-f]{6,12}$/i.test(raw);
+  // ── 3. Razorpay payment_id (pay_xxx) ─────────────────────────────────────
+  if (/^pay_/i.test(raw)) {
+    const { data } = await supabase.from('orders').select(FIELDS).eq('payment_id', raw).limit(1).maybeSingle();
+    if (data) return buildResponse(data);
+  }
+
+  // ── 4. Short ID — 6–12 hex chars ─────────────────────────────────────────
+  // PostgREST doesn't support ::text cast in .filter(), so we use a raw
+  // Postgres function. If the function doesn't exist we fall back to JS filter.
+  const isShortId = /^[0-9a-f]{6,12}$/i.test(lower);
   if (isShortId) {
-    // Use textSearch via cast — Supabase supports filter on uuid::text
-    // We do: id::text ilike 'c2aefc63%'
-    const { data } = await supabase
+    // Strategy A: try Supabase RPC (requires function find_order_by_prefix)
+    try {
+      const { data: rpcData } = await supabase.rpc('find_order_by_prefix', { prefix: lower });
+      if (rpcData && (rpcData as any).id) return buildResponse(rpcData as any);
+    } catch { /* function may not exist — fall through to Strategy B */ }
+
+    // Strategy B: fetch all order IDs (only id column) and filter in JS
+    // This is safe because: (a) id is not PII, (b) rate-limited to 15/min,
+    // (c) typical order count is low enough to be negligible
+    const { data: allIds } = await supabase
+      .from('orders')
+      .select('id')
+      .order('created_at', { ascending: false })
+      .limit(5000);
+
+    const matched = (allIds ?? []).find((o: any) =>
+      (o.id as string).replace(/-/g, '').startsWith(lower) ||
+      (o.id as string).split('-')[0] === lower
+    );
+
+    if (matched) {
+      const { data } = await supabase
+        .from('orders')
+        .select(FIELDS)
+        .eq('id', matched.id)
+        .single();
+      if (data) return buildResponse(data);
+    }
+  }
+
+  // ── 5. Partial match on Razorpay order_id ─────────────────────────────────
+  // Sometimes students copy partial Razorpay IDs from emails
+  if (raw.length >= 6) {
+    const { data: partial } = await supabase
       .from('orders')
       .select(FIELDS)
-      .filter('id::text', 'ilike', `${lower}%`)
+      .ilike('order_id', `%${raw}%`)
       .limit(1)
       .maybeSingle();
-    if (data) return buildResponse(data);
+    if (partial) return buildResponse(partial);
   }
 
-  // ── Strategy 4: Razorpay payment_id ───────────────────────────────────
-  const isPaymentId = /^pay_/i.test(raw);
-  if (isPaymentId) {
-    const { data } = await supabase.from('orders').select(FIELDS).ilike('payment_id', raw).limit(1).maybeSingle();
-    if (data) return buildResponse(data);
-  }
-
-  // ── Nothing matched ────────────────────────────────────────────────────
   return NextResponse.json({
-    error: `Order not found for "${raw.toUpperCase()}". Double-check your Order ID — it's the 8-character code in your confirmation email (e.g. C2AEFC63).`,
+    error: `No order found for "${raw.toUpperCase()}". Make sure you're using the 8-character code from your confirmation email — e.g. FD5EF7F6. It's shown in large text at the top of the email.`,
   }, { status: 404 });
 }
 
 function buildResponse(order: any): NextResponse {
   if (order.status !== 'PAID') {
     return NextResponse.json({
-      error: 'This order has not been paid yet. If you just paid, wait 30 seconds and try again.',
+      error: 'This order has not been paid yet. If you just completed payment, please wait 30 seconds and try again.',
     }, { status: 403 });
   }
 
@@ -76,7 +113,7 @@ function buildResponse(order: any): NextResponse {
 
   if (dlCount >= dlLimit) {
     return NextResponse.json({
-      error: `Download limit reached (${dlCount}/${dlLimit}). WhatsApp +91 87998 14256 with your Order ID for a reset.`,
+      error: `Download limit reached (${dlCount}/${dlLimit}). WhatsApp us at +91 87998 14256 with your Order ID for a free reset.`,
       limitReached: true,
     }, { status: 403 });
   }

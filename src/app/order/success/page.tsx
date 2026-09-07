@@ -97,16 +97,37 @@ function SuccessContent() {
       const res = await fetch('/api/personalize', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ orderId, customerEmail: customerEmailForPersonal, studentName, rollNumber, guideName }),
+        body: JSON.stringify({
+          orderId,
+          customerEmail: customerEmailForPersonal,
+          studentName,
+          rollNumber,
+          guideName,
+          size: 'full',
+        }),
       });
-      const data = await res.json();
-      if (!res.ok || !data.downloadUrl) {
-        setPersonalError(data.error || 'Personalisation failed. Contact team@submitkit.in.');
-      } else {
-        setPersonalDone(true);
-        window.open(data.downloadUrl, '_blank');
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setPersonalError(data.error || 'Generation failed. Contact team@submitkit.in.');
+        setPersonalizing(false);
+        return;
       }
-    } catch { setPersonalError('Network error. Try again.'); }
+
+      // Stream the docx directly to a download
+      const blob = await res.blob();
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href     = url;
+      a.download = `${projectTitle.replace(/\s+/g, '-')}-IEEE-Report-Personalised.docx`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      setPersonalDone(true);
+    } catch {
+      setPersonalError('Network error. Please try again.');
+    }
     setPersonalizing(false);
   };
 
@@ -267,7 +288,7 @@ function SuccessContent() {
 
                 {personalDone && (
                   <div className="mt-3 flex items-center gap-2 text-emerald-400 text-sm font-semibold">
-                    <Check className="w-4 h-4" /> Personalised report downloading! Check your Downloads folder.
+                    <Check className="w-4 h-4" /> 60-page IEEE report downloading! Check your Downloads folder.
                   </div>
                 )}
 
@@ -283,7 +304,7 @@ function SuccessContent() {
                       className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder:text-zinc-500 text-sm focus:outline-none focus:border-brand-500/50" />
                     {personalError && <p className="text-red-400 text-xs">{personalError}</p>}
                     <button type="submit" disabled={personalizing} className="w-full py-2.5 bg-brand-500 hover:bg-brand-400 text-white font-bold text-sm rounded-xl flex items-center justify-center gap-2 disabled:opacity-50">
-                      {personalizing ? <><Loader2 className="w-4 h-4 animate-spin" /> Generating...</> : 'Generate My Personalised Report'}
+                      {personalizing ? <><Loader2 className="w-4 h-4 animate-spin" /> Generating 60-Page Report…</> : '⬇️ Generate & Download IEEE Report (60 Pages)'}
                     </button>
                   </form>
                 )}
