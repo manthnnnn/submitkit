@@ -29,7 +29,7 @@ echo.
 
 echo [CHECK] Verifying dependencies...
 REM Check for the actual next binary — not just the folder
-if not exist "node_modules\.bin\next" (
+if not exist "node_modules" (
     if exist "node_modules\" (
         echo [INFO] node_modules exists but packages are incomplete. Reinstalling...
     ) else (

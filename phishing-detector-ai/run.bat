@@ -1,4 +1,4 @@
-﻿@echo off
+@echo off
 setlocal EnableDelayedExpansion
 title PhishGuard AI Threat Radar - SubmitKit
 
@@ -28,7 +28,7 @@ echo [OK] Node.js %NODE_VER% detected.
 echo.
 
 echo [CHECK] Verifying dependencies...
-if not exist "node_modules\.bin\next" (
+if not exist "node_modules" (
     echo [SETUP] First-time setup detected. Installing packages...
     echo [INFO]  This takes 30-60 seconds only on the very first run.
     echo.

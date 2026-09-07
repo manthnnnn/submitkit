@@ -2,7 +2,7 @@
 
 import { ProjectCard } from "@/components/ui/project-card";
 import { Project } from "@/lib/types";
-import { Terminal, Zap, Clock, CheckCircle2, Sparkles } from "lucide-react";
+import { Terminal, Zap, Clock, CheckCircle2, Sparkles, Search } from "lucide-react";
 import { isProjectAvailable } from "@/lib/available-projects";
 import { useState, useMemo } from 'react';
 import Link from "next/link";
@@ -17,6 +17,7 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('ALL');
   const [tierFilter, setTierFilter] = useState<TierFilter>('ALL');
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('ALL');
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Derive unique categories from project list
   const categories = useMemo(() => {
@@ -59,6 +60,17 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
   const displayProjects = useMemo(() => {
     let result = initialProjects;
 
+    // Search filter
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter(p =>
+        p.title.toLowerCase().includes(q) ||
+        p.description.toLowerCase().includes(q) ||
+        p.category.toLowerCase().includes(q) ||
+        p.tech_stack.some(t => t.toLowerCase().includes(q))
+      );
+    }
+
     if (tierFilter !== 'ALL') {
       result = result.filter(p => p.tier === tierFilter);
     }
@@ -78,7 +90,7 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
     }
 
     return result;
-  }, [initialProjects, statusFilter, tierFilter, categoryFilter]);
+  }, [initialProjects, statusFilter, tierFilter, categoryFilter, searchQuery]);
 
   const filteredAvailableCount = useMemo(
     () => displayProjects.filter(p => isProjectAvailable(p.slug)).length,
@@ -109,6 +121,18 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
         <p className="text-zinc-400 max-w-2xl text-lg leading-relaxed">
           Every available project includes 100% bug-free source code, a 60-page IEEE format Black Book report, and Viva defense slides. Instant download upon checkout.
         </p>
+      </div>
+
+      {/* Search Bar */}
+      <div className="relative mb-6 max-w-lg">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+        <input
+          type="text"
+          placeholder="Search by name, tech stack, category..."
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          className="w-full bg-white/5 border border-white/10 rounded-2xl pl-11 pr-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:border-brand-500/30 focus:ring-1 focus:ring-brand-500/20 transition-all text-sm"
+        />
       </div>
 
       {/* Status Tabs — pure useState, instant switching */}

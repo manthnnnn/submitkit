@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
 
     // 2. Ownership verification — caller must supply the email on the order
     //    This prevents anyone who guesses a UUID from accessing someone else's order.
-    if (order.customer_email.toLowerCase() !== (customerEmail as string).toLowerCase()) {
+    if (order.customer_email.trim().toLowerCase() !== (customerEmail as string).trim().toLowerCase()) {
       return NextResponse.json({ error: 'Not authorised' }, { status: 403 });
     }
 

@@ -3,6 +3,7 @@ import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/ui/navbar";
 import { Footer } from "@/components/ui/footer";
+import { WhatsAppWidget } from "@/components/ui/whatsapp-widget";
 import { CONSTANTS } from "@/lib/constants";
 import Script from "next/script";
 
@@ -19,6 +20,14 @@ export const metadata: Metadata = {
   },
   description: "The digital marketplace delivering verified, 1-click runnable academic project bundles including source code, Black Book reports, and presentation slides.",
   metadataBase: new URL(CONSTANTS.APP_URL),
+  openGraph: {
+    images: ['/og-image.jpg'],
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    images: ['/og-image.jpg'],
+  }
 };
 
 export default function RootLayout({
@@ -59,6 +68,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <WhatsAppWidget />
       </body>
     </html>
   );

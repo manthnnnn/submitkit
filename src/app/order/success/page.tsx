@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import {
@@ -217,7 +217,7 @@ function SuccessContent() {
               </div>
             )}
 
-            {/* â”€â”€ ADD-ON 2: Plagiarism Certificate â”€â”€ */}
+            {/* ── ADD-ON 2: Plagiarism Certificate (independent of personalization) ── */}
             {hasPlagiarismCert && (
               <div className="glass-card p-5 rounded-2xl border border-amber-500/30 bg-amber-500/5">
                 <div className="flex items-start gap-3">
@@ -225,19 +225,25 @@ function SuccessContent() {
                     <Award className="w-4 h-4 text-amber-400" />
                   </div>
                   <div>
-                    <p className="text-white text-sm font-semibold">Plagiarism-Free Certificate</p>
+                    <p className="text-white text-sm font-semibold">SubmitKit Official Plagiarism Certificate</p>
                     <p className="text-zinc-400 text-xs mt-0.5 leading-relaxed">
-                      Your real Turnitin report (&lt;10% similarity) will be emailed to you within <strong className="text-amber-400">24 hours</strong>. No action needed â€” we process it automatically.
+                      Instantly generate your official certificate showing &lt;10% similarity.
                     </p>
-                    <p className="text-zinc-500 text-[11px] mt-2">
-                      Questions? WhatsApp <a href={waLink} className="text-amber-400 hover:underline">+91 87998 14256</a>
-                    </p>
+                    <div className="mt-3">
+                      <Link
+                        href={`/certificate/${orderId}`}
+                        target="_blank"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-400 text-xs font-bold transition-all border border-amber-500/30"
+                      >
+                        View Official Certificate <ArrowRight className="w-3.5 h-3.5" />
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* â”€â”€ ADD-ON 3: Viva Prep Call â”€â”€ */}
+            {/* ── ADD-ON 3: Custom Changes (independent of personalization) ── */}
             {hasVivaCall && (
               <div className="glass-card p-5 rounded-2xl border border-emerald-500/30 bg-emerald-500/5">
                 <div className="flex items-start gap-3">
@@ -245,14 +251,12 @@ function SuccessContent() {
                     <MessageCircle className="w-4 h-4 text-emerald-400" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-white text-sm font-semibold">30-Min Viva Prep Call</p>
+                    <p className="text-white text-sm font-semibold">Custom Changes Request</p>
                     <p className="text-zinc-400 text-xs mt-0.5 leading-relaxed">
-                      Book your slot on WhatsApp. Our expert will walk you through exactly what to say for each Viva question.
+                      Contact our developers on WhatsApp to request your custom tweaks and modifications to the code.
                     </p>
-                    <a href={waLink} target="_blank" rel="noopener noreferrer"
-                      className="mt-3 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 font-bold text-xs transition-all shadow-[0_0_15px_rgba(16,185,129,0.3)]">
-                      <MessageCircle className="w-3.5 h-3.5" />
-                      Book on WhatsApp Now
+                    <a href={waLink} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 text-xs font-bold transition-all border border-emerald-500/30">
+                      <MessageCircle className="w-3.5 h-3.5" /> Message on WhatsApp
                     </a>
                   </div>
                 </div>
@@ -273,13 +277,13 @@ function SuccessContent() {
             <div className="flex items-start gap-3 p-4 rounded-xl bg-blue-500/5 border border-blue-500/10">
               <AlertCircle className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
               <p className="text-blue-200/60 text-xs leading-relaxed">
-                Issues? Email <a href="mailto:team@submitkit.in" className="text-blue-400 hover:underline font-medium">team@submitkit.in</a> with your Order ID â€” we respond within 2 hours.
+                Issues? Email <a href="mailto:team@submitkit.in" className="text-blue-400 hover:underline font-medium">team@submitkit.in</a> with your Order ID — we respond within 2 hours.
                 For a <strong>custom project</strong>, just email us your requirements.
               </p>
             </div>
           </motion.div>
 
-          {/* â”€â”€ RIGHT: How to Run â”€â”€ */}
+          {/* ── RIGHT: How to Run ── */}
           <motion.div initial={{ opacity: 0, x: 16 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4, delay: 0.2 }} className="lg:col-span-2">
             <div className="glass-card p-6 rounded-2xl h-full">
               <h3 className="text-white font-semibold mb-1 flex items-center gap-2">
@@ -296,6 +300,24 @@ function SuccessContent() {
                     </div>
                   </div>
                 ))}
+                {/* Study Viva Q&As */}
+                <div className="pt-4 border-t border-white/5">
+                  <Link
+                    href={`/viva/${orderId}`}
+                    className="flex items-center justify-between p-4 rounded-xl bg-purple-500/10 border border-purple-500/30 hover:bg-purple-500/20 transition-all group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                        <GraduationCap className="w-4 h-4 text-purple-400" />
+                      </div>
+                      <div>
+                        <p className="text-white text-sm font-bold">Study Viva Questions</p>
+                        <p className="text-purple-200/60 text-xs">Access all 25+ Q&As for your project</p>
+                      </div>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-purple-400 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
               </div>
             </div>
           </motion.div>

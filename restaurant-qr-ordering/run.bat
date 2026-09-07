@@ -1,4 +1,4 @@
-﻿@echo off
+@echo off
 setlocal EnableDelayedExpansion
 title QR Code Restaurant Ordering - Bootstrapper
 
@@ -24,7 +24,7 @@ goto check_modules
 
 :check_modules
 echo [STEP 2/4] Checking dependencies (node_modules)...
-if not exist "node_modules\.bin\next" (
+if not exist "node_modules" (
     echo [INFO] First time setup detected! Installing dependencies silently...
     echo [INFO] Please wait 30-60 seconds while packages are prepared.
     call npm install --no-audit --no-fund --loglevel=error

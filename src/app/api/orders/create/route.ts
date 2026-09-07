@@ -3,10 +3,23 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { razorpay } from '@/lib/razorpay';
 import { PaymentPayload } from '@/lib/types';
 import { CONSTANTS } from '@/lib/constants';
+import { checkRateLimit, getClientIP, checkOrigin } from '@/lib/rate-limit';
 import crypto from 'crypto';
 
 export async function POST(req: NextRequest) {
   try {
+    // Rate limit: 5 order creations per minute per IP
+    const ip = getClientIP(req);
+    const rl = checkRateLimit(`order-create:${ip}`, { maxRequests: 5, windowSeconds: 60 });
+    if (!rl.allowed) {
+      return NextResponse.json({ error: 'Too many requests. Please wait and try again.' }, { status: 429 });
+    }
+
+    // CSRF origin check
+    if (!checkOrigin(req)) {
+      return NextResponse.json({ error: 'Invalid request origin' }, { status: 403 });
+    }
+
     const body: PaymentPayload = await req.json();
     
     // Validate request

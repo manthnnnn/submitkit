@@ -19,11 +19,11 @@ const UPLOAD_MAP = [
   { local: 'blood-bank-management.zip', key: 'bundles/mini/blood-bank-management.zip' },
   { local: 'credit-card-fraud.zip', key: 'bundles/mini/credit-card-fraud.zip' },
   { local: 'phishing-detector-ai.zip', key: 'bundles/mini/phishing-detector-ai.zip' },
-  { local: 'resume-parsing-engine.zip', key: 'bundles/mini/resume-parser.zip' },
+  { local: 'resume-parsing-engine.zip', key: 'bundles/mini/resume-parsing-engine.zip' },
   { local: 'online-code-compiler.zip', key: 'bundles/major/online-code-compiler.zip' },
-  { local: 'healthcare-ehr-portal.zip', key: 'bundles/major/healthcare-ehr.zip' },
-  { local: 'aerofuel-predictor.zip', key: 'bundles/mini/aerofuel.zip' },
-  { local: 'smart-expense-tracker.zip', key: 'bundles/mini/expense-tracker.zip' }
+  { local: 'healthcare-ehr-portal.zip', key: 'bundles/major/healthcare-ehr-portal.zip' },
+  { local: 'aerofuel-predictor.zip', key: 'bundles/mini/aerofuel-predictor.zip' },
+  { local: 'smart-expense-tracker.zip', key: 'bundles/mini/smart-expense-tracker.zip' }
 ];
 
 async function uploadAll() {

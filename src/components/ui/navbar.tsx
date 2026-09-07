@@ -7,6 +7,7 @@ import { useState } from 'react';
 const NAV_LINKS = [
   { href: '/projects', label: 'Browse Projects' },
   { href: '/#pricing',  label: 'Pricing' },
+  { href: '/order/lookup', label: 'Find My Order' },
 ];
 
 export function Navbar() {

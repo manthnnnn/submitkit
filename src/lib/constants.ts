@@ -1,4 +1,4 @@
-﻿export const CONSTANTS = {
+export const CONSTANTS = {
   APP_NAME: 'SubmitKit',
   APP_URL: process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000',
   SUPPORT_EMAIL: 'team@submitkit.in',
@@ -22,8 +22,9 @@
     { value: 'AIML', label: 'AI & Machine Learning' },
     { value: 'FullStack', label: 'Modern Full-Stack' },
     { value: 'Cybersecurity', label: 'Cybersecurity' },
-    { value: 'DataScience', label: 'Data Science' },
-    { value: 'IoT', label: 'Internet of Things' }
+    { value: 'Healthcare', label: 'Healthcare' },
+    { value: 'FinTech', label: 'FinTech' },
+    { value: 'Cloud', label: 'Cloud & DevOps' }
   ]
 };
 

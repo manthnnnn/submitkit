@@ -7,9 +7,10 @@ const REGION = 'auto'; // R2 uses 'auto'
 
 // --- CONFIGURATION ---
 const PROJECT_NAME = process.argv[2] || 'restaurant-qr-ordering';
+const CUSTOM_KEY = process.argv[3]; // e.g. bundles/major/project.zip
 const BUCKET_NAME = process.env.R2_BUCKET_NAME || 'projecthub'; 
 const LOCAL_FILE_PATH = path.join(__dirname, `../${PROJECT_NAME}.zip`);
-const R2_DESTINATION_KEY = `bundles/mini/${PROJECT_NAME}.zip`; 
+const R2_DESTINATION_KEY = CUSTOM_KEY || `bundles/mini/${PROJECT_NAME}.zip`; 
 
 // Initialize S3 Client for Cloudflare R2
 const s3 = new S3Client({

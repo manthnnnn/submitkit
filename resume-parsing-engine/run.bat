@@ -1,4 +1,4 @@
-﻿@echo off
+@echo off
 setlocal EnableDelayedExpansion
 title TalentScan AI Resume Parser - SubmitKit
 
@@ -23,7 +23,7 @@ echo [OK] Node.js %NODE_VER% detected.
 echo.
 
 echo [CHECK] Verifying dependencies...
-if not exist "node_modules\.bin\next" (
+if not exist "node_modules" (
     echo [SETUP] Installing packages (~30-60s)...
     call npm install --no-audit --no-fund --loglevel=error
     if %errorlevel% neq 0 ( echo [ERROR] Install failed. pause & exit /b 1 )

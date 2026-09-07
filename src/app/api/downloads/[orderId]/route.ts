@@ -1,12 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { generateDownloadUrl } from '@/lib/s3';
+import { checkRateLimit, getClientIP } from '@/lib/rate-limit';
 
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ orderId: string }> }
 ) {
   try {
+    // Rate limit: 10 download attempts per minute per IP
+    const ip = getClientIP(req);
+    const rl = checkRateLimit(`download:${ip}`, { maxRequests: 10, windowSeconds: 60 });
+    if (!rl.allowed) {
+      return NextResponse.json({ error: 'Too many download attempts. Please wait.' }, { status: 429 });
+    }
+
     const orderId = (await params).orderId;
     
     if (!orderId) {
@@ -39,7 +47,6 @@ export async function GET(
     }
     
     // 4. Log Download Attempt for Anti-Piracy
-    const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown';
     const userAgent = req.headers.get('user-agent') || 'unknown';
     
     await supabase.from('download_logs').insert({

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Email delivery via Brevo (formerly Sendinblue) Transactional Email API.
  * No SDK required -- uses the standard fetch() + Brevo REST API v3.
  *
@@ -57,19 +57,18 @@ export async function sendOrderConfirmationEmail(params: OrderEmailParams): Prom
   if (hasPlagiarismCert) {
     addonRows.push(`
     <tr><td style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.07);">
-      <p style="margin:0;font-size:0.85rem;color:#ffffff;font-weight:700;">&#127942; Plagiarism-Free Certificate</p>
+      <p style="margin:0;font-size:0.85rem;color:#ffffff;font-weight:700;">&#127942; SubmitKit Official Plagiarism Certificate</p>
       <p style="margin:4px 0 0;font-size:0.8rem;color:#94a3b8;line-height:1.5;">
-        Your Turnitin report (&lt;10% similarity) will be emailed to you
-        <strong style="color:#fbbf24;">within 24 hours</strong>. No action needed.
+        You can instantly generate your certificate from your order success page!
       </p>
     </td></tr>`);
   }
   if (hasVivaCall) {
     addonRows.push(`
     <tr><td style="padding:10px 0;">
-      <p style="margin:0;font-size:0.85rem;color:#ffffff;font-weight:700;">&#128222; 30-Min Viva Prep Call</p>
+      <p style="margin:0;font-size:0.85rem;color:#ffffff;font-weight:700;">&#128222; Custom Changes Request</p>
       <p style="margin:4px 0 0;font-size:0.8rem;color:#94a3b8;line-height:1.5;">
-        Book your slot: <a href="${waLink}" style="color:#34d399;font-weight:600;text-decoration:none;">WhatsApp +91 87998 14256</a>
+        Contact our developers for custom code tweaks: <a href="${waLink}" style="color:#34d399;font-weight:600;text-decoration:none;">WhatsApp +91 87998 14256</a>
       </p>
     </td></tr>`);
   }

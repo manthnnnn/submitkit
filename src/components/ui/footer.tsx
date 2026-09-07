@@ -1,4 +1,4 @@
-﻿﻿import Link from 'next/link';
+﻿import Link from 'next/link';
 import { Layers } from 'lucide-react';
 
 // Inline SVG icons for Instagram & WhatsApp (lucide-react version doesn't include them)
@@ -98,7 +98,7 @@ export function Footer() {
         </div>
 
         <div className="pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-2 text-xs text-zinc-600">
-          <p>Â© {new Date().getFullYear()} SubmitKit. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} SubmitKit. All rights reserved.</p>
           <p className="text-center">Disclaimer: Sold as educational reference materials only.</p>
         </div>
       </div>

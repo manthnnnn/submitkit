@@ -71,6 +71,7 @@ async function seed() {
     ...p,
     s3_storage_key: `bundles/${p.tier.toLowerCase()}/${p.slug}.zip`,
     report_template_key: `templates/${p.tier.toLowerCase()}/${p.slug}-report.docx`,
+    demo_screenshots: ['/projects/demo.jpg'],
   }));
 
   const { data, error } = await supabase.from('projects').upsert(insertData, { onConflict: 'slug' });
@@ -81,7 +82,7 @@ async function seed() {
   }
 
   // Generate the SQL string to append to seed.sql
-  let sqlString = "\n\n-- BATCH OF 50 NEW PROJECTS\nINSERT INTO projects (slug, title, category, tier, price_inr, description, tech_stack, features, live_demo_url, s3_storage_key, report_template_key)\nVALUES \n";
+  let sqlString = "\n\n-- BATCH OF 50 NEW PROJECTS\nINSERT INTO projects (slug, title, category, tier, price_inr, description, tech_stack, features, live_demo_url, s3_storage_key, report_template_key, demo_screenshots)\nVALUES \n";
   
   const sqlValues = insertData.map(p => {
     return `(
@@ -95,7 +96,8 @@ async function seed() {
     ARRAY[${p.features.map(f => `'${f}'`).join(', ')}],
     '${p.live_demo_url}',
     '${p.s3_storage_key}',
-    '${p.report_template_key}'
+    '${p.report_template_key}',
+    ARRAY['/projects/demo.jpg']
 )`;
   });
 

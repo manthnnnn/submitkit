@@ -5,7 +5,7 @@ const envSchema = z.object({
   R2_ACCESS_KEY_ID: z.string().optional().or(z.literal('')),
   R2_SECRET_ACCESS_KEY: z.string().optional().or(z.literal('')),
   R2_BUCKET_NAME: z.string().optional().or(z.literal('')),
-  NEXT_PUBLIC_APP_URL: z.string().url().optional().or(z.literal('')),
+  NEXT_PUBLIC_BASE_URL: z.string().url().optional().or(z.literal('')),
 });
 
 // We read from process.env and safely trim them right away
@@ -18,7 +18,7 @@ type EnvType = {
   R2_ACCESS_KEY_ID?: string;
   R2_SECRET_ACCESS_KEY?: string;
   R2_BUCKET_NAME?: string;
-  NEXT_PUBLIC_APP_URL?: string;
+  NEXT_PUBLIC_BASE_URL?: string;
 };
 
 let parsedEnv: EnvType = {
@@ -26,7 +26,7 @@ let parsedEnv: EnvType = {
   R2_ACCESS_KEY_ID: '',
   R2_SECRET_ACCESS_KEY: '',
   R2_BUCKET_NAME: '',
-  NEXT_PUBLIC_APP_URL: '',
+  NEXT_PUBLIC_BASE_URL: '',
 };
 
 if (isServer) {
@@ -35,7 +35,7 @@ if (isServer) {
     R2_ACCESS_KEY_ID: process.env.R2_ACCESS_KEY_ID?.trim() || '',
     R2_SECRET_ACCESS_KEY: process.env.R2_SECRET_ACCESS_KEY?.trim() || '',
     R2_BUCKET_NAME: process.env.R2_BUCKET_NAME?.trim() || '',
-    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL?.trim() || '',
+    NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL?.trim() || '',
   });
 
   if (!_env.success) {

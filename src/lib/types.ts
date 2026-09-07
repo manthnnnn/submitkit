@@ -1,4 +1,4 @@
-export type ProjectCategory = 'AIML' | 'FullStack' | 'Cybersecurity' | 'DataScience' | 'IoT';
+export type ProjectCategory = 'AIML' | 'FullStack' | 'Cybersecurity' | 'Healthcare' | 'FinTech' | 'Cloud';
 export type ProjectTier = 'MINI' | 'MAJOR';
 export type OrderStatus = 'PENDING' | 'PAID' | 'FAILED';
 

@@ -31,3 +31,10 @@ yarn-error.log*
 .pnpm-debug.log*
 roster-backups/
 temp_projects.json
+
+# Dev artifacts (agent orchestration)
+roster.json
+hive/
+
+# Project bundles (should live in R2, not git)
+*.zip

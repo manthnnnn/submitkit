@@ -1,4 +1,4 @@
-﻿@echo off
+@echo off
 setlocal EnableDelayedExpansion
 title AeroFuel Predictor AI - SubmitKit
 
@@ -28,7 +28,7 @@ echo [OK] Node.js %NODE_VER% detected.
 echo.
 
 echo [CHECK] Verifying dependencies...
-if not exist "node_modules\.bin\next" (
+if not exist "node_modules" (
     echo [SETUP] First-time setup. Installing packages ~30-60s...
     call npm install --no-audit --no-fund --loglevel=error
     if %errorlevel% neq 0 (

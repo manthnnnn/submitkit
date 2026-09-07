@@ -1,6 +1,7 @@
 import { createAdminClient } from '@/lib/supabase/admin';
 import { formatCurrency } from '@/lib/utils';
-import { AlertTriangle, Download } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
+import { ClientOrdersTable } from './client-orders-table';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,12 +19,6 @@ type OrderRow = {
   has_personalization: boolean;
   has_viva_call: boolean;
   projects: { title: string } | null;
-};
-
-const STATUS_STYLES: Record<string, string> = {
-  PAID:    'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30',
-  PENDING: 'bg-amber-500/20  text-amber-400  border border-amber-500/30',
-  FAILED:  'bg-red-500/20    text-red-400    border border-red-500/30',
 };
 
 export default async function AdminOrdersPage() {
@@ -63,7 +58,7 @@ export default async function AdminOrdersPage() {
       </div>
 
       {/* Quick stat strip */}
-      <div className="grid grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         {[
           { label: 'Revenue (shown)',  value: formatCurrency(revenue),       color: 'text-emerald-400' },
           { label: 'Paid',             value: String(paidCount),             color: 'text-emerald-400' },
@@ -76,93 +71,7 @@ export default async function AdminOrdersPage() {
         ))}
       </div>
 
-      <div className="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead>
-              <tr className="bg-slate-950 border-b border-slate-800 text-slate-400 text-xs uppercase tracking-wider">
-                <th className="px-4 py-3 font-medium">Date</th>
-                <th className="px-4 py-3 font-medium">Customer</th>
-                <th className="px-4 py-3 font-medium">Project</th>
-                <th className="px-4 py-3 font-medium">Amount</th>
-                <th className="px-4 py-3 font-medium">Status</th>
-                <th className="px-4 py-3 font-medium">Add-ons</th>
-                <th className="px-4 py-3 font-medium text-right">Downloads</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-800/60">
-              {orders.map((o) => (
-                <tr key={o.id} className="hover:bg-slate-800/40 transition-colors group">
-                  <td className="px-4 py-3 whitespace-nowrap">
-                    <p className="text-slate-300 text-xs">
-                      {new Date(o.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: '2-digit' })}
-                    </p>
-                    <p className="text-slate-600 text-[11px]">
-                      {new Date(o.created_at).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
-                    </p>
-                  </td>
-
-                  <td className="px-4 py-3">
-                    <p className="text-white font-medium text-xs">{o.customer_name}</p>
-                    <p className="text-slate-500 text-[11px]">{o.customer_email}</p>
-                    <p className="text-slate-600 text-[11px]">{o.customer_phone}</p>
-                  </td>
-
-                  <td className="px-4 py-3 max-w-[180px]">
-                    <p className="text-slate-300 text-xs truncate" title={o.projects?.title ?? ''}>
-                      {o.projects?.title ?? <span className="text-slate-600 italic">Unknown</span>}
-                    </p>
-                    <p className="text-slate-600 text-[11px] font-mono truncate">{o.order_id}</p>
-                  </td>
-
-                  <td className="px-4 py-3 text-slate-300 font-medium whitespace-nowrap">
-                    {formatCurrency(o.amount_paid)}
-                  </td>
-
-                  <td className="px-4 py-3">
-                    <span className={`text-[11px] px-2 py-0.5 rounded-full font-bold ${STATUS_STYLES[o.status] ?? STATUS_STYLES.FAILED}`}>
-                      {o.status}
-                    </span>
-                  </td>
-
-                  <td className="px-4 py-3">
-                    <div className="flex flex-wrap gap-1">
-                      {o.has_personalization && (
-                        <span className="text-[10px] bg-brand-500/15 text-brand-400 px-1.5 py-0.5 rounded font-medium">
-                          Name
-                        </span>
-                      )}
-                      {o.has_viva_call && (
-                        <span className="text-[10px] bg-purple-500/15 text-purple-400 px-1.5 py-0.5 rounded font-medium">
-                          Viva
-                        </span>
-                      )}
-                      {!o.has_personalization && !o.has_viva_call && (
-                        <span className="text-[10px] text-slate-700">—</span>
-                      )}
-                    </div>
-                  </td>
-
-                  <td className="px-4 py-3 text-right whitespace-nowrap">
-                    <span className="inline-flex items-center gap-1 text-slate-400 text-xs">
-                      <Download className="w-3 h-3" />
-                      {o.download_count ?? 0} / {o.download_limit ?? 3}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-
-              {orders.length === 0 && (
-                <tr>
-                  <td colSpan={7} className="px-4 py-16 text-center text-slate-600 text-sm">
-                    No orders yet. They will appear here once customers check out.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <ClientOrdersTable initialOrders={orders} />
     </div>
   );
 }

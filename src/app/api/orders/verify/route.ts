@@ -32,28 +32,34 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Order not found' }, { status: 404 });
     }
     
-    // 3. Update Order Status
+    // 3. Update Order Status (only if still PENDING — prevents duplicate emails)
     if (order.status !== 'PAID') {
-      await supabase
+      const { data: updated } = await supabase
         .from('orders')
         .update({ 
           status: 'PAID',
           payment_id: razorpay_payment_id
         })
-        .eq('id', order.id);
+        .eq('id', order.id)
+        .eq('status', 'PENDING') // Atomic: only updates if still PENDING
+        .select('id')
+        .single();
 
-      // 3a. Send confirmation email (non-blocking — never throws)
-      await sendOrderConfirmationEmail({
-        customerName:       order.customer_name,
-        customerEmail:      order.customer_email,
-        projectTitle:       order.projects.title,
-        orderId:            order.id,
-        amountPaid:         order.amount_paid,
-        tier:               order.projects.tier ?? 'MINI',
-        hasPersonalization: !!order.has_personalization,
-        hasPlagiarismCert:  !!order.has_plagiarism_cert,
-        hasVivaCall:        !!order.has_viva_call,
-      });
+      // 3a. Send confirmation email ONLY if we were the one to flip status
+      // This prevents duplicate emails when both verify + webhook fire
+      if (updated) {
+        await sendOrderConfirmationEmail({
+          customerName:       order.customer_name,
+          customerEmail:      order.customer_email,
+          projectTitle:       order.projects.title,
+          orderId:            order.id,
+          amountPaid:         order.amount_paid,
+          tier:               order.projects.tier ?? 'MINI',
+          hasPersonalization: !!order.has_personalization,
+          hasPlagiarismCert:  !!order.has_plagiarism_cert,
+          hasVivaCall:        !!order.has_viva_call,
+        });
+      }
     }
     
     // 4. Generate Pre-signed Download URL (10-minute expiry)

@@ -76,3 +76,19 @@ BEGIN
   WHERE id = row_id;
 END;
 $$ LANGUAGE plpgsql;
+
+-- Reservations for upcoming projects (early access email capture)
+CREATE TABLE IF NOT EXISTS reservations (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    email VARCHAR(255) NOT NULL,
+    project_slug VARCHAR(255) NOT NULL,
+    project_name VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    UNIQUE(email, project_slug)
+);
+
+ALTER TABLE reservations ENABLE ROW LEVEL SECURITY;
+
+-- Anyone can insert a reservation (public signup)
+CREATE POLICY "Public can insert reservations"
+ON reservations FOR INSERT WITH CHECK (true);

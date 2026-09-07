@@ -1,8 +1,32 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import crypto from 'crypto';
 
-function verifyAdminToken(cookieValue: string): boolean {
+// Use Web Crypto API (Edge-compatible) instead of Node.js crypto
+async function hmacSHA256(key: string, data: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const cryptoKey = await crypto.subtle.importKey(
+    'raw',
+    encoder.encode(key),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+  const signature = await crypto.subtle.sign('HMAC', cryptoKey, encoder.encode(data));
+  return Array.from(new Uint8Array(signature))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+function constantTimeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let result = 0;
+  for (let i = 0; i < a.length; i++) {
+    result |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return result === 0;
+}
+
+async function verifyAdminToken(cookieValue: string): Promise<boolean> {
   const secret = process.env.ADMIN_SECRET_KEY || '';
   if (!secret) return false;
 
@@ -10,7 +34,7 @@ function verifyAdminToken(cookieValue: string): boolean {
   const dotIndex = cookieValue.lastIndexOf('.');
   if (dotIndex === -1) {
     // Legacy format: direct secret comparison (transition period)
-    return cookieValue === secret;
+    return constantTimeEqual(cookieValue, secret);
   }
 
   const sessionToken = cookieValue.substring(0, dotIndex);
@@ -18,23 +42,12 @@ function verifyAdminToken(cookieValue: string): boolean {
 
   if (!sessionToken || !providedHmac) return false;
 
-  const expectedHmac = crypto
-    .createHmac('sha256', secret)
-    .update(sessionToken)
-    .digest('hex');
+  const expectedHmac = await hmacSHA256(secret, sessionToken);
 
-  // Constant-time comparison
-  try {
-    return crypto.timingSafeEqual(
-      Buffer.from(expectedHmac, 'hex'),
-      Buffer.from(providedHmac, 'hex')
-    );
-  } catch {
-    return false;
-  }
+  return constantTimeEqual(expectedHmac, providedHmac);
 }
 
-export default function middleware(request: NextRequest) {
+export default async function middleware(request: NextRequest) {
   // Protect all /admin routes except /admin/login
   if (
     request.nextUrl.pathname.startsWith('/admin') &&
@@ -42,7 +55,7 @@ export default function middleware(request: NextRequest) {
   ) {
     const adminToken = request.cookies.get('admin_token');
 
-    if (!adminToken || !verifyAdminToken(adminToken.value)) {
+    if (!adminToken || !(await verifyAdminToken(adminToken.value))) {
       return NextResponse.redirect(new URL('/admin/login', request.url));
     }
   }

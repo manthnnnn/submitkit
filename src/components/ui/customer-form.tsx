@@ -175,8 +175,8 @@ export function CustomerForm({ projectId, price }: CheckoutFormProps) {
             checked={formData.addPlagiarismCert} onChange={e => setFormData({ ...formData, addPlagiarismCert: e.target.checked })}
           />
           <div className="flex-grow min-w-0">
-            <span className="text-white text-xs font-medium block">Plagiarism-Free Certificate</span>
-            <span className="text-zinc-500 text-[11px]">Real Turnitin report — under 10% similarity</span>
+            <span className="text-white text-xs font-medium block">SubmitKit Official Plagiarism Certificate</span>
+            <span className="text-zinc-500 text-[11px]">Instantly generated certificate showing &lt;10% similarity</span>
           </div>
           <span className="text-emerald-400 text-xs font-bold shrink-0">+₹{CONSTANTS.PRICING.ADDONS.PLAGIARISM_CERT}</span>
         </label>
@@ -190,8 +190,8 @@ export function CustomerForm({ projectId, price }: CheckoutFormProps) {
             checked={formData.addVivaCall} onChange={e => setFormData({ ...formData, addVivaCall: e.target.checked })}
           />
           <div className="flex-grow min-w-0 pr-16">
-            <span className="text-white text-xs font-medium flex items-center gap-1.5"><Zap className="w-3 h-3 text-brand-400" />30-Min Viva Prep Call</span>
-            <span className="text-zinc-500 text-[11px]">Expert tells you exactly what to say in the exam</span>
+            <span className="text-white text-xs font-medium flex items-center gap-1.5"><Zap className="w-3 h-3 text-brand-400" />Custom Changes Request</span>
+            <span className="text-zinc-500 text-[11px]">Need custom tweaks? Our devs will assist you on WhatsApp</span>
           </div>
           <span className="text-brand-400 text-xs font-bold shrink-0">+₹{CONSTANTS.PRICING.ADDONS.VIVA_CALL}</span>
         </label>
