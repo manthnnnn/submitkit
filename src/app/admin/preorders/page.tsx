@@ -167,10 +167,8 @@ export default async function PreOrdersAdminPage({
               <tbody>
                 {orders.map((o, i) => (
                   <tr key={o.id}
-                    className="transition-colors"
+                    className="hover:bg-white/[0.015] transition-colors"
                     style={{ borderBottom: i < orders.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}
-                    onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.015)'}
-                    onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}
                   >
                     <td className="px-5 py-4">
                       <p className="font-semibold text-white text-sm">{o.name}</p>

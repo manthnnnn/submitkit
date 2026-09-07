@@ -4,7 +4,8 @@ import { useSearchParams } from 'next/navigation';
 import {
   CheckCircle, Download, AlertCircle, Share2, ArrowRight,
   Copy, Zap, ShieldCheck, FolderOpen, Terminal, Play, GraduationCap,
-  Check, MessageCircle, FileText, Award, ChevronDown, ChevronUp, Loader2
+  Check, MessageCircle, FileText, Award, ChevronDown, ChevronUp, Loader2,
+  BookOpen, Presentation,
 } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -41,6 +42,16 @@ function SuccessContent() {
   const [personalizing, setPersonalizing] = useState(false);
   const [personalDone,  setPersonalDone]  = useState(false);
   const [personalError, setPersonalError] = useState<string | null>(null);
+
+  // Report / PPT generation
+  const [reportSize,      setReportSize]      = useState<'mini' | 'standard' | 'full'>('standard');
+  const [showReportForm,  setShowReportForm]  = useState(false);
+  const [reportName,      setReportName]      = useState('');
+  const [reportRoll,      setReportRoll]      = useState('');
+  const [reportGuide,     setReportGuide]     = useState('');
+  const [reportCollege,   setReportCollege]   = useState('');
+  const [generatingReport, setGeneratingReport] = useState(false);
+  const [generatingPPT,    setGeneratingPPT]    = useState(false);
 
   // Confetti
   useEffect(() => {
@@ -100,6 +111,34 @@ function SuccessContent() {
   };
 
   const waLink = `https://wa.me/918799814256?text=${encodeURIComponent(`Hi! I purchased "${projectTitle}" (Order: ${orderId?.split('-')[0].toUpperCase() ?? ''}). Ready to book my Viva Prep Call!`)}`;
+
+  // Build query params for report/PPT — include name only if personalization purchased
+  const buildReportUrl = (type: 'report' | 'ppt') => {
+    if (!orderId) return '#';
+    const params = new URLSearchParams();
+    if (type === 'report') params.set('size', reportSize);
+    if (hasPersonalization && reportName) {
+      params.set('name', reportName);
+      if (reportRoll)    params.set('roll',    reportRoll);
+      if (reportGuide)   params.set('guide',   reportGuide);
+      if (reportCollege) params.set('college', reportCollege);
+    }
+    return `/api/${type}/${orderId}?${params.toString()}`;
+  };
+
+  const handleGenerateReport = () => {
+    if (!orderId) return;
+    setGeneratingReport(true);
+    window.location.href = buildReportUrl('report');
+    setTimeout(() => setGeneratingReport(false), 4000);
+  };
+
+  const handleGeneratePPT = () => {
+    if (!orderId) return;
+    setGeneratingPPT(true);
+    window.location.href = buildReportUrl('ppt');
+    setTimeout(() => setGeneratingPPT(false), 4000);
+  };
 
   return (
     <div className="min-h-screen bg-[#09090b] px-4 py-12 relative overflow-hidden">
@@ -274,6 +313,125 @@ function SuccessContent() {
                     </div>
                   </div>
                 </div>
+              </div>
+            )}
+
+            {/* ── ALWAYS AVAILABLE: IEEE Report + PPT Generator ── */}
+            {orderId && (
+              <div className="glass-card p-5 rounded-2xl border border-brand-500/20 bg-brand-500/5">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-8 h-8 rounded-lg bg-brand-500/20 flex items-center justify-center shrink-0">
+                    <BookOpen className="w-4 h-4 text-brand-400" />
+                  </div>
+                  <div>
+                    <p className="text-white text-sm font-semibold">IEEE Report & Presentation</p>
+                    <p className="text-zinc-400 text-xs">
+                      Generate your IEEE Black Book report and PPT
+                      {hasPersonalization ? ' — with your name on the cover' : ''}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Page count selector */}
+                <div className="mb-4">
+                  <p className="text-zinc-500 text-xs font-semibold uppercase tracking-wider mb-2">Report Size</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    {([
+                      { value: 'mini',     label: '15 Pages', desc: 'Quick submission' },
+                      { value: 'standard', label: '20 Pages', desc: 'Recommended ✓'   },
+                      { value: 'full',     label: '60 Pages', desc: 'Full IEEE format' },
+                    ] as const).map(opt => (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => setReportSize(opt.value)}
+                        className="py-2 px-1 rounded-xl text-center transition-all border"
+                        style={reportSize === opt.value ? {
+                          background: 'rgba(99,102,241,0.2)', borderColor: 'rgba(99,102,241,0.5)', boxShadow: '0 0 12px rgba(99,102,241,0.2)'
+                        } : {
+                          background: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.08)'
+                        }}
+                      >
+                        <p className={`text-xs font-bold ${reportSize === opt.value ? 'text-brand-300' : 'text-zinc-400'}`}>{opt.label}</p>
+                        <p className="text-[10px] text-zinc-600 mt-0.5">{opt.desc}</p>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Name form — only if personalization purchased */}
+                {hasPersonalization && (
+                  <div className="mb-4">
+                    <button
+                      onClick={() => setShowReportForm(v => !v)}
+                      className="text-brand-400 text-xs font-bold flex items-center gap-1 mb-3"
+                    >
+                      {showReportForm ? <><ChevronUp className="w-3 h-3" /> Hide name details</> : <><ChevronDown className="w-3 h-3" /> Add your name to cover (purchased)</>}
+                    </button>
+                    {showReportForm && (
+                      <div className="space-y-2.5">
+                        <input
+                          type="text"
+                          placeholder="Your Full Name (for cover page)"
+                          value={reportName}
+                          onChange={e => setReportName(e.target.value)}
+                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder:text-zinc-600 text-sm focus:outline-none focus:border-brand-500/50"
+                        />
+                        <div className="grid grid-cols-2 gap-2">
+                          <input
+                            type="text"
+                            placeholder="Roll Number (optional)"
+                            value={reportRoll}
+                            onChange={e => setReportRoll(e.target.value)}
+                            className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 text-sm focus:outline-none focus:border-brand-500/50"
+                          />
+                          <input
+                            type="text"
+                            placeholder="Guide Name (optional)"
+                            value={reportGuide}
+                            onChange={e => setReportGuide(e.target.value)}
+                            className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2 text-white placeholder:text-zinc-600 text-sm focus:outline-none focus:border-brand-500/50"
+                          />
+                        </div>
+                        <input
+                          type="text"
+                          placeholder="College Name (optional)"
+                          value={reportCollege}
+                          onChange={e => setReportCollege(e.target.value)}
+                          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder:text-zinc-600 text-sm focus:outline-none focus:border-brand-500/50"
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Download buttons */}
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={handleGenerateReport}
+                    disabled={generatingReport}
+                    className="flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all disabled:opacity-60"
+                    style={{ background: 'rgba(99,102,241,0.2)', border: '1px solid rgba(99,102,241,0.4)', color: '#a5b4fc' }}
+                  >
+                    {generatingReport ? <Loader2 className="w-4 h-4 animate-spin" /> : <BookOpen className="w-4 h-4" />}
+                    {generatingReport ? 'Building…' : 'Download Report'}
+                  </button>
+                  <button
+                    onClick={handleGeneratePPT}
+                    disabled={generatingPPT}
+                    className="flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all disabled:opacity-60"
+                    style={{ background: 'rgba(20,184,166,0.15)', border: '1px solid rgba(20,184,166,0.35)', color: '#5eead4' }}
+                  >
+                    {generatingPPT ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileText className="w-4 h-4" />}
+                    {generatingPPT ? 'Building…' : 'Download PPT'}
+                  </button>
+                </div>
+
+                {!hasPersonalization && (
+                  <p className="text-zinc-700 text-[11px] mt-2 text-center">
+                    Purchase the &quot;Name Personalisation&quot; add-on to add your name on the cover
+                  </p>
+                )}
               </div>
             )}
 

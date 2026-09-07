@@ -198,9 +198,8 @@ export default async function AnalyticsPage() {
                 {demandRanked.map((item, i) => (
                   <tr
                     key={i}
+                    className="hover:bg-white/[0.015] transition-colors"
                     style={{ borderBottom: i < demandRanked.length - 1 ? '1px solid rgba(255,255,255,0.04)' : 'none' }}
-                    onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.015)'}
-                    onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}
                   >
                     <td className="px-5 py-4">
                       <span
