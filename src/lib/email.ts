@@ -272,3 +272,145 @@ export async function sendOrderConfirmationEmail(params: OrderEmailParams): Prom
     console.error('[email] Brevo fetch failed:', err);
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Pre-order Emails
+// ─────────────────────────────────────────────────────────────────────────────
+
+interface PreOrderEmailParams {
+  name: string;
+  email: string;
+  phone: string;
+  college?: string | null;
+  projectTitle: string;
+  projectSlug: string;
+}
+
+export async function sendPreOrderEmails(params: PreOrderEmailParams): Promise<void> {
+  const apiKey = process.env.BREVO_API_KEY;
+  if (!apiKey) {
+    console.warn('[email] BREVO_API_KEY not set — skipping pre-order emails');
+    return;
+  }
+
+  const { name, email, phone, college, projectTitle, projectSlug } = params;
+  const ownerEmail = 'team@submitkit.in';
+  const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://submitkit.in').replace(/\/$/, '');
+
+  // ── 1. Confirmation email to student ──────────────────────────────────────
+  const studentHtml = `<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#09090b;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#09090b;padding:32px 16px;">
+<tr><td align="center">
+<table width="100%" style="max-width:560px;background:#111113;border:1px solid rgba(255,255,255,0.08);border-radius:20px;overflow:hidden;">
+
+  <!-- Header -->
+  <tr><td style="background:linear-gradient(135deg,#1c1917,#111113);padding:32px 32px 24px;border-bottom:1px solid rgba(255,255,255,0.06);">
+    <p style="margin:0 0 4px;font-size:0.7rem;font-weight:700;color:#f59e0b;text-transform:uppercase;letter-spacing:0.1em;">Pre-order Confirmed</p>
+    <h1 style="margin:0;font-size:1.5rem;font-weight:800;color:#ffffff;line-height:1.3;">You&apos;re on the list, ${name.split(' ')[0]}!</h1>
+  </td></tr>
+
+  <!-- Body -->
+  <tr><td style="padding:28px 32px;">
+    <p style="margin:0 0 20px;font-size:0.9rem;color:#a1a1aa;line-height:1.7;">
+      We have received your pre-order for <strong style="color:#ffffff;">${projectTitle}</strong>.
+      The moment your bundle is ready, you will be the <strong style="color:#f59e0b;">first to receive the download link</strong> — before it goes on sale publicly.
+    </p>
+
+    <!-- Project card -->
+    <table width="100%" cellpadding="0" cellspacing="0" style="background:rgba(245,158,11,0.07);border:1px solid rgba(245,158,11,0.25);border-radius:14px;margin-bottom:24px;">
+      <tr><td style="padding:20px 24px;">
+        <p style="margin:0 0 4px;font-size:0.7rem;font-weight:700;color:#f59e0b;text-transform:uppercase;letter-spacing:0.08em;">Your Pre-order</p>
+        <p style="margin:0 0 12px;font-size:1.05rem;font-weight:700;color:#ffffff;">${projectTitle}</p>
+        <p style="margin:0;font-size:0.8rem;color:#78716c;">Estimated delivery: <strong style="color:#d4d4d8;">7–10 days</strong></p>
+      </td></tr>
+    </table>
+
+    <!-- What happens next -->
+    <p style="margin:0 0 12px;font-size:0.75rem;font-weight:700;color:#ffffff;text-transform:uppercase;letter-spacing:0.06em;">What happens next</p>
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+      ${[
+        ['Our team is building and testing your bundle.', '#a1a1aa'],
+        ['You will receive an email with your download link the day it is ready.', '#a1a1aa'],
+        ['Payment is collected only after delivery — you are not charged now.', '#d4d4d8'],
+      ].map(([text]) => `
+      <tr><td style="padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+        <p style="margin:0;font-size:0.85rem;color:#a1a1aa;line-height:1.6;">${text}</p>
+      </td></tr>`).join('')}
+    </table>
+
+    <!-- Support -->
+    <table width="100%" cellpadding="0" cellspacing="0">
+      <tr><td style="background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.15);border-radius:12px;padding:16px 20px;">
+        <p style="margin:0;font-size:0.82rem;color:#93c5fd;line-height:1.7;">
+          Questions? Reply to this email or WhatsApp us at
+          <a href="https://wa.me/918799814256" style="color:#60a5fa;text-decoration:none;font-weight:600;">+91 87998 14256</a>
+        </p>
+      </td></tr>
+    </table>
+  </td></tr>
+
+  <!-- Footer -->
+  <tr><td style="text-align:center;border-top:1px solid rgba(255,255,255,0.05);padding:20px 32px;">
+    <p style="margin:0 0 3px;font-size:0.72rem;color:#52525b;">© ${new Date().getFullYear()} SubmitKit.in — India's Premier Academic Project Marketplace</p>
+    <a href="${baseUrl}/projects/${projectSlug}" style="font-size:0.72rem;color:#3f3f46;">View project page</a>
+  </td></tr>
+
+</table>
+</td></tr>
+</table>
+</body>
+</html>`;
+
+  // ── 2. Owner notification email ────────────────────────────────────────────
+  const ownerHtml = `<!DOCTYPE html>
+<html>
+<body style="margin:0;padding:24px;background:#09090b;font-family:monospace;color:#d4d4d8;">
+<div style="max-width:500px;background:#111113;border:1px solid #27272a;border-radius:12px;padding:24px;">
+  <p style="margin:0 0 4px;font-size:0.7rem;color:#f59e0b;font-weight:700;text-transform:uppercase;">New Pre-order</p>
+  <h2 style="margin:0 0 20px;color:#ffffff;font-size:1.2rem;">${projectTitle}</h2>
+  <table width="100%" cellpadding="0" cellspacing="0">
+    ${[
+      ['Name', name],
+      ['Email', email],
+      ['Phone', phone],
+      ['College', college || '—'],
+      ['Project', projectTitle],
+      ['Slug', projectSlug],
+      ['Time', new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }) + ' IST'],
+    ].map(([label, value]) => `
+    <tr>
+      <td style="padding:8px 0;border-bottom:1px solid #27272a;color:#71717a;font-size:0.82rem;width:80px;">${label}</td>
+      <td style="padding:8px 0 8px 16px;border-bottom:1px solid #27272a;color:#f4f4f5;font-size:0.82rem;">${value}</td>
+    </tr>`).join('')}
+  </table>
+  <p style="margin:20px 0 0;font-size:0.78rem;color:#52525b;">
+    View all pre-orders in your Supabase dashboard → public.pre_orders table
+  </p>
+</div>
+</body>
+</html>`;
+
+  const sendEmail = async (to: { email: string; name: string }, subject: string, html: string) => {
+    const res = await fetch(BREVO_API_URL, {
+      method: 'POST',
+      headers: { 'accept': 'application/json', 'api-key': apiKey, 'content-type': 'application/json' },
+      body: JSON.stringify({
+        sender: { name: 'SubmitKit', email: 'team@submitkit.in' },
+        to: [to],
+        subject,
+        htmlContent: html,
+      }),
+    });
+    if (!res.ok) console.error('[email] Brevo error:', await res.text().catch(() => ''));
+  };
+
+  await Promise.all([
+    sendEmail({ email, name }, `Pre-order Confirmed — ${projectTitle} | SubmitKit`, studentHtml),
+    sendEmail({ email: ownerEmail, name: 'SubmitKit Admin' }, `[Pre-order] ${name} — ${projectTitle}`, ownerHtml),
+  ]);
+
+  console.log(`[email] Pre-order emails sent for ${projectSlug} by ${email}`);
+}
