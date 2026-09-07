@@ -1,3 +1,4 @@
+import React from "react";
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
 import { Project } from "@/lib/types";
@@ -458,8 +459,9 @@ export default async function ProjectDetailPage({
                       {formatCurrency(isMajor ? 3999 : 1499)}
                     </p>
                   </div>
-                  <p className="text-amber-400 text-xs font-semibold mt-1">
-                    🔒 Price locks in — no increase after launch
+                  <p className="text-amber-400 text-xs font-semibold mt-1 flex items-center gap-1.5">
+                    <Lock className="w-3 h-3" />
+                    Price locks in — no increase after launch
                   </p>
                 </div>
 
@@ -467,13 +469,13 @@ export default async function ProjectDetailPage({
                 <div className="p-6 space-y-4">
                   {/* What happens when you pre-order */}
                   <div className="space-y-2.5">
-                    {[
-                      { icon: '✅', text: 'Your slot is reserved at the current price' },
-                      { icon: '📧', text: 'We email you the download link the day it launches' },
-                      { icon: '⚡', text: 'Priority delivery — before it goes on sale publicly' },
-                    ].map(item => (
+                    {([
+                      { icon: <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />, text: 'Your slot is reserved at the current price' },
+                      { icon: <Bell className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />, text: 'We email you the download link the day it launches' },
+                      { icon: <Zap className="w-4 h-4 text-brand-400 shrink-0 mt-0.5" />, text: 'Priority delivery — before it goes on sale publicly' },
+                    ] as { icon: React.ReactNode; text: string }[]).map(item => (
                       <div key={item.text} className="flex items-start gap-2.5 text-sm text-zinc-300">
-                        <span className="text-base leading-none mt-0.5">{item.icon}</span>
+                        {item.icon}
                         <span>{item.text}</span>
                       </div>
                     ))}
