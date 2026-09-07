@@ -10,7 +10,8 @@ import { HowToRun } from "@/components/ui/how-to-run";
 import {
   CheckCircle2, ChevronRight, FileText, MonitorPlay,
   Presentation, TerminalSquare, Lock, Star, Zap,
-  ShieldCheck, Download, BookOpen, Play, ImageIcon, Sparkles
+  ShieldCheck, Download, BookOpen, Play, ImageIcon, Sparkles,
+  Clock, Bell, Rocket
 } from "lucide-react";
 import Link from "next/link";
 import { Metadata } from 'next';
@@ -109,7 +110,7 @@ export default async function ProjectDetailPage({
       </div>
 
       {/* Mobile sticky buy bar */}
-      <StickyBuyBar price={p.price_inr} title={p.title} />
+      <StickyBuyBar price={p.price_inr} title={p.title} available={available} />
 
       {/* ── BREADCRUMB + HERO HEADER ── */}
       <div className="border-b border-white/5 pt-8 pb-10 relative z-10 bg-[#09090b]/70 backdrop-blur-2xl">
@@ -137,10 +138,15 @@ export default async function ProjectDetailPage({
               <span className="text-[11px] font-medium px-3 py-1 rounded-full bg-white/5 text-zinc-400 border border-white/10">
                 {p.category}
               </span>
-              {available && (
+              {available ? (
                 <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                   Ready to Ship — Instant Download
+                </span>
+              ) : (
+                <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/25 flex items-center gap-1.5">
+                  <Clock className="w-3 h-3" />
+                  Coming Soon — Pre-order Available
                 </span>
               )}
             </div>
@@ -409,29 +415,94 @@ export default async function ProjectDetailPage({
           {/* ═══ RIGHT — STICKY SIDEBAR ═══ */}
           <div className="w-full space-y-4 lg:sticky lg:top-24 self-start" id="checkout-form">
 
-            {/* Urgency timer */}
-            <UrgencyTimer />
+            {/* Urgency timer — only for available projects */}
+            {available && <UrgencyTimer />}
 
             {/* Pricing + checkout */}
-            <div
-              className="glass-card p-6 rounded-2xl border-t-2 relative overflow-hidden shadow-2xl"
-              style={{ borderTopColor: isMajor ? 'var(--color-brand-500)' : 'var(--color-success-500)' }}
-            >
-              <div className="absolute top-0 right-0 w-40 h-40 bg-brand-500/5 blur-3xl rounded-full pointer-events-none" />
-              <div className="relative z-10 mb-5">
-                <p className="text-zinc-500 text-xs font-medium mb-1">Complete Bundle — One-time Payment</p>
-                <div className="flex items-end gap-2">
-                  <p className="text-4xl font-display font-bold text-white">{formatCurrency(p.price_inr)}</p>
-                  <p className="text-zinc-600 text-sm line-through mb-1">
-                    {formatCurrency(isMajor ? 3999 : 1499)}
+            {available ? (
+              <div
+                className="glass-card p-6 rounded-2xl border-t-2 relative overflow-hidden shadow-2xl"
+                style={{ borderTopColor: isMajor ? 'var(--color-brand-500)' : 'var(--color-success-500)' }}
+              >
+                <div className="absolute top-0 right-0 w-40 h-40 bg-brand-500/5 blur-3xl rounded-full pointer-events-none" />
+                <div className="relative z-10 mb-5">
+                  <p className="text-zinc-500 text-xs font-medium mb-1">Complete Bundle — One-time Payment</p>
+                  <div className="flex items-end gap-2">
+                    <p className="text-4xl font-display font-bold text-white">{formatCurrency(p.price_inr)}</p>
+                    <p className="text-zinc-600 text-sm line-through mb-1">
+                      {formatCurrency(isMajor ? 3999 : 1499)}
+                    </p>
+                  </div>
+                  <p className="text-emerald-400 text-xs font-semibold mt-0.5">
+                    Save {isMajor ? '₹3,500' : '₹1,200'} vs local project shops
                   </p>
                 </div>
-                <p className="text-emerald-400 text-xs font-semibold mt-0.5">
-                  Save {isMajor ? '₹3,500' : '₹1,200'} vs local project shops
-                </p>
+                <CustomerForm projectId={p.id} price={p.price_inr} />
               </div>
-              <CustomerForm projectId={p.id} price={p.price_inr} />
-            </div>
+            ) : (
+              /* ── PRE-ORDER CARD (coming soon projects) ── */
+              <div className="glass-card rounded-2xl border border-amber-500/30 overflow-hidden shadow-2xl">
+                {/* Gradient header */}
+                <div className="relative bg-gradient-to-br from-amber-500/20 via-orange-500/10 to-transparent p-6 border-b border-amber-500/20">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 blur-3xl rounded-full pointer-events-none" />
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="flex items-center gap-1.5 bg-amber-500/20 border border-amber-500/40 text-amber-400 text-[10px] font-black px-2.5 py-1 rounded-full tracking-widest uppercase">
+                      <Rocket className="w-3 h-3" />
+                      Pre-order Open
+                    </div>
+                  </div>
+                  <p className="text-zinc-500 text-xs font-medium mb-1">Early Bird Price — Lock it in now</p>
+                  <div className="flex items-end gap-2">
+                    <p className="text-4xl font-display font-bold text-white">{formatCurrency(p.price_inr)}</p>
+                    <p className="text-zinc-600 text-sm line-through mb-1">
+                      {formatCurrency(isMajor ? 3999 : 1499)}
+                    </p>
+                  </div>
+                  <p className="text-amber-400 text-xs font-semibold mt-1">
+                    🔒 Price locks in — no increase after launch
+                  </p>
+                </div>
+
+                {/* Body */}
+                <div className="p-6 space-y-4">
+                  {/* What happens when you pre-order */}
+                  <div className="space-y-2.5">
+                    {[
+                      { icon: '✅', text: 'Your slot is reserved at the current price' },
+                      { icon: '📧', text: 'We email you the download link the day it launches' },
+                      { icon: '⚡', text: 'Priority delivery — before it goes on sale publicly' },
+                    ].map(item => (
+                      <div key={item.text} className="flex items-start gap-2.5 text-sm text-zinc-300">
+                        <span className="text-base leading-none mt-0.5">{item.icon}</span>
+                        <span>{item.text}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* ETA notice */}
+                  <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-xl px-4 py-3">
+                    <Clock className="w-4 h-4 text-amber-400 shrink-0" />
+                    <p className="text-zinc-400 text-xs leading-relaxed">
+                      <span className="text-white font-semibold">Estimated delivery: 7–10 days.</span>{' '}
+                      You will receive an email the moment your bundle is ready.
+                    </p>
+                  </div>
+
+                  {/* Pre-order button */}
+                  <a
+                    href={`mailto:support@submitkit.in?subject=Pre-order%3A%20${encodeURIComponent(p.title)}&body=Hi%2C%20I%20would%20like%20to%20pre-order%20the%20${encodeURIComponent(p.title)}%20bundle.%0A%0AMy%20details%3A%0AName%3A%20%0ACollege%3A%20%0APhone%3A%20`}
+                    className="w-full flex items-center justify-center gap-2.5 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold py-4 rounded-xl transition-all shadow-[0_0_25px_rgba(245,158,11,0.35)] hover:shadow-[0_0_35px_rgba(245,158,11,0.5)] hover:-translate-y-0.5 text-sm"
+                  >
+                    <Bell className="w-4 h-4" />
+                    Pre-order via WhatsApp / Email
+                  </a>
+
+                  <p className="text-center text-[10px] text-zinc-600">
+                    Or WhatsApp us at <span className="text-zinc-400 font-medium">+91 99999 99999</span>
+                  </p>
+                </div>
+              </div>
+            )}
 
             {/* What you get */}
             <div className="glass-card p-5 rounded-2xl space-y-3">

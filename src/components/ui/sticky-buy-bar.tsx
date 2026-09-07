@@ -1,19 +1,19 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { ShoppingBag } from 'lucide-react';
+import { ShoppingBag, Bell } from 'lucide-react';
 import { formatCurrency } from '@/lib/utils';
 
 interface StickyBuyBarProps {
   price: number;
   title: string;
+  available?: boolean;
 }
 
-export function StickyBuyBar({ price, title }: StickyBuyBarProps) {
+export function StickyBuyBar({ price, title, available = true }: StickyBuyBarProps) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      // Show after scrolling 400px
       setVisible(window.scrollY > 400);
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -35,13 +35,23 @@ export function StickyBuyBar({ price, title }: StickyBuyBarProps) {
           <p className="text-white font-bold text-sm">{formatCurrency(price)}</p>
           <p className="text-zinc-500 text-xs truncate">{title}</p>
         </div>
-        <button
-          onClick={scrollToCheckout}
-          className="flex items-center gap-2 bg-white text-zinc-950 font-bold text-sm px-5 py-2.5 rounded-xl shrink-0 transition-all active:scale-95"
-        >
-          <ShoppingBag className="w-4 h-4" />
-          Buy Now
-        </button>
+        {available ? (
+          <button
+            onClick={scrollToCheckout}
+            className="flex items-center gap-2 bg-white text-zinc-950 font-bold text-sm px-5 py-2.5 rounded-xl shrink-0 transition-all active:scale-95"
+          >
+            <ShoppingBag className="w-4 h-4" />
+            Buy Now
+          </button>
+        ) : (
+          <button
+            onClick={scrollToCheckout}
+            className="flex items-center gap-2 bg-amber-500 hover:bg-amber-400 text-zinc-950 font-bold text-sm px-5 py-2.5 rounded-xl shrink-0 transition-all active:scale-95 shadow-[0_0_15px_rgba(245,158,11,0.4)]"
+          >
+            <Bell className="w-4 h-4" />
+            Pre-order
+          </button>
+        )}
       </div>
     </div>
   );
