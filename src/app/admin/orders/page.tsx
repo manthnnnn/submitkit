@@ -1,9 +1,16 @@
 import { createAdminClient } from '@/lib/supabase/admin';
 import { formatCurrency } from '@/lib/utils';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, ShoppingCart } from 'lucide-react';
 import { ClientOrdersTable, type OrderRow } from './client-orders-table';
 
 export const dynamic = 'force-dynamic';
+
+const cardStyle = {
+  background: 'linear-gradient(135deg, rgba(24,24,27,0.8), rgba(9,9,11,0.9))',
+  border: '1px solid rgba(255,255,255,0.08)',
+  backdropFilter: 'blur(20px)',
+  boxShadow: '0 1px 0 rgba(255,255,255,0.06) inset',
+};
 
 export default async function AdminOrdersPage() {
   const supabase = createAdminClient();
@@ -24,13 +31,18 @@ export default async function AdminOrdersPage() {
 
   if (error) {
     return (
-      <div>
-        <h1 className="text-2xl font-bold text-white mb-6">Orders</h1>
-        <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-6 flex items-start gap-4">
-          <AlertTriangle className="h-5 w-5 text-red-400 shrink-0 mt-0.5" />
+      <div className="space-y-5">
+        <div>
+          <h1 className="text-2xl font-display font-bold text-white tracking-tight">Orders</h1>
+          <p className="text-zinc-500 text-sm mt-0.5">All customer orders and transactions</p>
+        </div>
+        <div className="rounded-2xl p-5 flex items-start gap-4" style={{ ...cardStyle, borderColor: 'rgba(239,68,68,0.25)' }}>
+          <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.25)' }}>
+            <AlertTriangle className="h-4 w-4 text-red-400" />
+          </div>
           <div>
-            <p className="text-red-300 font-semibold mb-1">Failed to load orders</p>
-            <p className="text-red-200/70 text-sm">{error.message}</p>
+            <p className="text-red-300 font-semibold text-sm mb-1">Failed to load orders</p>
+            <p className="text-zinc-500 text-xs">{error.message}</p>
           </div>
         </div>
       </div>
@@ -42,25 +54,43 @@ export default async function AdminOrdersPage() {
   const pendingCount = orders.filter(o => o.status === 'PENDING').length;
   const revenue      = orders.filter(o => o.status === 'PAID').reduce((s, o) => s + o.amount_paid, 0);
 
+  const stats = [
+    { label: 'Revenue (shown)', value: formatCurrency(revenue), accent: '#34d399' },
+    { label: 'Paid Orders',     value: String(paidCount),        accent: '#34d399' },
+    { label: 'Pending / Other', value: String(pendingCount),     accent: '#fbbf24' },
+  ];
+
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-white">Orders</h1>
-        <span className="text-xs text-slate-500 font-medium">Showing last {orders.length}</span>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-display font-bold text-white tracking-tight">Orders</h1>
+          <p className="text-zinc-500 text-sm mt-0.5">
+            All customer purchases — click any row to expand details and take actions
+          </p>
+        </div>
+        <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)' }}>
+          <ShoppingCart className="w-4 h-4 text-emerald-400" />
+        </div>
       </div>
 
-      {/* Quick stat strip */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-        {[
-          { label: 'Revenue (shown)',  value: formatCurrency(revenue), color: 'text-emerald-400' },
-          { label: 'Paid',             value: String(paidCount),        color: 'text-emerald-400' },
-          { label: 'Pending / Failed', value: String(pendingCount),     color: 'text-amber-400'  },
-        ].map(({ label, value, color }) => (
-          <div key={label} className="bg-slate-900 border border-slate-800 rounded-xl px-4 py-3">
-            <p className="text-slate-500 text-xs mb-1">{label}</p>
-            <p className={`text-xl font-bold font-display ${color}`}>{value}</p>
+      {/* Stat strip */}
+      <div className="grid grid-cols-3 gap-3">
+        {stats.map(({ label, value, accent }) => (
+          <div key={label} className="rounded-2xl p-4" style={cardStyle}>
+            <p className="text-zinc-600 text-xs font-medium mb-1">{label}</p>
+            <p className="text-xl font-bold font-display" style={{ color: accent }}>{value}</p>
           </div>
         ))}
+      </div>
+
+      {/* Search tip */}
+      <div className="rounded-xl px-4 py-2.5 text-xs flex items-center gap-2" style={{ background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.15)' }}>
+        <span className="text-brand-400">💡</span>
+        <span className="text-zinc-400">
+          Search by <span className="text-zinc-200 font-medium">student name</span>, <span className="text-zinc-200 font-medium">email</span>, <span className="text-zinc-200 font-medium">short Order ID</span> (e.g. <code className="font-mono text-brand-400">A3F9B2C1</code>), phone, or Razorpay ID
+        </span>
       </div>
 
       <ClientOrdersTable initialOrders={orders} />
