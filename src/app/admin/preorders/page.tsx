@@ -2,6 +2,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { Users, Clock, BookOpen, Phone, Mail, Building2, AlertTriangle, Sparkles } from 'lucide-react';
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { ExportCSVButton } from './PreOrdersClient';
 
 export const metadata: Metadata = { title: 'Pre-orders | SubmitKit Admin', robots: 'noindex' };
 export const dynamic = 'force-dynamic';
@@ -75,9 +76,12 @@ export default async function PreOrdersAdminPage({
             Students waiting for upcoming and in-development projects
           </p>
         </div>
-        <span className="text-xs text-slate-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg self-start">
-          {totalOrders} registration{totalOrders === 1 ? '' : 's'} recorded
-        </span>
+        <div className="flex items-center gap-3">
+          <span className="text-xs text-slate-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg self-start">
+            {totalOrders} registration{totalOrders === 1 ? '' : 's'} recorded
+          </span>
+          <ExportCSVButton orders={orders} />
+        </div>
       </div>
 
       {/* Stats Cards */}
@@ -138,6 +142,11 @@ export default async function PreOrdersAdminPage({
           ))}
         </div>
       )}
+
+      {/* Bulk contact tip */}
+      <div className="bg-indigo-500/8 border border-indigo-500/20 rounded-xl px-4 py-3 text-xs text-indigo-300/80 leading-relaxed">
+        <span className="font-bold text-indigo-300">📬 When your project is ready:</span> Export this list and use Brevo&apos;s bulk email campaign to notify everyone at once.
+      </div>
 
       {/* Table */}
       {orders.length === 0 ? (

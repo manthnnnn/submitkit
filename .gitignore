@@ -38,3 +38,6 @@ hive/
 
 # Project bundles (should live in R2, not git)
 *.zip
+
+.vercel
+.env*

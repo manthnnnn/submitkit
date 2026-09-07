@@ -132,15 +132,30 @@ function SuccessContent() {
               <div className="bg-zinc-950/50 border border-white/5 rounded-xl p-4 mb-5">
                 <p className="text-zinc-500 text-[10px] uppercase tracking-wider font-semibold mb-1">Purchased Item</p>
                 <p className="text-white text-base font-semibold">{projectTitle}</p>
+
+                {/* Prominent Order ID highlight box */}
                 {orderId && (
-                  <div className="mt-3 pt-3 border-t border-white/5 flex items-center justify-between">
-                    <div>
-                      <p className="text-zinc-600 text-[10px] uppercase tracking-wider font-semibold">Order ID</p>
-                      <p className="text-zinc-400 font-mono text-xs">{orderId.split('-')[0].toUpperCase()}</p>
+                  <div className="mt-4 p-4 rounded-xl border-2 border-amber-500/40 bg-amber-500/6">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="text-amber-400 text-[10px] uppercase tracking-wider font-bold mb-1.5">
+                          ⚠ Important — Save Your Order ID
+                        </p>
+                        <p className="text-white font-mono text-2xl font-black tracking-widest leading-none">
+                          {orderId.split('-')[0].toUpperCase()}
+                        </p>
+                        <p className="text-zinc-500 text-[11px] mt-1.5 leading-relaxed">
+                          You&apos;ll need this to re-download or contact support
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => { navigator.clipboard.writeText(orderId); setIdCopied(true); setTimeout(() => setIdCopied(false), 2000); }}
+                        className="shrink-0 text-zinc-500 hover:text-amber-400 transition-colors p-1 mt-1"
+                        title="Copy Order ID"
+                      >
+                        {idCopied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
+                      </button>
                     </div>
-                    <button onClick={() => { navigator.clipboard.writeText(orderId); setIdCopied(true); setTimeout(() => setIdCopied(false), 2000); }} className="text-zinc-500 hover:text-white transition-colors p-1">
-                      {idCopied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-                    </button>
                   </div>
                 )}
               </div>
@@ -168,6 +183,25 @@ function SuccessContent() {
                   <p className="text-center text-[11px] text-zinc-600 mt-3 flex items-center justify-center gap-1.5">
                     <ShieldCheck className="w-3 h-3" /> Secure delivery via Cloudflare R2 CDN
                   </p>
+                </div>
+              )}
+
+              {/* Quick access links — always visible for paid users */}
+              {orderId && (
+                <div className="mt-4 flex gap-2 flex-wrap">
+                  <Link
+                    href={`/viva/${orderId}`}
+                    className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold border transition-all bg-purple-500/10 hover:bg-purple-500/20 border-purple-500/30 text-purple-400"
+                  >
+                    <GraduationCap className="w-3.5 h-3.5" /> View Viva Q&amp;A
+                  </Link>
+                  <Link
+                    href={`/certificate/${orderId}`}
+                    target="_blank"
+                    className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold border transition-all bg-amber-500/10 hover:bg-amber-500/20 border-amber-500/30 text-amber-400"
+                  >
+                    <Award className="w-3.5 h-3.5" /> Get Plagiarism Certificate
+                  </Link>
                 </div>
               )}
             </div>
@@ -256,7 +290,7 @@ function SuccessContent() {
                       Contact our developers on WhatsApp to request your custom tweaks and modifications to the code.
                     </p>
                     <a href={waLink} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 text-xs font-bold transition-all border border-emerald-500/30">
-                      <MessageCircle className="w-3.5 h-3.5" /> Message on WhatsApp
+                      <MessageCircle className="w-3.5 h-3.5" /> WhatsApp +91 87998 14256
                     </a>
                   </div>
                 </div>

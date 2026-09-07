@@ -127,11 +127,24 @@ export async function sendOrderConfirmationEmail(params: OrderEmailParams): Prom
           <p style="margin:0 0 2px;font-size:0.7rem;color:#71717a;text-transform:uppercase;font-weight:700;">Amount Paid</p>
           <p style="margin:0;font-size:1rem;font-weight:800;color:#10b981;">&#8377;${amountPaid}</p>
         </td>
-        <td align="right">
-          <p style="margin:0 0 2px;font-size:0.7rem;color:#71717a;text-transform:uppercase;font-weight:700;">Order ID</p>
-          <p style="margin:0;font-size:0.8rem;font-family:monospace;color:#a1a1aa;">${shortOrderId}</p>
-        </td>
       </tr>
+    </table>
+
+    <!-- Prominent Order ID Block -->
+    <table width="100%" cellpadding="0" cellspacing="0"
+      style="background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.35);border-radius:10px;padding:14px;margin-top:14px;">
+      <tr><td>
+        <p style="margin:0 0 6px;font-size:0.65rem;font-weight:700;color:#a5b4fc;text-transform:uppercase;letter-spacing:0.07em;">
+          &#128273; Your Order ID — Save This
+        </p>
+        <p style="margin:0 0 6px;font-size:1.4rem;font-weight:800;font-family:monospace;color:#ffffff;letter-spacing:0.06em;">
+          ${shortOrderId}
+        </p>
+        <p style="margin:0;font-size:0.72rem;color:#818cf8;line-height:1.5;">
+          Download link expired? Re-access your order at:
+          <a href="${baseUrl}/order/lookup" style="color:#818cf8;font-weight:700;text-decoration:underline;">${baseUrl.replace('https://', '')}/order/lookup</a>
+        </p>
+      </td></tr>
     </table>
   </td></tr>
 
@@ -143,6 +156,11 @@ export async function sendOrderConfirmationEmail(params: OrderEmailParams): Prom
     </a>
     <p style="margin:10px 0 0;font-size:0.72rem;color:#52525b;">
       Link valid for 10 min &bull; Up to 3 downloads included
+    </p>
+    <p style="margin:8px 0 0;font-size:0.72rem;color:#3f3f46;">
+      Download link expired? Visit
+      <a href="${baseUrl}/order/lookup" style="color:#6366f1;text-decoration:none;font-weight:600;">${baseUrl.replace('https://', '')}/order/lookup</a>
+      and enter your Order ID: <span style="font-family:monospace;color:#818cf8;font-weight:700;">${shortOrderId}</span>
     </p>
   </td></tr>
 

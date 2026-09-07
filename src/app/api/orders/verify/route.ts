@@ -3,6 +3,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { verifySignature } from '@/lib/razorpay';
 import { generateDownloadUrl } from '@/lib/s3';
 import { sendOrderConfirmationEmail } from '@/lib/email';
+import { sendTelegramNotification, buildOrderNotificationMessage } from '@/lib/telegram';
 
 export async function POST(req: NextRequest) {
   try {
@@ -59,6 +60,19 @@ export async function POST(req: NextRequest) {
           hasPlagiarismCert:  !!order.has_plagiarism_cert,
           hasVivaCall:        !!order.has_viva_call,
         });
+
+        // Fire-and-forget Telegram sale notification
+        sendTelegramNotification(buildOrderNotificationMessage({
+          customerName:       order.customer_name,
+          customerEmail:      order.customer_email,
+          customerPhone:      order.customer_phone,
+          projectTitle:       order.projects.title,
+          amountPaid:         order.amount_paid,
+          orderId:            order.id,
+          hasPersonalization: !!order.has_personalization,
+          hasPlagiarismCert:  !!order.has_plagiarism_cert,
+          hasVivaCall:        !!order.has_viva_call,
+        })).catch(err => console.error('[telegram] sale notify failed:', err));
       }
     }
     

@@ -1,34 +1,26 @@
 import { createAdminClient } from '@/lib/supabase/admin';
 import { formatCurrency } from '@/lib/utils';
 import { AlertTriangle } from 'lucide-react';
-import { ClientOrdersTable } from './client-orders-table';
+import { ClientOrdersTable, type OrderRow } from './client-orders-table';
 
 export const dynamic = 'force-dynamic';
-
-type OrderRow = {
-  id: string;
-  order_id: string;
-  customer_name: string;
-  customer_email: string;
-  customer_phone: string;
-  amount_paid: number;
-  status: 'PAID' | 'PENDING' | 'FAILED';
-  download_count: number | null;
-  download_limit: number | null;
-  created_at: string;
-  has_personalization: boolean;
-  has_viva_call: boolean;
-  projects: { title: string } | null;
-};
 
 export default async function AdminOrdersPage() {
   const supabase = createAdminClient();
 
   const { data, error } = await supabase
     .from('orders')
-    .select('id, order_id, customer_name, customer_email, customer_phone, amount_paid, status, download_count, download_limit, created_at, has_personalization, has_viva_call, projects(title)')
+    .select(`
+      id, order_id, payment_id,
+      customer_name, customer_email, customer_phone, college_name,
+      amount_paid, status,
+      download_count, download_limit,
+      created_at,
+      has_personalization, has_plagiarism_cert, has_viva_call,
+      projects(title)
+    `)
     .order('created_at', { ascending: false })
-    .limit(100);
+    .limit(200);
 
   if (error) {
     return (
@@ -60,9 +52,9 @@ export default async function AdminOrdersPage() {
       {/* Quick stat strip */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         {[
-          { label: 'Revenue (shown)',  value: formatCurrency(revenue),       color: 'text-emerald-400' },
-          { label: 'Paid',             value: String(paidCount),             color: 'text-emerald-400' },
-          { label: 'Pending / Failed', value: String(pendingCount),          color: 'text-amber-400'   },
+          { label: 'Revenue (shown)',  value: formatCurrency(revenue), color: 'text-emerald-400' },
+          { label: 'Paid',             value: String(paidCount),        color: 'text-emerald-400' },
+          { label: 'Pending / Failed', value: String(pendingCount),     color: 'text-amber-400'  },
         ].map(({ label, value, color }) => (
           <div key={label} className="bg-slate-900 border border-slate-800 rounded-xl px-4 py-3">
             <p className="text-slate-500 text-xs mb-1">{label}</p>

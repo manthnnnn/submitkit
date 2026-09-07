@@ -45,6 +45,47 @@ export async function sendTelegramNotification(text: string): Promise<void> {
   }
 }
 
+export function buildOrderNotificationMessage(params: {
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  projectTitle: string;
+  amountPaid: number;
+  orderId: string;
+  hasPersonalization: boolean;
+  hasPlagiarismCert: boolean;
+  hasVivaCall: boolean;
+}): string {
+  const {
+    customerName, customerEmail, customerPhone,
+    projectTitle, amountPaid, orderId,
+    hasPersonalization, hasPlagiarismCert, hasVivaCall,
+  } = params;
+
+  const time = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+  const shortId = orderId.split('-')[0].toUpperCase();
+
+  const addons: string[] = [];
+  if (hasPersonalization) addons.push('Name Personalisation');
+  if (hasPlagiarismCert)  addons.push('Plagiarism Cert');
+  if (hasVivaCall)        addons.push('Custom Changes / Viva Call');
+
+  return [
+    `<b>💰 New Sale!</b>`,
+    ``,
+    `<b>Project:</b> ${projectTitle}`,
+    `<b>Student:</b> ${customerName}`,
+    `<b>Amount:</b> ₹${amountPaid}`,
+    addons.length > 0 ? `<b>Add-ons:</b> ${addons.join(', ')}` : null,
+    ``,
+    `<b>Email:</b> ${customerEmail}`,
+    `<b>Phone:</b> ${customerPhone}`,
+    ``,
+    `<b>Order ID:</b> <code>${shortId}</code>`,
+    `<b>Time:</b> ${time} IST`,
+  ].filter(l => l !== null).join('\n');
+}
+
 export function buildPreOrderMessage(params: {
   name: string;
   email: string;
