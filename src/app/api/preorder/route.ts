@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { sendPreOrderEmails } from '@/lib/email';
+import { sendTelegramNotification, buildPreOrderMessage } from '@/lib/telegram';
 
 export async function POST(req: NextRequest) {
   try {
@@ -52,10 +53,15 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Failed to save pre-order' }, { status: 500 });
     }
 
-    // Send emails (student confirmation + owner notification) — fire and forget
-    sendPreOrderEmails({ name, email, phone, college, projectTitle, projectSlug }).catch(
-      err => console.error('[preorder] Email error:', err)
-    );
+    const notifParams = { name, email, phone, college, projectTitle, projectSlug };
+
+    // Fire all notifications in parallel — fire and forget, never block the response
+    Promise.all([
+      // 1. Confirmation email to student
+      sendPreOrderEmails(notifParams).catch(err => console.error('[preorder] Email error:', err)),
+      // 2. Instant Telegram message to you
+      sendTelegramNotification(buildPreOrderMessage(notifParams)).catch(err => console.error('[preorder] Telegram error:', err)),
+    ]);
 
     return NextResponse.json({ success: true, id: preOrder.id });
   } catch (err: any) {
