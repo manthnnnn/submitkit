@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { Award, ShieldCheck, CheckCircle } from 'lucide-react';
 import Script from 'next/script';
+import PrintButton from './PrintButton';
 
 export default async function CertificatePage({ params }: { params: Promise<{ orderId: string }> }) {
   const orderId = (await params).orderId;
@@ -90,12 +91,7 @@ export default async function CertificatePage({ params }: { params: Promise<{ or
         </div>
 
         <div className="fixed bottom-8 text-center w-full print:hidden">
-          <button 
-            onClick={() => window.print()}
-            className="bg-slate-900 text-white px-8 py-3 rounded-full font-bold shadow-xl hover:bg-slate-800 transition-all hover:-translate-y-1"
-          >
-            🖨️ Save as PDF
-          </button>
+          <PrintButton />
         </div>
       </div>
       <Script id="print-css">
