@@ -15,6 +15,7 @@ import {
   Compass,
   ArrowUpRight,
   ExternalLink,
+  Activity,
 } from 'lucide-react';
 import {
   BarChart,
@@ -24,8 +25,6 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  AreaChart,
-  Area,
 } from 'recharts';
 
 export interface PageViewRecord {
@@ -76,46 +75,11 @@ export function TrafficAnalyticsDashboard({
   isTableReady,
   projectMap,
 }: TrafficDashboardProps) {
-  const [timeRange, setTimeRange] = useState<TimeRange>('7d');
+  const [timeRange, setTimeRange] = useState<TimeRange>('1d');
   const [copied, setCopied] = useState(false);
 
-  // Generate realistic sample records for demonstration if the table is freshly created or empty
-  const views = useMemo(() => {
-    if (initialViews.length > 0) return initialViews;
-
-    // Realistic seed data covering past 30 days so dashboard is immediately rich and informative
-    const sample: PageViewRecord[] = [];
-    const now = Date.now();
-    const paths = [
-      '/',
-      '/projects/healthcare-ehr-portal',
-      '/projects/phishing-detector-ai',
-      '/projects/resume-parsing-engine',
-      '/projects/smart-parking-iot',
-      '/projects/online-code-compiler',
-      '/order/lookup',
-      '/projects/credit-card-fraud',
-    ];
-    const referrers = ['https://instagram.com', 'https://web.whatsapp.com', 'https://google.com', 'direct'];
-
-    for (let day = 0; day < 30; day++) {
-      // simulate natural upward growth trend
-      const dailyVisits = Math.floor(18 + day * 1.8 + Math.sin(day) * 6);
-      for (let v = 0; v < dailyVisits; v++) {
-        const timestamp = new Date(now - (29 - day) * 86400000 + (v * 450000) % 86400000).toISOString();
-        const visitorNum = Math.floor(v / 2.2);
-        sample.push({
-          id: `sample-${day}-${v}`,
-          visitor_id: `v_sample_${day}_${visitorNum}`,
-          path: paths[v % paths.length],
-          referrer: referrers[v % referrers.length],
-          device: v % 3 === 0 ? 'desktop' : 'mobile',
-          created_at: timestamp,
-        });
-      }
-    }
-    return sample;
-  }, [initialViews]);
+  // STRICTLY 100% REAL LIVE DATA — No simulated or fake placeholder records!
+  const views = initialViews ?? [];
 
   const copySql = () => {
     navigator.clipboard.writeText(SQL_MIGRATION);
@@ -127,12 +91,12 @@ export function TrafficAnalyticsDashboard({
   const stats = useMemo(() => {
     const now = Date.now();
     let currentMs = 86400000;
-    let label = 'Today';
+    let label = 'Today (1 Day)';
     let daysCount = 1;
 
     if (timeRange === '1d') {
       currentMs = 1 * 86400000;
-      label = 'Today';
+      label = 'Today (1 Day)';
       daysCount = 1;
     } else if (timeRange === '7d') {
       currentMs = 7 * 86400000;
@@ -163,21 +127,27 @@ export function TrafficAnalyticsDashboard({
     const prevUniqueVisitors = prevUniqueVisitorsSet.size;
 
     // Growth calculations
-    const viewsGrowth = prevTotalViews > 0
-      ? Math.round(((totalViews - prevTotalViews) / prevTotalViews) * 100)
-      : totalViews > 0 ? 100 : 0;
+    let viewsGrowth = 0;
+    if (prevTotalViews > 0) {
+      viewsGrowth = Math.round(((totalViews - prevTotalViews) / prevTotalViews) * 100);
+    } else if (totalViews > 0) {
+      viewsGrowth = 100;
+    }
 
-    const visitorsGrowth = prevUniqueVisitors > 0
-      ? Math.round(((uniqueVisitors - prevUniqueVisitors) / prevUniqueVisitors) * 100)
-      : uniqueVisitors > 0 ? 100 : 0;
+    let visitorsGrowth = 0;
+    if (prevUniqueVisitors > 0) {
+      visitorsGrowth = Math.round(((uniqueVisitors - prevUniqueVisitors) / prevUniqueVisitors) * 100);
+    } else if (uniqueVisitors > 0) {
+      visitorsGrowth = 100;
+    }
 
-    const avgPagesPerUser = uniqueVisitors > 0 ? (totalViews / uniqueVisitors).toFixed(1) : '1.0';
+    const avgPagesPerUser = uniqueVisitors > 0 ? (totalViews / uniqueVisitors).toFixed(1) : '0';
 
     // Device breakdown
     const mobileCount = currentPeriodViews.filter(v => v.device === 'mobile').length;
     const desktopCount = currentPeriodViews.filter(v => v.device !== 'mobile').length;
-    const mobilePct = totalViews > 0 ? Math.round((mobileCount / totalViews) * 100) : 65;
-    const desktopPct = 100 - mobilePct;
+    const mobilePct = totalViews > 0 ? Math.round((mobileCount / totalViews) * 100) : 0;
+    const desktopPct = totalViews > 0 ? 100 - mobilePct : 0;
 
     // Top Pages / Projects
     const pathCounts: Record<string, { count: number; uniqueVisitors: Set<string> }> = {};
@@ -211,18 +181,30 @@ export function TrafficAnalyticsDashboard({
       .sort((a, b) => b.views - a.views)
       .slice(0, 6);
 
-    // Chart daily or hourly timeline
+    // Chart daily or hourly timeline — ONLY REAL DATA
     let chartData: { label: string; views: number; visitors: number }[] = [];
 
     if (timeRange === '1d') {
-      // Group by 4-hour blocks or 2-hour blocks
-      const blocks = ['12 AM', '4 AM', '8 AM', '12 PM', '4 PM', '8 PM', 'Now'];
-      chartData = blocks.map((b, idx) => {
-        const factor = Math.max(1, Math.round(totalViews / 6));
+      // 6 4-hour slots for today
+      const slots = [
+        { label: '12 AM', startH: 0, endH: 4 },
+        { label: '4 AM',  startH: 4, endH: 8 },
+        { label: '8 AM',  startH: 8, endH: 12 },
+        { label: '12 PM', startH: 12, endH: 16 },
+        { label: '4 PM',  startH: 16, endH: 20 },
+        { label: '8 PM',  startH: 20, endH: 24 },
+      ];
+
+      chartData = slots.map(slot => {
+        const slotViews = currentPeriodViews.filter(v => {
+          const h = new Date(v.created_at).getHours();
+          return h >= slot.startH && h < slot.endH;
+        });
+        const slotUniques = new Set(slotViews.map(v => v.visitor_id)).size;
         return {
-          label: b,
-          views: Math.max(0, Math.floor(factor * (0.6 + (idx % 3) * 0.4))),
-          visitors: Math.max(0, Math.floor(factor * 0.7 * (0.6 + (idx % 3) * 0.3))),
+          label: slot.label,
+          views: slotViews.length,
+          visitors: slotUniques,
         };
       });
     } else {
@@ -265,68 +247,43 @@ export function TrafficAnalyticsDashboard({
 
   return (
     <div className="space-y-6">
-      {/* Migration setup reminder if table is not yet detected in Supabase */}
-      {!isTableReady && (
-        <div
-          className="rounded-2xl p-5 border flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
-          style={{
-            background: 'linear-gradient(135deg, rgba(99,102,241,0.12), rgba(16,185,129,0.06))',
-            borderColor: 'rgba(99,102,241,0.3)',
-          }}
-        >
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
-              <h3 className="text-sm font-bold text-white flex items-center gap-1.5">
-                <Sparkles className="w-4 h-4 text-brand-400" />
-                Live Visitor Tracking Engine Ready
-              </h3>
-            </div>
-            <p className="text-xs text-zinc-400 max-w-xl">
-              Real-time student visitor tracking is active on your site. Run the 1-click SQL migration in your Supabase SQL Editor to link the dedicated database table.
-            </p>
-          </div>
-          <button
-            onClick={copySql}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold bg-brand-500 hover:bg-brand-400 text-white transition-all shrink-0 shadow-lg shadow-brand-500/20 active:scale-95"
-          >
-            {copied ? <Check className="w-3.5 h-3.5 text-emerald-300" /> : <Copy className="w-3.5 h-3.5" />}
-            {copied ? 'SQL Copied to Clipboard!' : 'Copy 1-Click SQL Script'}
-          </button>
-        </div>
-      )}
-
       {/* Control Bar: Time Filters & Trend Indicator */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
             <h2 className="text-lg font-bold text-white tracking-tight flex items-center gap-2">
               <Eye className="w-5 h-5 text-brand-400" />
-              Website Visitors & Traffic Pulse
+              Live Website Traffic & Visitors
             </h2>
-            {/* Growth status indicator */}
-            <span
-              className={`text-xs font-semibold px-2.5 py-0.5 rounded-full flex items-center gap-1 ${
-                stats.viewsGrowth >= 0
-                  ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
-                  : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
-              }`}
-            >
-              {stats.viewsGrowth >= 0 ? (
-                <>
-                  <TrendingUp className="w-3 h-3" />
-                  Traffic Growing (+{stats.viewsGrowth}%)
-                </>
-              ) : (
-                <>
-                  <TrendingDown className="w-3 h-3" />
-                  Traffic Slowing ({stats.viewsGrowth}%)
-                </>
-              )}
-            </span>
+            {/* Real growth status indicator */}
+            {stats.totalViews > 0 ? (
+              <span
+                className={`text-xs font-semibold px-2.5 py-0.5 rounded-full flex items-center gap-1 ${
+                  stats.viewsGrowth >= 0
+                    ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                    : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                }`}
+              >
+                {stats.viewsGrowth >= 0 ? (
+                  <>
+                    <TrendingUp className="w-3 h-3" />
+                    Traffic Growing (+{stats.viewsGrowth}%)
+                  </>
+                ) : (
+                  <>
+                    <TrendingDown className="w-3 h-3" />
+                    Traffic Slower ({stats.viewsGrowth}%)
+                  </>
+                )}
+              </span>
+            ) : (
+              <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700">
+                Awaiting First Live Visit
+              </span>
+            )}
           </div>
           <p className="text-xs text-zinc-500 mt-1">
-            Tracking prospective student traffic, page engagement, and most-viewed projects
+            Real-time verified hits from students exploring projects on submitkit.in
           </p>
         </div>
 
@@ -385,14 +342,16 @@ export function TrafficAnalyticsDashboard({
             <span className="text-2xl font-display font-bold text-white tracking-tight">
               {stats.uniqueVisitors.toLocaleString()}
             </span>
-            <span
-              className={`text-xs font-semibold flex items-center ${
-                stats.visitorsGrowth >= 0 ? 'text-emerald-400' : 'text-rose-400'
-              }`}
-            >
-              {stats.visitorsGrowth >= 0 ? `+${stats.visitorsGrowth}%` : `${stats.visitorsGrowth}%`}
-              <span className="text-zinc-500 font-normal ml-1">vs prev</span>
-            </span>
+            {stats.uniqueVisitors > 0 && (
+              <span
+                className={`text-xs font-semibold flex items-center ${
+                  stats.visitorsGrowth >= 0 ? 'text-emerald-400' : 'text-rose-400'
+                }`}
+              >
+                {stats.visitorsGrowth >= 0 ? `+${stats.visitorsGrowth}%` : `${stats.visitorsGrowth}%`}
+                <span className="text-zinc-500 font-normal ml-1">vs prev</span>
+              </span>
+            )}
           </div>
           <p className="text-[11px] text-zinc-500 mt-1">Distinct students visiting in {stats.label.toLowerCase()}</p>
         </div>
@@ -412,14 +371,16 @@ export function TrafficAnalyticsDashboard({
             <span className="text-2xl font-display font-bold text-white tracking-tight">
               {stats.totalViews.toLocaleString()}
             </span>
-            <span
-              className={`text-xs font-semibold flex items-center ${
-                stats.viewsGrowth >= 0 ? 'text-emerald-400' : 'text-rose-400'
-              }`}
-            >
-              {stats.viewsGrowth >= 0 ? `+${stats.viewsGrowth}%` : `${stats.viewsGrowth}%`}
-              <span className="text-zinc-500 font-normal ml-1">vs prev</span>
-            </span>
+            {stats.totalViews > 0 && (
+              <span
+                className={`text-xs font-semibold flex items-center ${
+                  stats.viewsGrowth >= 0 ? 'text-emerald-400' : 'text-rose-400'
+                }`}
+              >
+                {stats.viewsGrowth >= 0 ? `+${stats.viewsGrowth}%` : `${stats.viewsGrowth}%`}
+                <span className="text-zinc-500 font-normal ml-1">vs prev</span>
+              </span>
+            )}
           </div>
           <p className="text-[11px] text-zinc-500 mt-1">Total page navigations recorded</p>
         </div>
@@ -427,7 +388,7 @@ export function TrafficAnalyticsDashboard({
         {/* Card 3: Avg Views Per Student */}
         <div className="rounded-2xl p-5" style={cardStyle}>
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-zinc-400">Pages / Visitor</span>
+            <span className="text-xs font-medium text-zinc-400">Pages / Student</span>
             <div
               className="w-8 h-8 rounded-lg flex items-center justify-center"
               style={{ background: 'rgba(251,191,36,0.12)', border: '1px solid rgba(251,191,36,0.2)' }}
@@ -439,9 +400,11 @@ export function TrafficAnalyticsDashboard({
             <span className="text-2xl font-display font-bold text-white tracking-tight">
               {stats.avgPagesPerUser}
             </span>
-            <span className="text-xs text-amber-400/90 font-medium">High Intent</span>
+            <span className="text-xs text-amber-400/90 font-medium">
+              {Number(stats.avgPagesPerUser) > 1.5 ? 'High Intent' : 'Active'}
+            </span>
           </div>
-          <p className="text-[11px] text-zinc-500 mt-1">Avg projects explored per student session</p>
+          <p className="text-[11px] text-zinc-500 mt-1">Avg projects viewed per student</p>
         </div>
 
         {/* Card 4: Device Split */}
@@ -476,9 +439,9 @@ export function TrafficAnalyticsDashboard({
       <div className="rounded-2xl p-5" style={cardStyle}>
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-sm font-semibold text-white">Daily Traffic & Visitor Volume</h3>
+            <h3 className="text-sm font-semibold text-white">Verified Traffic & Visitor Volume</h3>
             <p className="text-xs text-zinc-500">
-              Comparing total views against distinct new visitors ({stats.label})
+              Comparing verified page hits against distinct students ({stats.label})
             </p>
           </div>
           <div className="flex items-center gap-4 text-xs text-zinc-400">
@@ -493,93 +456,107 @@ export function TrafficAnalyticsDashboard({
           </div>
         </div>
 
-        <ResponsiveContainer width="100%" height={220}>
-          <BarChart data={stats.chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-            <CartesianGrid stroke="rgba(255,255,255,0.04)" strokeDasharray="3 3" vertical={false} />
-            <XAxis dataKey="label" tick={{ fontSize: 10, fill: '#71717a' }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fontSize: 10, fill: '#71717a' }} axisLine={false} tickLine={false} />
-            <Tooltip
-              cursor={{ fill: 'rgba(255,255,255,0.02)' }}
-              content={({ active, payload, label }) => {
-                if (!active || !payload?.length) return null;
-                return (
-                  <div
-                    style={{
-                      background: 'rgba(9,9,11,0.95)',
-                      border: '1px solid rgba(255,255,255,0.1)',
-                      borderRadius: '10px',
-                      padding: '10px 14px',
-                      fontSize: '12px',
-                    }}
-                  >
-                    <p style={{ color: '#71717a', marginBottom: '6px', fontSize: '11px' }}>{label}</p>
-                    <p style={{ color: '#818cf8', fontWeight: 700 }}>
-                      Page Views: {payload[0]?.value}
-                    </p>
-                    <p style={{ color: '#34d399', fontWeight: 700 }}>
-                      Unique Visitors: {payload[1]?.value}
-                    </p>
-                  </div>
-                );
-              }}
-            />
-            <Bar dataKey="views" fill="#6366f1" radius={[4, 4, 0, 0]} maxBarSize={28} />
-            <Bar dataKey="visitors" fill="#34d399" radius={[4, 4, 0, 0]} maxBarSize={28} />
-          </BarChart>
-        </ResponsiveContainer>
+        {stats.totalViews === 0 ? (
+          <div className="py-12 text-center">
+            <Activity className="w-8 h-8 text-zinc-700 mx-auto mb-2 animate-pulse" />
+            <p className="text-zinc-400 text-sm font-medium">No page views recorded yet in {stats.label.toLowerCase()}</p>
+            <p className="text-zinc-600 text-xs mt-1">Open submitkit.in on your mobile phone to see your view appear here in real-time!</p>
+          </div>
+        ) : (
+          <ResponsiveContainer width="100%" height={220}>
+            <BarChart data={stats.chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <CartesianGrid stroke="rgba(255,255,255,0.04)" strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="label" tick={{ fontSize: 10, fill: '#71717a' }} axisLine={false} tickLine={false} />
+              <YAxis allowDecimals={false} tick={{ fontSize: 10, fill: '#71717a' }} axisLine={false} tickLine={false} />
+              <Tooltip
+                cursor={{ fill: 'rgba(255,255,255,0.02)' }}
+                content={({ active, payload, label }) => {
+                  if (!active || !payload?.length) return null;
+                  return (
+                    <div
+                      style={{
+                        background: 'rgba(9,9,11,0.95)',
+                        border: '1px solid rgba(255,255,255,0.1)',
+                        borderRadius: '10px',
+                        padding: '10px 14px',
+                        fontSize: '12px',
+                      }}
+                    >
+                      <p style={{ color: '#71717a', marginBottom: '6px', fontSize: '11px' }}>{label}</p>
+                      <p style={{ color: '#818cf8', fontWeight: 700 }}>
+                        Page Views: {payload[0]?.value}
+                      </p>
+                      <p style={{ color: '#34d399', fontWeight: 700 }}>
+                        Unique Visitors: {payload[1]?.value}
+                      </p>
+                    </div>
+                  );
+                }}
+              />
+              <Bar dataKey="views" fill="#6366f1" radius={[4, 4, 0, 0]} maxBarSize={28} />
+              <Bar dataKey="visitors" fill="#34d399" radius={[4, 4, 0, 0]} maxBarSize={28} />
+            </BarChart>
+          </ResponsiveContainer>
+        )}
       </div>
 
       {/* Top Viewed Projects & Student Demand Table */}
       <div className="rounded-2xl p-5" style={cardStyle}>
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-sm font-semibold text-white">Most Viewed Projects & Student Interest</h3>
+            <h3 className="text-sm font-semibold text-white">Most Viewed Projects</h3>
             <p className="text-xs text-zinc-500">
-              Which projects students are clicking into and studying most frequently
+              Live student interest ranking based on verified clicks
             </p>
           </div>
           <span className="text-xs text-zinc-500 font-medium">Ranked by visits</span>
         </div>
 
-        <div className="space-y-3">
-          {stats.topPages.map((page, idx) => (
-            <div
-              key={page.path}
-              className="p-3 rounded-xl bg-white/[0.02] border border-white/[0.04] hover:bg-white/[0.04] transition-all"
-            >
-              <div className="flex items-center justify-between mb-1.5">
-                <div className="flex items-center gap-2.5 truncate max-w-[70%]">
-                  <span
-                    className={`w-5 h-5 rounded-md text-[10px] font-bold flex items-center justify-center ${
-                      idx === 0
-                        ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                        : idx === 1
-                        ? 'bg-zinc-700 text-zinc-300'
-                        : 'bg-zinc-800 text-zinc-500'
-                    }`}
-                  >
-                    {idx + 1}
-                  </span>
-                  <span className="text-xs font-semibold text-white truncate">{page.title}</span>
-                  <span className="text-[10px] text-zinc-500 font-mono hidden sm:inline">{page.path}</span>
+        {stats.topPages.length === 0 ? (
+          <div className="py-8 text-center text-zinc-600 text-xs">
+            No project views recorded yet in this time window.
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {stats.topPages.map((page, idx) => (
+              <div
+                key={page.path}
+                className="p-3 rounded-xl bg-white/[0.02] border border-white/[0.04] hover:bg-white/[0.04] transition-all"
+              >
+                <div className="flex items-center justify-between mb-1.5">
+                  <div className="flex items-center gap-2.5 truncate max-w-[70%]">
+                    <span
+                      className={`w-5 h-5 rounded-md text-[10px] font-bold flex items-center justify-center ${
+                        idx === 0
+                          ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                          : idx === 1
+                          ? 'bg-zinc-700 text-zinc-300'
+                          : 'bg-zinc-800 text-zinc-500'
+                      }`}
+                    >
+                      {idx + 1}
+                    </span>
+                    <span className="text-xs font-semibold text-white truncate">{page.title}</span>
+                    <span className="text-[10px] text-zinc-500 font-mono hidden sm:inline">{page.path}</span>
+                  </div>
+                  <div className="flex items-center gap-3 text-right">
+                    <span className="text-xs font-bold text-brand-300">{page.views} {page.views === 1 ? 'view' : 'views'}</span>
+                    <span className="text-[11px] text-zinc-500">({page.uniques} {page.uniques === 1 ? 'student' : 'students'})</span>
+                    <span className="text-[11px] font-semibold text-zinc-400 w-10 text-right">{page.pct}%</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-3 text-right">
-                  <span className="text-xs font-bold text-brand-300">{page.views} views</span>
-                  <span className="text-[11px] text-zinc-500">({page.uniques} students)</span>
-                  <span className="text-[11px] font-semibold text-zinc-400 w-10 text-right">{page.pct}%</span>
-                </div>
-              </div>
 
-              {/* Progress bar */}
-              <div className="w-full bg-zinc-800/40 h-1 rounded-full overflow-hidden">
-                <div
-                  className="bg-gradient-to-r from-brand-500 to-emerald-400 h-full rounded-full transition-all duration-700"
-                  style={{ width: `${page.pct}%` }}
-                />
+                {/* Progress bar */}
+                <div className="w-full bg-zinc-800/40 h-1 rounded-full overflow-hidden">
+                  <div
+                    className="bg-gradient-to-r from-brand-500 to-emerald-400 h-full rounded-full transition-all duration-700"
+                    style={{ width: `${page.pct}%` }}
+                  />
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
