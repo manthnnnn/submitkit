@@ -1,66 +1,71 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 
+const LOADING_SCENARIOS: readonly (readonly string[])[] = [
+  [
+    "[SYSTEM] Initiating bootstrap...",
+    "[AUTH] Verifying secure tokens...",
+    "[DB] Querying project repository...",
+    "[FS] Resolving architecture...",
+    "[COMPILER] Bundling source code...",
+    "[UI] Painting layout trees...",
+    "[OK] Loading Succeeded."
+  ],
+  [
+    "[NETWORK] Establishing Handshake...",
+    "[SEC] SSL Handshake Confirmed...",
+    "[CDN] Fetching Assets from Edge...",
+    "[CACHE] Cache Miss. Hitting Database...",
+    "[DB] Retrieving Heavy Assets...",
+    "[RENDER] Injecting CSS Variables...",
+    "[OK] Loading Succeeded."
+  ],
+  [
+    "[BOOT] Waking up Serverless Functions...",
+    "[AUTH] Validating Session JWT...",
+    "[API] Fetching Dynamic Routes...",
+    "[DOM] Hydrating React Components...",
+    "[STATE] Syncing Context Providers...",
+    "[OPTIMIZE] Compressing Payloads...",
+    "[OK] Loading Succeeded."
+  ]
+];
+
 export default function Loading() {
-  // We initialize with a line already present so the terminal is NEVER blank
-  const [activeLines, setActiveLines] = useState<string[]>(["[SUBMITKIT v1.0] Core engine starting..."]);
-  
-  const loadingScenarios = [
-    [
-      "[SYSTEM] Initiating bootstrap...",
-      "[AUTH] Verifying secure tokens...",
-      "[DB] Querying project repository...",
-      "[FS] Resolving architecture...",
-      "[COMPILER] Bundling source code...",
-      "[UI] Painting layout trees...",
-      "[OK] Loading Succeeded."
-    ],
-    [
-      "[NETWORK] Establishing Handshake...",
-      "[SEC] SSL Handshake Confirmed...",
-      "[CDN] Fetching Assets from Edge...",
-      "[CACHE] Cache Miss. Hitting Database...",
-      "[DB] Retrieving Heavy Assets...",
-      "[RENDER] Injecting CSS Variables...",
-      "[OK] Loading Succeeded."
-    ],
-    [
-      "[BOOT] Waking up Serverless Functions...",
-      "[AUTH] Validating Session JWT...",
-      "[API] Fetching Dynamic Routes...",
-      "[DOM] Hydrating React Components...",
-      "[STATE] Syncing Context Providers...",
-      "[OPTIMIZE] Compressing Payloads...",
-      "[OK] Loading Succeeded."
-    ]
-  ];
+  const [activeLines, setActiveLines] = useState<string[]>([
+    "[SUBMITKIT v1.0] Core engine starting..."
+  ]);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    // Pick a random scenario on mount
-    const selectedLines = loadingScenarios[Math.floor(Math.random() * loadingScenarios.length)];
-    
+    const scenarioIndex = Math.floor(Math.random() * LOADING_SCENARIOS.length);
+    const selectedLines = LOADING_SCENARIOS[scenarioIndex] || LOADING_SCENARIOS[0];
     let index = 0;
-    // Start typing immediately after a tiny delay
-    const timeout = setTimeout(() => {
-      const interval = setInterval(() => {
+
+    timerRef.current = setTimeout(() => {
+      intervalRef.current = setInterval(() => {
         if (index < selectedLines.length) {
-          setActiveLines(prev => {
-            const next = [...prev, selectedLines[index]];
-            // Keep only the last 3 or 4 lines to fit nicely in the window
-            if (next.length > 4) return next.slice(1);
-            return next;
-          });
+          const nextLine = selectedLines[index];
+          if (nextLine && typeof nextLine === 'string') {
+            setActiveLines(prev => {
+              const clean = prev.filter(l => Boolean(l) && typeof l === 'string');
+              const updated = [...clean, nextLine];
+              return updated.length > 4 ? updated.slice(updated.length - 4) : updated;
+            });
+          }
           index++;
         } else {
-          clearInterval(interval);
+          if (intervalRef.current) clearInterval(intervalRef.current);
         }
-      }, 150); // Very fast typing speed so it never feels boring
-      
-      return () => clearInterval(interval);
+      }, 150);
     }, 100);
-    
-    return () => clearTimeout(timeout);
+
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
   }, []);
 
   return (
@@ -88,19 +93,25 @@ export default function Loading() {
         
         {/* Terminal Body */}
         <div className="p-6 h-48 flex flex-col justify-end font-mono text-xs relative z-10">
-           {activeLines.map((line, i) => (
-             <motion.div 
-               key={line + i}
-               initial={{ opacity: 0, x: -5 }}
-               animate={{ opacity: 1, x: 0 }}
-               className={`mb-3 ${
-                 line.includes('[OK]') ? 'text-emerald-400 font-bold' : 
-                 line.includes('[SUBMITKIT]') ? 'text-zinc-300' : 'text-zinc-500'
-               }`}
-             >
-               {line}
-             </motion.div>
-           ))}
+           {activeLines.map((line, i) => {
+             const safeLine = typeof line === 'string' ? line : '';
+             const isOk = safeLine.includes('[OK]');
+             const isSubmitKit = safeLine.includes('[SUBMITKIT]');
+
+             return (
+               <motion.div 
+                 key={`${safeLine}-${i}`}
+                 initial={{ opacity: 0, x: -5 }}
+                 animate={{ opacity: 1, x: 0 }}
+                 className={`mb-3 ${
+                   isOk ? 'text-emerald-400 font-bold' : 
+                   isSubmitKit ? 'text-zinc-300' : 'text-zinc-500'
+                 }`}
+               >
+                 {safeLine}
+               </motion.div>
+             );
+           })}
            <div className="flex items-center mt-1">
              <span className="text-emerald-500 mr-2 font-bold">{'>'}</span>
              <motion.div 
@@ -116,7 +127,7 @@ export default function Loading() {
           <motion.div 
             className="h-full bg-emerald-500"
             animate={{ width: ["0%", "100%"] }}
-            transition={{ duration: 1.2, ease: "circOut" }} // Fast progress bar
+            transition={{ duration: 1.2, ease: "circOut" }}
           />
         </div>
       </div>
