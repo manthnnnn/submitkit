@@ -36,7 +36,20 @@ export async function sendTelegramNotification(text: string): Promise<void> {
 
     if (!res.ok) {
       const body = await res.text().catch(() => '');
-      console.error('[telegram] API error:', body);
+      console.error('[telegram] HTML sendMessage failed, falling back to plain text:', body);
+      // Fallback: send as plain text so notification is NEVER dropped
+      try {
+        await fetch(`${TELEGRAM_API}/bot${token}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chat_id: chatId,
+            text: text.replace(/<[^>]*>/g, ''),
+          }),
+        });
+      } catch (fallbackErr) {
+        console.error('[telegram] Plaintext fallback failed:', fallbackErr);
+      }
     } else {
       console.log('[telegram] Notification sent');
     }
