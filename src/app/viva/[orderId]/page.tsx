@@ -24,7 +24,7 @@ export default async function VivaPortalPage({ params }: { params: Promise<{ ord
   if (UUID_REGEX.test(orderId)) {
     const { data: order } = await supabase
       .from('orders')
-      .select('customer_name, created_at, status, projects(title, category)')
+      .select('customer_name, created_at, status, projects(title, category, slug)')
       .eq('id', orderId)
       .maybeSingle();
 
@@ -32,8 +32,9 @@ export default async function VivaPortalPage({ params }: { params: Promise<{ ord
       studentName = (order.customer_name?.trim() || 'Student');
       const proj = Array.isArray(order.projects) ? order.projects[0] : order.projects;
       if (proj) {
-        projectTitle = proj.title || projectTitle;
-        category = (proj.category || 'FullStack') as ProjectCategory;
+        const readyMeta = proj.slug ? getProjectMeta(proj.slug) : null;
+        projectTitle = readyMeta?.name || proj.title || projectTitle;
+        category = (readyMeta?.category || proj.category || 'FullStack') as ProjectCategory;
       }
       try {
         if (order.created_at) {
@@ -52,7 +53,7 @@ export default async function VivaPortalPage({ params }: { params: Promise<{ ord
   if (!resolved && orderId.startsWith('order_')) {
     const { data: order } = await supabase
       .from('orders')
-      .select('customer_name, created_at, status, projects(title, category)')
+      .select('customer_name, created_at, status, projects(title, category, slug)')
       .eq('order_id', orderId)
       .maybeSingle();
 
@@ -60,8 +61,9 @@ export default async function VivaPortalPage({ params }: { params: Promise<{ ord
       studentName = (order.customer_name?.trim() || 'Student');
       const proj = Array.isArray(order.projects) ? order.projects[0] : order.projects;
       if (proj) {
-        projectTitle = proj.title || projectTitle;
-        category = (proj.category || 'FullStack') as ProjectCategory;
+        const readyMeta = proj.slug ? getProjectMeta(proj.slug) : null;
+        projectTitle = readyMeta?.name || proj.title || projectTitle;
+        category = (readyMeta?.category || proj.category || 'FullStack') as ProjectCategory;
       }
       try {
         if (order.created_at) {
