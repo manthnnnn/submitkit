@@ -96,8 +96,36 @@ export async function POST(req: NextRequest) {
     if (partial) return buildResponse(partial);
   }
 
+  // ── 6. Student Email lookup ───────────────────────────────────────────────
+  if (raw.includes('@')) {
+    const { data: byEmail } = await supabase
+      .from('orders')
+      .select(FIELDS)
+      .ilike('customer_email', raw.toLowerCase().trim())
+      .eq('status', 'PAID')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (byEmail) return buildResponse(byEmail);
+  }
+
+  // ── 7. Student Phone lookup (10 digits) ───────────────────────────────────
+  const digits = raw.replace(/\D/g, '');
+  if (digits.length >= 10) {
+    const last10 = digits.slice(-10);
+    const { data: byPhone } = await supabase
+      .from('orders')
+      .select(FIELDS)
+      .ilike('customer_phone', `%${last10}%`)
+      .eq('status', 'PAID')
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (byPhone) return buildResponse(byPhone);
+  }
+
   return NextResponse.json({
-    error: `No order found for "${raw.toUpperCase()}". Make sure you're using the 8-character code from your confirmation email — e.g. FD5EF7F6. It's shown in large text at the top of the email.`,
+    error: `No paid order found for "${raw}". You can look up by your Order ID, student Email address, or Phone number. If you need help, WhatsApp our support at +91 87998 14256.`,
   }, { status: 404 });
 }
 

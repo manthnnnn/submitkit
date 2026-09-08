@@ -16,6 +16,7 @@ async function fetchDashboardData() {
     { data: preOrders },
     { data: recentOrders },
     { data: allOrdersForChart },
+    { count: todayViewsCount },
   ] = await Promise.all([
     supabase.from('projects').select('*', { count: 'exact', head: true }),
     supabase.from('orders').select('amount_paid').eq('status', 'PAID'),
@@ -30,11 +31,16 @@ async function fetchDashboardData() {
       .select('amount_paid, created_at')
       .eq('status', 'PAID')
       .gte('created_at', new Date(Date.now() - 14 * 86400000).toISOString()),
+    supabase
+      .from('page_views')
+      .select('*', { count: 'exact', head: true })
+      .gte('created_at', new Date(Date.now() - 86400000).toISOString()),
   ]);
 
   const totalRevenue   = paidOrders?.reduce((s, o) => s + o.amount_paid, 0) ?? 0;
   const totalPaidCount = paidOrders?.length ?? 0;
   const preOrderCount  = preOrders?.length ?? 0;
+  const todayViews     = todayViewsCount ?? 0;
 
   // Build daily revenue for last 14 days
   const dailyMap: Record<string, number> = {};
@@ -62,6 +68,7 @@ async function fetchDashboardData() {
     totalPaidCount,
     pendingOrders:    pendingOrders ?? 0,
     preOrderCount,
+    todayViews,
     revenueChartData,
     recentOrders:     (recentOrders ?? []) as unknown as {
       id: string;
@@ -117,6 +124,7 @@ export default async function AdminDashboard() {
         projectCount:   data.projectCount,
         pendingOrders:  data.pendingOrders,
         preOrderCount:  data.preOrderCount,
+        todayViews:     data.todayViews,
       }}
       revenueChartData={data.revenueChartData}
       recentOrders={data.recentOrders}

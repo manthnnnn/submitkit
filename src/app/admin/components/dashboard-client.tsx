@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import {
   IndianRupee, Package, ShoppingCart, TrendingUp,
-  Clock, BarChart3, ArrowRight, Activity,
+  Clock, BarChart3, ArrowRight, Activity, Eye,
 } from 'lucide-react';
 import Link from 'next/link';
 import { RevenueDayChart } from './revenue-chart';
@@ -16,6 +16,7 @@ interface Props {
     projectCount:   number;
     pendingOrders:  number;
     preOrderCount:  number;
+    todayViews:     number;
   };
   revenueChartData: { date: string; revenue: number }[];
   recentOrders: {
@@ -41,29 +42,31 @@ const cardBase: React.CSSProperties = {
 const STAT_CONFIG = [
   { key: 'totalRevenue',   label: 'Total Revenue',   Icon: IndianRupee,  accent: '#818cf8', iconBg: 'rgba(99,102,241,0.15)'  },
   { key: 'totalPaidCount', label: 'Paid Orders',      Icon: ShoppingCart, accent: '#34d399', iconBg: 'rgba(16,185,129,0.12)'  },
+  { key: 'todayViews',     label: 'Visitors Today',   Icon: Eye,          accent: '#38bdf8', iconBg: 'rgba(56,189,248,0.12)', href: '/admin/analytics' },
   { key: 'projectCount',   label: 'Live Projects',    Icon: Package,      accent: '#2dd4bf', iconBg: 'rgba(20,184,166,0.12)'  },
+  { key: 'preOrderCount',  label: 'Pre-orders',       Icon: Clock,        accent: '#a78bfa', iconBg: 'rgba(139,92,246,0.12)', href: '/admin/preorders' },
   { key: 'pendingOrders',  label: 'Pending Carts',    Icon: TrendingUp,   accent: '#fb923c', iconBg: 'rgba(249,115,22,0.12)'  },
-  { key: 'preOrderCount',  label: 'Pre-orders',       Icon: Clock,        accent: '#a78bfa', iconBg: 'rgba(139,92,246,0.12)'  },
 ] as const;
 
 function StatCard({
-  label, value, Icon, accent, iconBg,
+  label, value, Icon, accent, iconBg, href,
 }: {
   label: string; value: string | number; Icon: React.ElementType;
-  accent: string; iconBg: string;
+  accent: string; iconBg: string; href?: string;
 }) {
   const [hovered, setHovered] = useState(false);
-  return (
+  const content = (
     <div
       style={{
         ...cardBase,
-        transition: 'box-shadow 0.2s',
+        transition: 'all 0.2s',
         boxShadow: hovered
-          ? `0 0 0 1px ${accent}30, 0 8px 32px ${accent}20`
+          ? `0 0 0 1px ${accent}40, 0 8px 32px ${accent}20`
           : '0 1px 0 rgba(255,255,255,0.06) inset',
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      className={href ? 'cursor-pointer hover:scale-[1.02] transition-transform' : ''}
     >
       <div className="p-4">
         <div className="flex items-center justify-between mb-3">
@@ -84,6 +87,11 @@ function StatCard({
       />
     </div>
   );
+
+  if (href) {
+    return <Link href={href} className="block">{content}</Link>;
+  }
+  return content;
 }
 
 export function DashboardClient({ stats, revenueChartData, recentOrders, demandPipeline }: Props) {
@@ -99,20 +107,22 @@ export function DashboardClient({ stats, revenueChartData, recentOrders, demandP
           className="flex items-center gap-1.5 text-xs text-emerald-400 font-medium px-3 py-1.5 rounded-full"
           style={{ background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)' }}
         >
-          <Activity className="w-3 h-3" /> Live
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse inline-block" />
+          Live Platform
         </span>
       </div>
 
       {/* Stat cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-        {STAT_CONFIG.map(({ key, label, Icon, accent, iconBg }) => (
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        {STAT_CONFIG.map(({ key, label, Icon, accent, iconBg, ...rest }) => (
           <StatCard
             key={key}
             label={label}
-            value={stats[key]}
+            value={stats[key as keyof typeof stats]}
             Icon={Icon}
             accent={accent}
             iconBg={iconBg}
+            href={(rest as any).href}
           />
         ))}
       </div>

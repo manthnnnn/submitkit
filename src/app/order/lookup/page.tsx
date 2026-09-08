@@ -89,10 +89,10 @@ export default function OrderLookupPage() {
             <Package className="h-7 w-7 text-brand-400" />
           </div>
           <h1 className="text-3xl font-display font-bold text-white mb-2 tracking-tight">
-            Find My Order
+            Find My Order & Download
           </h1>
-          <p className="text-zinc-500 text-sm leading-relaxed">
-            Enter your Order ID from the confirmation email to re-access your download.
+          <p className="text-zinc-400 text-sm leading-relaxed">
+            Enter your Order ID, Email, or Phone number to re-access your project and Viva prep portal.
           </p>
         </motion.div>
 
@@ -104,25 +104,26 @@ export default function OrderLookupPage() {
           className="glass-card rounded-2xl p-6 space-y-5"
         >
 
-          {/* What is an Order ID */}
+          {/* Flexible search info */}
           <div className="rounded-xl p-3 text-xs"
             style={{ background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.15)' }}>
             <p className="text-zinc-400 leading-relaxed">
-              <span className="text-brand-400 font-semibold">Your Order ID</span> is the 8-character code at the top of your confirmation email — like{' '}
+              <span className="text-brand-400 font-semibold">Instant Access:</span> Enter your 8-digit Order ID (like{' '}
               <code className="font-mono font-bold text-brand-300 bg-brand-500/10 px-1.5 py-0.5 rounded">A3F9B2C1</code>
+              ), your student <strong className="text-zinc-200">Email address</strong>, or your <strong className="text-zinc-200">Phone number</strong>.
             </p>
           </div>
 
           {/* Form */}
           <form onSubmit={handleLookup} className="space-y-4">
             <div>
-              <label className="block text-xs text-zinc-500 font-semibold mb-2 uppercase tracking-wider">
-                Order ID
+              <label className="block text-xs text-zinc-400 font-semibold mb-2 uppercase tracking-wider">
+                Order ID, Email, or Phone
               </label>
               <input
                 required
                 type="text"
-                placeholder="e.g. A3F9B2C1"
+                placeholder="e.g. A3F9B2C1 or name@gmail.com"
                 value={query}
                 onChange={e => {
                   setQuery(e.target.value);
@@ -131,10 +132,10 @@ export default function OrderLookupPage() {
                 }}
                 autoComplete="off"
                 spellCheck={false}
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-zinc-700 focus:outline-none focus:border-brand-500/50 focus:ring-1 focus:ring-brand-500/20 transition-all text-sm font-mono tracking-widest uppercase"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:border-brand-500/50 focus:ring-1 focus:ring-brand-500/20 transition-all text-sm"
               />
-              <p className="text-zinc-700 text-[11px] mt-1.5">
-                Also accepts the full UUID or Razorpay order ID from the email
+              <p className="text-zinc-500 text-[11px] mt-1.5">
+                Instant match on Order ID, Payment ID, Email address, or Phone
               </p>
             </div>
 
