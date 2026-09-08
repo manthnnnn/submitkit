@@ -4,10 +4,11 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  Layers, LayoutDashboard, Package, ShoppingCart, Clock, BarChart3, LogOut,
+  LayoutDashboard, Package, ShoppingCart, Clock, BarChart3, LogOut,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { NavProgress } from './components/nav-progress';
+import { BrandIcon, Logo } from '@/components/ui/logo';
 
 const NAV_SECTIONS: {
   label: string;
@@ -53,22 +54,16 @@ function AdminSidebar({
     >
       {/* Logo */}
       <div className="px-5 py-5" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-        <Link href="/admin" className="flex items-center gap-3">
-          <div
-            className="w-8 h-8 rounded-xl flex items-center justify-center shrink-0"
-            style={{
-              background: 'linear-gradient(135deg, rgba(99,102,241,0.3), rgba(99,102,241,0.1))',
-              border: '1px solid rgba(99,102,241,0.4)',
-              boxShadow: '0 0 20px rgba(99,102,241,0.2)',
-            }}
-          >
-            <Layers className="h-4 w-4 text-brand-400" />
-          </div>
+        <Link href="/admin" className="flex items-center gap-3 group">
+          <BrandIcon size="sm" />
           <div>
             <p className="font-display font-bold text-sm text-white leading-none">
-              Submit<span className="text-zinc-500 font-normal">Kit</span>
+              Submit<span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-teal-300 font-extrabold">Kit</span>
             </p>
-            <p className="text-[10px] text-zinc-600 mt-0.5 font-medium tracking-wide">Admin Console</p>
+            <p className="text-[10px] text-zinc-500 mt-1 font-medium tracking-wide flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 inline-block animate-pulse"></span>
+              Admin Console
+            </p>
           </div>
         </Link>
       </div>
@@ -209,15 +204,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           backdropFilter: 'blur(20px)',
         }}
       >
-        <Link href="/admin" className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-lg flex items-center justify-center"
-            style={{ background: 'rgba(99,102,241,0.2)', border: '1px solid rgba(99,102,241,0.3)' }}>
-            <Layers className="h-3.5 w-3.5 text-brand-400" />
-          </div>
-          <span className="font-display font-bold text-sm text-white">
-            Submit<span className="text-zinc-500 font-normal">Kit</span>
-          </span>
-        </Link>
+        <Logo size="sm" href="/admin" badge="Admin" />
         <button
           onClick={() => setSidebarOpen(v => !v)}
           className="text-zinc-400 hover:text-white p-2 rounded-lg transition-colors"

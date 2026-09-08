@@ -1,8 +1,9 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Layers, Menu, X, Zap } from 'lucide-react';
+import { Menu, X, Zap } from 'lucide-react';
 import { useState } from 'react';
+import { Logo } from '@/components/ui/logo';
 
 const NAV_LINKS = [
   { href: '/projects', label: 'Browse Projects' },
@@ -25,14 +26,7 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
 
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group shrink-0">
-            <div className="bg-white/5 p-1.5 rounded-lg border border-white/10 group-hover:bg-white/10 transition-all">
-              <Layers className="h-4 w-4 text-white" />
-            </div>
-            <span className="font-display font-semibold text-base tracking-tight text-white">
-              Submit<span className="text-zinc-500 font-normal">Kit</span>
-            </span>
-          </Link>
+          <Logo size="sm" href="/" />
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-1">

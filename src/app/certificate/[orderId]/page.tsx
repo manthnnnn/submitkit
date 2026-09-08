@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { createAdminClient } from '@/lib/supabase/admin';
 import PrintButton from './PrintButton';
+import { BrandIcon } from '@/components/ui/logo';
 
 export default async function CertificatePage({ params }: { params: Promise<{ orderId: string }> }) {
   const orderId = (await params).orderId;
@@ -84,18 +85,10 @@ export default async function CertificatePage({ params }: { params: Promise<{ or
 
             {/* Top row: Logo left, Verified badge right */}
             <div className="w-full flex items-start justify-between">
-              <div className="flex items-center gap-2">
-                <div style={{
-                  width: '32px', height: '32px', borderRadius: '8px',
-                  background: 'linear-gradient(135deg, #6366f1, #4f46e5)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                }}>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="9 11 12 14 22 4" /><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
-                  </svg>
-                </div>
-                <span style={{ fontSize: '0.95rem', fontWeight: 800, color: '#fff', letterSpacing: '-0.01em' }}>
-                  Submit<span style={{ color: '#6366f1' }}>Kit</span>
+              <div className="flex items-center gap-2.5">
+                <BrandIcon size="sm" />
+                <span style={{ fontSize: '1rem', fontWeight: 800, color: '#fff', letterSpacing: '-0.02em' }}>
+                  Submit<span style={{ color: '#10b981' }}>Kit</span>
                 </span>
               </div>
 

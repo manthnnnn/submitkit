@@ -101,7 +101,7 @@ export async function sendOrderConfirmationEmail(params: OrderEmailParams): Prom
   <!-- Logo -->
   <tr><td style="padding-bottom:24px;">
     <span style="font-size:1.4rem;font-weight:800;color:#ffffff;letter-spacing:-0.02em;">
-      Submit<span style="color:#52525b;font-weight:400;">Kit</span>
+      Submit<span style="color:#10b981;font-weight:800;">Kit</span>
     </span>
   </td></tr>
 

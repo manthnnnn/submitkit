@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Layers } from 'lucide-react';
+import { BrandIcon } from '@/components/ui/logo';
 
 export default function AdminLogin() {
   const [password, setPassword] = useState('');
@@ -13,7 +13,7 @@ export default function AdminLogin() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!password) {
-      setError('Password required');
+      setError('Please enter the secret key');
       return;
     }
 
@@ -29,9 +29,10 @@ export default function AdminLogin() {
 
       if (res.ok) {
         router.push('/admin');
+        router.refresh();
       } else {
         const data = await res.json();
-        setError(data.error || 'Invalid secret key');
+        setError(data.error || 'Invalid credentials');
       }
     } catch (err) {
       setError('An error occurred. Please try again.');
@@ -44,9 +45,7 @@ export default function AdminLogin() {
     <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
       <div className="max-w-md w-full bg-slate-900 border border-slate-800 p-8 rounded-2xl shadow-2xl">
         <div className="flex justify-center mb-6">
-          <div className="bg-brand-600/20 p-3 rounded-xl">
-            <Layers className="h-8 w-8 text-brand-400" />
-          </div>
+          <BrandIcon size="lg" />
         </div>
         <h1 className="text-2xl font-bold text-center text-white mb-8">Vault Admin Login</h1>
         
