@@ -2,9 +2,17 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { sendPreOrderEmails } from '@/lib/email';
 import { sendTelegramNotification, buildPreOrderMessage } from '@/lib/telegram';
+import { checkRateLimit, getClientIP } from '@/lib/rate-limit';
 
 export async function POST(req: NextRequest) {
   try {
+    // Rate limit: 5 pre-orders per minute per IP
+    const ip = getClientIP(req);
+    const rl = checkRateLimit(`preorder:${ip}`, { maxRequests: 5, windowSeconds: 60 });
+    if (!rl.allowed) {
+      return NextResponse.json({ error: 'Too many requests. Please wait and try again.' }, { status: 429 });
+    }
+
     const body = await req.json();
     const { projectSlug, projectTitle, name, email, phone, college } = body;
 

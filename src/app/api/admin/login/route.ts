@@ -1,8 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
+import { checkRateLimit, getClientIP } from '@/lib/rate-limit';
 
 export async function POST(req: NextRequest) {
   try {
+    // Rate limit: 5 login attempts per minute per IP to prevent brute force
+    const ip = getClientIP(req);
+    const rl = checkRateLimit(`admin-login:${ip}`, { maxRequests: 5, windowSeconds: 60 });
+    if (!rl.allowed) {
+      return NextResponse.json({ error: 'Too many attempts. Please try again later.' }, { status: 429 });
+    }
+
     const body = await req.json().catch(() => null);
 
     if (!body?.password) {
