@@ -55,8 +55,8 @@ export async function POST(req: NextRequest) {
 
     const notifParams = { name, email, phone, college, projectTitle, projectSlug };
 
-    // Fire all notifications in parallel — fire and forget, never block the response
-    Promise.all([
+    // Fire all notifications in parallel and wait for them to finish before responding
+    await Promise.all([
       // 1. Confirmation email to student
       sendPreOrderEmails(notifParams).catch(err => console.error('[preorder] Email error:', err)),
       // 2. Instant Telegram message to you

@@ -61,8 +61,8 @@ export async function POST(req: NextRequest) {
           hasVivaCall:        !!order.has_viva_call,
         });
 
-        // Fire-and-forget Telegram sale notification
-        sendTelegramNotification(buildOrderNotificationMessage({
+        // Await Telegram sale notification so it doesn't get dropped by serverless functions
+        await sendTelegramNotification(buildOrderNotificationMessage({
           customerName:       order.customer_name,
           customerEmail:      order.customer_email,
           customerPhone:      order.customer_phone,
