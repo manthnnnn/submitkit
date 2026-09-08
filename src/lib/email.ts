@@ -435,9 +435,17 @@ export async function sendPreOrderEmails(params: PreOrderEmailParams): Promise<v
     }
   };
 
+  const adminRecipients = Array.from(new Set([
+    ownerEmail,
+    'mnthnnnn22@gmail.com',
+    'team@submitkit.in',
+  ])).filter(Boolean);
+
   const emailTasks = [
     sendEmail({ email, name: name || 'Student' }, `Pre-order Confirmed — ${projectTitle} | SubmitKit`, studentHtml),
-    sendEmail({ email: ownerEmail, name: 'SubmitKit Admin' }, `[Pre-order] ${name} — ${projectTitle}`, ownerHtml),
+    ...adminRecipients.map(recipient =>
+      sendEmail({ email: recipient, name: 'SubmitKit Admin' }, `[Pre-order] ${name} — ${projectTitle}`, ownerHtml)
+    ),
   ];
 
   await Promise.all(emailTasks);

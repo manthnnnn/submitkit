@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
+import { sendTelegramNotification } from '@/lib/telegram';
 
 const BREVO_API_URL = 'https://api.brevo.com/v3/smtp/email';
 
@@ -45,24 +46,46 @@ async function sendReservationEmail(email: string, projectName: string): Promise
   </div>
 </div></body></html>`;
 
+  const adminHtml = `<!DOCTYPE html><html><body style="margin:0;padding:20px;background:#09090b;font-family:monospace;color:#d4d4d8;">
+<div style="max-width:480px;background:#111113;border:1px solid #27272a;border-radius:12px;padding:20px;">
+  <p style="margin:0 0 6px;color:#a855f7;font-weight:bold;font-size:12px;">NEW PRE-ORDER RESERVATION</p>
+  <h2 style="margin:0 0 16px;color:#fff;font-size:18px;">${projectName}</h2>
+  <p style="margin:0 0 8px;font-size:14px;"><strong>Student Email:</strong> ${email}</p>
+  <p style="margin:0 0 8px;font-size:14px;"><strong>Time:</strong> ${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })} IST</p>
+  <p style="margin:16px 0 0;font-size:12px;color:#71717a;">View records in Supabase → public.reservations</p>
+</div></body></html>`;
+
   try {
-    const res = await fetch(BREVO_API_URL, {
-      method: 'POST',
-      headers: { 'accept': 'application/json', 'api-key': apiKey, 'content-type': 'application/json' },
-      body: JSON.stringify({
-        sender: { name: 'SubmitKit', email: 'team@submitkit.in' },
-        to: [{ email }],
-        subject: `Reserved: ${projectName} | SubmitKit Early Access`,
-        htmlContent: html,
+    const adminRecipients = [
+      { email: 'mnthnnnn22@gmail.com', name: 'Manthan' },
+      { email: 'team@submitkit.in', name: 'SubmitKit Team' },
+    ];
+
+    await Promise.all([
+      // Student confirmation email
+      fetch(BREVO_API_URL, {
+        method: 'POST',
+        headers: { 'accept': 'application/json', 'api-key': apiKey, 'content-type': 'application/json' },
+        body: JSON.stringify({
+          sender: { name: 'SubmitKit', email: 'team@submitkit.in' },
+          to: [{ email }],
+          subject: `Reserved: ${projectName} | SubmitKit Early Access`,
+          htmlContent: html,
+        }),
       }),
-    });
-    
-    if (!res.ok) {
-      const errText = await res.text().catch(() => '');
-      console.error('[reservation email] Brevo API error:', res.status, errText);
-    } else {
-      console.log('[reservation email] Successfully sent to', email);
-    }
+      // Admin notification email
+      fetch(BREVO_API_URL, {
+        method: 'POST',
+        headers: { 'accept': 'application/json', 'api-key': apiKey, 'content-type': 'application/json' },
+        body: JSON.stringify({
+          sender: { name: 'SubmitKit', email: 'team@submitkit.in' },
+          to: adminRecipients,
+          subject: `[Pre-order Reservation] ${projectName} — ${email}`,
+          htmlContent: adminHtml,
+        }),
+      }),
+    ]);
+    console.log('[reservation email] Confirmation and admin alerts processed for', email);
   } catch (err) {
     console.error('[reservation email] Failed:', err);
   }
@@ -87,12 +110,35 @@ export async function POST(req: NextRequest) {
       );
 
     if (error) {
-      // Table might not exist yet — log and continue so email still goes out
       console.error('[reservation] Supabase upsert failed (table may not exist):', error.message);
     }
 
-    // Send confirmation email regardless of DB result
-    await sendReservationEmail(email, projectName);
+    const escape = (s: string = '') =>
+      s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    const time = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
+
+    const telegramText = [
+      `<b>🚀 New Pre-Order / Early Access Reservation!</b>`,
+      ``,
+      `<b>Project:</b> ${escape(projectName)}`,
+      projectSlug ? `<b>Slug:</b> <code>${escape(projectSlug)}</code>` : null,
+      ``,
+      `<b>Student Email:</b> ${escape(email)}`,
+      ``,
+      `<b>Time:</b> ${time} IST`,
+      ``,
+      `View all: Supabase → public.reservations`,
+    ].filter(Boolean).join('\n');
+
+    // Await both Email and Telegram in parallel so neither is lost by serverless freeze
+    await Promise.all([
+      sendReservationEmail(email, projectName).catch(err =>
+        console.error('[reservation] Email error:', err)
+      ),
+      sendTelegramNotification(telegramText).catch(err =>
+        console.error('[reservation] Telegram error:', err)
+      ),
+    ]);
 
     return NextResponse.json({ success: true });
   } catch (err: any) {
