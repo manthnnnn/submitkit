@@ -85,7 +85,9 @@ export default function VivaClient({
   const reviewedCount = reviewed.size;
   const progressPct   = Math.round((reviewedCount / TOTAL_QUESTIONS) * 100);
   const isSectionDone = (sIdx: number) =>
-    sections[sIdx].questions.every((_, qIdx) => reviewed.has(`${sIdx}-${qIdx}`));
+    sections[sIdx]?.questions?.every((_, qIdx) => reviewed.has(`${sIdx}-${qIdx}`)) ?? false;
+
+  const displayName = studentName?.trim() ? studentName.trim().split(/\s+/)[0] : 'Student';
 
   return (
     <div className="min-h-screen bg-[#09090b] text-slate-200 font-sans pb-32">
@@ -101,7 +103,7 @@ export default function VivaClient({
             </div>
             <div className="min-w-0">
               <p className="text-white text-sm font-bold leading-tight truncate">Viva Q&amp;A Portal</p>
-              <p className="text-zinc-500 text-[11px] truncate">{projectTitle}</p>
+              <p className="text-zinc-500 text-[11px] truncate">{projectTitle || 'Your Project'}</p>
             </div>
           </div>
           <div className="flex items-center gap-2 shrink-0">
@@ -126,9 +128,9 @@ export default function VivaClient({
         <div className="mb-8">
           <p className="text-sm font-medium mb-1" style={{ color: categoryColor }}>{categoryLabel}</p>
           <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight mb-1">
-            Hello, {studentName.split(' ')[0]}. Let&apos;s ace your viva.
+            Hello, {displayName}. Let&apos;s ace your viva.
           </h2>
-          <p className="text-zinc-500 text-sm">{projectTitle} · Purchased on {purchaseDate}</p>
+          <p className="text-zinc-500 text-sm">{projectTitle || 'Your Project'} · Purchased on {purchaseDate}</p>
 
           <div className="mt-4 flex items-center gap-3 p-3 rounded-xl bg-zinc-900/60 border border-zinc-800">
             <div className="flex-1">
@@ -162,9 +164,10 @@ export default function VivaClient({
         {/* Sections */}
         <div className="space-y-4">
           {sections.map((section, sIdx) => {
-            const sectionOpen         = openSections.has(sIdx);
-            const sectionDone         = isSectionDone(sIdx);
-            const sectionReviewedCount = section.questions.filter((_, qIdx) => reviewed.has(`${sIdx}-${qIdx}`)).length;
+            const sectionOpen          = openSections.has(sIdx);
+            const sectionDone          = isSectionDone(sIdx);
+            const questionsList        = section.questions || [];
+            const sectionReviewedCount = questionsList.filter((_, qIdx) => reviewed.has(`${sIdx}-${qIdx}`)).length;
 
             return (
               <div key={sIdx} className="rounded-2xl overflow-hidden border border-zinc-800/60 bg-zinc-900/30">
@@ -177,7 +180,7 @@ export default function VivaClient({
                     </div>
                     <div>
                       <span className="text-sm font-bold text-white">{section.title}</span>
-                      <span className="ml-2 text-xs text-zinc-500">{sectionReviewedCount}/{section.questions.length}</span>
+                      <span className="ml-2 text-xs text-zinc-500">{sectionReviewedCount}/{questionsList.length}</span>
                     </div>
                     {sectionDone && <CheckCircle2 className="w-4 h-4" style={{ color: section.color }} />}
                   </div>
@@ -187,7 +190,7 @@ export default function VivaClient({
 
                 {sectionOpen && (
                   <div className="px-3 pb-3 space-y-2">
-                    {section.questions.map((item, qIdx) => {
+                    {questionsList.map((item, qIdx) => {
                       const cardKey   = `${sIdx}-${qIdx}`;
                       const isOpen    = openCards.has(cardKey);
                       const isReviewed = reviewed.has(cardKey);

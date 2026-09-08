@@ -42,41 +42,61 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ received: true });
       }
 
-      const { error } = await supabase
+      const { data: updated, error } = await supabase
         .from('orders')
         .update({ status: 'PAID', payment_id: paymentId })
         .eq('order_id', razorpayOrderId)
-        .eq('status', 'PENDING'); // Idempotent — only update if still pending
+        .eq('status', 'PENDING') // Idempotent — only update if still pending
+        .select('id')
+        .single();
 
-      if (error) {
+      if (error && error.code !== 'PGRST116') { // PGRST116 is "no rows returned"
         console.error('Webhook DB update failed (payment.captured):', error.message);
         return NextResponse.json({ error: 'DB write failed' }, { status: 500 });
       }
 
-      // Safety net: fetch order details and send confirmation email
-      // (the client-side verify route also does this — this catches network-interrupted checkouts)
-      try {
-        const { data: order } = await supabase
-          .from('orders')
-          .select('*, projects(title, tier)')
-          .eq('order_id', razorpayOrderId)
-          .single();
+      // Safety net: fetch order details and send confirmation email + telegram
+      // Only do this if WE flipped the status to PAID
+      if (updated) {
+        try {
+          const { data: order } = await supabase
+            .from('orders')
+            .select('*, projects(title, tier)')
+            .eq('order_id', razorpayOrderId)
+            .single();
 
-        if (order) {
-          await sendOrderConfirmationEmail({
-            customerName:       order.customer_name,
-            customerEmail:      order.customer_email,
-            projectTitle:       order.projects?.title ?? 'Your Project Bundle',
-            orderId:            order.id,
-            amountPaid:         order.amount_paid,
-            tier:               order.projects?.tier ?? 'MINI',
-            hasPersonalization: !!order.has_personalization,
-            hasPlagiarismCert:  !!order.has_plagiarism_cert,
-            hasVivaCall:        !!order.has_viva_call,
-          });
+          if (order) {
+            const { sendTelegramNotification, buildOrderNotificationMessage } = await import('@/lib/telegram');
+
+            await Promise.all([
+              sendOrderConfirmationEmail({
+                customerName:       order.customer_name,
+                customerEmail:      order.customer_email,
+                projectTitle:       order.projects?.title ?? 'Your Project Bundle',
+                orderId:            order.id,
+                amountPaid:         order.amount_paid,
+                tier:               order.projects?.tier ?? 'MINI',
+                hasPersonalization: !!order.has_personalization,
+                hasPlagiarismCert:  !!order.has_plagiarism_cert,
+                hasVivaCall:        !!order.has_viva_call,
+              }).catch(emailErr => console.error('Webhook: email send failed (non-blocking):', emailErr)),
+              
+              sendTelegramNotification(buildOrderNotificationMessage({
+                customerName:       order.customer_name,
+                customerEmail:      order.customer_email,
+                customerPhone:      order.customer_phone,
+                projectTitle:       order.projects?.title ?? 'Your Project Bundle',
+                amountPaid:         order.amount_paid,
+                orderId:            order.id,
+                hasPersonalization: !!order.has_personalization,
+                hasPlagiarismCert:  !!order.has_plagiarism_cert,
+                hasVivaCall:        !!order.has_viva_call,
+              })).catch(err => console.error('[telegram] webhook sale notify failed:', err))
+            ]);
+          }
+        } catch (err) {
+          console.error('Webhook: notification failed (non-blocking):', err);
         }
-      } catch (emailErr) {
-        console.error('Webhook: email send failed (non-blocking):', emailErr);
       }
 
     } else if (event === 'payment.failed' && payment) {
