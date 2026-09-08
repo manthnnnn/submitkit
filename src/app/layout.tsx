@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/ui/navbar";
 import { Footer } from "@/components/ui/footer";
 import { WhatsAppWidget } from "@/components/ui/whatsapp-widget";
+import { AnalyticsTracker } from "@/components/analytics/analytics-tracker";
 import { CONSTANTS } from "@/lib/constants";
 import Script from "next/script";
 
@@ -63,6 +64,7 @@ export default function RootLayout({
         )}
       </head>
       <body className={`${inter.variable} ${spaceGrotesk.variable} antialiased min-h-screen flex flex-col`}>
+        <AnalyticsTracker />
         <Navbar />
         <main className="flex-grow">
           {children}

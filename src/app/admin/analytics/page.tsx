@@ -2,6 +2,7 @@ import { createAdminClient } from '@/lib/supabase/admin';
 import { formatCurrency } from '@/lib/utils';
 import { AlertTriangle, BarChart3 } from 'lucide-react';
 import { RevenueProjectChart, SalesVelocityChart } from '../components/revenue-chart';
+import { TrafficAnalyticsDashboard } from '../components/traffic-dashboard';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = { title: 'Analytics | SubmitKit Admin', robots: 'noindex' };
@@ -20,6 +21,8 @@ export default async function AnalyticsPage() {
   const [
     { data: paidOrders, error: e1 },
     { data: preOrders,  error: e2 },
+    { data: rawProjects },
+    { data: rawPageViews, error: trafficErr },
   ] = await Promise.all([
     supabase
       .from('orders')
@@ -27,6 +30,12 @@ export default async function AnalyticsPage() {
       .eq('status', 'PAID')
       .order('created_at', { ascending: false }),
     supabase.from('pre_orders').select('project_slug, project_title'),
+    supabase.from('projects').select('slug, title'),
+    supabase
+      .from('page_views')
+      .select('id, visitor_id, path, referrer, device, created_at')
+      .order('created_at', { ascending: false })
+      .limit(3000),
   ]);
 
   if (e1 || e2) {
@@ -97,12 +106,17 @@ export default async function AnalyticsPage() {
   }
   const demandRanked = Object.values(demandMap).sort((a, b) => b.count - a.count);
 
+  const projectMap: Record<string, string> = {};
+  for (const p of rawProjects ?? []) {
+    projectMap[p.slug] = p.title;
+  }
+
   return (
     <div className="space-y-8">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-display font-bold text-white tracking-tight">Analytics</h1>
+          <h1 className="text-2xl font-display font-bold text-white tracking-tight">Analytics & Intelligence</h1>
           <p className="text-zinc-500 text-sm mt-0.5">
             {total} paid orders · {formatCurrency(totalRevenue)} total revenue
           </p>
@@ -112,6 +126,13 @@ export default async function AnalyticsPage() {
           <BarChart3 className="w-4 h-4 text-brand-400" />
         </div>
       </div>
+
+      {/* Website Traffic, Visitors & Engagement Pulse */}
+      <TrafficAnalyticsDashboard
+        initialViews={(rawPageViews ?? []) as any}
+        isTableReady={!trafficErr}
+        projectMap={projectMap}
+      />
 
       {/* Section 1 — Revenue by project */}
       <section className="space-y-3">
