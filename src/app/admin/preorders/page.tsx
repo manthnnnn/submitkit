@@ -35,7 +35,14 @@ export default async function PreOrdersAdminPage({
 
   let query = supabase.from('pre_orders').select('*').order('created_at', { ascending: false });
   if (filter) query = query.eq('project_slug', filter);
-  const { data: preOrders, error } = await query;
+
+  let resQuery = supabase.from('reservations').select('*').order('created_at', { ascending: false });
+  if (filter) resQuery = resQuery.eq('project_slug', filter);
+
+  const [{ data: preOrders, error }, { data: reservations }] = await Promise.all([
+    query,
+    resQuery,
+  ]);
 
   if (error) {
     return (
@@ -57,7 +64,38 @@ export default async function PreOrdersAdminPage({
     );
   }
 
-  const orders = (preOrders ?? []) as PreOrder[];
+  // Deduplicate and unify records from both pre_orders and reservations tables
+  const existingSet = new Set<string>();
+  const orders: PreOrder[] = [];
+
+  for (const p of preOrders ?? []) {
+    const key = `${p.email.toLowerCase().trim()}_${p.project_slug}`;
+    if (!existingSet.has(key)) {
+      existingSet.add(key);
+      orders.push(p);
+    }
+  }
+
+  for (const r of reservations ?? []) {
+    const key = `${r.email.toLowerCase().trim()}_${r.project_slug}`;
+    if (!existingSet.has(key)) {
+      existingSet.add(key);
+      const studentName = r.email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, (c: string) => c.toUpperCase());
+      orders.push({
+        id: r.id,
+        project_slug: r.project_slug,
+        project_title: r.project_name,
+        name: studentName,
+        email: r.email,
+        phone: 'Email Waitlist',
+        college: 'Waitlist Reservation',
+        created_at: r.created_at,
+      });
+    }
+  }
+
+  // Sort unified list descending by created_at
+  orders.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
   const totalOrders = orders.length;
   const projectCounts = orders.reduce<Record<string, number>>((acc, o) => {
     acc[o.project_slug] = (acc[o.project_slug] || 0) + 1;
@@ -181,23 +219,31 @@ export default async function PreOrdersAdminPage({
                       <p className="font-semibold text-white text-sm">{o.name}</p>
                     </td>
                     <td className="px-5 py-4">
-                      <div className="space-y-1">
-                        <a href={`mailto:${o.email}`} className="flex items-center gap-1.5 text-zinc-400 hover:text-white text-xs transition-colors">
-                          <Mail className="w-3.5 h-3.5 text-zinc-600 shrink-0" /> {o.email}
+                      <div className="space-y-1.5">
+                        <a href={`mailto:${o.email}`} className="flex items-center gap-1.5 text-zinc-300 hover:text-white text-xs transition-colors">
+                          <Mail className="w-3.5 h-3.5 text-brand-400 shrink-0" /> {o.email}
                         </a>
-                        <a href={`tel:${o.phone}`} className="flex items-center gap-1.5 text-zinc-500 hover:text-white text-xs transition-colors">
-                          <Phone className="w-3.5 h-3.5 text-zinc-700 shrink-0" /> {o.phone}
-                        </a>
-                        <a
-                          href={`https://wa.me/91${o.phone.replace(/\D/g, '').slice(-10)}?text=${encodeURIComponent(
-                            `Hi ${o.name}! Thanks for pre-ordering ${o.project_title || o.project_slug} on SubmitKit.in. We are preparing your project bundle now!`
-                          )}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-400 hover:text-emerald-300 transition-colors pt-0.5"
-                        >
-                          <MessageCircle className="w-3 h-3 text-emerald-500 shrink-0" /> Chat on WhatsApp
-                        </a>
+                        {o.phone && o.phone.replace(/\D/g, '').length >= 10 ? (
+                          <>
+                            <a href={`tel:${o.phone}`} className="flex items-center gap-1.5 text-zinc-400 hover:text-white text-xs transition-colors">
+                              <Phone className="w-3.5 h-3.5 text-zinc-600 shrink-0" /> {o.phone}
+                            </a>
+                            <a
+                              href={`https://wa.me/91${o.phone.replace(/\D/g, '').slice(-10)}?text=${encodeURIComponent(
+                                `Hi ${o.name}! Thanks for pre-ordering ${o.project_title || o.project_slug} on SubmitKit.in. We are preparing your project bundle now!`
+                              )}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-400 hover:text-emerald-300 transition-colors pt-0.5"
+                            >
+                              <MessageCircle className="w-3 h-3 text-emerald-500 shrink-0" /> Chat on WhatsApp
+                            </a>
+                          </>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 text-[10px] font-medium text-purple-300 bg-purple-500/10 px-2 py-0.5 rounded-full border border-purple-500/20">
+                            ⚡ Quick Email Waitlist
+                          </span>
+                        )}
                       </div>
                     </td>
                     <td className="px-5 py-4">
