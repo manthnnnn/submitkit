@@ -22,77 +22,89 @@ export default async function VivaPortalPage({ params }: { params: Promise<{ ord
 
   // 1. Try finding by Order UUID
   if (UUID_REGEX.test(orderId)) {
-    const { data: order } = await supabase
-      .from('orders')
-      .select('customer_name, created_at, status, projects(title, category, slug)')
-      .eq('id', orderId)
-      .maybeSingle();
+    try {
+      const { data: order, error } = await supabase
+        .from('orders')
+        .select('customer_name, created_at, status, projects(title, category, slug)')
+        .eq('id', orderId)
+        .maybeSingle();
 
-    if (order && order.status === 'PAID') {
-      studentName = (order.customer_name?.trim() || 'Student');
-      const proj = Array.isArray(order.projects) ? order.projects[0] : order.projects;
-      if (proj) {
-        const readyMeta = proj.slug ? getProjectMeta(proj.slug) : null;
-        projectTitle = readyMeta?.name || proj.title || projectTitle;
-        category = (readyMeta?.category || proj.category || 'FullStack') as ProjectCategory;
-      }
-      try {
-        if (order.created_at) {
-          purchaseDate = new Date(order.created_at).toLocaleDateString('en-US', {
-            day: 'numeric', month: 'long', year: 'numeric',
-          });
+      if (!error && order && order.status === 'PAID') {
+        studentName = (order.customer_name?.trim() || 'Student');
+        const proj = Array.isArray(order.projects) ? order.projects[0] : order.projects;
+        if (proj) {
+          const readyMeta = proj.slug ? getProjectMeta(proj.slug) : null;
+          projectTitle = readyMeta?.name || proj.title || projectTitle;
+          category = (readyMeta?.category || proj.category || 'FullStack') as ProjectCategory;
         }
-      } catch {
-        purchaseDate = 'Recent';
+        try {
+          if (order.created_at) {
+            purchaseDate = new Date(order.created_at).toLocaleDateString('en-US', {
+              day: 'numeric', month: 'long', year: 'numeric',
+            });
+          }
+        } catch {
+          purchaseDate = 'Recent';
+        }
+        resolved = true;
       }
-      resolved = true;
+    } catch (err) {
+      console.error('[viva] Order lookup exception:', err);
     }
   }
 
   // 2. Try finding by Razorpay Order ID (e.g. order_...)
   if (!resolved && orderId.startsWith('order_')) {
-    const { data: order } = await supabase
-      .from('orders')
-      .select('customer_name, created_at, status, projects(title, category, slug)')
-      .eq('order_id', orderId)
-      .maybeSingle();
+    try {
+      const { data: order, error } = await supabase
+        .from('orders')
+        .select('customer_name, created_at, status, projects(title, category, slug)')
+        .eq('order_id', orderId)
+        .maybeSingle();
 
-    if (order && order.status === 'PAID') {
-      studentName = (order.customer_name?.trim() || 'Student');
-      const proj = Array.isArray(order.projects) ? order.projects[0] : order.projects;
-      if (proj) {
-        const readyMeta = proj.slug ? getProjectMeta(proj.slug) : null;
-        projectTitle = readyMeta?.name || proj.title || projectTitle;
-        category = (readyMeta?.category || proj.category || 'FullStack') as ProjectCategory;
-      }
-      try {
-        if (order.created_at) {
-          purchaseDate = new Date(order.created_at).toLocaleDateString('en-US', {
-            day: 'numeric', month: 'long', year: 'numeric',
-          });
+      if (!error && order && order.status === 'PAID') {
+        studentName = (order.customer_name?.trim() || 'Student');
+        const proj = Array.isArray(order.projects) ? order.projects[0] : order.projects;
+        if (proj) {
+          const readyMeta = proj.slug ? getProjectMeta(proj.slug) : null;
+          projectTitle = readyMeta?.name || proj.title || projectTitle;
+          category = (readyMeta?.category || proj.category || 'FullStack') as ProjectCategory;
         }
-      } catch {
-        purchaseDate = 'Recent';
+        try {
+          if (order.created_at) {
+            purchaseDate = new Date(order.created_at).toLocaleDateString('en-US', {
+              day: 'numeric', month: 'long', year: 'numeric',
+            });
+          }
+        } catch {
+          purchaseDate = 'Recent';
+        }
+        resolved = true;
       }
-      resolved = true;
+    } catch (err) {
+      console.error('[viva] Razorpay order lookup exception:', err);
     }
   }
 
   // 3. Try finding directly by Project Slug or Project ID
   if (!resolved) {
-    let query = supabase.from('projects').select('title, category, slug');
-    if (UUID_REGEX.test(orderId)) {
-      query = query.eq('id', orderId);
-    } else {
-      query = query.eq('slug', orderId);
-    }
-    const { data: project } = await query.maybeSingle();
+    try {
+      let query = supabase.from('projects').select('title, category, slug');
+      if (UUID_REGEX.test(orderId)) {
+        query = query.eq('id', orderId);
+      } else {
+        query = query.eq('slug', orderId);
+      }
+      const { data: project } = await query.maybeSingle();
 
-    if (project) {
-      projectTitle = project.title || 'Your Project';
-      category = (project.category || 'FullStack') as ProjectCategory;
-      purchaseDate = 'Official Q&A Prep';
-      resolved = true;
+      if (project) {
+        projectTitle = project.title || 'Your Project';
+        category = (project.category || 'FullStack') as ProjectCategory;
+        purchaseDate = 'Official Q&A Prep';
+        resolved = true;
+      }
+    } catch (err) {
+      console.error('[viva] Project query exception:', err);
     }
   }
 
