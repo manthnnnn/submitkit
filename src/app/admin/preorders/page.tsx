@@ -1,8 +1,8 @@
 import { createAdminClient } from '@/lib/supabase/admin';
-import { Users, Clock, BookOpen, Phone, Mail, Building2, AlertTriangle, Sparkles } from 'lucide-react';
+import { Users, Clock, BookOpen, Phone, Mail, Building2, AlertTriangle, Sparkles, MessageCircle } from 'lucide-react';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { ExportCSVButton } from './PreOrdersClient';
+import { ExportCSVButton, BroadcastWaitlistButton } from './PreOrdersClient';
 
 export const metadata: Metadata = { title: 'Pre-orders | SubmitKit Admin', robots: 'noindex' };
 export const dynamic = 'force-dynamic';
@@ -82,6 +82,13 @@ export default async function PreOrdersAdminPage({
           <p className="text-zinc-500 text-sm mt-0.5">Students waiting for upcoming projects</p>
         </div>
         <div className="flex items-center gap-3">
+          {filter && (
+            <BroadcastWaitlistButton
+              projectSlug={filter}
+              projectTitle={orders[0]?.project_title || filter}
+              count={totalOrders}
+            />
+          )}
           <span className="text-xs font-medium px-3 py-1.5 rounded-full"
             style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#52525b' }}>
             {totalOrders} registration{totalOrders !== 1 ? 's' : ''}
@@ -180,6 +187,16 @@ export default async function PreOrdersAdminPage({
                         </a>
                         <a href={`tel:${o.phone}`} className="flex items-center gap-1.5 text-zinc-500 hover:text-white text-xs transition-colors">
                           <Phone className="w-3.5 h-3.5 text-zinc-700 shrink-0" /> {o.phone}
+                        </a>
+                        <a
+                          href={`https://wa.me/91${o.phone.replace(/\D/g, '').slice(-10)}?text=${encodeURIComponent(
+                            `Hi ${o.name}! Thanks for pre-ordering ${o.project_title || o.project_slug} on SubmitKit.in. We are preparing your project bundle now!`
+                          )}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-400 hover:text-emerald-300 transition-colors pt-0.5"
+                        >
+                          <MessageCircle className="w-3 h-3 text-emerald-500 shrink-0" /> Chat on WhatsApp
                         </a>
                       </div>
                     </td>
