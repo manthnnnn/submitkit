@@ -29,6 +29,19 @@ export function AnalyticsTracker() {
       return;
     }
 
+    // Do NOT track if user is an admin or has chosen to exclude this device
+    try {
+      if (typeof document !== 'undefined') {
+        const isAdmin = document.cookie.includes('admin_token=');
+        const isExcluded = localStorage.getItem('sk_ignore_analytics') === 'true';
+        if (isAdmin || isExcluded) {
+          return;
+        }
+      }
+    } catch {
+      /* silent */
+    }
+
     const now = Date.now();
     // Prevent duplicate firing on fast re-renders (1.5s throttle)
     if (lastTrackedPath.current === pathname && now - lastTrackedTime.current < 1500) {
@@ -50,17 +63,12 @@ export function AnalyticsTracker() {
     });
 
     try {
-      if (typeof navigator !== 'undefined' && navigator.sendBeacon) {
-        const blob = new Blob([payload], { type: 'application/json' });
-        navigator.sendBeacon('/api/track', blob);
-      } else {
-        fetch('/api/track', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: payload,
-          keepalive: true,
-        }).catch(() => {});
-      }
+      fetch('/api/track', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: payload,
+        keepalive: true,
+      }).catch(() => {});
     } catch {
       // Non-blocking fallback
     }

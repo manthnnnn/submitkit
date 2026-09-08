@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import {
   Users,
   Eye,
@@ -16,6 +16,9 @@ import {
   ArrowUpRight,
   ExternalLink,
   Activity,
+  Trash2,
+  Shield,
+  AlertTriangle,
 } from 'lucide-react';
 import {
   BarChart,
@@ -77,9 +80,58 @@ export function TrafficAnalyticsDashboard({
 }: TrafficDashboardProps) {
   const [timeRange, setTimeRange] = useState<TimeRange>('1d');
   const [copied, setCopied] = useState(false);
+  const [views, setViews] = useState<PageViewRecord[]>(initialViews ?? []);
+  const [isResetting, setIsResetting] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [excludeDevice, setExcludeDevice] = useState(false);
+  const [resetNotice, setResetNotice] = useState<string | null>(null);
 
-  // STRICTLY 100% REAL LIVE DATA — No simulated or fake placeholder records!
-  const views = initialViews ?? [];
+  // Sync state if initialViews changes
+  useEffect(() => {
+    setViews(initialViews ?? []);
+  }, [initialViews]);
+
+  // Load excludeDevice preference from localStorage on mount
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem('sk_ignore_analytics');
+      if (stored === 'true') {
+        setExcludeDevice(true);
+      }
+    } catch {
+      /* silent */
+    }
+  }, []);
+
+  const toggleExcludeDevice = () => {
+    const nextVal = !excludeDevice;
+    setExcludeDevice(nextVal);
+    try {
+      localStorage.setItem('sk_ignore_analytics', nextVal ? 'true' : 'false');
+    } catch {
+      /* silent */
+    }
+  };
+
+  const handleResetViews = async () => {
+    setIsResetting(true);
+    try {
+      const res = await fetch('/api/admin/analytics/reset', { method: 'POST' });
+      if (res.ok) {
+        setViews([]);
+        setShowConfirmModal(false);
+        setResetNotice('All recorded page views have been deleted.');
+        setTimeout(() => setResetNotice(null), 4000);
+      } else {
+        const data = await res.json().catch(() => ({}));
+        alert('Failed to reset views: ' + (data.error || 'Server error'));
+      }
+    } catch (err: any) {
+      alert('Network exception: ' + err.message);
+    } finally {
+      setIsResetting(false);
+    }
+  };
 
   const copySql = () => {
     navigator.clipboard.writeText(SQL_MIGRATION);
@@ -247,15 +299,22 @@ export function TrafficAnalyticsDashboard({
 
   return (
     <div className="space-y-6">
-      {/* Control Bar: Time Filters & Trend Indicator */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      {/* Toast Notice */}
+      {resetNotice && (
+        <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold flex items-center justify-between animate-in fade-in duration-200">
+          <span>{resetNotice}</span>
+          <button onClick={() => setResetNotice(null)} className="text-zinc-500 hover:text-white">✕</button>
+        </div>
+      )}
+
+      {/* Control Bar: Time Filters, Exclusion Switch, Reset Button */}
+      <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
             <h2 className="text-lg font-bold text-white tracking-tight flex items-center gap-2">
               <Eye className="w-5 h-5 text-brand-400" />
               Live Website Traffic & Visitors
             </h2>
-            {/* Real growth status indicator */}
             {stats.totalViews > 0 ? (
               <span
                 className={`text-xs font-semibold px-2.5 py-0.5 rounded-full flex items-center gap-1 ${
@@ -278,7 +337,7 @@ export function TrafficAnalyticsDashboard({
               </span>
             ) : (
               <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700">
-                Awaiting First Live Visit
+                0 Views Recorded
               </span>
             )}
           </div>
@@ -287,43 +346,108 @@ export function TrafficAnalyticsDashboard({
           </p>
         </div>
 
-        {/* 1 Day, 7 Days, 30 Days Toggle Buttons */}
-        <div
-          className="flex items-center p-1 rounded-xl border border-zinc-800 bg-zinc-950/70"
-          style={{ backdropFilter: 'blur(12px)' }}
-        >
+        {/* Action Controls Group */}
+        <div className="flex flex-wrap items-center gap-2.5">
+          {/* Exclude My Device Toggle */}
           <button
-            onClick={() => setTimeRange('1d')}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-              timeRange === '1d'
-                ? 'bg-brand-500 text-white shadow-md shadow-brand-500/20'
-                : 'text-zinc-400 hover:text-white'
+            onClick={toggleExcludeDevice}
+            title={excludeDevice ? 'Tracking disabled on this device' : 'Click to stop counting your own visits on this device'}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all active:scale-95 ${
+              excludeDevice
+                ? 'bg-purple-500/15 border-purple-500/30 text-purple-300 shadow-sm shadow-purple-500/10'
+                : 'bg-zinc-900/80 border-zinc-800 text-zinc-400 hover:text-white hover:border-zinc-700'
             }`}
           >
-            Today (1 Day)
+            <Shield className="w-3.5 h-3.5 text-purple-400" />
+            <span>{excludeDevice ? 'This Device Excluded 🛡️' : 'Exclude My Device'}</span>
           </button>
+
+          {/* Reset / Delete Views Button */}
           <button
-            onClick={() => setTimeRange('7d')}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-              timeRange === '7d'
-                ? 'bg-brand-500 text-white shadow-md shadow-brand-500/20'
-                : 'text-zinc-400 hover:text-white'
-            }`}
+            onClick={() => setShowConfirmModal(true)}
+            title="Delete all recorded views and reset counts to 0"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border border-rose-500/25 bg-rose-500/10 text-rose-300 hover:bg-rose-500/20 transition-all active:scale-95"
           >
-            This Week (7 Days)
+            <Trash2 className="w-3.5 h-3.5 text-rose-400" />
+            <span>Reset Views</span>
           </button>
-          <button
-            onClick={() => setTimeRange('30d')}
-            className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-              timeRange === '30d'
-                ? 'bg-brand-500 text-white shadow-md shadow-brand-500/20'
-                : 'text-zinc-400 hover:text-white'
-            }`}
+
+          {/* 1 Day, 7 Days, 30 Days Toggle Buttons */}
+          <div
+            className="flex items-center p-1 rounded-xl border border-zinc-800 bg-zinc-950/70"
+            style={{ backdropFilter: 'blur(12px)' }}
           >
-            This Month (30 Days)
-          </button>
+            <button
+              onClick={() => setTimeRange('1d')}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+                timeRange === '1d'
+                  ? 'bg-brand-500 text-white shadow-md shadow-brand-500/20'
+                  : 'text-zinc-400 hover:text-white'
+              }`}
+            >
+              Today (1 Day)
+            </button>
+            <button
+              onClick={() => setTimeRange('7d')}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+                timeRange === '7d'
+                  ? 'bg-brand-500 text-white shadow-md shadow-brand-500/20'
+                  : 'text-zinc-400 hover:text-white'
+              }`}
+            >
+              This Week (7 Days)
+            </button>
+            <button
+              onClick={() => setTimeRange('30d')}
+              className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+                timeRange === '30d'
+                  ? 'bg-brand-500 text-white shadow-md shadow-brand-500/20'
+                  : 'text-zinc-400 hover:text-white'
+              }`}
+            >
+              This Month (30 Days)
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* Confirmation Modal */}
+      {showConfirmModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="w-full max-w-md rounded-2xl p-6 border border-zinc-800 bg-zinc-900 shadow-2xl space-y-4">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/25 flex items-center justify-center shrink-0">
+                <AlertTriangle className="w-5 h-5 text-rose-400" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-white">Reset All Views?</h3>
+                <p className="text-xs text-zinc-400 mt-1 leading-relaxed">
+                  This will delete all views recorded so far and reset your visitor count back to <strong className="text-white">0</strong>.
+                  Use this to clear out test views from your own phone or laptop.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                onClick={() => setShowConfirmModal(false)}
+                disabled={isResetting}
+                className="px-4 py-2 text-xs font-semibold text-zinc-400 hover:text-white rounded-xl bg-zinc-800/80 hover:bg-zinc-800 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleResetViews}
+                disabled={isResetting}
+                className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold text-white rounded-xl bg-rose-600 hover:bg-rose-500 transition-colors shadow-lg shadow-rose-600/20 disabled:opacity-50"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+                {isResetting ? 'Deleting...' : 'Yes, Delete & Reset to 0'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* KPI Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

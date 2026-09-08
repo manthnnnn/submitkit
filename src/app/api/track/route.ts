@@ -28,6 +28,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: true, tracked: false });
     }
 
+    // Do not track requests coming from logged-in admin browser
+    const cookieHeader = req.headers.get('cookie') || '';
+    if (cookieHeader.includes('admin_token=')) {
+      return NextResponse.json({ success: true, tracked: false, reason: 'admin_ignored' });
+    }
+
     if (!visitorId || typeof visitorId !== 'string') {
       return NextResponse.json({ success: true, tracked: false });
     }
