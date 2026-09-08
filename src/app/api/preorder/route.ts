@@ -27,38 +27,52 @@ export async function POST(req: NextRequest) {
 
     const supabase = createAdminClient();
 
-    // Check for duplicate pre-order from same email for same project
+    // Check if pre-order already exists for this email & project
     const { data: existing } = await supabase
       .from('pre_orders')
       .select('id')
       .eq('email', email.toLowerCase().trim())
       .eq('project_slug', projectSlug)
-      .single();
+      .maybeSingle();
+
+    let preOrderId: string;
 
     if (existing) {
-      return NextResponse.json(
-        { error: 'You have already pre-ordered this project. Check your email for confirmation.' },
-        { status: 409 }
-      );
-    }
+      // Refresh details and timestamp without throwing duplicate error
+      const { error: updateError } = await supabase
+        .from('pre_orders')
+        .update({
+          name: name.trim().substring(0, 100),
+          phone: phone.trim().substring(0, 20),
+          college: college ? college.trim().substring(0, 200) : null,
+          created_at: new Date().toISOString(),
+        })
+        .eq('id', existing.id);
 
-    // Save to database
-    const { data: preOrder, error: dbError } = await supabase
-      .from('pre_orders')
-      .insert({
-        project_slug: projectSlug,
-        project_title: projectTitle,
-        name: name.trim().substring(0, 100),
-        email: email.toLowerCase().trim().substring(0, 255),
-        phone: phone.trim().substring(0, 20),
-        college: college ? college.trim().substring(0, 200) : null,
-      })
-      .select()
-      .single();
+      if (updateError) {
+        console.error('[preorder] Update DB error:', updateError);
+      }
+      preOrderId = existing.id;
+    } else {
+      // Save new record to database
+      const { data: preOrder, error: dbError } = await supabase
+        .from('pre_orders')
+        .insert({
+          project_slug: projectSlug,
+          project_title: projectTitle,
+          name: name.trim().substring(0, 100),
+          email: email.toLowerCase().trim().substring(0, 255),
+          phone: phone.trim().substring(0, 20),
+          college: college ? college.trim().substring(0, 200) : null,
+        })
+        .select()
+        .single();
 
-    if (dbError) {
-      console.error('[preorder] DB error:', dbError);
-      return NextResponse.json({ error: 'Failed to save pre-order' }, { status: 500 });
+      if (dbError) {
+        console.error('[preorder] DB error:', dbError);
+        return NextResponse.json({ error: 'Failed to save pre-order' }, { status: 500 });
+      }
+      preOrderId = preOrder.id;
     }
 
     const notifParams = { name, email, phone, college, projectTitle, projectSlug };
@@ -71,7 +85,7 @@ export async function POST(req: NextRequest) {
       sendTelegramNotification(buildPreOrderMessage(notifParams)).catch(err => console.error('[preorder] Telegram error:', err)),
     ]);
 
-    return NextResponse.json({ success: true, id: preOrder.id });
+    return NextResponse.json({ success: true, id: preOrderId });
   } catch (err: any) {
     console.error('[preorder] Error:', err);
     return NextResponse.json({ error: err.message || 'Internal Server Error' }, { status: 500 });

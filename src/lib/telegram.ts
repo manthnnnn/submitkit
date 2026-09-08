@@ -70,18 +70,21 @@ export function buildOrderNotificationMessage(params: {
   if (hasPlagiarismCert)  addons.push('Plagiarism Cert');
   if (hasVivaCall)        addons.push('Custom Changes / Viva Call');
 
+  const escape = (s: string = '') =>
+    s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
   return [
     `<b>💰 New Sale!</b>`,
     ``,
-    `<b>Project:</b> ${projectTitle}`,
-    `<b>Student:</b> ${customerName}`,
+    `<b>Project:</b> ${escape(projectTitle)}`,
+    `<b>Student:</b> ${escape(customerName)}`,
     `<b>Amount:</b> ₹${amountPaid}`,
-    addons.length > 0 ? `<b>Add-ons:</b> ${addons.join(', ')}` : null,
+    addons.length > 0 ? `<b>Add-ons:</b> ${escape(addons.join(', '))}` : null,
     ``,
-    `<b>Email:</b> ${customerEmail}`,
-    `<b>Phone:</b> ${customerPhone}`,
+    `<b>Email:</b> ${escape(customerEmail)}`,
+    `<b>Phone:</b> ${escape(customerPhone)}`,
     ``,
-    `<b>Order ID:</b> <code>${shortId}</code>`,
+    `<b>Order ID:</b> <code>${escape(shortId)}</code>`,
     `<b>Time:</b> ${time} IST`,
   ].filter(l => l !== null).join('\n');
 }
@@ -97,16 +100,19 @@ export function buildPreOrderMessage(params: {
   const { name, email, phone, college, projectTitle, projectSlug } = params;
   const time = new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' });
 
+  const escape = (s: string = '') =>
+    s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
   return [
-    `<b>New Pre-order</b>`,
+    `<b>🚀 New Pre-order!</b>`,
     ``,
-    `<b>Project:</b> ${projectTitle}`,
-    `<b>Slug:</b> <code>${projectSlug}</code>`,
+    `<b>Project:</b> ${escape(projectTitle)}`,
+    `<b>Slug:</b> <code>${escape(projectSlug)}</code>`,
     ``,
-    `<b>Name:</b> ${name}`,
-    `<b>Email:</b> ${email}`,
-    `<b>Phone:</b> ${phone}`,
-    college ? `<b>College:</b> ${college}` : null,
+    `<b>Name:</b> ${escape(name)}`,
+    `<b>Email:</b> ${escape(email)}`,
+    `<b>Phone:</b> ${escape(phone)}`,
+    college ? `<b>College:</b> ${escape(college)}` : null,
     ``,
     `<b>Time:</b> ${time} IST`,
     ``,

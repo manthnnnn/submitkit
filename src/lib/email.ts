@@ -312,8 +312,9 @@ export async function sendPreOrderEmails(params: PreOrderEmailParams): Promise<v
   }
 
   const { name, email, phone, college, projectTitle, projectSlug } = params;
-  const ownerEmail = 'team@submitkit.in';
+  const ownerEmail = process.env.ADMIN_NOTIFY_EMAIL || 'team@submitkit.in';
   const baseUrl = (process.env.NEXT_PUBLIC_BASE_URL || 'https://submitkit.in').replace(/\/$/, '');
+  const firstName = name?.trim() ? name.trim().split(/\s+/)[0] : 'there';
 
   // ── 1. Confirmation email to student ──────────────────────────────────────
   const studentHtml = `<!DOCTYPE html>
@@ -327,7 +328,7 @@ export async function sendPreOrderEmails(params: PreOrderEmailParams): Promise<v
   <!-- Header -->
   <tr><td style="background:linear-gradient(135deg,#1c1917,#111113);padding:32px 32px 24px;border-bottom:1px solid rgba(255,255,255,0.06);">
     <p style="margin:0 0 4px;font-size:0.7rem;font-weight:700;color:#f59e0b;text-transform:uppercase;letter-spacing:0.1em;">Pre-order Confirmed</p>
-    <h1 style="margin:0;font-size:1.5rem;font-weight:800;color:#ffffff;line-height:1.3;">You&apos;re on the list, ${name.split(' ')[0]}!</h1>
+    <h1 style="margin:0;font-size:1.5rem;font-weight:800;color:#ffffff;line-height:1.3;">You&apos;re on the list, ${firstName}!</h1>
   </td></tr>
 
   <!-- Body -->
@@ -412,23 +413,33 @@ export async function sendPreOrderEmails(params: PreOrderEmailParams): Promise<v
 </html>`;
 
   const sendEmail = async (to: { email: string; name: string }, subject: string, html: string) => {
-    const res = await fetch(BREVO_API_URL, {
-      method: 'POST',
-      headers: { 'accept': 'application/json', 'api-key': apiKey, 'content-type': 'application/json' },
-      body: JSON.stringify({
-        sender: { name: 'SubmitKit', email: 'team@submitkit.in' },
-        to: [to],
-        subject,
-        htmlContent: html,
-      }),
-    });
-    if (!res.ok) console.error('[email] Brevo error:', await res.text().catch(() => ''));
+    try {
+      const res = await fetch(BREVO_API_URL, {
+        method: 'POST',
+        headers: { 'accept': 'application/json', 'api-key': apiKey, 'content-type': 'application/json' },
+        body: JSON.stringify({
+          sender: { name: 'SubmitKit', email: 'team@submitkit.in' },
+          to: [to],
+          subject,
+          htmlContent: html,
+        }),
+      });
+      if (!res.ok) {
+        const errorDetail = await res.text().catch(() => '');
+        console.error(`[email] Brevo error sending to ${to.email}:`, res.status, errorDetail);
+      } else {
+        console.log(`[email] Successfully delivered pre-order email to ${to.email}`);
+      }
+    } catch (e) {
+      console.error(`[email] Network exception sending to ${to.email}:`, e);
+    }
   };
 
-  await Promise.all([
-    sendEmail({ email, name }, `Pre-order Confirmed — ${projectTitle} | SubmitKit`, studentHtml),
+  const emailTasks = [
+    sendEmail({ email, name: name || 'Student' }, `Pre-order Confirmed — ${projectTitle} | SubmitKit`, studentHtml),
     sendEmail({ email: ownerEmail, name: 'SubmitKit Admin' }, `[Pre-order] ${name} — ${projectTitle}`, ownerHtml),
-  ]);
+  ];
 
-  console.log(`[email] Pre-order emails sent for ${projectSlug} by ${email}`);
+  await Promise.all(emailTasks);
+  console.log(`[email] Pre-order email queue processed for ${projectSlug} by ${email}`);
 }
