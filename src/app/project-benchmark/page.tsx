@@ -58,10 +58,11 @@ function BenchmarkContent() {
 
   const loadingPhases = [
     { text: 'Cloning repository securely...', delay: 0 },
-    { text: 'Extracting project DNA & dependencies...', delay: 1500 },
-    { text: 'Scanning heuristics & AST signatures...', delay: 3500 },
-    { text: 'Cross-referencing README claims (Anti-Hallucination)...', delay: 5500 },
-    { text: 'Calculating Category & Maturity Level...', delay: 7500 },
+    { text: 'Woah, interesting structure! Extracting dependencies...', delay: 3000 },
+    { text: 'Scanning heuristics & evaluating complexity...', delay: 8000 },
+    { text: 'This is actually pretty impressive. Cross-referencing README...', delay: 14000 },
+    { text: 'Unlocking hidden potential... Calculating final maturity...', delay: 20000 },
+    { text: 'Almost there! Preparing your comprehensive benchmark report...', delay: 26000 },
   ];
 
   const handleBenchmark = async (e: React.FormEvent, directUrl?: string) => {
