@@ -47,7 +47,10 @@ export function generateImprovements(
         ? 'Your Next.js app lacks a database. Add Prisma with PostgreSQL (`npx prisma init`) to manage structured data and enable server actions.'
         : isExpress
         ? 'Your Express server has no persistence. Add `mongoose` for MongoDB or `prisma` for PostgreSQL to store data beyond the current session.'
-        : 'No database detected. Adding PostgreSQL, MySQL, or MongoDB is essential to move beyond a static prototype.'
+        : 'No database detected. Adding PostgreSQL, MySQL, or MongoDB is essential to move beyond a static prototype.',
+      freeTool: isNextJs || isExpress ? { name: 'Prisma ORM', url: 'https://www.prisma.io/', badge: 'npm i prisma', category: 'npm' } : { name: 'PostgreSQL', url: 'https://www.postgresql.org/', badge: 'Free Open Source', category: 'free_service' },
+      estimatedHours: 8,
+      submitkitNote: 'SubmitKit bundles use Prisma with pre-seeded, optimized schemas — zero database setup required.'
     });
   }
 
@@ -62,7 +65,10 @@ export function generateImprovements(
         ? 'Your Express API has no authentication. Add Passport.js with JWT strategy or integrate Supabase Auth for quick setup.'
         : isDjango
         ? 'Django has built-in auth but it\'s not detected. Run `python manage.py createsuperuser` and configure `django.contrib.auth`.'
-        : 'No authentication system found. Implement JWT tokens or OAuth2 for secure user sessions.'
+        : 'No authentication system found. Implement JWT tokens or OAuth2 for secure user sessions.',
+      freeTool: isNextJs ? { name: 'NextAuth.js', url: 'https://next-auth.js.org/', badge: 'npm i next-auth', category: 'npm' } : isExpress ? { name: 'Passport.js', url: 'https://www.passportjs.org/', badge: 'npm i passport', category: 'npm' } : { name: 'Supabase Auth', url: 'https://supabase.com/auth', badge: 'Free Tier', category: 'free_service' },
+      estimatedHours: 12,
+      submitkitNote: 'All SubmitKit bundles include production-grade Authentication (NextAuth or JWT) pre-configured.'
     });
   }
 
@@ -73,7 +79,10 @@ export function generateImprovements(
       difficulty: 'MEDIUM',
       why: isFlask
         ? 'Your Flask app exists but no API endpoints were detected. Add `@app.route("/predict", methods=["POST"])` to expose your model.'
-        : 'Your ML model is isolated. Wrap it with FastAPI (`pip install fastapi uvicorn`) so frontends can consume predictions via HTTP.'
+        : 'Your ML model is isolated. Wrap it with FastAPI (`pip install fastapi uvicorn`) so frontends can consume predictions via HTTP.',
+      freeTool: isFlask ? { name: 'Flask RESTful', url: 'https://flask-restful.readthedocs.io/', badge: 'pip install flask-restful', category: 'pip' } : { name: 'FastAPI', url: 'https://fastapi.tiangolo.com/', badge: 'pip install fastapi', category: 'pip' },
+      estimatedHours: 6,
+      submitkitNote: 'Our AIML bundles include fully documented REST APIs ready for frontend consumption.'
     });
   }
 
@@ -88,7 +97,10 @@ export function generateImprovements(
         ? 'Add a multi-stage Dockerfile: `FROM node:20-alpine AS builder` → `RUN npm run build` → `FROM node:20-alpine` → `CMD ["npm", "start"]`. This cuts your image size by 70%.'
         : isFlask || isDjango
         ? 'Add a `Dockerfile` with `FROM python:3.11-slim`, install requirements, and use `gunicorn` as the production server instead of the dev server.'
-        : 'No Dockerfile found. Containerizing ensures "it works on my machine" never happens again.'
+        : 'No Dockerfile found. Containerizing ensures "it works on my machine" never happens again.',
+      freeTool: { name: 'Docker Desktop', url: 'https://www.docker.com/', badge: 'Free Download', category: 'cli' },
+      estimatedHours: 4,
+      submitkitNote: 'All bundles include optimized, multi-stage Dockerfiles ready for immediate deployment.'
     });
   }
 
@@ -97,7 +109,10 @@ export function generateImprovements(
       title: 'Set up CI/CD Pipeline',
       impact: 'MEDIUM',
       difficulty: 'HARD',
-      why: 'Create `.github/workflows/ci.yml` with steps to install dependencies, run linting, execute tests, and auto-deploy on push to main. This prevents broken code from reaching production.'
+      why: 'Create `.github/workflows/ci.yml` with steps to install dependencies, run linting, execute tests, and auto-deploy on push to main. This prevents broken code from reaching production.',
+      freeTool: { name: 'GitHub Actions', url: 'https://github.com/features/actions', badge: 'Free for Public Repos', category: 'free_service' },
+      estimatedHours: 6,
+      submitkitNote: 'Our bundles come with ready-to-use `.github/workflows/ci.yml` files.'
     });
   }
 
@@ -112,7 +127,10 @@ export function generateImprovements(
         ? 'No tests found. Add Jest + React Testing Library (`npm i -D jest @testing-library/react`) and write tests for your core components and API routes.'
         : isFlask || isDjango
         ? 'No tests found. Add `pytest` and write unit tests for your routes and models. Django has a built-in test runner (`python manage.py test`).'
-        : 'No test files detected. Add a testing framework (Jest, PyTest, JUnit) and aim for at least 60% coverage on critical paths.'
+        : 'No test files detected. Add a testing framework (Jest, PyTest, JUnit) and aim for at least 60% coverage on critical paths.',
+      freeTool: isNextJs || isReact ? { name: 'Jest', url: 'https://jestjs.io/', badge: 'npm i -D jest', category: 'npm' } : { name: 'PyTest', url: 'https://docs.pytest.org/', badge: 'pip install pytest', category: 'pip' },
+      estimatedHours: 15,
+      submitkitNote: 'Premium bundles include test suites covering core logic and API endpoints.'
     });
   }
 
@@ -121,7 +139,9 @@ export function generateImprovements(
       title: 'Add Linting & Code Formatting',
       impact: 'MEDIUM',
       difficulty: 'EASY',
-      why: 'No ESLint config detected. Run `npm init @eslint/config` and add Prettier for consistent code style. This catches bugs before they reach production.'
+      why: 'No ESLint config detected. Run `npm init @eslint/config` and add Prettier for consistent code style. This catches bugs before they reach production.',
+      freeTool: { name: 'ESLint + Prettier', url: 'https://eslint.org/', badge: 'npm init @eslint/config', category: 'npm' },
+      estimatedHours: 2,
     });
   }
 
@@ -132,7 +152,9 @@ export function generateImprovements(
       title: 'Add Security Headers with Helmet',
       impact: 'HIGH',
       difficulty: 'EASY',
-      why: 'Your Express server has no `helmet` middleware. Add `app.use(helmet())` — it\'s one line that sets 11 security headers (XSS protection, HSTS, CSP, etc.).'
+      why: 'Your Express server has no `helmet` middleware. Add `app.use(helmet())` — it\'s one line that sets 11 security headers (XSS protection, HSTS, CSP, etc.).',
+      freeTool: { name: 'Helmet.js', url: 'https://helmetjs.github.io/', badge: 'npm i helmet', category: 'npm' },
+      estimatedHours: 1,
     });
   }
 
@@ -143,7 +165,9 @@ export function generateImprovements(
       difficulty: 'EASY',
       why: isExpress
         ? 'No rate limiter detected. Add `express-rate-limit` to prevent abuse: `app.use(rateLimit({ windowMs: 15*60*1000, max: 100 }))`. Without this, a single bot can DDoS your API.'
-        : 'Your API routes have no rate limiting. Add middleware to cap requests per IP. Without this, your serverless functions can be abused and rack up costs.'
+        : 'Your API routes have no rate limiting. Add middleware to cap requests per IP. Without this, your serverless functions can be abused and rack up costs.',
+      freeTool: isExpress ? { name: 'express-rate-limit', url: 'https://www.npmjs.com/package/express-rate-limit', badge: 'npm i express-rate-limit', category: 'npm' } : { name: 'Upstash Ratelimit', url: 'https://upstash.com/docs/redis/sdks/ratelimit-ts/overview', badge: 'Free Tier', category: 'free_service' },
+      estimatedHours: 2,
     });
   }
 
@@ -156,7 +180,9 @@ export function generateImprovements(
       difficulty: 'EASY',
       why: isNextJs
         ? 'No error monitoring found. Run `npx @sentry/wizard@latest -i nextjs` to auto-configure Sentry. You\'ll get real-time alerts when users hit errors in production.'
-        : 'No error tracking detected. Add Sentry or LogRocket to catch production errors before your users report them.'
+        : 'No error tracking detected. Add Sentry or LogRocket to catch production errors before your users report them.',
+      freeTool: { name: 'Sentry', url: 'https://sentry.io/', badge: 'Free Developer Tier', category: 'free_service' },
+      estimatedHours: 2,
     });
   }
 
@@ -165,7 +191,9 @@ export function generateImprovements(
       title: 'Add Caching Layer (Redis)',
       impact: 'MEDIUM',
       difficulty: 'MEDIUM',
-      why: 'No caching layer detected. Adding Redis (via Upstash for serverless) for session storage and API response caching can reduce database load by 80% and speed up response times.'
+      why: 'No caching layer detected. Adding Redis (via Upstash for serverless) for session storage and API response caching can reduce database load by 80% and speed up response times.',
+      freeTool: { name: 'Upstash Redis', url: 'https://upstash.com/', badge: 'Free Tier', category: 'free_service' },
+      estimatedHours: 4,
     });
   }
 
@@ -177,7 +205,8 @@ export function generateImprovements(
       title: 'Optimize with Static Generation (SSG/ISR)',
       impact: 'MEDIUM',
       difficulty: 'MEDIUM',
-      why: 'You\'re using Next.js but may not be leveraging `generateStaticParams` or `revalidate` for ISR. Converting data-heavy pages to static generation can cut load times by 90% and reduce server costs.'
+      why: 'You\'re using Next.js but may not be leveraging `generateStaticParams` or `revalidate` for ISR. Converting data-heavy pages to static generation can cut load times by 90% and reduce server costs.',
+      estimatedHours: 5,
     });
   }
 
@@ -186,7 +215,9 @@ export function generateImprovements(
       title: 'Add SEO Meta Tags',
       impact: 'MEDIUM',
       difficulty: 'EASY',
-      why: 'No SEO management detected. Add `react-helmet-async` to manage `<title>`, `<meta>` tags dynamically. Without this, search engines see a blank page.'
+      why: 'No SEO management detected. Add `react-helmet-async` to manage `<title>`, `<meta>` tags dynamically. Without this, search engines see a blank page.',
+      freeTool: { name: 'react-helmet-async', url: 'https://github.com/staylor/react-helmet-async', badge: 'npm i react-helmet-async', category: 'npm' },
+      estimatedHours: 2,
     });
   }
 
@@ -197,7 +228,8 @@ export function generateImprovements(
       title: 'Improve README Documentation',
       impact: 'MEDIUM',
       difficulty: 'EASY',
-      why: 'A strong README needs: project description, setup instructions, screenshots, API docs, and a tech stack section. This is the first thing employers and professors evaluate.'
+      why: 'A strong README needs: project description, setup instructions, screenshots, API docs, and a tech stack section. This is the first thing employers and professors evaluate.',
+      estimatedHours: 2,
     });
   }
 
@@ -208,7 +240,9 @@ export function generateImprovements(
       title: 'Audit & Trim Dependencies',
       impact: 'MEDIUM',
       difficulty: 'EASY',
-      why: `Your project has ${deps.length} production dependencies. Run \`npx depcheck\` to find unused packages. Fewer dependencies = smaller bundle, faster installs, fewer security vulnerabilities.`
+      why: `Your project has ${deps.length} production dependencies. Run \`npx depcheck\` to find unused packages. Fewer dependencies = smaller bundle, faster installs, fewer security vulnerabilities.`,
+      freeTool: { name: 'depcheck', url: 'https://github.com/depcheck/depcheck', badge: 'npx depcheck', category: 'cli' },
+      estimatedHours: 1,
     });
   }
 

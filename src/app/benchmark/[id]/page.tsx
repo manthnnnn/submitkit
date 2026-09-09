@@ -273,22 +273,84 @@ export default function BenchmarkResultPage() {
             <TrendingUp className="w-6 h-6 text-blue-500" />
             Actionable Improvements
           </h3>
+
+          {/* Total Effort Summary Bar */}
+          {data.top_improvements.length > 0 && data.top_improvements.some(i => i.estimatedHours) && (() => {
+            const totalHours = data.top_improvements.reduce((sum, imp) => sum + (imp.estimatedHours || 0), 0);
+            return (
+              <div className="mb-8 bg-zinc-950 border border-blue-500/20 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-6 overflow-hidden relative">
+                <div className="absolute inset-0 bg-blue-500/5 pointer-events-none" />
+                <div className="relative z-10">
+                  <div className="text-zinc-400 text-sm mb-2">To bring your project to Level 5 (Production Ready):</div>
+                  <div className="flex items-center gap-3">
+                    <div className="flex gap-1">
+                      {[...Array(10)].map((_, i) => (
+                        <div key={i} className={`h-2 w-3 rounded-full ${i < 7 ? 'bg-orange-500' : 'bg-zinc-800'}`} />
+                      ))}
+                    </div>
+                    <span className="text-white font-bold">~{totalHours} - {totalHours + Math.floor(totalHours * 0.5)} hours</span>
+                    <span className="text-zinc-500 text-sm">of manual work</span>
+                  </div>
+                </div>
+                <div className="relative z-10 flex flex-col items-center md:items-end text-center md:text-right">
+                  <div className="text-zinc-500 text-sm mb-2">— OR — get a pre-built bundle in 5 minutes</div>
+                  <button onClick={() => window.open('https://submitkit.in/projects', '_blank')} className="bg-white text-black px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-zinc-200 transition-colors flex items-center gap-2">
+                    Browse Bundles <ArrowRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            );
+          })()}
+
           <div 
             className="grid gap-6"
             style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}
           >
             {data.top_improvements.map((imp: Improvement, idx: number) => (
-              <div key={idx} className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 hover:border-blue-500/50 transition-colors group">
-                <div className="flex justify-between items-start mb-4">
-                  <div className="w-8 h-8 rounded-full bg-blue-500/10 text-blue-500 flex items-center justify-center font-bold">
-                    {idx + 1}
+              <div key={idx} className="bg-zinc-900 border border-zinc-800 rounded-2xl flex flex-col hover:border-blue-500/50 transition-colors group overflow-hidden">
+                <div className="p-6 flex-grow">
+                  <div className="flex justify-between items-start mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-blue-500/10 text-blue-500 flex items-center justify-center font-bold shrink-0">
+                        {idx + 1}
+                      </div>
+                      <span className={`text-[10px] font-bold px-2 py-1 rounded border ${imp.impact === 'VERY HIGH' ? 'bg-orange-500/10 text-orange-400 border-orange-500/20' : imp.impact === 'HIGH' ? 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20' : 'bg-zinc-800 text-zinc-400 border-zinc-700'}`}>
+                        {imp.impact} IMPACT
+                      </span>
+                    </div>
+                    {imp.estimatedHours && (
+                      <span className="text-zinc-500 text-xs font-medium flex items-center gap-1 bg-zinc-950 px-2 py-1 rounded border border-zinc-800">
+                        ⏱ ~{imp.estimatedHours}h
+                      </span>
+                    )}
                   </div>
-                  <span className={`text-xs font-bold px-2 py-1 rounded border ${imp.impact === 'VERY HIGH' ? 'bg-orange-500/10 text-orange-400 border-orange-500/20' : 'bg-zinc-800 text-zinc-400 border-zinc-700'}`}>
-                    {imp.impact} IMPACT
-                  </span>
+                  <h4 className="text-lg font-bold mb-2 group-hover:text-blue-400 transition-colors">{imp.title}</h4>
+                  <p className="text-zinc-400 text-sm leading-relaxed mb-6">{imp.why}</p>
+                  
+                  {imp.freeTool && (
+                    <div className="mt-auto border border-zinc-800 rounded-xl overflow-hidden">
+                      <div className="bg-zinc-950 px-3 py-2 text-[10px] font-bold text-zinc-500 uppercase tracking-wider border-b border-zinc-800 flex justify-between items-center">
+                        <span>Free Tool to use</span>
+                        <a href={imp.freeTool.url} target="_blank" rel="noreferrer" className="text-blue-400 hover:text-blue-300 flex items-center gap-1">Docs <ExternalLink className="w-3 h-3" /></a>
+                      </div>
+                      <div className="p-3 bg-zinc-900/50 flex flex-col gap-2">
+                        <div className="font-bold text-sm text-zinc-200">{imp.freeTool.name}</div>
+                        <div className="font-mono text-xs text-blue-400 bg-blue-500/10 px-2 py-1 rounded w-fit select-all border border-blue-500/20">
+                          {imp.freeTool.badge}
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <h4 className="text-lg font-bold mb-2 group-hover:text-blue-400 transition-colors">{imp.title}</h4>
-                <p className="text-zinc-400 text-sm leading-relaxed">{imp.why}</p>
+                
+                {imp.submitkitNote && (
+                  <div className="bg-gradient-to-r from-blue-500/10 to-transparent border-t border-blue-500/20 px-6 py-4 flex items-start gap-3">
+                    <span className="text-blue-400 mt-0.5">✨</span>
+                    <p className="text-sm text-blue-200/80 font-medium leading-relaxed">
+                      {imp.submitkitNote}
+                    </p>
+                  </div>
+                )}
               </div>
             ))}
             {data.top_improvements.length === 0 && (

@@ -21,6 +21,14 @@ export interface Improvement {
   impact: 'VERY HIGH' | 'HIGH' | 'MEDIUM';
   difficulty: 'EASY' | 'MEDIUM' | 'HARD';
   why: string;
+  freeTool?: {
+    name: string;
+    url: string;
+    badge: string;
+    category: 'npm' | 'pip' | 'free_service' | 'config' | 'cli';
+  };
+  estimatedHours?: number;
+  submitkitNote?: string;
 }
 
 export interface SecurityAudit {
