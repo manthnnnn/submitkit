@@ -230,14 +230,16 @@ export default async function ProjectDetailPage({
               </div>
 
               {/* Premium Horizontal Screenshot Showcase */}
-              {SHOWCASE_DATA[p.slug] && SHOWCASE_DATA[p.slug].length > 0 && (
+              {SHOWCASE_DATA[p.slug] && SHOWCASE_DATA[p.slug].length > (hasVideo ? 0 : 1) && (
                 <div className="mt-8">
                   <h3 className="text-lg font-display font-semibold text-white mb-4 flex items-center gap-2.5">
                     <div className="p-1.5 bg-zinc-800/50 rounded-lg"><ImageIcon className="h-4 w-4 text-zinc-400" /></div>
-                    Project Screenshots
+                    More Screenshots
                   </h3>
                   <div className="flex gap-4 overflow-x-auto pb-6 snap-x snap-mandatory scrollbar-hide">
-                    {SHOWCASE_DATA[p.slug].map((item, idx) => (
+                    {(hasVideo ? SHOWCASE_DATA[p.slug] : SHOWCASE_DATA[p.slug].slice(1)).map((item, idx) => {
+                      const displayNum = hasVideo ? idx + 1 : idx + 2;
+                      return (
                       <div key={idx} className="shrink-0 w-[85%] md:w-[70%] flex flex-col gap-3 snap-start group cursor-pointer">
                         <div className="aspect-video w-full rounded-2xl border border-white/10 overflow-hidden bg-zinc-950 shadow-xl relative">
                           {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -255,7 +257,7 @@ export default async function ProjectDetailPage({
                         </div>
                         <div className="px-1">
                           <h4 className="text-sm font-semibold text-white mb-1 flex items-center gap-2">
-                            <span className="text-[10px] bg-brand-500/20 text-brand-400 px-1.5 py-0.5 rounded font-mono">0{idx + 1}</span>
+                            <span className="text-[10px] bg-brand-500/20 text-brand-400 px-1.5 py-0.5 rounded font-mono">0{displayNum}</span>
                             {item.title}
                           </h4>
                           <p className="text-xs text-zinc-400 leading-relaxed">
@@ -263,7 +265,7 @@ export default async function ProjectDetailPage({
                           </p>
                         </div>
                       </div>
-                    ))}
+                    )})}
                   </div>
                 </div>
               )}
