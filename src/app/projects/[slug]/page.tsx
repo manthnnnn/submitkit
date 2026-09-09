@@ -195,8 +195,8 @@ export default async function ProjectDetailPage({
                 Project Demo
               </h2>
 
-              {/* Video embed */}
-              <div className="aspect-video w-full rounded-2xl border border-white/10 overflow-hidden bg-zinc-950 shadow-2xl mb-4">
+              {/* Video or Hero Screenshot */}
+              <div className="aspect-video w-full rounded-2xl border border-white/10 overflow-hidden bg-zinc-950 shadow-2xl mb-4 relative group cursor-default">
                 {hasVideo ? (
                   <iframe
                     src={`https://www.youtube.com/embed/${p.demo_video_id}?rel=0&modestbranding=1`}
@@ -205,15 +205,25 @@ export default async function ProjectDetailPage({
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
                   />
+                ) : (SHOWCASE_DATA[p.slug] && SHOWCASE_DATA[p.slug].length > 0) ? (
+                  <>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img 
+                      src={SHOWCASE_DATA[p.slug][0].img} 
+                      alt={`${p.title} Screenshot`} 
+                      className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                    />
+                    <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.8)] pointer-events-none" />
+                  </>
                 ) : (
                   <div className="w-full h-full flex flex-col items-center justify-center bg-zinc-900/60 text-center p-8 relative">
                     <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:24px_24px]" />
                     <div className="w-16 h-16 rounded-2xl bg-brand-500/10 border border-brand-500/20 flex items-center justify-center mb-4">
-                      <Play className="h-7 w-7 text-brand-400" />
+                      <ImageIcon className="h-7 w-7 text-brand-400" />
                     </div>
-                    <p className="text-white font-semibold mb-1">Demo Video Coming Soon</p>
+                    <p className="text-white font-semibold mb-1">Screenshots Coming Soon</p>
                     <p className="text-zinc-500 text-xs max-w-sm leading-relaxed">
-                      We are recording a high-quality walkthrough. The project code is fully functional and ready to download today.
+                      We are preparing a high-quality gallery. The project code is fully functional and ready to download today.
                     </p>
                   </div>
                 )}
