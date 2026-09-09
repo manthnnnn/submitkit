@@ -181,6 +181,17 @@ export default function Home() {
                     Analyze <Sparkles className="w-4 h-4" />
                   </button>
                 </form>
+
+                {/* Defense Shield Teaser */}
+                <div className="mt-4 flex items-start gap-2.5 bg-blue-500/5 border border-blue-500/10 rounded-xl px-4 py-3">
+                  <span className="text-base mt-0.5">🛡️</span>
+                  <p className="text-xs text-zinc-400 leading-relaxed">
+                    After your scan, unlock your{' '}
+                    <span className="text-blue-400 font-semibold">Defense Shield</span>
+                    {' '}— the 10 exact technical questions your interviewer will ask about your code, with perfect answers.{' '}
+                    <span className="text-zinc-500">Only ₹19.</span>
+                  </p>
+                </div>
               </motion.div>
             </div>
 
