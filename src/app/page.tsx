@@ -170,6 +170,33 @@ export default function Home() {
       </section>
 
       {/* ═══════════════════════════════════════
+          PROJECT BENCHMARK (LEAD GEN)
+      ═══════════════════════════════════════ */}
+      <section className="py-12 border-b border-white/5 bg-gradient-to-b from-transparent to-blue-900/10">
+        <div className="container mx-auto px-4 z-10 relative">
+          <div className="max-w-4xl mx-auto bg-zinc-900 border border-zinc-800 rounded-3xl p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-8 shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
+            <div className="flex-1 relative z-10 text-center md:text-left">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-bold mb-4 border border-blue-500/20 uppercase tracking-wider">
+                <ShieldCheck className="w-3.5 h-3.5" /> Free AI Audit
+              </div>
+              <h2 className="text-2xl md:text-3xl font-display font-medium text-white mb-3">Will your project pass the Viva?</h2>
+              <p className="text-zinc-400 text-sm md:text-base max-w-md mx-auto md:mx-0">
+                Don't guess what your examiner will say. Paste your GitHub URL and our Deterministic Intelligence Engine will brutally benchmark your code against production standards.
+              </p>
+            </div>
+            <div className="relative z-10 shrink-0 w-full md:w-auto">
+              <Link href="/project-benchmark" className="block w-full text-center px-8 py-4 bg-white text-black font-bold rounded-xl hover:bg-zinc-200 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.15)] flex items-center justify-center gap-2 group">
+                Run Free Benchmark
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <p className="text-[10px] text-zinc-500 text-center mt-3 uppercase tracking-wider">No Signup Required</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════
           BENTO GRID (What & Why)
       ═══════════════════════════════════════ */}
       <section className="py-16 relative">
