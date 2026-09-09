@@ -125,6 +125,24 @@ export default function Home() {
                   See Pricing
                 </Link>
               </motion.div>
+
+              {/* Benchmark Lead Gen in Hero */}
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+                className="mt-8 p-4 rounded-2xl bg-blue-500/5 border border-blue-500/20 flex items-center justify-between gap-4 max-w-sm hover:bg-blue-500/10 transition-colors"
+              >
+                <div>
+                  <div className="text-sm font-bold text-blue-400 flex items-center gap-1.5">
+                    <ShieldCheck className="w-4 h-4" /> Free AI Audit
+                  </div>
+                  <div className="text-xs text-zinc-400 mt-0.5">Will your project pass the Viva?</div>
+                </div>
+                <Link href="/project-benchmark" className="shrink-0 text-xs bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl font-bold transition-all shadow-[0_0_15px_rgba(37,99,235,0.3)]">
+                  Check Code
+                </Link>
+              </motion.div>
             </div>
 
             {/* Right: Pricing Hook Card */}
