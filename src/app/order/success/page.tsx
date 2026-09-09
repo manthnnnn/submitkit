@@ -5,7 +5,7 @@ import {
   CheckCircle, Download, AlertCircle, Share2, ArrowRight,
   Copy, Zap, ShieldCheck, FolderOpen, Terminal, Play, GraduationCap,
   Check, MessageCircle, FileText, Award, ChevronDown, ChevronUp, Loader2,
-  BookOpen, Presentation,
+  BookOpen, Presentation, MonitorPlay
 } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
@@ -268,7 +268,32 @@ function SuccessContent() {
               )}
             </div>
 
-            {/* â”€â”€ ADD-ON 1: Personalisation â”€â”€ */}
+            {/* Setup Video */}
+            <div className="glass-card p-6 rounded-2xl border-t border-white/5 bg-zinc-900/50">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                  <MonitorPlay className="w-4 h-4 text-blue-400" />
+                </div>
+                <div>
+                  <h3 className="text-white text-sm font-bold">How to Setup</h3>
+                  <p className="text-zinc-500 text-[11px]">Watch while your file downloads</p>
+                </div>
+              </div>
+              <div className="rounded-xl overflow-hidden border border-white/10 shadow-lg bg-black ring-1 ring-white/5">
+                <video 
+                  controls
+                  playsInline
+                  preload="metadata"
+                  poster="/og-image.jpg"
+                  className="w-full aspect-video object-contain"
+                >
+                  <source src="/demo.mp4" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+            </div>
+
+            {/* ── ADD-ON 1: Personalisation ── */}
             {hasPersonalization && (
               <div className="glass-card p-5 rounded-2xl border border-brand-500/30 bg-brand-500/5">
                 <div className="flex items-center justify-between">
