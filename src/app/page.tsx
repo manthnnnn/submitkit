@@ -264,7 +264,7 @@ export default function Home() {
               controls
               playsInline
               preload="metadata"
-              poster="/icon.png"
+              poster="/video-poster.jpg"
               className="w-full aspect-video object-contain"
             >
               <source src="/demo.mp4" type="video/mp4" />
