@@ -158,7 +158,10 @@ export default function BenchmarkResultPage() {
             <TrendingUp className="w-6 h-6 text-blue-500" />
             Top 3 Actions to Improve
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div 
+            className="grid gap-6"
+            style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}
+          >
             {data.top_improvements.map((imp: Improvement, idx: number) => (
               <div key={idx} className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 hover:border-blue-500/50 transition-colors group">
                 <div className="flex justify-between items-start mb-4">
@@ -181,40 +184,69 @@ export default function BenchmarkResultPage() {
           </div>
         </motion.div>
 
-        {/* ULTRA DEEP: Viva Defense Strategy */}
-        {data.viva_defense && data.viva_defense.length > 0 && (
+        {/* ULTRA DEEP: Production Level Analysis */}
+        {data.production_analysis && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="mb-12">
             <h3 className="text-2xl font-bold mb-6 flex items-center gap-3">
-              <GraduationCap className="w-6 h-6 text-emerald-500" />
-              Viva Defense Strategy
+              <Building2 className="w-6 h-6 text-indigo-500" />
+              Production Level Analysis (Customer Focus)
             </h3>
-            <div className="bg-zinc-950 border border-emerald-500/20 rounded-3xl p-6 md:p-8 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
-              <div className="grid grid-cols-1 gap-6 relative z-10">
-                {data.viva_defense.map((viva: any, idx: number) => (
-                  <div key={idx} className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 md:p-6">
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${
-                        viva.difficulty === 'PROFESSOR_LEVEL' ? 'bg-red-500/10 text-red-400 border-red-500/20' : 
-                        viva.difficulty === 'HARD' ? 'bg-orange-500/10 text-orange-400 border-orange-500/20' :
-                        'bg-blue-500/10 text-blue-400 border-blue-500/20'
-                      }`}>
-                        {viva.difficulty.replace('_', ' ')}
-                      </span>
-                    </div>
-                    <h4 className="text-lg font-bold text-white mb-4 flex gap-2">
-                      <span className="text-zinc-500">Q:</span> {viva.question}
-                    </h4>
-                    <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 mb-3">
-                      <div className="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1">Ideal Answer</div>
-                      <p className="text-emerald-100/90 text-sm">{viva.idealAnswer}</p>
-                    </div>
-                    <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4">
-                      <div className="text-xs font-bold text-red-400 uppercase tracking-wider mb-1">Trap to Avoid</div>
-                      <p className="text-red-200/80 text-sm">{viva.trapToAvoid}</p>
-                    </div>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Left col: Customer Hooks */}
+              <div className="lg:col-span-2 space-y-6">
+                <div className="bg-zinc-950 border border-indigo-500/20 rounded-3xl p-6 relative overflow-hidden h-full">
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/5 rounded-full blur-3xl pointer-events-none" />
+                  <h4 className="text-sm font-bold text-indigo-400 uppercase tracking-wider mb-6">Features to Grab Customers</h4>
+                  <div className="space-y-4 relative z-10">
+                    {data.production_analysis.customerHooks?.map((hook: any, idx: number) => (
+                      <div key={idx} className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5">
+                        <h5 className="text-lg font-bold text-white mb-2">{hook.feature}</h5>
+                        <p className="text-zinc-400 text-sm mb-4">{hook.valueProposition}</p>
+                        <div className="bg-indigo-500/10 border border-indigo-500/20 rounded-xl p-3">
+                          <div className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider mb-1">Marketing Angle</div>
+                          <p className="text-indigo-200/90 text-xs font-medium">{hook.howToMarket}</p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                </div>
+              </div>
+
+              {/* Right col: Readiness & Bottlenecks */}
+              <div className="space-y-6">
+                <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6">
+                  <h4 className="text-sm font-bold text-zinc-400 uppercase tracking-wider mb-4">Enterprise Readiness</h4>
+                  <div className="flex items-center gap-3">
+                    <span className={`px-4 py-2 rounded-xl text-sm font-bold border ${
+                      data.production_analysis.enterpriseReadiness === 'PRODUCTION_READY' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
+                      data.production_analysis.enterpriseReadiness === 'SCALABLE' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' :
+                      'bg-orange-500/10 text-orange-400 border-orange-500/20'
+                    }`}>
+                      {data.production_analysis.enterpriseReadiness.replace('_', ' ')}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6">
+                  <h4 className="text-sm font-bold text-zinc-400 uppercase tracking-wider mb-4">Scalability Bottlenecks</h4>
+                  <div className="space-y-4">
+                    {data.production_analysis.scalabilityBottlenecks?.map((neck: any, idx: number) => (
+                      <div key={idx} className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
+                        <div className="text-sm font-bold text-red-400 mb-1">{neck.component}</div>
+                        <p className="text-zinc-500 text-xs mb-2">{neck.risk}</p>
+                        <div className="text-emerald-400 text-xs border-t border-zinc-800 pt-2">
+                          <span className="font-semibold text-zinc-400">Fix:</span> {neck.solution}
+                        </div>
+                      </div>
+                    ))}
+                    {(!data.production_analysis.scalabilityBottlenecks || data.production_analysis.scalabilityBottlenecks.length === 0) && (
+                      <div className="text-zinc-500 text-sm italic">
+                        No major architectural bottlenecks detected.
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </motion.div>

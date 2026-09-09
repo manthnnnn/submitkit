@@ -37,37 +37,46 @@ function generateDeepAnalysis(category: string, score: number, analyzerData: any
   if (!hasDocker) vulnerabilities.push({ issue: 'Inconsistent Environment Execution', severity: 'MEDIUM', fix: 'Add Dockerfile to ensure containerized execution.' });
   if (score < 60) vulnerabilities.push({ issue: 'Potential Secret Exposure', severity: 'HIGH', fix: 'Ensure .env files are not tracked in git and secrets are managed.' });
 
-  const vivaQuestions: any[] = [
-    {
-      question: `Why did you choose this specific architecture for your ${isWeb ? 'web application' : 'project'}?`,
-      difficulty: 'EASY',
-      idealAnswer: 'I chose this architecture because it separates concerns. The frontend handles the UI independently, allowing the backend to scale and serve as an API. This is standard in modern microservices or decoupled monoliths.',
-      trapToAvoid: 'Do not say "because the tutorial used it." Always refer to separation of concerns and scalability.'
-    }
-  ];
+  const productionAnalysis = {
+    enterpriseReadiness: (score >= 80 && hasDB && hasAuth && hasDocker ? 'PRODUCTION_READY' : score >= 60 ? 'SCALABLE' : score >= 40 ? 'MVP' : 'PROTOTYPE') as any,
+    customerHooks: [
+      {
+        feature: isWeb ? 'Cloud-Ready Architecture' : 'Standalone Efficiency',
+        valueProposition: isWeb ? 'Can instantly deploy to AWS/Vercel with minimal configuration.' : 'Runs anywhere with zero cloud dependencies.',
+        howToMarket: 'Pitch this to clients as a "Zero-Friction Deployment" advantage.'
+      }
+    ],
+    scalabilityBottlenecks: [] as any[]
+  };
 
   if (hasDB) {
-    vivaQuestions.push({
-      question: 'How did you handle database schema design and normalization?',
-      difficulty: 'MEDIUM',
-      idealAnswer: 'I ensured the database is in 3rd Normal Form (3NF) to eliminate data redundancy, using foreign keys for relationships. This ensures data integrity when updates occur.',
-      trapToAvoid: 'Avoid admitting to using a single massive table. If using NoSQL, mention document embedding vs referencing.'
+    productionAnalysis.customerHooks.push({
+      feature: 'Persistent Data Integrity',
+      valueProposition: 'Data is structured and securely stored, ready for thousands of concurrent reads.',
+      howToMarket: 'Market as "Enterprise-Grade Reliability".'
     });
-  } else {
-    vivaQuestions.push({
-      question: 'How is data persisted in your application?',
-      difficulty: 'MEDIUM',
-      idealAnswer: 'Currently, the application relies on in-memory or file-based storage. For a production environment, I would integrate a relational database like PostgreSQL.',
-      trapToAvoid: 'Do not claim the app can handle millions of users if it lacks a real database.'
+    if (!hasDocker) {
+      productionAnalysis.scalabilityBottlenecks.push({
+        component: 'Database Provisioning',
+        risk: 'Manual database setup limits horizontal scaling.',
+        solution: 'Introduce Docker Compose or a managed DB-as-a-Service (DBaaS) like Supabase/Neon.'
+      });
+    }
+  } else if (isWeb) {
+    productionAnalysis.scalabilityBottlenecks.push({
+      component: 'State Management',
+      risk: 'Without a database, data is volatile and will be lost on server restart.',
+      solution: 'Integrate PostgreSQL or Redis to persist sessions and user data.'
     });
   }
 
-  vivaQuestions.push({
-    question: 'If you had 10,000 concurrent users tomorrow, what would break first?',
-    difficulty: 'PROFESSOR_LEVEL',
-    idealAnswer: 'The database connections would likely bottleneck first, followed by the web server running out of memory. I would introduce connection pooling, Redis caching, and a load balancer to mitigate this.',
-    trapToAvoid: 'Never say "Nothing will break." Professors want to see your understanding of system limits.'
-  });
+  if (!hasAuth && isWeb) {
+    productionAnalysis.scalabilityBottlenecks.push({
+      component: 'User Identity',
+      risk: 'Open access allows abuse and prevents monetization per-user.',
+      solution: 'Add NextAuth, Clerk, or Auth0 for robust RBAC (Role-Based Access Control).'
+    });
+  }
 
   return {
     security_audit: {
@@ -81,7 +90,7 @@ function generateDeepAnalysis(category: string, score: number, analyzerData: any
       cyclomaticComplexityEst: (score < 50 ? 'HIGH' : score < 80 ? 'MEDIUM' : 'LOW') as any,
       duplicateCodeProbability: score < 50 ? 'High (20%+)' : score < 80 ? 'Moderate (5-10%)' : 'Low (< 5%)'
     },
-    viva_defense: vivaQuestions,
+    production_analysis: productionAnalysis,
     startup_potential: {
       monetizable: score >= 60 && hasDB,
       targetAudience: isWeb ? 'B2C Users / B2B Small Businesses' : 'Developers / Niche Users',
@@ -135,7 +144,7 @@ export async function runBenchmark(repoUrl: string): Promise<Omit<BenchmarkRun, 
     comparison_matrix: [],
     security_audit: deepAnalysis.security_audit,
     code_quality: deepAnalysis.code_quality,
-    viva_defense: deepAnalysis.viva_defense,
+    production_analysis: deepAnalysis.production_analysis,
     startup_potential: deepAnalysis.startup_potential,
     real_world_comparison: deepAnalysis.real_world_comparison,
     top_improvements: improvements,

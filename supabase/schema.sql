@@ -119,7 +119,7 @@ CREATE TABLE IF NOT EXISTS public.benchmark_runs (
     gaps JSONB DEFAULT '[]'::jsonb,
     security_audit JSONB DEFAULT '{}'::jsonb,
     code_quality JSONB DEFAULT '{}'::jsonb,
-    viva_defense JSONB DEFAULT '[]'::jsonb,
+    production_analysis JSONB DEFAULT '[]'::jsonb,
     startup_potential JSONB DEFAULT '{}'::jsonb,
     real_world_comparison JSONB DEFAULT '{}'::jsonb,
     honest_verdict TEXT,

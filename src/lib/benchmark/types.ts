@@ -36,11 +36,10 @@ export interface CodeQuality {
   duplicateCodeProbability: string;
 }
 
-export interface VivaDefenseQuestion {
-  question: string;
-  difficulty: 'EASY' | 'MEDIUM' | 'HARD' | 'PROFESSOR_LEVEL';
-  idealAnswer: string;
-  trapToAvoid: string;
+export interface ProductionAnalysis {
+  enterpriseReadiness: 'PROTOTYPE' | 'MVP' | 'SCALABLE' | 'PRODUCTION_READY';
+  customerHooks: { feature: string; valueProposition: string; howToMarket: string }[];
+  scalabilityBottlenecks: { component: string; risk: string; solution: string }[];
 }
 
 export interface StartupPotential {
@@ -77,7 +76,7 @@ export interface BenchmarkRun {
   gaps: string[];
   security_audit: SecurityAudit;
   code_quality: CodeQuality;
-  viva_defense: VivaDefenseQuestion[];
+  production_analysis: ProductionAnalysis;
   startup_potential: StartupPotential;
   real_world_comparison: RealWorldComparison;
   honest_verdict: string;
