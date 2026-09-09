@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ChevronRight, ExternalLink, AlertTriangle, CheckCircle2, XCircle, ArrowUpRight, TrendingUp } from 'lucide-react';
+import { ChevronRight, ExternalLink, AlertTriangle, CheckCircle2, XCircle, ArrowUpRight, TrendingUp, ShieldCheck } from 'lucide-react';
 
 const GithubIcon = ({ className }: { className?: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none" className={className}>
@@ -63,22 +63,21 @@ export default function BenchmarkResultPage() {
 
   return (
     <div className="min-h-screen bg-black text-white pb-24">
-      {/* Header */}
-      <nav className="border-b border-zinc-800 bg-black/50 backdrop-blur-md sticky top-0 z-50">
+      {/* Page Header (Not sticky, to avoid global navbar overlap) */}
+      <header className="border-b border-zinc-800 bg-black/50">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Logo className="w-8 h-8" />
-            <span className="font-bold text-xl tracking-tight hidden sm:block">SubmitKit Benchmark</span>
+          <div className="flex items-center gap-2 text-zinc-400">
+            <span className="font-bold text-white text-lg tracking-tight">Benchmark Results</span>
           </div>
           <div className="flex items-center gap-4">
-            <a href={data.repo_url} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors">
-              <GithubIcon className="w-5 h-5" />
-              <span className="text-sm">{data.repo_owner}/{data.repo_name}</span>
-              <ExternalLink className="w-4 h-4" />
+            <a href={data.repo_url} target="_blank" rel="noreferrer" className="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors bg-zinc-900 px-4 py-1.5 rounded-full border border-zinc-800">
+              <GithubIcon className="w-4 h-4" />
+              <span className="text-sm font-medium">{data.repo_owner}/{data.repo_name}</span>
+              <ExternalLink className="w-3.5 h-3.5 ml-1" />
             </a>
           </div>
         </div>
-      </nav>
+      </header>
 
       <main className="container mx-auto px-4 py-8 max-w-6xl">
         
@@ -186,7 +185,10 @@ export default function BenchmarkResultPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 }}>
-            <h3 className="text-xl font-bold mb-6">Capabilities Evidence</h3>
+            <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+              <ShieldCheck className="w-5 h-5 text-purple-500" />
+              Deep Code Extraction & Verification
+            </h3>
             <div className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
               {data.capabilities.map((cap: Capability, idx: number) => (
                 <div key={idx} className={`p-4 flex items-start gap-4 border-b border-zinc-800/50 last:border-0 ${cap.status === '❌' ? 'bg-red-500/5' : ''}`}>
