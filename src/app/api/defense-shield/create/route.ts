@@ -10,10 +10,13 @@ export async function POST(req: NextRequest) {
   const rl = checkRateLimit(`shield-create:${ip}`, { maxRequests: 5, windowSeconds: 60 });
   if (!rl.allowed) return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
 
-  const { benchmarkId, email, phone } = await req.json();
+  const { benchmarkId, email, phone, packType = 'bundle' } = await req.json();
   if (!benchmarkId || !email || !phone) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
   }
+
+  // Define pricing logic
+  const price = packType === 'bundle' ? 29 : 19;
 
   const supabase = createAdminClient();
 
@@ -39,11 +42,11 @@ export async function POST(req: NextRequest) {
 
   if (!benchmark) return NextResponse.json({ error: 'Benchmark not found' }, { status: 404 });
 
-  // Create Razorpay order for ₹19
+  // Create Razorpay order
   const razorpay = getRazorpay();
   const receipt = `shield_${crypto.randomBytes(6).toString('hex')}`;
   const rzpOrder = await razorpay.orders.create({
-    amount: CONSTANTS.PRICING.DEFENSE_SHIELD * 100, // paise
+    amount: price * 100, // paise
     currency: 'INR',
     receipt,
   });
@@ -54,8 +57,9 @@ export async function POST(req: NextRequest) {
     customer_email: email.toLowerCase().trim(),
     customer_phone: phone.trim(),
     razorpay_order_id: rzpOrder.id,
+    pack_type: packType,
     status: 'PENDING',
-    amount: CONSTANTS.PRICING.DEFENSE_SHIELD,
+    amount: price,
   });
 
   return NextResponse.json({

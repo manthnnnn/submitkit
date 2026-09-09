@@ -173,6 +173,7 @@ CREATE TABLE IF NOT EXISTS public.benchmark_purchases (
     razorpay_order_id VARCHAR(100) UNIQUE NOT NULL,
     razorpay_payment_id VARCHAR(100) UNIQUE,
     amount INTEGER NOT NULL DEFAULT 19,
+    pack_type VARCHAR(50) DEFAULT 'bundle', -- interview | launch | portfolio | bundle
     status VARCHAR(20) DEFAULT 'PENDING',  -- PENDING | PAID | FAILED
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

@@ -30,7 +30,7 @@ export default function BenchmarkResultPage() {
   const [shieldData, setShieldData] = useState<DefenseShieldPack | null>(null);
   const [shieldEmail, setShieldEmail] = useState('');
   const [shieldPhone, setShieldPhone] = useState('');
-  const [shieldLoading, setShieldLoading] = useState(false);
+  const [shieldLoadingPack, setShieldLoadingPack] = useState<string | null>(null);
   const [shieldCheckEmail, setShieldCheckEmail] = useState('');
   const [shieldCheckLoading, setShieldCheckLoading] = useState(false);
 
@@ -111,15 +111,19 @@ export default function BenchmarkResultPage() {
     window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(benchmarkUrl)}`, '_blank');
   };
 
-  const handleShieldPurchase = async () => {
-    if (!shieldEmail || !shieldPhone) return alert('Please enter your email and phone number.');
-    setShieldLoading(true);
+  const handleShieldPurchase = async (packType: 'interview' | 'launch' | 'portfolio' | 'bundle' = 'bundle') => {
+    if (!shieldEmail || !shieldPhone) {
+      alert('Please enter your email and phone number at the bottom of the section first.');
+      document.getElementById('shield-form')?.scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
+    setShieldLoadingPack(packType);
     try {
       // Step 1: Create order
       const createRes = await fetch('/api/defense-shield/create', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ benchmarkId: data!.id, email: shieldEmail, phone: shieldPhone }),
+        body: JSON.stringify({ benchmarkId: data!.id, email: shieldEmail, phone: shieldPhone, packType }),
       });
       const createData = await createRes.json();
 
@@ -132,7 +136,7 @@ export default function BenchmarkResultPage() {
         });
         const checkData = await checkRes.json();
         if (checkData.purchased) { setShieldData(checkData.shieldData); setShieldUnlocked(true); }
-        setShieldLoading(false);
+        setShieldLoadingPack(null);
         return;
       }
 
@@ -174,14 +178,14 @@ export default function BenchmarkResultPage() {
             setShieldUnlocked(true);
             setTimeout(() => document.getElementById('defense-shield-content')?.scrollIntoView({ behavior: 'smooth' }), 300);
           }
-          setShieldLoading(false);
+          setShieldLoadingPack(null);
         },
-        modal: { ondismiss: () => setShieldLoading(false) },
+        modal: { ondismiss: () => setShieldLoadingPack(null) },
       });
       rzp.open();
     } catch (err: any) {
       alert(err.message || 'Something went wrong. Please try again.');
-      setShieldLoading(false);
+      setShieldLoadingPack(null);
     }
   };
 
@@ -782,10 +786,11 @@ export default function BenchmarkResultPage() {
                       <span className="text-2xl font-bold text-white">₹19</span>
                     </div>
                     <button
-                      onClick={() => { document.getElementById('shield-form')?.scrollIntoView({ behavior: 'smooth' }); }}
-                      className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-bold py-3 rounded-xl text-sm transition-all flex items-center justify-center gap-2"
+                      onClick={() => handleShieldPurchase('interview')}
+                      disabled={shieldLoadingPack === 'interview'}
+                      className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-bold py-3 rounded-xl text-sm transition-all flex items-center justify-center gap-2 disabled:opacity-60"
                     >
-                      <Lock className="w-3.5 h-3.5" /> Unlock Interview Pack — ₹19
+                      {shieldLoadingPack === 'interview' ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Lock className="w-3.5 h-3.5" />} Unlock Interview Pack — ₹19
                     </button>
                   </div>
                 </div>
@@ -847,10 +852,11 @@ export default function BenchmarkResultPage() {
                       <span className="text-2xl font-bold text-white">₹19</span>
                     </div>
                     <button
-                      onClick={() => { document.getElementById('shield-form')?.scrollIntoView({ behavior: 'smooth' }); }}
-                      className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-bold py-3 rounded-xl text-sm transition-all flex items-center justify-center gap-2"
+                      onClick={() => handleShieldPurchase('launch')}
+                      disabled={shieldLoadingPack === 'launch'}
+                      className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-bold py-3 rounded-xl text-sm transition-all flex items-center justify-center gap-2 disabled:opacity-60"
                     >
-                      <Lock className="w-3.5 h-3.5" /> Unlock Launch Pack — ₹19
+                      {shieldLoadingPack === 'launch' ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Lock className="w-3.5 h-3.5" />} Unlock Launch Pack — ₹19
                     </button>
                   </div>
                 </div>
@@ -901,10 +907,11 @@ export default function BenchmarkResultPage() {
                       <span className="text-2xl font-bold text-white">₹19</span>
                     </div>
                     <button
-                      onClick={() => { document.getElementById('shield-form')?.scrollIntoView({ behavior: 'smooth' }); }}
-                      className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-3 rounded-xl text-sm transition-all flex items-center justify-center gap-2"
+                      onClick={() => handleShieldPurchase('portfolio')}
+                      disabled={shieldLoadingPack === 'portfolio'}
+                      className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-3 rounded-xl text-sm transition-all flex items-center justify-center gap-2 disabled:opacity-60"
                     >
-                      <Lock className="w-3.5 h-3.5" /> Unlock Portfolio Pack — ₹19
+                      {shieldLoadingPack === 'portfolio' ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Lock className="w-3.5 h-3.5" />} Unlock Portfolio Pack — ₹19
                     </button>
                   </div>
                 </div>
@@ -912,18 +919,23 @@ export default function BenchmarkResultPage() {
               </div>
 
               {/* Unified purchase form */}
-              <div id="shield-form" className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 max-w-md mx-auto">
+              <div id="shield-form" className="bg-zinc-900 border-2 border-brand-500/50 shadow-[0_0_30px_rgba(59,130,246,0.15)] rounded-2xl p-6 max-w-md mx-auto relative mt-12">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-brand-500 text-white text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full">
+                  Best Value
+                </div>
                 <div className="text-center mb-5">
-                  <p className="text-white font-bold text-base">Unlock any pack above — ₹19</p>
-                  <p className="text-zinc-500 text-xs mt-1">All 3 packs are delivered instantly after payment</p>
+                  <p className="text-white font-bold text-lg mb-1">Get ALL 3 Packs — Just ₹29</p>
+                  <p className="text-zinc-400 text-sm">
+                    Why buy one for ₹19 when you can get all three (₹57 value) for just ₹29?
+                  </p>
                 </div>
                 <div className="space-y-3 mb-4">
                   <input type="email" placeholder="Your email address" value={shieldEmail} onChange={e => setShieldEmail(e.target.value)} className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white text-sm placeholder:text-zinc-500 focus:outline-none focus:border-blue-500 transition-colors" />
                   <input type="tel" placeholder="Phone number (for Razorpay)" value={shieldPhone} onChange={e => setShieldPhone(e.target.value)} className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white text-sm placeholder:text-zinc-500 focus:outline-none focus:border-blue-500 transition-colors" />
                 </div>
-                <button onClick={handleShieldPurchase} disabled={shieldLoading} className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold py-3.5 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-60">
-                  {shieldLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Lock className="w-4 h-4" />}
-                  {shieldLoading ? 'Processing...' : 'Unlock All 3 Packs — ₹19'}
+                <button onClick={() => handleShieldPurchase('bundle')} disabled={shieldLoadingPack === 'bundle'} className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold py-3.5 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-60 shadow-lg shadow-blue-500/25">
+                  {shieldLoadingPack === 'bundle' ? <Loader2 className="w-5 h-5 animate-spin" /> : <Lock className="w-4 h-4" />}
+                  Unlock All 3 Packs — ₹29
                 </button>
                 <div className="flex items-center justify-center gap-4 mt-3 text-xs text-zinc-600">
                   <span>Instant access</span><span>·</span><span>No signup</span><span>·</span><span>Secured by Razorpay</span>
