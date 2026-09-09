@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ArrowRight, Loader2, Search, CheckCircle2, Circle } from 'lucide-react';
+import { ArrowRight, Loader2, Search, CheckCircle2, Circle, ShieldCheck } from 'lucide-react';
 
 const GithubIcon = ({ className }: { className?: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none" className={className}>
@@ -128,10 +128,15 @@ export default function BenchmarkLandingPage() {
             </div>
             
             {error && (
-              <div className="absolute -bottom-10 left-0 w-full text-center text-red-400 text-sm">
+              <div className="absolute -bottom-8 left-0 w-full text-center text-red-400 text-sm font-medium">
                 {error}
               </div>
             )}
+            
+            <div className="absolute -bottom-10 left-0 w-full text-center flex items-center justify-center gap-1.5 text-zinc-500 text-sm">
+              <ShieldCheck className="w-4 h-4" />
+              Repository must be public
+            </div>
           </motion.form>
         ) : (
           <motion.div 

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  LayoutDashboard, Package, ShoppingCart, Clock, BarChart3, LogOut,
+  LayoutDashboard, Package, ShoppingCart, Clock, BarChart3, LogOut, ShieldCheck
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { NavProgress } from './components/nav-progress';
@@ -27,6 +27,7 @@ const NAV_SECTIONS: {
       { href: '/admin/projects',  label: 'Projects',   Icon: Package,      exact: false, badge: false },
       { href: '/admin/orders',    label: 'Orders',     Icon: ShoppingCart, exact: false, badge: false },
       { href: '/admin/preorders', label: 'Pre-orders', Icon: Clock,        exact: false, badge: true  },
+      { href: '/admin/benchmarks',label: 'Benchmarks', Icon: ShieldCheck,  exact: false, badge: false },
     ],
   },
 ];

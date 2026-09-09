@@ -126,32 +126,7 @@ export default function Home() {
                 </Link>
               </motion.div>
 
-              {/* Benchmark Lead Gen in Hero */}
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-                className="mt-10 relative group max-w-lg"
-              >
-                <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-500" />
-                <Link 
-                  href="/project-benchmark"
-                  className="relative flex items-center justify-between gap-4 p-1.5 rounded-2xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 transition-colors"
-                >
-                  <div className="flex items-center gap-4 pl-3 py-1">
-                    <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
-                      <ShieldCheck className="w-5 h-5 text-blue-400" />
-                    </div>
-                    <div>
-                      <div className="text-sm font-bold text-white mb-0.5">Check your project's potential</div>
-                      <div className="text-xs text-zinc-400">Run a free deterministic AI code audit</div>
-                    </div>
-                  </div>
-                  <div className="mr-1 px-5 py-2.5 bg-white text-black text-sm font-bold rounded-xl flex items-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.15)] group-hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] transition-all">
-                    Start <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </Link>
-              </motion.div>
+              {/* Benchmark Lead Gen moved to full width below */}
             </div>
 
             {/* Right: Pricing Hook Card */}
@@ -164,6 +139,38 @@ export default function Home() {
               <PricingHook />
             </motion.div>
           </div>
+
+          {/* Epic Benchmark Full-Width CTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="mt-20 w-full relative group"
+          >
+            <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 rounded-[2rem] blur-xl opacity-30 group-hover:opacity-60 transition duration-500" />
+            <Link 
+              href="/project-benchmark"
+              className="relative w-full flex flex-col md:flex-row items-center justify-between gap-6 p-8 md:p-10 rounded-[2rem] bg-zinc-950 border border-zinc-800 hover:border-zinc-700 transition-colors overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+              <div className="absolute bottom-0 left-0 -mb-10 -ml-10 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
+              
+              <div className="flex flex-col md:flex-row items-center md:items-start gap-6 relative z-10 text-center md:text-left">
+                <div className="shrink-0 w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center border border-white/10 shadow-[0_0_30px_rgba(59,130,246,0.2)]">
+                  <ShieldCheck className="w-10 h-10 text-blue-400" />
+                </div>
+                <div>
+                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-2 tracking-tight">Check your project's potential</h3>
+                  <p className="text-zinc-400 text-sm md:text-base max-w-2xl">
+                    Run a free deterministic AI code audit. Find out your exact maturity level and top gaps preventing you from reaching production grade before you submit.
+                  </p>
+                </div>
+              </div>
+              <div className="relative z-10 shrink-0 px-8 py-4 bg-white text-black font-bold text-lg rounded-2xl flex items-center gap-3 shadow-[0_0_30px_rgba(255,255,255,0.2)] group-hover:shadow-[0_0_50px_rgba(255,255,255,0.4)] transition-all hover:scale-105">
+                Analyze My Repository <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Link>
+          </motion.div>
 
           {/* College Trust Row */}
           <motion.div
