@@ -293,9 +293,9 @@ export default function BenchmarkResultPage() {
                   </div>
                 </div>
                 <div className="relative z-10 flex flex-col items-center md:items-end text-center md:text-right">
-                  <div className="text-zinc-500 text-sm mb-2">— OR — get a pre-built bundle in 5 minutes</div>
-                  <button onClick={() => window.open('https://submitkit.in/projects', '_blank')} className="bg-white text-black px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-zinc-200 transition-colors flex items-center gap-2">
-                    Browse Bundles <ArrowRight className="w-4 h-4" />
+                  <div className="text-zinc-500 text-sm mb-2">If you need a complete project for your academics, you can explore ours:</div>
+                  <button onClick={() => window.open('/#pricing', '_blank')} className="bg-zinc-800 text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-zinc-700 transition-colors flex items-center gap-2 border border-zinc-700">
+                    Browse Projects <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
               </div>
@@ -343,14 +343,7 @@ export default function BenchmarkResultPage() {
                   )}
                 </div>
                 
-                {imp.submitkitNote && (
-                  <div className="bg-gradient-to-r from-blue-500/10 to-transparent border-t border-blue-500/20 px-6 py-4 flex items-start gap-3">
-                    <span className="text-blue-400 mt-0.5">✨</span>
-                    <p className="text-sm text-blue-200/80 font-medium leading-relaxed">
-                      {imp.submitkitNote}
-                    </p>
-                  </div>
-                )}
+
               </div>
             ))}
             {data.top_improvements.length === 0 && (

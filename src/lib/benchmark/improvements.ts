@@ -50,7 +50,6 @@ export function generateImprovements(
         : 'No database detected. Adding PostgreSQL, MySQL, or MongoDB is essential to move beyond a static prototype.',
       freeTool: isNextJs || isExpress ? { name: 'Prisma ORM', url: 'https://www.prisma.io/', badge: 'npm i prisma', category: 'npm' } : { name: 'PostgreSQL', url: 'https://www.postgresql.org/', badge: 'Free Open Source', category: 'free_service' },
       estimatedHours: 8,
-      submitkitNote: 'SubmitKit bundles use Prisma with pre-seeded, optimized schemas — zero database setup required.'
     });
   }
 
@@ -68,7 +67,6 @@ export function generateImprovements(
         : 'No authentication system found. Implement JWT tokens or OAuth2 for secure user sessions.',
       freeTool: isNextJs ? { name: 'NextAuth.js', url: 'https://next-auth.js.org/', badge: 'npm i next-auth', category: 'npm' } : isExpress ? { name: 'Passport.js', url: 'https://www.passportjs.org/', badge: 'npm i passport', category: 'npm' } : { name: 'Supabase Auth', url: 'https://supabase.com/auth', badge: 'Free Tier', category: 'free_service' },
       estimatedHours: 12,
-      submitkitNote: 'All SubmitKit bundles include production-grade Authentication (NextAuth or JWT) pre-configured.'
     });
   }
 
@@ -82,7 +80,6 @@ export function generateImprovements(
         : 'Your ML model is isolated. Wrap it with FastAPI (`pip install fastapi uvicorn`) so frontends can consume predictions via HTTP.',
       freeTool: isFlask ? { name: 'Flask RESTful', url: 'https://flask-restful.readthedocs.io/', badge: 'pip install flask-restful', category: 'pip' } : { name: 'FastAPI', url: 'https://fastapi.tiangolo.com/', badge: 'pip install fastapi', category: 'pip' },
       estimatedHours: 6,
-      submitkitNote: 'Our AIML bundles include fully documented REST APIs ready for frontend consumption.'
     });
   }
 
@@ -100,7 +97,6 @@ export function generateImprovements(
         : 'No Dockerfile found. Containerizing ensures "it works on my machine" never happens again.',
       freeTool: { name: 'Docker Desktop', url: 'https://www.docker.com/', badge: 'Free Download', category: 'cli' },
       estimatedHours: 4,
-      submitkitNote: 'All bundles include optimized, multi-stage Dockerfiles ready for immediate deployment.'
     });
   }
 
@@ -112,7 +108,6 @@ export function generateImprovements(
       why: 'Create `.github/workflows/ci.yml` with steps to install dependencies, run linting, execute tests, and auto-deploy on push to main. This prevents broken code from reaching production.',
       freeTool: { name: 'GitHub Actions', url: 'https://github.com/features/actions', badge: 'Free for Public Repos', category: 'free_service' },
       estimatedHours: 6,
-      submitkitNote: 'Our bundles come with ready-to-use `.github/workflows/ci.yml` files.'
     });
   }
 
@@ -130,7 +125,6 @@ export function generateImprovements(
         : 'No test files detected. Add a testing framework (Jest, PyTest, JUnit) and aim for at least 60% coverage on critical paths.',
       freeTool: isNextJs || isReact ? { name: 'Jest', url: 'https://jestjs.io/', badge: 'npm i -D jest', category: 'npm' } : { name: 'PyTest', url: 'https://docs.pytest.org/', badge: 'pip install pytest', category: 'pip' },
       estimatedHours: 15,
-      submitkitNote: 'Premium bundles include test suites covering core logic and API endpoints.'
     });
   }
 

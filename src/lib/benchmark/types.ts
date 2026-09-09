@@ -28,7 +28,6 @@ export interface Improvement {
     category: 'npm' | 'pip' | 'free_service' | 'config' | 'cli';
   };
   estimatedHours?: number;
-  submitkitNote?: string;
 }
 
 export interface SecurityAudit {
