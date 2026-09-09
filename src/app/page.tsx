@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { CONSTANTS } from "@/lib/constants";
-import { ArrowRight, CheckCircle2, Zap, Download, ShieldCheck, Star, Sparkles } from "lucide-react";
+import { ArrowRight, CheckCircle2, Zap, Download, ShieldCheck, Star, Sparkles, MonitorPlay } from "lucide-react";
 import { PricingHook } from "@/components/ui/pricing-hook";
 import { CompareSlider } from "@/components/ui/compare-slider";
 import { FleetSection } from "@/components/ui/fleet-section";
@@ -257,6 +257,46 @@ export default function Home() {
               <p className="text-[10px] text-zinc-500 text-center mt-3 uppercase tracking-wider">No Signup Required</p>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════
+          DEMO VIDEO (How it works)
+      ═══════════════════════════════════════ */}
+      <section className="py-16 border-b border-white/5 relative bg-zinc-950/50">
+        <div className="container mx-auto px-4 z-10 relative">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-center mb-10"
+          >
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-bold mb-4 border border-blue-500/20 uppercase tracking-wider">
+              <MonitorPlay className="w-3.5 h-3.5" /> 2-Minute Setup
+            </div>
+            <h2 className="text-3xl md:text-4xl font-display font-medium mb-3 text-white">See it in action</h2>
+            <p className="text-zinc-500 max-w-lg mx-auto">From instant download to a fully working localhost project in under 2 minutes.</p>
+          </motion.div>
+          
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="max-w-4xl mx-auto rounded-2xl overflow-hidden border border-white/10 shadow-[0_0_50px_rgba(59,130,246,0.1)] bg-black relative ring-1 ring-white/5"
+          >
+            <video 
+              controls
+              playsInline
+              preload="metadata"
+              poster="/og-image.jpg"
+              className="w-full aspect-video object-contain"
+            >
+              <source src="/demo.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </motion.div>
         </div>
       </section>
 
