@@ -76,16 +76,18 @@ function SuccessContent() {
     if (!orderId) { setError('Missing order details. Contact team@submitkit.in.'); return; }
     setDownloading(true); setError(null);
     try {
-      const res = await fetch(`/api/downloads/${orderId}`, { redirect: 'manual' });
-      if (res.type === 'opaqueredirect' || res.status === 0 || (res.status >= 300 && res.status < 400)) {
-        window.location.href = `/api/downloads/${orderId}`; return;
-      }
+      const res = await fetch(`/api/downloads/${orderId}`);
       if (!res.ok) {
         let msg = 'Download failed. Try again or email team@submitkit.in.';
         try { const b = await res.json(); if (b?.error) msg = b.error; } catch { /**/ }
         setError(msg); setDownloading(false); return;
       }
-      window.location.href = `/api/downloads/${orderId}`;
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        setError('Missing download link from server.'); setDownloading(false);
+      }
     } catch { setError('Network error. Check connection and try again.'); setDownloading(false); }
   };
 

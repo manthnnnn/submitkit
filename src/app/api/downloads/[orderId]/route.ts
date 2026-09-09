@@ -83,7 +83,7 @@ export async function GET(
       }, { status: 503 });
     }
 
-    return NextResponse.redirect(downloadUrl);
+    return NextResponse.json({ url: downloadUrl });
 
   } catch (error: any) {
     console.error('[download] Unexpected error:', error);
