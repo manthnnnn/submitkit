@@ -284,7 +284,6 @@ function SuccessContent() {
                   controls
                   playsInline
                   preload="metadata"
-                  poster="/og-image.jpg"
                   className="w-full aspect-video object-contain"
                 >
                   <source src="/demo.mp4" type="video/mp4" />
