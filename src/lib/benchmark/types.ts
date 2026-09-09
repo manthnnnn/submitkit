@@ -23,6 +23,39 @@ export interface Improvement {
   why: string;
 }
 
+export interface SecurityAudit {
+  vulnerabilities: { issue: string; severity: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW'; fix: string }[];
+  overallRisk: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
+  hardcodedSecretsDetected: boolean;
+}
+
+export interface CodeQuality {
+  architecturePattern: string;
+  maintainabilityScore: number;
+  cyclomaticComplexityEst: 'LOW' | 'MEDIUM' | 'HIGH' | 'EXTREME';
+  duplicateCodeProbability: string;
+}
+
+export interface VivaDefenseQuestion {
+  question: string;
+  difficulty: 'EASY' | 'MEDIUM' | 'HARD' | 'PROFESSOR_LEVEL';
+  idealAnswer: string;
+  trapToAvoid: string;
+}
+
+export interface StartupPotential {
+  monetizable: boolean;
+  targetAudience: string;
+  mvpReadiness: number; // 0-100
+  pitchOneLiner: string;
+}
+
+export interface RealWorldComparison {
+  industryStandardScore: number; // 0-100
+  missingProductionFeatures: string[];
+  comparableRealProject: string;
+}
+
 export interface BenchmarkRun {
   id: string;
   repo_url: string;
@@ -42,6 +75,11 @@ export interface BenchmarkRun {
   top_improvements: Improvement[];
   strengths: string[];
   gaps: string[];
+  security_audit: SecurityAudit;
+  code_quality: CodeQuality;
+  viva_defense: VivaDefenseQuestion[];
+  startup_potential: StartupPotential;
+  real_world_comparison: RealWorldComparison;
   honest_verdict: string;
   is_excellent: boolean;
   version_number: number;

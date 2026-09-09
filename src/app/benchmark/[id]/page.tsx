@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ChevronRight, ExternalLink, AlertTriangle, CheckCircle2, XCircle, ArrowUpRight, TrendingUp, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Loader2, TrendingUp, AlertTriangle, ShieldCheck, CheckCircle2, Search, GraduationCap, Lock, Code2, Rocket, Building2, ExternalLink } from 'lucide-react';
 
 const GithubIcon = ({ className }: { className?: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none" className={className}>
@@ -180,6 +180,187 @@ export default function BenchmarkResultPage() {
             )}
           </div>
         </motion.div>
+
+        {/* ULTRA DEEP: Viva Defense Strategy */}
+        {data.viva_defense && data.viva_defense.length > 0 && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="mb-12">
+            <h3 className="text-2xl font-bold mb-6 flex items-center gap-3">
+              <GraduationCap className="w-6 h-6 text-emerald-500" />
+              Viva Defense Strategy
+            </h3>
+            <div className="bg-zinc-950 border border-emerald-500/20 rounded-3xl p-6 md:p-8 relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
+              <div className="grid grid-cols-1 gap-6 relative z-10">
+                {data.viva_defense.map((viva: any, idx: number) => (
+                  <div key={idx} className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5 md:p-6">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${
+                        viva.difficulty === 'PROFESSOR_LEVEL' ? 'bg-red-500/10 text-red-400 border-red-500/20' : 
+                        viva.difficulty === 'HARD' ? 'bg-orange-500/10 text-orange-400 border-orange-500/20' :
+                        'bg-blue-500/10 text-blue-400 border-blue-500/20'
+                      }`}>
+                        {viva.difficulty.replace('_', ' ')}
+                      </span>
+                    </div>
+                    <h4 className="text-lg font-bold text-white mb-4 flex gap-2">
+                      <span className="text-zinc-500">Q:</span> {viva.question}
+                    </h4>
+                    <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 mb-3">
+                      <div className="text-xs font-bold text-emerald-400 uppercase tracking-wider mb-1">Ideal Answer</div>
+                      <p className="text-emerald-100/90 text-sm">{viva.idealAnswer}</p>
+                    </div>
+                    <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4">
+                      <div className="text-xs font-bold text-red-400 uppercase tracking-wider mb-1">Trap to Avoid</div>
+                      <p className="text-red-200/80 text-sm">{viva.trapToAvoid}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {/* ULTRA DEEP: Security & Quality Grid */}
+        {(data.security_audit || data.code_quality) && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="mb-12 grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            {/* Security Audit */}
+            {data.security_audit && (
+              <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 md:p-8 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/5 rounded-full blur-2xl pointer-events-none" />
+                <h3 className="text-xl font-bold mb-6 flex items-center gap-3">
+                  <Lock className="w-5 h-5 text-red-400" />
+                  Security Vulnerability Scan
+                </h3>
+                <div className="mb-6 flex items-center justify-between p-4 rounded-xl bg-zinc-900 border border-zinc-800">
+                  <span className="text-zinc-400 text-sm">Overall Risk Level</span>
+                  <span className={`font-bold px-3 py-1 rounded-md text-sm ${
+                    data.security_audit.overallRisk === 'CRITICAL' ? 'bg-red-500/20 text-red-400' :
+                    data.security_audit.overallRisk === 'HIGH' ? 'bg-orange-500/20 text-orange-400' :
+                    'bg-green-500/20 text-green-400'
+                  }`}>
+                    {data.security_audit.overallRisk}
+                  </span>
+                </div>
+                <div className="space-y-3 relative z-10">
+                  {data.security_audit.vulnerabilities?.map((vuln: any, idx: number) => (
+                    <div key={idx} className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
+                      <div className="flex items-center gap-2 mb-2">
+                        <AlertTriangle className={`w-4 h-4 ${vuln.severity === 'CRITICAL' ? 'text-red-500' : 'text-orange-500'}`} />
+                        <span className="font-bold text-zinc-200 text-sm">{vuln.issue}</span>
+                      </div>
+                      <p className="text-zinc-500 text-xs pl-6">Fix: {vuln.fix}</p>
+                    </div>
+                  ))}
+                  {(!data.security_audit.vulnerabilities || data.security_audit.vulnerabilities.length === 0) && (
+                    <div className="text-center py-6 text-zinc-500 text-sm border border-dashed border-zinc-800 rounded-xl">
+                      No critical vulnerabilities detected based on static capabilities.
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Code Quality */}
+            {data.code_quality && (
+              <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 md:p-8 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-2xl pointer-events-none" />
+                <h3 className="text-xl font-bold mb-6 flex items-center gap-3">
+                  <Code2 className="w-5 h-5 text-blue-400" />
+                  Code Quality Metrics
+                </h3>
+                <div className="grid grid-cols-2 gap-4 relative z-10">
+                  <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
+                    <div className="text-zinc-500 text-xs font-semibold uppercase tracking-wider mb-1">Architecture</div>
+                    <div className="text-white text-sm font-bold truncate">{data.code_quality.architecturePattern}</div>
+                  </div>
+                  <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
+                    <div className="text-zinc-500 text-xs font-semibold uppercase tracking-wider mb-1">Maintainability</div>
+                    <div className="text-white text-lg font-bold">{data.code_quality.maintainabilityScore} <span className="text-zinc-500 text-xs">/ 100</span></div>
+                  </div>
+                  <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
+                    <div className="text-zinc-500 text-xs font-semibold uppercase tracking-wider mb-1">Complexity</div>
+                    <div className="text-white text-sm font-bold">{data.code_quality.cyclomaticComplexityEst}</div>
+                  </div>
+                  <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
+                    <div className="text-zinc-500 text-xs font-semibold uppercase tracking-wider mb-1">Duplicate Code</div>
+                    <div className="text-white text-sm font-bold">{data.code_quality.duplicateCodeProbability}</div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </motion.div>
+        )}
+
+        {/* ULTRA DEEP: Startup Potential */}
+        {(data.startup_potential || data.real_world_comparison) && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="mb-12">
+            <h3 className="text-2xl font-bold mb-6 flex items-center gap-3">
+              <Rocket className="w-6 h-6 text-purple-500" />
+              Startup Potential & Real-World Readiness
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              
+              {data.startup_potential && (
+                <div className="bg-gradient-to-br from-purple-500/10 to-transparent border border-purple-500/20 rounded-3xl p-6 md:p-8">
+                  <h4 className="text-sm font-bold text-purple-400 uppercase tracking-wider mb-6">Commercial Viability</h4>
+                  
+                  <div className="space-y-6">
+                    <div>
+                      <div className="text-zinc-400 text-sm mb-1">Investor Pitch (One-Liner)</div>
+                      <div className="text-white font-medium text-lg leading-snug">"{data.startup_potential.pitchOneLiner}"</div>
+                    </div>
+                    
+                    <div className="flex items-center gap-4">
+                      <div className={`px-4 py-2 rounded-lg font-bold text-sm ${data.startup_potential.monetizable ? 'bg-emerald-500/20 text-emerald-400' : 'bg-zinc-800 text-zinc-400'}`}>
+                        {data.startup_potential.monetizable ? '💰 Monetizable' : '🚫 Not Yet Monetizable'}
+                      </div>
+                      <div className="px-4 py-2 rounded-lg font-bold text-sm bg-zinc-800 text-zinc-300">
+                        Audience: {data.startup_potential.targetAudience}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {data.real_world_comparison && (
+                <div className="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 md:p-8">
+                  <h4 className="text-sm font-bold text-zinc-400 uppercase tracking-wider mb-6 flex items-center gap-2">
+                    <Building2 className="w-4 h-4" /> Industry Comparison
+                  </h4>
+                  
+                  <div className="flex items-end gap-3 mb-6">
+                    <div className="text-4xl font-display font-bold text-white">{data.score}</div>
+                    <div className="text-zinc-500 font-medium mb-1 flex items-center gap-2">
+                      vs <span className="text-white">{data.real_world_comparison.industryStandardScore}</span> (Industry Std)
+                    </div>
+                  </div>
+
+                  <div className="mb-4">
+                    <div className="text-sm font-medium text-zinc-400 mb-2">Comparable to:</div>
+                    <div className="text-white font-semibold bg-white/5 border border-white/10 px-4 py-2 rounded-lg inline-block">
+                      {data.real_world_comparison.comparableRealProject}
+                    </div>
+                  </div>
+
+                  {data.real_world_comparison.missingProductionFeatures?.length > 0 && (
+                    <div>
+                      <div className="text-sm font-medium text-zinc-400 mb-2">Missing Production Features:</div>
+                      <ul className="space-y-2">
+                        {data.real_world_comparison.missingProductionFeatures.map((feat: string, idx: number) => (
+                          <li key={idx} className="text-red-400 text-sm flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 rounded-full bg-red-500 inline-block" /> {feat}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
+
+            </div>
+          </motion.div>
+        )}
 
         {/* Detailed Breakdown */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
