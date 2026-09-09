@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Generate the personalized content
-  const shieldData = generateDefenseShield(purchase.benchmark_runs);
+  const shieldData = generateDefenseShield(purchase.benchmark_runs, purchase.pack_type || 'bundle');
 
   return NextResponse.json({ success: true, shieldData });
 }

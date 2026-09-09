@@ -18,6 +18,6 @@ export async function POST(req: NextRequest) {
 
   if (!purchase) return NextResponse.json({ purchased: false });
 
-  const shieldData = generateDefenseShield(purchase.benchmark_runs);
+  const shieldData = generateDefenseShield(purchase.benchmark_runs, purchase.pack_type || 'bundle');
   return NextResponse.json({ purchased: true, shieldData });
 }

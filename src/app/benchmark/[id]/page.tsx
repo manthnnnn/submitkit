@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { ArrowRight, Loader2, TrendingUp, AlertTriangle, ShieldCheck, CheckCircle2, Search, Lock, Code2, Rocket, Building2, ExternalLink, Share2, Copy, Trophy, BadgeCheck } from 'lucide-react';
+import { ArrowRight, Code2, Copy, FileText, Lock, MessageSquare, Rocket, Share2, Shield, ShieldAlert, ShieldCheck, Briefcase, Loader2, TrendingUp, AlertTriangle, CheckCircle2, Search, Building2, ExternalLink, Trophy, BadgeCheck } from 'lucide-react';
 
 const GithubIcon = ({ className }: { className?: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none" className={className}>
@@ -971,62 +971,110 @@ export default function BenchmarkResultPage() {
               </div>
 
               <div className="p-8 space-y-10">
-                {/* 10 Questions */}
-                <div>
-                  <h3 className="text-xl font-bold mb-6 flex items-center gap-2"><Code2 className="w-5 h-5 text-blue-400" /> 10 Brutal Technical Questions + Perfect Answers</h3>
-                  <div className="space-y-4">
-                    {shieldData.questions.map((q, idx) => (
-                      <div key={idx} className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
-                        <div className="p-5 border-b border-zinc-800/50">
-                          <div className="flex items-center gap-3 mb-3">
-                            <span className="w-8 h-8 rounded-full bg-blue-500/10 text-blue-400 flex items-center justify-center font-bold text-sm shrink-0">{idx + 1}</span>
-                            <span className={`text-[10px] font-bold px-2 py-1 rounded border ${q.difficulty === 'EXPERT' ? 'bg-red-500/10 text-red-400 border-red-500/20' : q.difficulty === 'HARD' ? 'bg-orange-500/10 text-orange-400 border-orange-500/20' : 'bg-zinc-800 text-zinc-400 border-zinc-700'}`}>{q.difficulty}</span>
+                
+                {/* 10 Questions (Interview & Bundle) */}
+                {(shieldData.packType === 'interview' || shieldData.packType === 'bundle') && (
+                  <div>
+                    <h3 className="text-xl font-bold mb-6 flex items-center gap-2"><Code2 className="w-5 h-5 text-blue-400" /> 10 Brutal Technical Questions + Perfect Answers</h3>
+                    <div className="space-y-4">
+                      {shieldData.questions.map((q, idx) => (
+                        <div key={idx} className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
+                          <div className="p-5 border-b border-zinc-800/50">
+                            <div className="flex items-center gap-3 mb-3">
+                              <span className="w-8 h-8 rounded-full bg-blue-500/10 text-blue-400 flex items-center justify-center font-bold text-sm shrink-0">{idx + 1}</span>
+                              <span className={`text-[10px] font-bold px-2 py-1 rounded border ${q.difficulty === 'EXPERT' ? 'bg-red-500/10 text-red-400 border-red-500/20' : q.difficulty === 'HARD' ? 'bg-orange-500/10 text-orange-400 border-orange-500/20' : 'bg-zinc-800 text-zinc-400 border-zinc-700'}`}>{q.difficulty}</span>
+                            </div>
+                            <p className="text-white font-semibold text-base leading-snug">{q.question}</p>
                           </div>
-                          <p className="text-white font-semibold text-base leading-snug">{q.question}</p>
+                          <div className="p-5 space-y-4">
+                            <div className="bg-orange-500/5 border border-orange-500/15 rounded-xl p-4">
+                              <div className="text-[10px] font-bold text-orange-400 uppercase tracking-wider mb-1">Why They Ask This (The Trap)</div>
+                              <p className="text-orange-200/80 text-sm leading-relaxed">{q.trapReason}</p>
+                            </div>
+                            <div className="bg-green-500/5 border border-green-500/15 rounded-xl p-4">
+                              <div className="text-[10px] font-bold text-green-400 uppercase tracking-wider mb-2">Perfect Answer</div>
+                              <p className="text-zinc-300 text-sm leading-relaxed">{q.perfectAnswer}</p>
+                            </div>
+                            {q.codeSnippet && (
+                              <pre className="bg-black border border-zinc-800 rounded-xl p-4 text-xs text-zinc-300 overflow-x-auto font-mono">{q.codeSnippet}</pre>
+                            )}
+                          </div>
                         </div>
-                        <div className="p-5 space-y-4">
-                          <div className="bg-orange-500/5 border border-orange-500/15 rounded-xl p-4">
-                            <div className="text-[10px] font-bold text-orange-400 uppercase tracking-wider mb-1">Why They Ask This (The Trap)</div>
-                            <p className="text-orange-200/80 text-sm leading-relaxed">{q.trapReason}</p>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Security Checklist (Launch & Bundle) */}
+                {(shieldData.packType === 'launch' || shieldData.packType === 'bundle') && (
+                  <div>
+                    <h3 className="text-xl font-bold mb-6 flex items-center gap-2"><ShieldCheck className="w-5 h-5 text-emerald-400" /> 15-Point Pre-Launch Security Checklist</h3>
+                    <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-3">
+                      {shieldData.securityChecklist.map((item, idx) => (
+                        <div key={idx} className="flex items-start gap-3 text-sm">
+                          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                          <span className="text-zinc-300">{item}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Architecture Tips (Launch & Bundle) */}
+                {(shieldData.packType === 'launch' || shieldData.packType === 'bundle') && (
+                  <div>
+                    <h3 className="text-xl font-bold mb-6 flex items-center gap-2"><Rocket className="w-5 h-5 text-purple-400" /> 5 Architecture Tips For Your Stack</h3>
+                    <div className="space-y-3">
+                      {shieldData.architectureTips.map((tip, idx) => (
+                        <div key={idx} className="bg-zinc-900 border border-purple-500/20 rounded-xl p-4 flex items-start gap-3">
+                          <span className="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 text-xs flex items-center justify-center font-bold shrink-0 mt-0.5">{idx + 1}</span>
+                          <p className="text-zinc-300 text-sm leading-relaxed">{tip}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Portfolio / Resume Data (Portfolio & Bundle) */}
+                {(shieldData.packType === 'portfolio' || shieldData.packType === 'bundle') && shieldData.portfolioData && (
+                  <div>
+                    <h3 className="text-xl font-bold mb-6 flex items-center gap-2"><Briefcase className="w-5 h-5 text-pink-400" /> Portfolio & Resume Assets</h3>
+                    <div className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
+                      <div className="p-6 border-b border-zinc-800/50">
+                        <div className="bg-purple-500/10 border border-purple-500/20 rounded-xl p-5 mb-6">
+                          <div className="text-xs font-bold text-purple-400 uppercase tracking-wider mb-2">Architecture Rating</div>
+                          <div className="text-3xl font-bold text-white mb-1">{shieldData.portfolioData.score}/100 <span className="text-lg font-normal text-zinc-400">— Production Grade</span></div>
+                          <div className="text-sm text-zinc-400">Verified by SubmitKit · {shieldData.portfolioData.classificationTitle}</div>
+                        </div>
+
+                        <div className="mb-8">
+                          <div className="flex items-center gap-2 mb-3">
+                            <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">What to say on LinkedIn</span>
+                            <button onClick={() => { navigator.clipboard.writeText(shieldData.portfolioData!.linkedinText); alert('Copied!'); }} className="text-blue-400 hover:text-blue-300 text-xs ml-auto flex items-center gap-1"><Copy className="w-3.5 h-3.5"/> Copy</button>
                           </div>
-                          <div className="bg-green-500/5 border border-green-500/15 rounded-xl p-4">
-                            <div className="text-[10px] font-bold text-green-400 uppercase tracking-wider mb-2">Perfect Answer</div>
-                            <p className="text-zinc-300 text-sm leading-relaxed">{q.perfectAnswer}</p>
+                          <div className="bg-black/50 border border-zinc-800 rounded-xl p-4">
+                            <p className="text-zinc-300 text-sm leading-relaxed">{shieldData.portfolioData.linkedinText}</p>
                           </div>
-                          {q.codeSnippet && (
-                            <pre className="bg-black border border-zinc-800 rounded-xl p-4 text-xs text-zinc-300 overflow-x-auto font-mono">{q.codeSnippet}</pre>
-                          )}
+                        </div>
+
+                        <div>
+                          <div className="flex items-center gap-2 mb-3">
+                            <span className="text-xs font-bold text-zinc-400 uppercase tracking-wider">5 Bullet Points for Resume</span>
+                            <button onClick={() => { navigator.clipboard.writeText(shieldData.portfolioData!.resumeBullets.map(b => '• ' + b).join('\\n')); alert('Copied!'); }} className="text-blue-400 hover:text-blue-300 text-xs ml-auto flex items-center gap-1"><Copy className="w-3.5 h-3.5"/> Copy</button>
+                          </div>
+                          <div className="bg-black/50 border border-zinc-800 rounded-xl p-5 space-y-4">
+                            {shieldData.portfolioData.resumeBullets.map((bullet, i) => (
+                              <div key={i} className="flex gap-3 text-sm">
+                                <span className="text-zinc-500">•</span>
+                                <span className="text-zinc-300 leading-relaxed">{bullet}</span>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       </div>
-                    ))}
+                    </div>
                   </div>
-                </div>
-
-                {/* Security Checklist */}
-                <div>
-                  <h3 className="text-xl font-bold mb-6 flex items-center gap-2"><ShieldCheck className="w-5 h-5 text-emerald-400" /> 15-Point Pre-Launch Security Checklist</h3>
-                  <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-3">
-                    {shieldData.securityChecklist.map((item, idx) => (
-                      <div key={idx} className="flex items-start gap-3 text-sm">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                        <span className="text-zinc-300">{item}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Architecture Tips */}
-                <div>
-                  <h3 className="text-xl font-bold mb-6 flex items-center gap-2"><Rocket className="w-5 h-5 text-purple-400" /> 5 Architecture Tips For Your Stack</h3>
-                  <div className="space-y-3">
-                    {shieldData.architectureTips.map((tip, idx) => (
-                      <div key={idx} className="bg-zinc-900 border border-purple-500/20 rounded-xl p-4 flex items-start gap-3">
-                        <span className="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 text-xs flex items-center justify-center font-bold shrink-0 mt-0.5">{idx + 1}</span>
-                        <p className="text-zinc-300 text-sm leading-relaxed">{tip}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                )}
 
                 <div className="text-center text-zinc-600 text-xs border-t border-zinc-800 pt-6">
                   Your purchase is saved. Return anytime and enter your email to re-access this content.
