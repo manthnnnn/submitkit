@@ -161,3 +161,36 @@ CREATE POLICY "Public can view benchmark runs"
 ON public.benchmark_runs FOR SELECT 
 USING (true);
 
+-- ==========================================
+-- DEFENSE SHIELD: ₹19 Micro-Transaction Schema
+-- ==========================================
+
+CREATE TABLE IF NOT EXISTS public.benchmark_purchases (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    benchmark_id UUID NOT NULL REFERENCES public.benchmark_runs(id) ON DELETE CASCADE,
+    customer_email VARCHAR(255) NOT NULL,
+    customer_phone VARCHAR(20) NOT NULL,
+    razorpay_order_id VARCHAR(100) UNIQUE NOT NULL,
+    razorpay_payment_id VARCHAR(100) UNIQUE,
+    amount INTEGER NOT NULL DEFAULT 19,
+    status VARCHAR(20) DEFAULT 'PENDING',  -- PENDING | PAID | FAILED
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_benchmark_purchases_benchmark 
+ON public.benchmark_purchases (benchmark_id);
+
+CREATE INDEX IF NOT EXISTS idx_benchmark_purchases_email 
+ON public.benchmark_purchases (customer_email);
+
+ALTER TABLE public.benchmark_purchases ENABLE ROW LEVEL SECURITY;
+
+-- Allow public inserts for checkout flow
+CREATE POLICY "Public can insert pending purchases"
+ON public.benchmark_purchases FOR INSERT
+WITH CHECK (status = 'PENDING');
+
+-- Allow public reads so users can check re-access by email
+CREATE POLICY "Public can read own purchases"
+ON public.benchmark_purchases FOR SELECT
+USING (true);

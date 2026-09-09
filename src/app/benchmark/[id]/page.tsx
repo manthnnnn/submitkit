@@ -12,6 +12,7 @@ const GithubIcon = ({ className }: { className?: string }) => (
 );
 import { Logo } from '@/components/ui/logo';
 import { BenchmarkRun, Capability, Improvement, DimensionScore } from '@/lib/benchmark/types';
+import { DefenseShieldPack } from '@/lib/defense-shield';
 
 export default function BenchmarkResultPage() {
   const { id } = useParams();
@@ -24,6 +25,14 @@ export default function BenchmarkResultPage() {
   const [totalScans, setTotalScans] = useState<number>(0);
   const [copied, setCopied] = useState('');
   const [showBadge, setShowBadge] = useState(false);
+  // Defense Shield state
+  const [shieldUnlocked, setShieldUnlocked] = useState(false);
+  const [shieldData, setShieldData] = useState<DefenseShieldPack | null>(null);
+  const [shieldEmail, setShieldEmail] = useState('');
+  const [shieldPhone, setShieldPhone] = useState('');
+  const [shieldLoading, setShieldLoading] = useState(false);
+  const [shieldCheckEmail, setShieldCheckEmail] = useState('');
+  const [shieldCheckLoading, setShieldCheckLoading] = useState(false);
 
   useEffect(() => {
     const fetchBenchmark = async () => {
@@ -100,6 +109,94 @@ export default function BenchmarkResultPage() {
 
   const shareOnLinkedIn = () => {
     window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(benchmarkUrl)}`, '_blank');
+  };
+
+  const handleShieldPurchase = async () => {
+    if (!shieldEmail || !shieldPhone) return alert('Please enter your email and phone number.');
+    setShieldLoading(true);
+    try {
+      // Step 1: Create order
+      const createRes = await fetch('/api/defense-shield/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ benchmarkId: data!.id, email: shieldEmail, phone: shieldPhone }),
+      });
+      const createData = await createRes.json();
+
+      if (createData.alreadyPurchased) {
+        // Already paid — regenerate content
+        const checkRes = await fetch('/api/defense-shield/check', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ benchmarkId: data!.id, email: shieldEmail }),
+        });
+        const checkData = await checkRes.json();
+        if (checkData.purchased) { setShieldData(checkData.shieldData); setShieldUnlocked(true); }
+        setShieldLoading(false);
+        return;
+      }
+
+      if (!createData.razorpayOrderId) throw new Error(createData.error || 'Failed to create order');
+
+      // Step 2: Load Razorpay and open checkout
+      const loadScript = () => new Promise<void>((resolve) => {
+        if ((window as any).Razorpay) { resolve(); return; }
+        const s = document.createElement('script');
+        s.src = 'https://checkout.razorpay.com/v1/checkout.js';
+        s.onload = () => resolve();
+        document.body.appendChild(s);
+      });
+      await loadScript();
+
+      const rzp = new (window as any).Razorpay({
+        key: createData.key,
+        amount: createData.amount,
+        currency: createData.currency,
+        name: 'SubmitKit',
+        description: 'Defense Shield — 10 Brutal Interview Questions',
+        order_id: createData.razorpayOrderId,
+        prefill: { email: shieldEmail, contact: shieldPhone },
+        theme: { color: '#3b82f6' },
+        handler: async (response: any) => {
+          // Step 3: Verify payment and get content
+          const verifyRes = await fetch('/api/defense-shield/verify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            }),
+          });
+          const verifyData = await verifyRes.json();
+          if (verifyData.success) {
+            setShieldData(verifyData.shieldData);
+            setShieldUnlocked(true);
+            setTimeout(() => document.getElementById('defense-shield-content')?.scrollIntoView({ behavior: 'smooth' }), 300);
+          }
+          setShieldLoading(false);
+        },
+        modal: { ondismiss: () => setShieldLoading(false) },
+      });
+      rzp.open();
+    } catch (err: any) {
+      alert(err.message || 'Something went wrong. Please try again.');
+      setShieldLoading(false);
+    }
+  };
+
+  const handleShieldCheck = async () => {
+    if (!shieldCheckEmail) return;
+    setShieldCheckLoading(true);
+    const res = await fetch('/api/defense-shield/check', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ benchmarkId: data!.id, email: shieldCheckEmail }),
+    });
+    const checkData = await res.json();
+    if (checkData.purchased) { setShieldData(checkData.shieldData); setShieldUnlocked(true); }
+    else alert('No purchase found for this email. Please complete the payment below.');
+    setShieldCheckLoading(false);
   };
 
   return (
@@ -614,7 +711,216 @@ export default function BenchmarkResultPage() {
 
         </div>
 
+        {/* ═══════════════════════════════════════════════════════ */}
+        {/* DEFENSE SHIELD — ₹19 Unlock Section                    */}
+        {/* ═══════════════════════════════════════════════════════ */}
+        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} className="mt-16">
+
+          {!shieldUnlocked ? (
+            /* ── LOCKED STATE ── */
+            <div className="relative rounded-3xl overflow-hidden border border-red-500/30 bg-zinc-950">
+              {/* Glow */}
+              <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 via-transparent to-orange-500/5 pointer-events-none" />
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-32 bg-red-500/10 blur-3xl pointer-events-none" />
+
+              {/* Header */}
+              <div className="relative z-10 p-8 border-b border-red-500/20">
+                <div className="flex items-start gap-4">
+                  <div className="w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center shrink-0">
+                    <Lock className="w-7 h-7 text-red-400" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-3 mb-2 flex-wrap">
+                      <span className="px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-full text-red-400 text-xs font-bold uppercase tracking-wider animate-pulse">
+                        Warning Detected
+                      </span>
+                      <span className="px-3 py-1 bg-zinc-800 rounded-full text-zinc-400 text-xs font-medium">
+                        {data.classification_title}
+                      </span>
+                    </div>
+                    <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
+                      Defense Shield: 10 Brutal Questions Found
+                    </h2>
+                    <p className="text-zinc-400 text-base leading-relaxed max-w-2xl">
+                      Our deep scan of your <span className="text-white font-semibold">{data.repo_name}</span> architecture identified the exact technical questions an interviewer or examiner will use to test whether you truly understand this codebase.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Blurred preview */}
+              <div className="relative z-10 p-8 pb-0">
+                <div className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-4">Preview (Locked)</div>
+                <div className="grid gap-3 mb-2">
+                  {[
+                    { q: 'What is the difference between getServerSideProps and React Server Components?', d: 'EXPERT' },
+                    { q: 'How does your authentication handle JWT token rotation and revocation?', d: 'HARD' },
+                    { q: 'Explain the N+1 query problem in your current database layer.', d: 'HARD' },
+                  ].map((item, i) => (
+                    <div key={i} className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 blur-sm select-none pointer-events-none">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-xs flex items-center justify-center font-bold">{i + 1}</span>
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${item.d === 'EXPERT' ? 'bg-red-500/10 text-red-400 border-red-500/20' : 'bg-orange-500/10 text-orange-400 border-orange-500/20'}`}>{item.d}</span>
+                      </div>
+                      <p className="text-sm text-zinc-200 font-medium">{item.q}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-zinc-950 to-transparent pointer-events-none" />
+              </div>
+
+              {/* Purchase CTA */}
+              <div className="relative z-10 p-8">
+                <div className="bg-zinc-900 border border-zinc-700 rounded-2xl p-6 max-w-xl mx-auto">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-white font-bold text-lg">Unlock Your Defense Shield</span>
+                    <div className="text-right">
+                      <span className="text-zinc-500 line-through text-sm mr-2">₹199</span>
+                      <span className="text-2xl font-bold text-white">₹19</span>
+                    </div>
+                  </div>
+                  <p className="text-zinc-400 text-sm mb-5">Get all 10 brutal questions, perfect answers, a 15-point security checklist, and architecture tips — personalized for your exact stack.</p>
+
+                  <div className="space-y-3 mb-4">
+                    <input
+                      type="email"
+                      placeholder="Your email address"
+                      value={shieldEmail}
+                      onChange={e => setShieldEmail(e.target.value)}
+                      className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white text-sm placeholder:text-zinc-500 focus:outline-none focus:border-blue-500 transition-colors"
+                    />
+                    <input
+                      type="tel"
+                      placeholder="Your phone number (for Razorpay)"
+                      value={shieldPhone}
+                      onChange={e => setShieldPhone(e.target.value)}
+                      className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white text-sm placeholder:text-zinc-500 focus:outline-none focus:border-blue-500 transition-colors"
+                    />
+                  </div>
+
+                  <button
+                    onClick={handleShieldPurchase}
+                    disabled={shieldLoading}
+                    className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold py-3.5 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-60"
+                  >
+                    {shieldLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Lock className="w-4 h-4" />}
+                    {shieldLoading ? 'Processing...' : 'Unlock Defense Shield — ₹19'}
+                  </button>
+
+                  <div className="flex items-center justify-center gap-4 mt-4 text-xs text-zinc-600">
+                    <span>Instant access</span>
+                    <span>·</span>
+                    <span>No signup</span>
+                    <span>·</span>
+                    <span>Secured by Razorpay</span>
+                  </div>
+                </div>
+
+                {/* Re-access section */}
+                <div className="mt-6 text-center">
+                  <p className="text-zinc-600 text-sm mb-3">Already purchased? Re-access your content:</p>
+                  <div className="flex items-center gap-2 max-w-sm mx-auto">
+                    <input
+                      type="email"
+                      placeholder="Enter your email"
+                      value={shieldCheckEmail}
+                      onChange={e => setShieldCheckEmail(e.target.value)}
+                      className="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white text-sm placeholder:text-zinc-500 focus:outline-none focus:border-blue-500"
+                    />
+                    <button onClick={handleShieldCheck} disabled={shieldCheckLoading} className="bg-zinc-800 hover:bg-zinc-700 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-colors flex items-center gap-1.5">
+                      {shieldCheckLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Access'}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          ) : shieldData && (
+            /* ── UNLOCKED STATE ── */
+            <div id="defense-shield-content" className="rounded-3xl overflow-hidden border border-blue-500/30 bg-zinc-950">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none" />
+
+              {/* Header */}
+              <div className="p-8 border-b border-blue-500/20 bg-gradient-to-r from-blue-500/10 to-transparent">
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-2xl bg-blue-500/20 border border-blue-500/30 flex items-center justify-center shrink-0">
+                    <ShieldCheck className="w-7 h-7 text-blue-400" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-bold text-white mb-1">Defense Shield Unlocked</h2>
+                    <p className="text-blue-300/80 text-sm">Personalized for <span className="font-semibold text-white">{shieldData.projectName}</span> · Stack: {shieldData.detectedStack.join(', ')}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-8 space-y-10">
+                {/* 10 Questions */}
+                <div>
+                  <h3 className="text-xl font-bold mb-6 flex items-center gap-2"><Code2 className="w-5 h-5 text-blue-400" /> 10 Brutal Technical Questions + Perfect Answers</h3>
+                  <div className="space-y-4">
+                    {shieldData.questions.map((q, idx) => (
+                      <div key={idx} className="bg-zinc-900 border border-zinc-800 rounded-2xl overflow-hidden">
+                        <div className="p-5 border-b border-zinc-800/50">
+                          <div className="flex items-center gap-3 mb-3">
+                            <span className="w-8 h-8 rounded-full bg-blue-500/10 text-blue-400 flex items-center justify-center font-bold text-sm shrink-0">{idx + 1}</span>
+                            <span className={`text-[10px] font-bold px-2 py-1 rounded border ${q.difficulty === 'EXPERT' ? 'bg-red-500/10 text-red-400 border-red-500/20' : q.difficulty === 'HARD' ? 'bg-orange-500/10 text-orange-400 border-orange-500/20' : 'bg-zinc-800 text-zinc-400 border-zinc-700'}`}>{q.difficulty}</span>
+                          </div>
+                          <p className="text-white font-semibold text-base leading-snug">{q.question}</p>
+                        </div>
+                        <div className="p-5 space-y-4">
+                          <div className="bg-orange-500/5 border border-orange-500/15 rounded-xl p-4">
+                            <div className="text-[10px] font-bold text-orange-400 uppercase tracking-wider mb-1">Why They Ask This (The Trap)</div>
+                            <p className="text-orange-200/80 text-sm leading-relaxed">{q.trapReason}</p>
+                          </div>
+                          <div className="bg-green-500/5 border border-green-500/15 rounded-xl p-4">
+                            <div className="text-[10px] font-bold text-green-400 uppercase tracking-wider mb-2">Perfect Answer</div>
+                            <p className="text-zinc-300 text-sm leading-relaxed">{q.perfectAnswer}</p>
+                          </div>
+                          {q.codeSnippet && (
+                            <pre className="bg-black border border-zinc-800 rounded-xl p-4 text-xs text-zinc-300 overflow-x-auto font-mono">{q.codeSnippet}</pre>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Security Checklist */}
+                <div>
+                  <h3 className="text-xl font-bold mb-6 flex items-center gap-2"><ShieldCheck className="w-5 h-5 text-emerald-400" /> 15-Point Pre-Launch Security Checklist</h3>
+                  <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 space-y-3">
+                    {shieldData.securityChecklist.map((item, idx) => (
+                      <div key={idx} className="flex items-start gap-3 text-sm">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                        <span className="text-zinc-300">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Architecture Tips */}
+                <div>
+                  <h3 className="text-xl font-bold mb-6 flex items-center gap-2"><Rocket className="w-5 h-5 text-purple-400" /> 5 Architecture Tips For Your Stack</h3>
+                  <div className="space-y-3">
+                    {shieldData.architectureTips.map((tip, idx) => (
+                      <div key={idx} className="bg-zinc-900 border border-purple-500/20 rounded-xl p-4 flex items-start gap-3">
+                        <span className="w-6 h-6 rounded-full bg-purple-500/20 text-purple-400 text-xs flex items-center justify-center font-bold shrink-0 mt-0.5">{idx + 1}</span>
+                        <p className="text-zinc-300 text-sm leading-relaxed">{tip}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="text-center text-zinc-600 text-xs border-t border-zinc-800 pt-6">
+                  Your purchase is saved. Return anytime and enter your email to re-access this content.
+                </div>
+              </div>
+            </div>
+          )}
+        </motion.div>
+
       </main>
     </div>
   );
 }
+
