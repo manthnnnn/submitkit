@@ -131,16 +131,25 @@ export default function Home() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.4 }}
-                className="mt-8 p-4 rounded-2xl bg-blue-500/5 border border-blue-500/20 flex items-center justify-between gap-4 max-w-sm hover:bg-blue-500/10 transition-colors"
+                className="mt-10 relative group max-w-lg"
               >
-                <div>
-                  <div className="text-sm font-bold text-blue-400 flex items-center gap-1.5">
-                    <ShieldCheck className="w-4 h-4" /> Free AI Audit
+                <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl blur opacity-30 group-hover:opacity-60 transition duration-500" />
+                <Link 
+                  href="/project-benchmark"
+                  className="relative flex items-center justify-between gap-4 p-1.5 rounded-2xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 transition-colors"
+                >
+                  <div className="flex items-center gap-4 pl-3 py-1">
+                    <div className="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
+                      <ShieldCheck className="w-5 h-5 text-blue-400" />
+                    </div>
+                    <div>
+                      <div className="text-sm font-bold text-white mb-0.5">Check your project's potential</div>
+                      <div className="text-xs text-zinc-400">Run a free deterministic AI code audit</div>
+                    </div>
                   </div>
-                  <div className="text-xs text-zinc-400 mt-0.5">Will your project pass the Viva?</div>
-                </div>
-                <Link href="/project-benchmark" className="shrink-0 text-xs bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl font-bold transition-all shadow-[0_0_15px_rgba(37,99,235,0.3)]">
-                  Check Code
+                  <div className="mr-1 px-5 py-2.5 bg-white text-black text-sm font-bold rounded-xl flex items-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.15)] group-hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] transition-all">
+                    Start <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </div>
                 </Link>
               </motion.div>
             </div>
