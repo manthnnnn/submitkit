@@ -166,7 +166,7 @@ export default function BenchmarkResultPage() {
             className="lg:col-span-2 bg-zinc-900 border border-zinc-800 rounded-2xl p-8 flex flex-col justify-center"
           >
             <h3 className="text-lg font-semibold text-zinc-400 mb-4 uppercase tracking-wider text-sm">The Honest Verdict</h3>
-            <p className="text-2xl leading-relaxed font-light text-zinc-100">
+            <p className="text-2xl leading-relaxed font-light text-zinc-100 whitespace-pre-wrap">
               {data.honest_verdict}
             </p>
             

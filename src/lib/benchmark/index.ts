@@ -5,19 +5,33 @@ import { generateImprovements } from './improvements';
 import { BenchmarkRun } from './types';
 
 // Deterministic fallback for LLM verdict
-function generateDeterministicVerdict(score: number, level: number, categoryTitle: string, topImprovement?: string): string {
-  let verdict = `This project has been benchmarked as a ${categoryTitle} and achieved a Level ${level} maturity rating (Score: ${score}/100). `;
+function generateDeterministicVerdict(
+  score: number, 
+  level: number, 
+  categoryTitle: string, 
+  topImprovement?: string,
+  repoName?: string,
+  projectDescription?: string
+): string {
+  const formattedName = repoName ? repoName.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : 'Your project';
+  
+  let verdict = `Woah, ${formattedName} seems to be a very solid concept! `;
+  if (projectDescription) {
+    verdict += `It looks like it's designed for ${projectDescription.toLowerCase()}. This is a highly scalable and excellent idea. `;
+  }
+
+  verdict += `\n\nIt has been benchmarked as a ${categoryTitle} and achieved a Level ${level} maturity rating (Score: ${score}/100). `;
   
   if (level >= 5) {
     verdict += `The codebase demonstrates exceptional structure, production readiness, and adherence to industry best practices. `;
   } else if (level >= 3) {
-    verdict += `The foundation is solid and functional, but it lacks some critical production-grade features. `;
+    verdict += `The foundation is solid and functional, though it lacks some critical production-grade features to scale to millions of users. `;
   } else {
-    verdict += `The project is currently in a prototype phase and requires significant architectural improvements. `;
+    verdict += `The project is currently in a prototype phase. It's a great start, but requires architectural improvements before real-world deployment. `;
   }
 
   if (topImprovement) {
-    verdict += `To immediately elevate this project's standing, we highly recommend focusing on: ${topImprovement}.`;
+    verdict += `\n\nTo elevate this project's standing immediately, we recommend focusing on: ${topImprovement}.`;
   }
 
   return verdict;
@@ -217,7 +231,9 @@ export async function runBenchmark(repoUrl: string): Promise<Omit<BenchmarkRun, 
     scoring.score, 
     scoring.maturityLevel, 
     classification.title, 
-    improvements[0]?.title
+    improvements[0]?.title,
+    analyzerData.repoName,
+    analyzerData.rawManifest?.projectDescription
   );
 
   const deepAnalysis = generateDeepAnalysis(classification.category, scoring.score, analyzerData);

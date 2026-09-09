@@ -5,6 +5,8 @@ import * as path from 'path';
  * Parsed details from package.json, requirements.txt, etc.
  */
 export interface ManifestDetails {
+  projectName?: string;
+  projectDescription?: string;
   dependencies: string[];
   devDependencies: string[];
   scripts: Record<string, string>;
@@ -27,6 +29,9 @@ export function parseManifests(tmpDirPath: string): ManifestDetails {
   if (fs.existsSync(packageJsonPath)) {
     try {
       const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+      if (packageJson.name) details.projectName = packageJson.name;
+      if (packageJson.description) details.projectDescription = packageJson.description;
+      
       if (packageJson.dependencies) {
         details.dependencies.push(...Object.keys(packageJson.dependencies));
       }
