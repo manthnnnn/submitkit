@@ -717,117 +717,222 @@ export default function BenchmarkResultPage() {
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} className="mt-16">
 
           {!shieldUnlocked ? (
-            /* ── LOCKED STATE ── */
-            <div className="relative rounded-3xl overflow-hidden border border-red-500/30 bg-zinc-950">
-              {/* Glow */}
-              <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 via-transparent to-orange-500/5 pointer-events-none" />
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-32 bg-red-500/10 blur-3xl pointer-events-none" />
+            /* ── 3 LOCKED PRODUCT CARDS ── */
+            <div className="space-y-8">
 
-              {/* Header */}
-              <div className="relative z-10 p-8 border-b border-red-500/20">
-                <div className="flex items-start gap-4">
-                  <div className="w-14 h-14 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center justify-center shrink-0">
-                    <Lock className="w-7 h-7 text-red-400" />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-3 mb-2 flex-wrap">
-                      <span className="px-3 py-1 bg-red-500/10 border border-red-500/20 rounded-full text-red-400 text-xs font-bold uppercase tracking-wider animate-pulse">
-                        Warning Detected
-                      </span>
-                      <span className="px-3 py-1 bg-zinc-800 rounded-full text-zinc-400 text-xs font-medium">
-                        {data.classification_title}
-                      </span>
-                    </div>
-                    <h2 className="text-2xl md:text-3xl font-bold text-white mb-2">
-                      Defense Shield: 10 Brutal Questions Found
-                    </h2>
-                    <p className="text-zinc-400 text-base leading-relaxed max-w-2xl">
-                      Our deep scan of your <span className="text-white font-semibold">{data.repo_name}</span> architecture identified the exact technical questions an interviewer or examiner will use to test whether you truly understand this codebase.
+              {/* Section Header */}
+              <div className="text-center">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-red-500/10 border border-red-500/20 rounded-full text-red-400 text-xs font-bold uppercase tracking-wider mb-4 animate-pulse">
+                  ⚠ 3 Personalized Packs Detected for {data.repo_name}
+                </div>
+                <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
+                  What do you plan to do with this project?
+                </h2>
+                <p className="text-zinc-400 text-base max-w-xl mx-auto">
+                  Pick your goal. We have built a specific ₹19 pack for each one — personalized to your <span className="text-white font-semibold">{data.classification_title}</span> architecture.
+                </p>
+              </div>
+
+              {/* 3 Cards Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+
+                {/* Card 1: Interview Shield */}
+                <div className="relative rounded-2xl border border-orange-500/30 bg-zinc-950 overflow-hidden flex flex-col">
+                  <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-orange-500 to-red-500" />
+                  <div className="p-6 flex-1">
+                    <div className="text-3xl mb-3">🎯</div>
+                    <div className="text-[10px] font-bold text-orange-400 uppercase tracking-wider mb-1">For Interviews & Placements</div>
+                    <h3 className="text-lg font-bold text-white mb-2">Interview Defense Pack</h3>
+                    <p className="text-zinc-400 text-sm mb-5 leading-relaxed">
+                      Going for campus placements or a job interview? These are the exact questions they will ask to prove you didn't copy this project.
                     </p>
-                  </div>
-                </div>
-              </div>
 
-              {/* Blurred preview */}
-              <div className="relative z-10 p-8 pb-0">
-                <div className="text-xs font-bold text-zinc-500 uppercase tracking-wider mb-4">Preview (Locked)</div>
-                <div className="grid gap-3 mb-2">
-                  {[
-                    { q: 'What is the difference between getServerSideProps and React Server Components?', d: 'EXPERT' },
-                    { q: 'How does your authentication handle JWT token rotation and revocation?', d: 'HARD' },
-                    { q: 'Explain the N+1 query problem in your current database layer.', d: 'HARD' },
-                  ].map((item, i) => (
-                    <div key={i} className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 blur-sm select-none pointer-events-none">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="w-6 h-6 rounded-full bg-blue-500/20 text-blue-400 text-xs flex items-center justify-center font-bold">{i + 1}</span>
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded border ${item.d === 'EXPERT' ? 'bg-red-500/10 text-red-400 border-red-500/20' : 'bg-orange-500/10 text-orange-400 border-orange-500/20'}`}>{item.d}</span>
+                    {/* Readable preview that cuts off */}
+                    <div className="relative rounded-xl border border-zinc-800 overflow-hidden mb-5">
+                      <div className="bg-zinc-900/80 p-4 space-y-3">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2"><span className="w-5 h-5 rounded-full bg-orange-500/20 text-orange-400 text-[10px] flex items-center justify-center font-bold">1</span><span className="text-[10px] font-bold text-red-400 bg-red-500/10 px-1.5 py-0.5 rounded border border-red-500/20">EXPERT</span></div>
+                          <p className="text-zinc-200 text-xs font-medium">Explain exactly how your project handles concurrent API requests without crashing. Walk me through the...</p>
+                        </div>
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2"><span className="w-5 h-5 rounded-full bg-orange-500/20 text-orange-400 text-[10px] flex items-center justify-center font-bold">2</span><span className="text-[10px] font-bold text-orange-400 bg-orange-500/10 px-1.5 py-0.5 rounded border border-orange-500/20">HARD</span></div>
+                          <p className="text-zinc-200 text-xs font-medium">Your README claims you have authentication. Show me the token expiry logic and what happens when a JWT is...</p>
+                        </div>
+                        <div className="space-y-1 opacity-60">
+                          <div className="flex items-center gap-2"><span className="w-5 h-5 rounded-full bg-orange-500/20 text-orange-400 text-[10px] flex items-center justify-center font-bold">3</span><span className="text-[10px] font-bold text-orange-400 bg-orange-500/10 px-1.5 py-0.5 rounded border border-orange-500/20">HARD</span></div>
+                          <p className="text-zinc-200 text-xs font-medium">If I query your database with 1,000 users simultaneously, what breaks first and...</p>
+                        </div>
                       </div>
-                      <p className="text-sm text-zinc-200 font-medium">{item.q}</p>
+                      {/* Gradient cutoff */}
+                      <div className="absolute bottom-0 inset-x-0 h-16 bg-gradient-to-t from-zinc-950 via-zinc-950/80 to-transparent" />
+                      <div className="absolute bottom-2 inset-x-0 flex justify-center">
+                        <span className="text-xs text-zinc-500 font-medium">🔒 7 more questions hidden</span>
+                      </div>
                     </div>
-                  ))}
-                </div>
-                <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-zinc-950 to-transparent pointer-events-none" />
-              </div>
 
-              {/* Purchase CTA */}
-              <div className="relative z-10 p-8">
-                <div className="bg-zinc-900 border border-zinc-700 rounded-2xl p-6 max-w-xl mx-auto">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-white font-bold text-lg">Unlock Your Defense Shield</span>
-                    <div className="text-right">
-                      <span className="text-zinc-500 line-through text-sm mr-2">₹199</span>
+                    <div className="text-xs text-zinc-500 space-y-1 mb-5">
+                      <div className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-orange-400" /><span>10 brutal Q&A, personalized to your stack</span></div>
+                      <div className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-orange-400" /><span>Perfect word-for-word answers to memorize</span></div>
+                      <div className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-orange-400" /><span>Why each trap question is asked (context)</span></div>
+                    </div>
+                  </div>
+                  <div className="p-5 border-t border-zinc-800">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-zinc-400 text-sm line-through">₹199</span>
                       <span className="text-2xl font-bold text-white">₹19</span>
                     </div>
-                  </div>
-                  <p className="text-zinc-400 text-sm mb-5">Get all 10 brutal questions, perfect answers, a 15-point security checklist, and architecture tips — personalized for your exact stack.</p>
-
-                  <div className="space-y-3 mb-4">
-                    <input
-                      type="email"
-                      placeholder="Your email address"
-                      value={shieldEmail}
-                      onChange={e => setShieldEmail(e.target.value)}
-                      className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white text-sm placeholder:text-zinc-500 focus:outline-none focus:border-blue-500 transition-colors"
-                    />
-                    <input
-                      type="tel"
-                      placeholder="Your phone number (for Razorpay)"
-                      value={shieldPhone}
-                      onChange={e => setShieldPhone(e.target.value)}
-                      className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white text-sm placeholder:text-zinc-500 focus:outline-none focus:border-blue-500 transition-colors"
-                    />
-                  </div>
-
-                  <button
-                    onClick={handleShieldPurchase}
-                    disabled={shieldLoading}
-                    className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold py-3.5 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-60"
-                  >
-                    {shieldLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Lock className="w-4 h-4" />}
-                    {shieldLoading ? 'Processing...' : 'Unlock Defense Shield — ₹19'}
-                  </button>
-
-                  <div className="flex items-center justify-center gap-4 mt-4 text-xs text-zinc-600">
-                    <span>Instant access</span>
-                    <span>·</span>
-                    <span>No signup</span>
-                    <span>·</span>
-                    <span>Secured by Razorpay</span>
+                    <button
+                      onClick={() => { document.getElementById('shield-form')?.scrollIntoView({ behavior: 'smooth' }); }}
+                      className="w-full bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-bold py-3 rounded-xl text-sm transition-all flex items-center justify-center gap-2"
+                    >
+                      <Lock className="w-3.5 h-3.5" /> Unlock Interview Pack — ₹19
+                    </button>
                   </div>
                 </div>
 
-                {/* Re-access section */}
-                <div className="mt-6 text-center">
-                  <p className="text-zinc-600 text-sm mb-3">Already purchased? Re-access your content:</p>
-                  <div className="flex items-center gap-2 max-w-sm mx-auto">
-                    <input
-                      type="email"
-                      placeholder="Enter your email"
-                      value={shieldCheckEmail}
-                      onChange={e => setShieldCheckEmail(e.target.value)}
-                      className="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl px-4 py-2.5 text-white text-sm placeholder:text-zinc-500 focus:outline-none focus:border-blue-500"
-                    />
-                    <button onClick={handleShieldCheck} disabled={shieldCheckLoading} className="bg-zinc-800 hover:bg-zinc-700 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-colors flex items-center gap-1.5">
+                {/* Card 2: Launch Shield */}
+                <div className="relative rounded-2xl border border-blue-500/40 bg-zinc-950 overflow-hidden flex flex-col ring-1 ring-blue-500/20">
+                  <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-blue-500 to-cyan-500" />
+                  <div className="absolute top-3 right-3">
+                    <span className="text-[10px] font-bold bg-blue-500 text-white px-2 py-0.5 rounded-full">POPULAR</span>
+                  </div>
+                  <div className="p-6 flex-1">
+                    <div className="text-3xl mb-3">🚀</div>
+                    <div className="text-[10px] font-bold text-blue-400 uppercase tracking-wider mb-1">For Startups & Real Launch</div>
+                    <h3 className="text-lg font-bold text-white mb-2">Launch Security Pack</h3>
+                    <p className="text-zinc-400 text-sm mb-5 leading-relaxed">
+                      Deploying this to real users? One misconfigured env or missing rate-limit and your server bill explodes or you get hacked on day one.
+                    </p>
+
+                    {/* Readable preview */}
+                    <div className="relative rounded-xl border border-zinc-800 overflow-hidden mb-5">
+                      <div className="bg-zinc-900/80 p-4 space-y-2.5">
+                        <div className="flex items-start gap-2">
+                          <span className="text-red-400 text-xs mt-0.5">✗</span>
+                          <div>
+                            <p className="text-zinc-200 text-xs font-semibold">CORS is configured with wildcard *</p>
+                            <p className="text-zinc-500 text-[11px]">Any site can make authenticated requests to your API. Fix: allowlist specific...</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <span className="text-red-400 text-xs mt-0.5">✗</span>
+                          <div>
+                            <p className="text-zinc-200 text-xs font-semibold">No rate limiting on public endpoints</p>
+                            <p className="text-zinc-500 text-[11px]">A single bot can DDoS your serverless functions, racking up ₹50,000 in cloud...</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-2 opacity-50">
+                          <span className="text-red-400 text-xs mt-0.5">✗</span>
+                          <div>
+                            <p className="text-zinc-200 text-xs font-semibold">Database accessible via public IP</p>
+                            <p className="text-zinc-500 text-[11px]">Your production database should never have a public...</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="absolute bottom-0 inset-x-0 h-14 bg-gradient-to-t from-zinc-950 to-transparent" />
+                      <div className="absolute bottom-2 inset-x-0 flex justify-center">
+                        <span className="text-xs text-zinc-500 font-medium">🔒 12 more issues hidden</span>
+                      </div>
+                    </div>
+
+                    <div className="text-xs text-zinc-500 space-y-1 mb-5">
+                      <div className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-blue-400" /><span>15-point pre-launch security audit</span></div>
+                      <div className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-blue-400" /><span>Scaling bottleneck analysis for your architecture</span></div>
+                      <div className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-blue-400" /><span>Zero-cost hosting blueprint ($0/month stack)</span></div>
+                    </div>
+                  </div>
+                  <div className="p-5 border-t border-zinc-800">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-zinc-400 text-sm line-through">₹199</span>
+                      <span className="text-2xl font-bold text-white">₹19</span>
+                    </div>
+                    <button
+                      onClick={() => { document.getElementById('shield-form')?.scrollIntoView({ behavior: 'smooth' }); }}
+                      className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-bold py-3 rounded-xl text-sm transition-all flex items-center justify-center gap-2"
+                    >
+                      <Lock className="w-3.5 h-3.5" /> Unlock Launch Pack — ₹19
+                    </button>
+                  </div>
+                </div>
+
+                {/* Card 3: Portfolio Shield */}
+                <div className="relative rounded-2xl border border-purple-500/30 bg-zinc-950 overflow-hidden flex flex-col">
+                  <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-purple-500 to-pink-500" />
+                  <div className="p-6 flex-1">
+                    <div className="text-3xl mb-3">💼</div>
+                    <div className="text-[10px] font-bold text-purple-400 uppercase tracking-wider mb-1">For LinkedIn & Resume</div>
+                    <h3 className="text-lg font-bold text-white mb-2">Portfolio Audit Pack</h3>
+                    <p className="text-zinc-400 text-sm mb-5 leading-relaxed">
+                      Listing this on your resume or LinkedIn? Don't just link a GitHub repo — attach a certified architecture audit that proves it's real.
+                    </p>
+
+                    {/* Readable preview */}
+                    <div className="relative rounded-xl border border-zinc-800 overflow-hidden mb-5">
+                      <div className="bg-zinc-900/80 p-4 space-y-3">
+                        <div className="bg-purple-500/10 border border-purple-500/20 rounded-lg p-3">
+                          <div className="text-[10px] font-bold text-purple-400 uppercase tracking-wider mb-1">Architecture Rating</div>
+                          <div className="text-xl font-bold text-white">{data.score}/100 <span className="text-sm font-normal text-zinc-400">— Production Grade</span></div>
+                          <div className="text-xs text-zinc-500 mt-1">Verified by SubmitKit · {data.classification_title}</div>
+                        </div>
+                        <div>
+                          <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-1">What to say on LinkedIn</div>
+                          <p className="text-zinc-300 text-xs leading-relaxed">"Built a full-stack {data.classification_title} scoring {data.score}/100 on independent architecture audit. Verified production-grade with...</p>
+                        </div>
+                        <div className="opacity-50">
+                          <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mb-1">5 Bullet Points for Resume</div>
+                          <p className="text-zinc-300 text-xs">• Architected a scalable {data.classification_title} with...</p>
+                        </div>
+                      </div>
+                      <div className="absolute bottom-0 inset-x-0 h-14 bg-gradient-to-t from-zinc-950 to-transparent" />
+                      <div className="absolute bottom-2 inset-x-0 flex justify-center">
+                        <span className="text-xs text-zinc-500 font-medium">🔒 Full audit PDF locked</span>
+                      </div>
+                    </div>
+
+                    <div className="text-xs text-zinc-500 space-y-1 mb-5">
+                      <div className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-purple-400" /><span>5 ready-to-paste LinkedIn bullet points</span></div>
+                      <div className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-purple-400" /><span>Resume-friendly project description</span></div>
+                      <div className="flex items-center gap-2"><CheckCircle2 className="w-3.5 h-3.5 text-purple-400" /><span>Certified architecture score badge</span></div>
+                    </div>
+                  </div>
+                  <div className="p-5 border-t border-zinc-800">
+                    <div className="flex items-center justify-between mb-3">
+                      <span className="text-zinc-400 text-sm line-through">₹199</span>
+                      <span className="text-2xl font-bold text-white">₹19</span>
+                    </div>
+                    <button
+                      onClick={() => { document.getElementById('shield-form')?.scrollIntoView({ behavior: 'smooth' }); }}
+                      className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold py-3 rounded-xl text-sm transition-all flex items-center justify-center gap-2"
+                    >
+                      <Lock className="w-3.5 h-3.5" /> Unlock Portfolio Pack — ₹19
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Unified purchase form */}
+              <div id="shield-form" className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 max-w-md mx-auto">
+                <div className="text-center mb-5">
+                  <p className="text-white font-bold text-base">Unlock any pack above — ₹19</p>
+                  <p className="text-zinc-500 text-xs mt-1">All 3 packs are delivered instantly after payment</p>
+                </div>
+                <div className="space-y-3 mb-4">
+                  <input type="email" placeholder="Your email address" value={shieldEmail} onChange={e => setShieldEmail(e.target.value)} className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white text-sm placeholder:text-zinc-500 focus:outline-none focus:border-blue-500 transition-colors" />
+                  <input type="tel" placeholder="Phone number (for Razorpay)" value={shieldPhone} onChange={e => setShieldPhone(e.target.value)} className="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-white text-sm placeholder:text-zinc-500 focus:outline-none focus:border-blue-500 transition-colors" />
+                </div>
+                <button onClick={handleShieldPurchase} disabled={shieldLoading} className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold py-3.5 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-60">
+                  {shieldLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Lock className="w-4 h-4" />}
+                  {shieldLoading ? 'Processing...' : 'Unlock All 3 Packs — ₹19'}
+                </button>
+                <div className="flex items-center justify-center gap-4 mt-3 text-xs text-zinc-600">
+                  <span>Instant access</span><span>·</span><span>No signup</span><span>·</span><span>Secured by Razorpay</span>
+                </div>
+                <div className="mt-5 border-t border-zinc-800 pt-4 text-center">
+                  <p className="text-zinc-600 text-xs mb-2">Already purchased? Re-access here:</p>
+                  <div className="flex items-center gap-2">
+                    <input type="email" placeholder="Enter your email" value={shieldCheckEmail} onChange={e => setShieldCheckEmail(e.target.value)} className="flex-1 bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2 text-white text-sm placeholder:text-zinc-600 focus:outline-none focus:border-blue-500" />
+                    <button onClick={handleShieldCheck} disabled={shieldCheckLoading} className="bg-zinc-800 hover:bg-zinc-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition-colors">
                       {shieldCheckLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Access'}
                     </button>
                   </div>
