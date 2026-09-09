@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { ArrowRight, Loader2, Search, CheckCircle2, Circle, ShieldCheck } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight, Loader2, CheckCircle2, Circle, ShieldCheck, HelpCircle, Database, Lock, FileText, Zap } from 'lucide-react';
 
 const GithubIcon = ({ className }: { className?: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="none" className={className}>
@@ -19,15 +19,42 @@ function BenchmarkContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  // Score Estimator State
+  const [showQuiz, setShowQuiz] = useState(true);
+  const [answers, setAnswers] = useState({
+    db: null as boolean | null,
+    auth: null as boolean | null,
+    readme: null as boolean | null,
+  });
+  const [estimatedScore, setEstimatedScore] = useState<[number, number] | null>(null);
+
   useEffect(() => {
     const urlParam = searchParams.get('url');
     if (urlParam && urlParam.includes('github.com') && !isAnalyzing) {
+      setShowQuiz(false); // Bypass quiz if came from homepage
       setRepoUrl(urlParam);
-      // Create a synthetic event to pass to handleBenchmark
       const syntheticEvent = { preventDefault: () => {} } as React.FormEvent;
       handleBenchmark(syntheticEvent, urlParam);
     }
   }, [searchParams]);
+
+  // Calculate score estimate when all answers are filled
+  useEffect(() => {
+    if (answers.db !== null && answers.auth !== null && answers.readme !== null) {
+      let min = 20;
+      let max = 40;
+      
+      if (answers.db) { min += 15; max += 15; }
+      if (answers.auth) { min += 15; max += 15; }
+      if (answers.readme) { min += 10; max += 15; }
+
+      // Randomize slightly for psychological realism
+      min += Math.floor(Math.random() * 5);
+      max += Math.floor(Math.random() * 5);
+
+      setTimeout(() => setEstimatedScore([min, Math.min(100, max)]), 600);
+    }
+  }, [answers]);
 
   const loadingPhases = [
     { text: 'Cloning repository securely...', delay: 0 },
@@ -49,7 +76,6 @@ function BenchmarkContent() {
     setIsAnalyzing(true);
     setError('');
     
-    // Simulate phases progressing for UX
     const timers = loadingPhases.map((phase, i) => 
       setTimeout(() => setLoadingPhase(i), phase.delay)
     );
@@ -67,7 +93,6 @@ function BenchmarkContent() {
         throw new Error(data.error || 'Failed to analyze repository');
       }
 
-      // Small delay so users see the final phase before redirect
       setTimeout(() => {
         router.push(`/benchmark/${data.benchmarkId}`);
       }, 1000);
@@ -80,78 +105,40 @@ function BenchmarkContent() {
     }
   };
 
+  const setAnswer = (key: keyof typeof answers, value: boolean) => {
+    setAnswers(prev => ({ ...prev, [key]: value }));
+  };
+
   return (
     <div className="min-h-screen bg-black text-white relative overflow-hidden">
-      {/* Background gradients */}
       <div className="absolute top-0 inset-x-0 h-96 bg-gradient-to-b from-blue-900/20 to-transparent pointer-events-none" />
       <div className="absolute -top-40 -right-40 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute top-20 -left-40 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
 
-      <main className="container mx-auto px-4 py-24 relative z-10 max-w-4xl flex flex-col items-center">
+      <main className="container mx-auto px-4 py-16 md:py-24 relative z-10 max-w-4xl flex flex-col items-center">
         
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
+          className="text-center mb-10"
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-zinc-800 bg-zinc-900/50 text-sm text-zinc-400 mb-6">
             <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
             Deterministic Repository Intelligence Layer
           </div>
           
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-6 bg-gradient-to-r from-white via-zinc-200 to-zinc-500 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6 bg-gradient-to-r from-white via-zinc-200 to-zinc-500 bg-clip-text text-transparent leading-[1.1]">
             We don't flatter your project. <br className="hidden md:block"/>
             We <span className="text-white">benchmark</span> it.
           </h1>
           
-          <p className="text-xl text-zinc-400 max-w-2xl mx-auto">
-            Paste a GitHub URL to get a brutally honest, evidence-backed assessment of your code. 
-            Discover your exact maturity level and the top 3 gaps preventing you from reaching production grade.
+          <p className="text-lg text-zinc-400 max-w-2xl mx-auto">
+            Get a brutally honest, evidence-backed assessment of your code. 
+            Discover your exact maturity level and the gaps preventing you from reaching production grade.
           </p>
         </motion.div>
 
-        {!isAnalyzing ? (
-          <motion.form 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            onSubmit={handleBenchmark}
-            className="w-full max-w-2xl relative group"
-          >
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500" />
-            <div className="relative flex items-center bg-zinc-900 border border-zinc-800 rounded-2xl p-2 shadow-2xl overflow-hidden focus-within:border-zinc-700 transition-colors">
-              <div className="pl-4 text-zinc-500">
-                <GithubIcon className="w-6 h-6" />
-              </div>
-              <input
-                type="url"
-                required
-                placeholder="https://github.com/username/repository"
-                className="w-full bg-transparent border-none text-white px-4 py-4 focus:outline-none focus:ring-0 text-lg placeholder:text-zinc-600"
-                value={repoUrl}
-                onChange={(e) => setRepoUrl(e.target.value)}
-              />
-              <button 
-                type="submit"
-                className="bg-white text-black px-6 py-4 rounded-xl font-medium flex items-center gap-2 hover:bg-zinc-200 transition-colors whitespace-nowrap"
-              >
-                Analyze Project
-                <ArrowRight className="w-5 h-5" />
-              </button>
-            </div>
-            
-            {error && (
-              <div className="absolute -bottom-8 left-0 w-full text-center text-red-400 text-sm font-medium">
-                {error}
-              </div>
-            )}
-            
-            <div className="absolute -bottom-10 left-0 w-full text-center flex items-center justify-center gap-1.5 text-zinc-500 text-sm">
-              <ShieldCheck className="w-4 h-4" />
-              Repository must be public
-            </div>
-          </motion.form>
-        ) : (
+        {isAnalyzing ? (
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -186,6 +173,126 @@ function BenchmarkContent() {
               })}
             </div>
           </motion.div>
+        ) : (
+          <div className="w-full max-w-2xl flex flex-col items-center w-full">
+            
+            {/* SCORE ESTIMATOR QUIZ */}
+            <AnimatePresence>
+              {showQuiz && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, height: 0 }}
+                  className="w-full bg-zinc-900 border border-zinc-800 rounded-3xl p-6 md:p-8 mb-8 relative overflow-hidden"
+                >
+                  <div className="absolute top-0 right-0 w-40 h-40 bg-blue-500/10 blur-3xl -translate-y-1/2 translate-x-1/3" />
+                  
+                  {!estimatedScore ? (
+                    <>
+                      <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+                        <HelpCircle className="w-5 h-5 text-blue-400" /> Pre-Scan Estimator
+                      </h3>
+                      
+                      <div className="space-y-6">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-800 pb-4">
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 bg-zinc-800 rounded-lg"><Database className="w-4 h-4 text-emerald-400" /></div>
+                            <span className="text-sm font-medium">Does your project connect to a database?</span>
+                          </div>
+                          <div className="flex gap-2">
+                            <button onClick={() => setAnswer('db', true)} className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${answers.db === true ? 'bg-blue-600 text-white' : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'}`}>Yes</button>
+                            <button onClick={() => setAnswer('db', false)} className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${answers.db === false ? 'bg-zinc-600 text-white' : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'}`}>No</button>
+                          </div>
+                        </div>
+
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-800 pb-4">
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 bg-zinc-800 rounded-lg"><Lock className="w-4 h-4 text-purple-400" /></div>
+                            <span className="text-sm font-medium">Does it have user authentication?</span>
+                          </div>
+                          <div className="flex gap-2">
+                            <button onClick={() => setAnswer('auth', true)} className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${answers.auth === true ? 'bg-blue-600 text-white' : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'}`}>Yes</button>
+                            <button onClick={() => setAnswer('auth', false)} className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${answers.auth === false ? 'bg-zinc-600 text-white' : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'}`}>No</button>
+                          </div>
+                        </div>
+
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 bg-zinc-800 rounded-lg"><FileText className="w-4 h-4 text-amber-400" /></div>
+                            <span className="text-sm font-medium">Do you have a detailed README file?</span>
+                          </div>
+                          <div className="flex gap-2">
+                            <button onClick={() => setAnswer('readme', true)} className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${answers.readme === true ? 'bg-blue-600 text-white' : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'}`}>Yes</button>
+                            <button onClick={() => setAnswer('readme', false)} className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${answers.readme === false ? 'bg-zinc-600 text-white' : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700'}`}>No</button>
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    <motion.div 
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      className="text-center py-6"
+                    >
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-bold mb-4 uppercase tracking-wider">
+                        <Zap className="w-3.5 h-3.5" /> Estimate Ready
+                      </div>
+                      <h3 className="text-zinc-400 text-lg mb-2">Based on your answers, your project likely scores:</h3>
+                      <div className="text-5xl md:text-7xl font-display font-bold text-white mb-6">
+                        {estimatedScore[0]} - {estimatedScore[1]}<span className="text-3xl text-zinc-600">/100</span>
+                      </div>
+                      <p className="text-zinc-400 text-sm">
+                        Paste your GitHub URL below to run the deep analysis and find out your exact score.
+                      </p>
+                    </motion.div>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* INPUT FORM */}
+            <motion.form 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              onSubmit={handleBenchmark}
+              className="w-full relative group"
+            >
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 to-purple-500 rounded-2xl blur opacity-20 group-hover:opacity-40 transition duration-500" />
+              <div className="relative flex flex-col sm:flex-row sm:items-center bg-zinc-900 border border-zinc-800 rounded-2xl p-2 shadow-2xl overflow-hidden focus-within:border-zinc-700 transition-colors">
+                <div className="hidden sm:block pl-4 text-zinc-500">
+                  <GithubIcon className="w-6 h-6" />
+                </div>
+                <input
+                  type="url"
+                  required
+                  placeholder="https://github.com/username/repository"
+                  className="w-full bg-transparent border-none text-white px-4 py-4 focus:outline-none focus:ring-0 text-base sm:text-lg placeholder:text-zinc-600"
+                  value={repoUrl}
+                  onChange={(e) => setRepoUrl(e.target.value)}
+                />
+                <button 
+                  type="submit"
+                  className="w-full sm:w-auto bg-white text-black px-6 py-4 rounded-xl font-medium flex items-center justify-center gap-2 hover:bg-zinc-200 transition-colors whitespace-nowrap"
+                >
+                  Analyze Project
+                  <ArrowRight className="w-5 h-5" />
+                </button>
+              </div>
+              
+              {error && (
+                <div className="absolute -bottom-8 left-0 w-full text-center text-red-400 text-sm font-medium">
+                  {error}
+                </div>
+              )}
+              
+              <div className="mt-4 w-full text-center flex items-center justify-center gap-1.5 text-zinc-500 text-sm">
+                <ShieldCheck className="w-4 h-4" />
+                Repository must be public
+              </div>
+            </motion.form>
+
+          </div>
         )}
       </main>
     </div>

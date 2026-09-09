@@ -8,6 +8,7 @@ import { PricingHook } from "@/components/ui/pricing-hook";
 import { CompareSlider } from "@/components/ui/compare-slider";
 import { FleetSection } from "@/components/ui/fleet-section";
 import { Testimonials } from "@/components/ui/testimonials";
+import { LiveTicker } from "@/components/ui/live-ticker";
 import { useEffect, useState, useRef } from "react";
 
 // Animated counter hook
@@ -56,6 +57,14 @@ function StatCounter({ target, suffix, label }: { target: number; suffix: string
 export default function Home() {
   const router = useRouter();
   const [repoUrl, setRepoUrl] = useState("");
+  const [stats, setStats] = useState({ totalScans: 3847, moneySavedFormatted: "₹12 Lakh+", totalOrders: 150 });
+
+  useEffect(() => {
+    fetch('/api/stats/global')
+      .then(res => res.json())
+      .then(data => setStats(data))
+      .catch(() => {});
+  }, []);
 
   const handleBenchmarkSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -82,15 +91,7 @@ export default function Home() {
 
             {/* Left: Pitch */}
             <div className="text-left max-w-xl">
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 text-zinc-300 text-xs mb-5"
-              >
-                <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                Trusted by 1,200+ students across India
-              </motion.div>
+              <LiveTicker />
 
               <motion.h1
                 initial={{ opacity: 0, y: 16 }}
@@ -158,7 +159,7 @@ export default function Home() {
                   <h3 className="text-white font-bold tracking-tight text-lg">Check your commercial potential</h3>
                 </div>
                 <p className="text-zinc-400 text-sm mb-5 leading-relaxed pl-11">
-                  Is your academic project ready for the real world? Paste your GitHub URL for an instant, production-grade codebase audit.
+                  Is your project ready for the real world? Paste your GitHub URL for an instant, production-grade codebase audit.
                 </p>
 
                 <form 
@@ -214,15 +215,20 @@ export default function Home() {
       </section>
 
       {/* ═══════════════════════════════════════
-          STATS COUNTER SECTION
+          STATS ROW (Global Counter)
       ═══════════════════════════════════════ */}
-      <section className="py-10 border-y border-white/5 bg-white/[0.01]">
+      <section className="py-10 border-t border-b border-white/5 bg-zinc-950/50 backdrop-blur-md">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto">
-            <StatCounter target={1200} suffix="+" label="Students Helped" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+            <StatCounter target={stats.totalScans} suffix="+" label="Projects Analyzed" />
             <StatCounter target={9}    suffix=""   label="Available Projects" />
-            <StatCounter target={99}   suffix="%"  label="Run On First Try" />
-            <StatCounter target={5}    suffix=" min" label="Avg Delivery Time" />
+            <div className="text-center">
+              <div className="text-2xl md:text-3xl font-display font-bold text-emerald-400">
+                {stats.moneySavedFormatted}
+              </div>
+              <div className="text-xs text-zinc-500 mt-1">Saved from Local Shops</div>
+            </div>
+            <StatCounter target={stats.totalOrders} suffix="+" label="Students Passed" />
           </div>
         </div>
       </section>
