@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { ArrowRight, Loader2, Search, CheckCircle2, Circle, ShieldCheck } from 'lucide-react';
 
@@ -11,12 +11,23 @@ const GithubIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
-export default function BenchmarkLandingPage() {
+function BenchmarkContent() {
   const [repoUrl, setRepoUrl] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState('');
   const [loadingPhase, setLoadingPhase] = useState(0);
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const urlParam = searchParams.get('url');
+    if (urlParam && urlParam.includes('github.com') && !isAnalyzing) {
+      setRepoUrl(urlParam);
+      // Create a synthetic event to pass to handleBenchmark
+      const syntheticEvent = { preventDefault: () => {} } as React.FormEvent;
+      handleBenchmark(syntheticEvent, urlParam);
+    }
+  }, [searchParams]);
 
   const loadingPhases = [
     { text: 'Cloning repository securely...', delay: 0 },
@@ -26,9 +37,11 @@ export default function BenchmarkLandingPage() {
     { text: 'Calculating Category & Maturity Level...', delay: 7500 },
   ];
 
-  const handleBenchmark = async (e: React.FormEvent) => {
+  const handleBenchmark = async (e: React.FormEvent, directUrl?: string) => {
     e.preventDefault();
-    if (!repoUrl.includes('github.com')) {
+    const targetUrl = directUrl || repoUrl;
+
+    if (!targetUrl.includes('github.com')) {
       setError('Please enter a valid GitHub repository URL');
       return;
     }
@@ -45,7 +58,7 @@ export default function BenchmarkLandingPage() {
       const res = await fetch('/api/benchmark/analyze', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ repoUrl }),
+        body: JSON.stringify({ repoUrl: targetUrl }),
       });
 
       const data = await res.json();
@@ -176,5 +189,13 @@ export default function BenchmarkLandingPage() {
         )}
       </main>
     </div>
+  );
+}
+
+export default function BenchmarkLandingPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-black flex items-center justify-center text-white">Loading...</div>}>
+      <BenchmarkContent />
+    </Suspense>
   );
 }

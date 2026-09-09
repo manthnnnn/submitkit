@@ -1,8 +1,9 @@
 'use client';
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { CONSTANTS } from "@/lib/constants";
-import { ArrowRight, CheckCircle2, Zap, Download, ShieldCheck, Star } from "lucide-react";
+import { ArrowRight, CheckCircle2, Zap, Download, ShieldCheck, Star, Sparkles } from "lucide-react";
 import { PricingHook } from "@/components/ui/pricing-hook";
 import { CompareSlider } from "@/components/ui/compare-slider";
 import { FleetSection } from "@/components/ui/fleet-section";
@@ -53,6 +54,16 @@ function StatCounter({ target, suffix, label }: { target: number; suffix: string
 }
 
 export default function Home() {
+  const router = useRouter();
+  const [repoUrl, setRepoUrl] = useState("");
+
+  const handleBenchmarkSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (repoUrl && repoUrl.includes("github.com")) {
+      router.push(`/project-benchmark?url=${encodeURIComponent(repoUrl)}`);
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen relative overflow-hidden bg-[#09090b]">
 
@@ -126,7 +137,37 @@ export default function Home() {
                 </Link>
               </motion.div>
 
-              {/* Benchmark Lead Gen moved to full width below */}
+              {/* Chatbox-style Benchmark Input */}
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+                className="mt-10 w-full max-w-lg"
+              >
+                <div className="text-sm font-semibold text-zinc-400 mb-3 flex items-center gap-2">
+                  <ShieldCheck className="w-4 h-4 text-blue-400" />
+                  Free AI Code Audit
+                </div>
+                <form 
+                  onSubmit={handleBenchmarkSubmit}
+                  className="relative flex items-center bg-zinc-950 border border-zinc-800 rounded-2xl p-1.5 focus-within:border-blue-500/50 focus-within:ring-4 focus-within:ring-blue-500/10 transition-all shadow-[0_0_20px_rgba(0,0,0,0.5)]"
+                >
+                  <input
+                    type="url"
+                    required
+                    placeholder="Paste your public GitHub URL here..."
+                    value={repoUrl}
+                    onChange={(e) => setRepoUrl(e.target.value)}
+                    className="w-full bg-transparent border-none text-white px-4 py-3 outline-none text-sm placeholder:text-zinc-600"
+                  />
+                  <button
+                    type="submit"
+                    className="shrink-0 bg-white text-black px-5 py-3 rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-zinc-200 transition-colors"
+                  >
+                    Analyze <Sparkles className="w-4 h-4" />
+                  </button>
+                </form>
+              </motion.div>
             </div>
 
             {/* Right: Pricing Hook Card */}
@@ -140,37 +181,7 @@ export default function Home() {
             </motion.div>
           </div>
 
-          {/* Epic Benchmark Full-Width CTA (Compact) */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="mt-12 w-full relative group"
-          >
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 rounded-2xl blur-md opacity-30 group-hover:opacity-60 transition duration-500" />
-            <Link 
-              href="/project-benchmark"
-              className="relative w-full flex flex-col sm:flex-row items-center justify-between gap-4 p-4 sm:p-5 md:px-8 md:py-6 rounded-2xl bg-zinc-950 border border-zinc-800 hover:border-zinc-700 transition-colors overflow-hidden"
-            >
-              <div className="absolute top-0 right-0 -mt-10 -mr-10 w-48 h-48 bg-blue-500/10 rounded-full blur-2xl pointer-events-none" />
-              <div className="absolute bottom-0 left-0 -mb-10 -ml-10 w-48 h-48 bg-purple-500/10 rounded-full blur-2xl pointer-events-none" />
-              
-              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 relative z-10 text-center sm:text-left">
-                <div className="shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center border border-white/10 shadow-[0_0_20px_rgba(59,130,246,0.15)]">
-                  <ShieldCheck className="w-6 h-6 text-blue-400" />
-                </div>
-                <div>
-                  <h3 className="text-xl md:text-2xl font-bold text-white mb-1 tracking-tight">Check your project's potential</h3>
-                  <p className="text-zinc-400 text-xs md:text-sm max-w-xl">
-                    Run a free deterministic AI code audit. Find out your exact maturity level and top gaps preventing you from reaching production grade before you submit.
-                  </p>
-                </div>
-              </div>
-              <div className="relative z-10 shrink-0 px-6 py-3 bg-white text-black font-bold text-sm md:text-base rounded-xl flex items-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.15)] group-hover:shadow-[0_0_30px_rgba(255,255,255,0.3)] transition-all hover:scale-105">
-                Analyze My Repository <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </div>
-            </Link>
-          </motion.div>
+
 
           {/* College Trust Row */}
           <motion.div
