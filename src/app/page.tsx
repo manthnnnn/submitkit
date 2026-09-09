@@ -137,32 +137,45 @@ export default function Home() {
                 </Link>
               </motion.div>
 
+              {/* Divider / Visual Separation */}
+              <div className="mt-12 mb-8 w-full max-w-lg flex items-center gap-4">
+                <div className="h-px bg-zinc-800 flex-1"></div>
+                <span className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">Or Analyze Yours</span>
+                <div className="h-px bg-zinc-800 flex-1"></div>
+              </div>
+
               {/* Chatbox-style Benchmark Input */}
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.4 }}
-                className="mt-10 w-full max-w-lg"
+                className="w-full max-w-lg bg-gradient-to-br from-zinc-900/80 to-zinc-950/80 border border-zinc-800/80 rounded-2xl p-5 md:p-6 shadow-xl backdrop-blur-md"
               >
-                <div className="text-sm font-semibold text-zinc-400 mb-3 flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-blue-400" />
-                  Free AI Code Audit
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-8 h-8 shrink-0 rounded-lg bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
+                    <Zap className="w-4 h-4 text-blue-400" />
+                  </div>
+                  <h3 className="text-white font-bold tracking-tight text-lg">Check your commercial potential</h3>
                 </div>
+                <p className="text-zinc-400 text-sm mb-5 leading-relaxed pl-11">
+                  Is your academic project ready for the real world? Paste your GitHub URL for an instant, production-grade codebase audit.
+                </p>
+
                 <form 
                   onSubmit={handleBenchmarkSubmit}
-                  className="relative flex items-center bg-zinc-950 border border-zinc-800 rounded-2xl p-1.5 focus-within:border-blue-500/50 focus-within:ring-4 focus-within:ring-blue-500/10 transition-all shadow-[0_0_20px_rgba(0,0,0,0.5)]"
+                  className="relative flex items-center bg-black border border-zinc-700/80 rounded-xl p-1.5 focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/20 transition-all shadow-inner"
                 >
                   <input
                     type="url"
                     required
-                    placeholder="Paste your public GitHub URL here..."
+                    placeholder="https://github.com/username/repo..."
                     value={repoUrl}
                     onChange={(e) => setRepoUrl(e.target.value)}
-                    className="w-full bg-transparent border-none text-white px-4 py-3 outline-none text-sm placeholder:text-zinc-600"
+                    className="w-full bg-transparent border-none text-white px-3 py-2 outline-none text-sm placeholder:text-zinc-600"
                   />
                   <button
                     type="submit"
-                    className="shrink-0 bg-white text-black px-5 py-3 rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-zinc-200 transition-colors"
+                    className="shrink-0 bg-white text-black px-4 py-2.5 rounded-lg font-bold text-sm flex items-center gap-2 hover:bg-zinc-200 transition-colors shadow-sm"
                   >
                     Analyze <Sparkles className="w-4 h-4" />
                   </button>
