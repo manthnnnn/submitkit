@@ -104,19 +104,6 @@ export default function BenchmarkResultPage() {
 
   return (
     <div className="min-h-screen bg-black text-white pb-24">
-      {/* OG Meta Tags */}
-      {data && (
-        <head>
-          <meta property="og:title" content={`${data.repo_owner}/${data.repo_name} — Score: ${data.score}/100`} />
-          <meta property="og:description" content={`Level ${data.maturity_level} ${data.classification_title}. Benchmarked by SubmitKit.`} />
-          <meta property="og:image" content={`${siteUrl}/api/og/${id}`} />
-          <meta property="og:url" content={benchmarkUrl} />
-          <meta name="twitter:card" content="summary_large_image" />
-          <meta name="twitter:title" content={`${data.repo_name} scored ${data.score}/100 on SubmitKit`} />
-          <meta name="twitter:image" content={`${siteUrl}/api/og/${id}`} />
-        </head>
-      )}
-
       {/* Page Header */}
       <header className="border-b border-zinc-800 bg-black/50">
         <div className="container mx-auto px-4 py-4 sm:py-0 sm:h-16 flex flex-col sm:flex-row items-center justify-between gap-4">
