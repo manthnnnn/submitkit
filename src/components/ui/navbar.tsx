@@ -7,6 +7,7 @@ import { Logo } from '@/components/ui/logo';
 
 const NAV_LINKS = [
   { href: '/projects', label: 'Browse Projects' },
+  { href: '/blueprint', label: 'Topic Blueprints' },
   { href: '/#pricing',  label: 'Pricing' },
   { href: '/order/lookup', label: 'Find My Order' },
 ];

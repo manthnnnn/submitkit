@@ -3,13 +3,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { CONSTANTS } from "@/lib/constants";
-import { ArrowRight, CheckCircle2, Zap, Download, ShieldCheck, Star, Sparkles, MonitorPlay } from "lucide-react";
+import { ArrowRight, CheckCircle2, Zap, Download, ShieldCheck, Star, Sparkles, MonitorPlay, Search, BookOpen, ChevronRight } from "lucide-react";
 import { PricingHook } from "@/components/ui/pricing-hook";
 import { CompareSlider } from "@/components/ui/compare-slider";
 import { FleetSection } from "@/components/ui/fleet-section";
 import { Testimonials } from "@/components/ui/testimonials";
 import { LiveTicker } from "@/components/ui/live-ticker";
 import { useEffect, useState, useRef } from "react";
+import { searchTopics, TopicCard } from "@/lib/blueprint-engine";
 
 // Animated counter hook
 function useCounter(target: number, duration: number = 1500) {
@@ -56,7 +57,8 @@ function StatCounter({ target, suffix, label }: { target: number; suffix: string
 
 export default function Home() {
   const router = useRouter();
-  const [repoUrl, setRepoUrl] = useState("");
+  const [topicQuery, setTopicQuery] = useState("");
+  const [topicResults, setTopicResults] = useState<TopicCard[]>([]);
   const [stats, setStats] = useState({ totalScans: 3847, moneySavedFormatted: "₹12 Lakh+", totalOrders: 150 });
 
   useEffect(() => {
@@ -66,10 +68,26 @@ export default function Home() {
       .catch(() => {});
   }, []);
 
-  const handleBenchmarkSubmit = (e: React.FormEvent) => {
+  const handleTopicSearchChange = (val: string) => {
+    setTopicQuery(val);
+    if (val.trim().length >= 1) {
+      setTopicResults(searchTopics(val).slice(0, 4));
+    } else {
+      setTopicResults([]);
+    }
+  };
+
+  const handleTopicSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (repoUrl && repoUrl.includes("github.com")) {
-      router.push(`/project-benchmark?url=${encodeURIComponent(repoUrl)}`);
+    if (topicQuery.trim()) {
+      const matches = searchTopics(topicQuery);
+      if (matches.length > 0) {
+        router.push(`/blueprint/${matches[0].id}`);
+      } else {
+        router.push('/blueprint');
+      }
+    } else {
+      router.push('/blueprint');
     }
   };
 
@@ -141,56 +159,108 @@ export default function Home() {
               {/* Divider / Visual Separation */}
               <div className="mt-12 mb-8 w-full max-w-lg flex items-center gap-4">
                 <div className="h-px bg-zinc-800 flex-1"></div>
-                <span className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">Or Analyze Yours</span>
+                <span className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">Or Search Any Topic Free</span>
                 <div className="h-px bg-zinc-800 flex-1"></div>
               </div>
 
-              {/* Chatbox-style Benchmark Input */}
+              {/* Free Project Topic Blueprint Search */}
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.4 }}
-                className="w-full max-w-lg bg-gradient-to-br from-zinc-900/80 to-zinc-950/80 border border-zinc-800/80 rounded-2xl p-5 md:p-6 shadow-xl backdrop-blur-md"
+                className="w-full max-w-lg bg-gradient-to-br from-zinc-900/90 to-zinc-950/90 border border-zinc-800/80 rounded-2xl p-5 md:p-6 shadow-2xl backdrop-blur-md relative"
               >
                 <div className="flex items-center gap-3 mb-2">
                   <div className="w-8 h-8 shrink-0 rounded-lg bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
-                    <Zap className="w-4 h-4 text-blue-400" />
+                    <BookOpen className="w-4 h-4 text-blue-400" />
                   </div>
-                  <h3 className="text-white font-bold tracking-tight text-lg">Check your commercial potential</h3>
+                  <div>
+                    <h3 className="text-white font-bold tracking-tight text-lg">Free Project Topic Blueprint</h3>
+                    <span className="inline-block text-[11px] text-emerald-400 font-medium">100% Free Search • 120+ Topics</span>
+                  </div>
                 </div>
-                <p className="text-zinc-400 text-sm mb-5 leading-relaxed pl-11">
-                  Is your project ready for the real world? Paste your GitHub URL for an instant, production-grade codebase audit.
+                <p className="text-zinc-400 text-sm mb-4 leading-relaxed">
+                  Have a topic in mind? Search it to see what examiners expect, sample viva questions, and the complete build plan.
                 </p>
 
                 <form 
-                  onSubmit={handleBenchmarkSubmit}
+                  onSubmit={handleTopicSubmit}
                   className="relative flex items-center bg-black border border-zinc-700/80 rounded-xl p-1.5 focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/20 transition-all shadow-inner"
                 >
+                  <Search className="w-4 h-4 text-zinc-500 ml-2 shrink-0" />
                   <input
-                    type="url"
-                    required
-                    placeholder="https://github.com/username/repo..."
-                    value={repoUrl}
-                    onChange={(e) => setRepoUrl(e.target.value)}
+                    type="text"
+                    placeholder="Search e.g. Face Recognition, Fraud, IoT..."
+                    value={topicQuery}
+                    onChange={(e) => handleTopicSearchChange(e.target.value)}
                     className="w-full bg-transparent border-none text-white px-3 py-2 outline-none text-sm placeholder:text-zinc-600"
                   />
                   <button
                     type="submit"
-                    className="shrink-0 bg-white text-black px-4 py-2.5 rounded-lg font-bold text-sm flex items-center gap-2 hover:bg-zinc-200 transition-colors shadow-sm"
+                    className="shrink-0 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-bold text-sm flex items-center gap-1.5 transition-colors shadow-sm"
                   >
-                    Analyze <Sparkles className="w-4 h-4" />
+                    Search <ArrowRight className="w-4 h-4" />
                   </button>
                 </form>
 
-                {/* Defense Shield Teaser */}
-                <div className="mt-4 flex items-start gap-2.5 bg-blue-500/5 border border-blue-500/10 rounded-xl px-4 py-3">
-                  <span className="text-base mt-0.5">🛡️</span>
-                  <p className="text-xs text-zinc-400 leading-relaxed">
-                    After your scan, unlock your{' '}
-                    <span className="text-blue-400 font-semibold">Defense Shield</span>
-                    {' '}— the 10 exact technical questions your interviewer will ask about your code, with perfect answers.{' '}
-                    <span className="text-zinc-500">Only ₹19.</span>
-                  </p>
+                {/* Instant Topic Autocomplete Results */}
+                {topicResults.length > 0 && (
+                  <div className="mt-3 bg-zinc-950 border border-zinc-800 rounded-xl divide-y divide-zinc-800/80 overflow-hidden shadow-xl">
+                    {topicResults.map((t) => (
+                      <Link
+                        key={t.id}
+                        href={`/blueprint/${t.id}`}
+                        className="flex items-center justify-between p-3 hover:bg-blue-600/10 transition-colors group"
+                      >
+                        <div className="min-w-0 pr-2">
+                          <div className="flex items-center gap-2">
+                            <span className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors truncate">
+                              {t.title}
+                            </span>
+                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 font-mono shrink-0">
+                              {t.category}
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-zinc-500 truncate mt-0.5">{t.tagline}</p>
+                        </div>
+                        <span className="text-xs text-blue-400 font-semibold shrink-0 flex items-center gap-1">
+                          Free Preview <ChevronRight className="w-3.5 h-3.5" />
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+
+                {/* Popular Quick Chips */}
+                <div className="mt-4">
+                  <span className="text-[11px] text-zinc-500 font-medium block mb-2">Trending topics:</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {[
+                      { name: "Face Recognition", id: "face-recognition-attendance" },
+                      { name: "Plant Disease", id: "plant-disease-detection" },
+                      { name: "Fraud Detection", id: "credit-card-fraud-detection" },
+                      { name: "Smart Traffic", id: "smart-traffic-system" },
+                    ].map((chip) => (
+                      <Link
+                        key={chip.id}
+                        href={`/blueprint/${chip.id}`}
+                        className="text-[11px] px-2.5 py-1 rounded-full bg-zinc-800/60 hover:bg-blue-600/20 hover:text-blue-300 hover:border-blue-500/30 text-zinc-400 border border-zinc-700/60 transition-all"
+                      >
+                        {chip.name}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Blueprint Teaser & A-Z Link */}
+                <div className="mt-4 pt-3 border-t border-zinc-800/80 flex items-center justify-between text-xs">
+                  <span className="text-zinc-500">Full 20-page build PDF only ₹19</span>
+                  <Link
+                    href="/blueprint"
+                    className="text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-1"
+                  >
+                    Browse 120+ Topics A-Z <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
                 </div>
               </motion.div>
             </div>
