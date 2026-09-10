@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifySignature } from "@/lib/razorpay";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { sendBlueprintConfirmationEmail } from "@/lib/email";
 
 export const dynamic = "force-dynamic";
 
@@ -43,6 +44,13 @@ export async function POST(req: NextRequest) {
         { status: 500 }
       );
     }
+
+    // 3. Fire confirmation email non-blocking (never fails the response)
+    sendBlueprintConfirmationEmail({
+      customerEmail: purchase.customer_email,
+      topicTitle:    purchase.topic_title,
+      topicId:       purchase.topic_id,
+    }).catch(err => console.error('[blueprint/verify] email send failed (non-blocking):', err));
 
     return NextResponse.json({ success: true, purchaseId: purchase.id });
   } catch (error) {

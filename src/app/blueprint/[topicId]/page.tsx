@@ -11,9 +11,32 @@ export async function generateMetadata({
   const { topicId } = await params;
   const topic = getTopicById(topicId);
   if (!topic) return { title: "Topic Not Found | SubmitKit" };
+  const title = `${topic.title} — Free Project Blueprint | SubmitKit`;
+  const description = topic.tagline || topic.whatItDoes;
   return {
-    title: `${topic.title} — Project Blueprint | SubmitKit`,
-    description: topic.tagline || topic.whatItDoes,
+    title,
+    description,
+    keywords: [
+      topic.title,
+      topic.category,
+      "project blueprint",
+      "final year project",
+      "viva defense",
+      "source code",
+      "college project",
+    ],
+    openGraph: {
+      title,
+      description,
+      type: "article",
+      url: `https://submitkit.in/blueprint/${topic.id}`,
+      siteName: "SubmitKit",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
   };
 }
 

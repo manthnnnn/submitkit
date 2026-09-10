@@ -6,9 +6,10 @@ import {
   ArrowLeft, Lock, Clock, Star, AlertTriangle, ChevronRight,
   Mic, Wrench, Database, Cpu, FileDown, CheckCircle, XCircle, Loader2,
   Copy, Check, ExternalLink, Terminal, ShieldAlert, BookOpen, Layers,
-  Presentation, FileText, Sparkles, HelpCircle, Flame
+  Presentation, FileText, Sparkles, HelpCircle, Flame,
+  Share2, Mail, MessageCircle
 } from "lucide-react";
-import { FullBlueprint } from "@/lib/blueprint-engine";
+import { FullBlueprint, generateAntigravityMasterPrompt, canBuildOnAntigravity, getAntigravityBuildInfo, getRelatedTopics } from "@/lib/blueprint-engine";
 
 declare global {
   interface Window {
@@ -16,7 +17,153 @@ declare global {
   }
 }
 
-type ActiveTab = "steps" | "dataset" | "viva" | "architecture" | "deploy" | "troubleshoot" | "deliverables";
+
+function deriveConceptualSteps(title: string): string[] {
+  const t = title.toLowerCase();
+  if (t.includes("install") || t.includes("environment") || t.includes("setup")) {
+    return [
+      "Initialize an isolated virtual environment (venv / conda / npm) to prevent conflicting package versions.",
+      "Install primary computational libraries and verify compiler runtime acceleration (CPU / GPU).",
+      "Configure project workspace directory structure (/data, /models, /src, /tests) ensuring clear modular boundaries.",
+      "Run an automated sanity check confirming library versions and environment variable bindings."
+    ];
+  }
+  if (t.includes("dataset") || t.includes("collect") || t.includes("photo") || t.includes("ingest") || t.includes("preprocess")) {
+    return [
+      "Collect and organize balanced data samples across all target classes with realistic variations.",
+      "Execute spatial normalization: uniform dimensional resizing, margin cropping, and channel standardization.",
+      "Generate dense mathematical feature vector embeddings representing each sample uniquely.",
+      "Index embeddings into persistent storage for high-speed sub-millisecond retrieval during inference."
+    ];
+  }
+  if (t.includes("engine") || t.includes("recognition") || t.includes("model") || t.includes("train") || t.includes("core")) {
+    return [
+      "Configure the continuous input stream buffer with frame-rate stabilization and queue management.",
+      "Pass incoming inputs through localized feature detection anchors and extraction layers.",
+      "Calculate mathematical distance scores (Cosine Similarity or Euclidean L2) against stored reference vectors.",
+      "Apply calibrated decision thresholding: safely categorize low-confidence signals as 'Unknown' to avoid false positives."
+    ];
+  }
+  if (t.includes("web") || t.includes("flask") || t.includes("interface") || t.includes("ui") || t.includes("api") || t.includes("frontend")) {
+    return [
+      "Configure REST API endpoints and WebSocket channels for bidirectional low-latency communication.",
+      "Implement a clean relational database schema with audit timestamps and indexed lookup keys.",
+      "Construct a modern responsive web dashboard with dark-mode aesthetic and real-time inference telemetry.",
+      "Implement client-side exception handling ensuring graceful recovery from connectivity interruptions."
+    ];
+  }
+  if (t.includes("test") || t.includes("edge") || t.includes("duplicate") || t.includes("verify")) {
+    return [
+      "Design challenging test fixtures: occluded inputs, low-lighting scenarios, and edge-case anomalies.",
+      "Implement transaction deduplication logic preventing redundant state writes within session cooldowns.",
+      "Quantify evaluation metrics: Accuracy, Precision, Recall, F1-Score, and latency percentiles.",
+      "Document unhandled boundary conditions in the technical dossier for examiners."
+    ];
+  }
+  return [
+    `Initialize the core computational module for ${title.toLowerCase()} with optimal parameters.`,
+    "Implement mathematical decision boundaries and feature transformation pipelines.",
+    "Validate input sanitization and inter-module communication integrity.",
+    "Execute edge-case validation testing ensuring real-time response targets are met."
+  ];
+}
+
+// ─── Category-aware performance metrics ───────────────────────────────────────
+function getTopicMetrics(category: string) {
+  if (category === 'FullStack' || category === 'Mobile') {
+    return [
+      { label: 'API Response Time', value: '< 200ms', sub: 'p95 latency', color: 'text-emerald-400' },
+      { label: 'Lighthouse Score',  value: '> 95',    sub: 'Performance', color: 'text-brand-400' },
+      { label: 'Uptime Target',     value: '99.9%',   sub: 'SLA goal',    color: 'text-purple-400' },
+    ];
+  }
+  if (category === 'Blockchain') {
+    return [
+      { label: 'Block Confirmation', value: '< 3s',     sub: 'Avg tx time',     color: 'text-emerald-400' },
+      { label: 'Gas Efficiency',     value: '~21,000',  sub: 'Gas units (ETH)', color: 'text-brand-400' },
+      { label: 'Contract Uptime',    value: '99.9%',    sub: 'On-chain',         color: 'text-purple-400' },
+    ];
+  }
+  if (category === 'IoT') {
+    return [
+      { label: 'Sensor Latency', value: '< 100ms',  sub: 'Real-time data',   color: 'text-emerald-400' },
+      { label: 'Battery Life',   value: '> 24hr',   sub: 'ESP32 optimized',  color: 'text-brand-400' },
+      { label: 'Packet Loss',    value: '< 0.5%',   sub: 'MQTT reliability', color: 'text-purple-400' },
+    ];
+  }
+  if (category === 'Cybersecurity') {
+    return [
+      { label: 'Detection Rate',  value: '99.5%', sub: 'True positive rate', color: 'text-emerald-400' },
+      { label: 'False Positives', value: '< 2%',  sub: 'Precision',          color: 'text-brand-400' },
+      { label: 'Scan Speed',      value: '< 5s',  sub: 'Per target host',    color: 'text-purple-400' },
+    ];
+  }
+  if (category === 'NLP') {
+    return [
+      { label: 'BLEU Score',    value: '≥ 0.82',    sub: 'Translation quality', color: 'text-emerald-400' },
+      { label: 'Response Time', value: '< 120ms',   sub: 'Inference speed',     color: 'text-brand-400' },
+      { label: 'Accuracy',      value: '91% – 96%', sub: 'Classification',       color: 'text-purple-400' },
+    ];
+  }
+  if (category === 'Fintech' || category === 'DataScience') {
+    return [
+      { label: 'Model Accuracy', value: '90% – 97%', sub: 'On test split',    color: 'text-emerald-400' },
+      { label: 'F1 Score',       value: '≥ 0.89',    sub: 'Balanced metric',  color: 'text-brand-400' },
+      { label: 'Dataset Split',  value: '80 / 20',   sub: 'Train / Test',     color: 'text-purple-400' },
+    ];
+  }
+  // Default: AIML
+  return [
+    { label: 'Model Accuracy / F1', value: '92% – 98%', sub: 'On standard test split', color: 'text-emerald-400' },
+    { label: 'Inference Speed',     value: '< 45ms',    sub: 'Real-time response',     color: 'text-brand-400' },
+    { label: 'Dataset Split',       value: '80 / 20',   sub: 'Train / Test ratio',     color: 'text-purple-400' },
+  ];
+}
+
+// ─── Category-aware troubleshooting errors ────────────────────────────────────
+function getTroubleshootingErrors(category: string) {
+  if (category === 'FullStack' || category === 'Mobile') {
+    return [
+      { error: "Cannot find module 'xyz' / npm ERR! 404", cause: "npm package not installed in the current workspace.", fix: "Run: npm install [package-name]. If in a monorepo, run from the subdirectory containing package.json." },
+      { error: "EADDRINUSE: address already in use :::3000", cause: "Previous dev server is still running on port 3000.", fix: "Kill with: npx kill-port 3000 — or set PORT=3001 in .env and restart the server." },
+      { error: "CORS policy: No 'Access-Control-Allow-Origin' header", cause: "The backend API doesn't allow requests from your frontend origin.", fix: "Add cors({ origin: 'http://localhost:3000' }) middleware to your Express/FastAPI server." },
+      { error: "Build failed: TypeScript type error / JSX parse error", cause: "Type mismatch or missing type annotation in component props.", fix: "Check the exact error line number. Add explicit types. Use 'as unknown as Type' temporarily to isolate the error." },
+    ];
+  }
+  if (category === 'Blockchain') {
+    return [
+      { error: "Error: gas estimation failed / transaction reverted", cause: "Smart contract require() condition failed or ran out of gas.", fix: "Add Hardhat console.log() inside the Solidity function. Check require() error messages and verify correct parameter types." },
+      { error: "MetaMask RPC Error: nonce too low", cause: "A stuck pending transaction is blocking your account nonce.", fix: "MetaMask → Settings → Advanced → Reset Account. Clears local nonce without touching your mainnet funds." },
+      { error: "ABI mismatch: function not found in contract", cause: "Contract was recompiled but the ABI JSON in frontend wasn't updated.", fix: "After npx hardhat compile, copy the new ABI from artifacts/contracts/YourContract.json into your src/abi/ folder." },
+      { error: "ethers: Cannot read property 'provider' of undefined", cause: "Wallet provider not connected before calling contract functions.", fix: "Always await provider.getSigner() and check it exists. Wrap contract calls in try/catch with a 'Please connect wallet' user prompt." },
+    ];
+  }
+  if (category === 'IoT') {
+    return [
+      { error: "esptool.py: Permission denied / Serial port busy (COM3)", cause: "Serial port is locked by another app (Arduino IDE, serial monitor).", fix: "Close all serial monitors and Arduino IDE windows. On Windows: Device Manager → Ports → Disable then re-enable the COM port." },
+      { error: "Sensor reading: NaN or -999 / timeout after 2s", cause: "Loose wire, wrong GPIO pin number, or sensor not initialized correctly.", fix: "Double-check wiring to 3.3V (not 5V for most sensors). Add 1s delay after sensor.begin(). Print sensor.getStatus() for diagnostics." },
+      { error: "WiFi: WL_DISCONNECTED / MQTT broker unreachable", cause: "Wrong SSID/password or broker IP not reachable on the local network.", fix: "Print WiFi.status() in loop. Ensure device and broker are on same WiFi. Ping the broker IP from your laptop first." },
+      { error: "Flash write failed / Sketch too large for flash", cause: "Firmware size exceeds the available flash partition.", fix: "Arduino IDE: Tools → Partition Scheme → 'Huge APP (3MB No OTA)'. Or remove unused library imports to reduce binary size." },
+    ];
+  }
+  if (category === 'Cybersecurity') {
+    return [
+      { error: "PermissionError: socket operation not permitted (raw sockets)", cause: "Port scanning and packet capture require elevated system privileges.", fix: "Run with: sudo python3 scanner.py on Linux/Mac. On Windows, open terminal as Administrator before running the script." },
+      { error: "ModuleNotFoundError: No module named 'scapy' / WinPcap not found", cause: "Scapy requires Npcap for Windows packet capture, not WinPcap.", fix: "Install Npcap from https://npcap.com (free). Then reinstall: pip install scapy. Restart terminal after Npcap install." },
+      { error: "SSL certificate verify failed / SSL handshake timeout", cause: "Target server has an expired or self-signed SSL certificate.", fix: "For local testing only: requests.get(url, verify=False). For production use the certifi package to bundle updated CA certificates." },
+      { error: "ConnectionRefusedError: [Errno 111] target closed connection", cause: "Target host is blocking the connection or the port is not open.", fix: "Confirm target is reachable: ping <target-ip>. Then test with nmap -p <port> <target> to verify port status." },
+    ];
+  }
+  // Default: Python / AIML / DataScience / NLP
+  return [
+    { error: "ModuleNotFoundError: No module named 'xyz'", cause: "The library is not installed in the current virtual environment.", fix: "Run: pip install [module_name]. Verify your active python environment with 'which python' (Mac/Linux) or 'where python' (Windows)." },
+    { error: "Address already in use / Port 5000 busy", cause: "A previous server session is still running in the background.", fix: "Kill the process: On Windows run 'taskkill /F /IM python.exe' or change port to 5001 in app.py." },
+    { error: "Out of Memory (OOM) / System Freezes during training", cause: "Batch size or image resolution is too high for laptop RAM/GPU.", fix: "Reduce batch size from 32 to 8 or 16, and resize images to 128×128 or 224×224 before training." },
+    { error: "Accuracy stuck at 50% or Loss not decreasing", cause: "Learning rate too high, or labels not encoded properly.", fix: "Lower learning rate to 0.0001 (1e-4) and verify labels are 0-indexed integers, not one-hot encoded strings." },
+  ];
+}
+
+type ActiveTab = "antigravity" | "steps" | "dataset" | "viva" | "architecture" | "deploy" | "troubleshoot" | "deliverables";
 
 export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint }) {
   const [email, setEmail] = useState("");
@@ -28,7 +175,11 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
   const [checkLoading, setCheckLoading] = useState(false);
   const [checkResult, setCheckResult] = useState<"found" | "not-found" | null>(null);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
-  const [activeTab, setActiveTab] = useState<ActiveTab>("steps");
+  const [activeTab, setActiveTab] = useState<ActiveTab>("antigravity");
+  const [payError, setPayError] = useState<string | null>(null);
+  const masterPrompt = generateAntigravityMasterPrompt(topic);
+  const buildInfo = getAntigravityBuildInfo(topic);
+  const relatedTopics = getRelatedTopics(topic.id, topic.category, 3);
 
   const difficultyStars = Array(5)
     .fill(0)
@@ -41,17 +192,18 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
   };
 
   const handlePay = async () => {
+    setPayError(null);
     if (!email || !phone) {
-      alert("Please enter your email and phone number.");
+      setPayError("Please enter your email and phone number.");
       return;
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      alert("Please enter a valid email address.");
+      setPayError("Please enter a valid email address.");
       return;
     }
-    if (phone.length < 10) {
-      alert("Please enter a valid 10-digit phone number.");
+    if (phone.replace(/\D/g, '').length < 10) {
+      setPayError("Please enter a valid 10-digit phone number.");
       return;
     }
 
@@ -70,7 +222,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
       });
       const orderData = await orderRes.json();
       if (!orderRes.ok || !orderData.orderId) {
-        alert("Failed to create order. Please try again.");
+        setPayError("Failed to create order. Please try again or contact support.");
         setLoading(false);
         return;
       }
@@ -89,7 +241,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
           description: `Project Blueprint: ${topic.title}`,
           order_id: orderData.orderId,
           prefill: { email, contact: phone },
-          theme: { color: "#2563eb" },
+          theme: { color: "#6366f1" },
           handler: async (response: any) => {
             // 3. Verify payment
             const verifyRes = await fetch("/api/blueprint/verify", {
@@ -107,7 +259,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
               setLoading(false);
               window.scrollTo({ top: 0, behavior: "smooth" });
             } else {
-              alert("Payment verification failed. Please contact support.");
+              setPayError("Payment verification failed. Please contact support on WhatsApp.");
               setLoading(false);
             }
           },
@@ -118,11 +270,22 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
         const rzp = new window.Razorpay(options);
         rzp.open();
       };
+
+      script.onerror = () => {
+        setPayError("Failed to load payment gateway. Please check your internet connection.");
+        setLoading(false);
+      };
     } catch (err) {
       console.error(err);
-      alert("Something went wrong. Please try again.");
+      setPayError("Something went wrong. Please try again or contact support.");
       setLoading(false);
     }
+  };
+
+  const handleShare = () => {
+    const url = window.location.href;
+    const text = `Check out this "${topic.title}" project blueprint on SubmitKit! Free preview + step-by-step guide 🚀`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text + "\n" + url)}`, "_blank");
   };
 
   const handleCheckAccess = async () => {
@@ -165,13 +328,13 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {
-      alert("Failed to generate PDF. Please try again.");
+      setPayError("Failed to generate the document. Please try again or contact support.");
     }
     setPdfLoading(false);
   };
 
   return (
-    <div className="min-h-screen bg-[#09090b] text-white relative overflow-hidden">
+    <div className="min-h-screen bg-[#09090b] text-white relative overflow-hidden page-enter">
       {/* Background glow orbs matching SubmitKit */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
         <div className="glow-orb w-[800px] h-[800px] bg-brand-500/10 top-0 left-1/2 -translate-x-1/2 -translate-y-1/2" />
@@ -179,7 +342,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
       </div>
 
       {/* Breadcrumb Navigation */}
-      <div className="border-b border-white/5 bg-zinc-950/40 backdrop-blur-md sticky top-16 z-40">
+      <div className="border-b border-white/5 bg-[#09090b]/80 backdrop-blur-sm relative z-20">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between text-xs">
           <div className="flex items-center gap-2 text-zinc-400">
             <Link href="/" className="hover:text-white transition-colors">Home</Link>
@@ -212,7 +375,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                 Full Blueprint Unlocked!
               </h2>
               <p className="text-sm text-zinc-300 leading-relaxed">
-                You have lifetime access to the complete build plan, source code guide, dataset setup, and examiner viva defense.
+                You have lifetime access to the complete build plan, source code guide, dataset setup, and evaluator scoring defense.
               </p>
             </div>
 
@@ -228,11 +391,23 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                   <><FileDown className="w-4 h-4" /> Download Official 20-Page Blueprint (DOCX / PDF)</>
                 )}
               </button>
+              <button
+                onClick={handleShare}
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#25D366]/10 border border-[#25D366]/30 text-[#25D366] text-sm font-semibold hover:bg-[#25D366]/20 transition-colors"
+              >
+                <Share2 className="w-4 h-4" /> Share with Classmates
+              </button>
             </div>
 
-            <p className="text-xs text-zinc-500">
-              Purchased for: <span className="text-zinc-300 font-mono">{email || checkEmail}</span> • You can always re-download anytime.
-            </p>
+            <div className="space-y-1.5">
+              <p className="text-xs text-zinc-500">
+                Purchased for: <span className="text-zinc-300 font-mono">{email || checkEmail}</span> • Lifetime access, re-download anytime.
+              </p>
+              <p className="text-xs text-emerald-500 flex items-center justify-center gap-1.5">
+                <Mail className="w-3.5 h-3.5" />
+                A confirmation email has been sent to your inbox.
+              </p>
+            </div>
           </div>
         )}
 
@@ -250,6 +425,16 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
             <span className="text-xs text-emerald-400 font-medium px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
               Approved by Examiners
             </span>
+            {buildInfo.canBuild ? (
+              <span className="flex items-center gap-1.5 px-3 py-0.5 text-xs font-black bg-gradient-to-r from-emerald-500/20 via-brand-500/20 to-purple-500/20 text-emerald-300 border border-emerald-500/40 rounded-full shadow-[0_0_15px_rgba(16,185,129,0.25)] animate-pulse">
+                <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                ⚡ 100% BUILDABLE IN ANTIGRAVITY WITHOUT CODING
+              </span>
+            ) : (
+              <span className="flex items-center gap-1.5 px-3 py-0.5 text-xs font-semibold bg-zinc-800/80 text-zinc-300 border border-white/10 rounded-full">
+                {buildInfo.badgeText}
+              </span>
+            )}
           </div>
 
           <h1 className="text-3xl md:text-5xl font-display font-extrabold text-white tracking-tight leading-tight">
@@ -259,7 +444,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
             {topic.tagline}
           </p>
 
-          <div className="flex flex-wrap items-center gap-6 pt-2 text-xs text-zinc-400 border-t border-white/5">
+          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-2 text-xs text-zinc-400 border-t border-white/5">
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4 text-brand-400" />
               <span>Build time: <strong className="text-white">{topic.buildTimeDays}</strong></span>
@@ -275,8 +460,79 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                 ))}
               </span>
             </div>
-            <div className="text-zinc-500">
-              Topic ID: <span className="font-mono text-zinc-400">{topic.id}</span>
+            <button
+              onClick={handleShare}
+              className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#25D366]/10 border border-[#25D366]/20 text-[#25D366] text-xs font-semibold hover:bg-[#25D366]/20 transition-colors"
+            >
+              <Share2 className="w-3.5 h-3.5" /> Share
+            </button>
+          </div>
+        </div>
+
+        {/* ── TIME-SAVER HOOK BANNER: MAKE THIS COMPLETE PROJECT IN ONE PROMPT ── */}
+        <div className="relative rounded-3xl overflow-hidden border-2 border-brand-500/40 bg-gradient-to-r from-brand-950/90 via-purple-950/70 to-zinc-900 p-6 md:p-8 shadow-2xl backdrop-blur-2xl">
+          {/* Ambient glow */}
+          <div className="absolute top-0 right-0 w-96 h-96 bg-brand-500/15 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+          <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+            <div className="space-y-3 max-w-2xl">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-brand-500/25 border border-brand-500/50 text-white text-xs font-black tracking-wider uppercase shadow-lg shadow-brand-500/20">
+                  <Sparkles className="w-4 h-4 text-brand-300 animate-pulse" />
+                  {buildInfo.canBuild ? "🚀 MAKE THIS COMPLETE PROJECT IN ONE PROMPT" : `🛠️ ${buildInfo.badgeText.toUpperCase()}`}
+                </span>
+                <span className="px-3 py-1 text-xs font-extrabold text-emerald-300 bg-emerald-500/20 border border-emerald-500/35 rounded-full flex items-center gap-1">
+                  <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
+                  {buildInfo.pillBadgeText}
+                </span>
+              </div>
+
+              <h2 className="text-2xl md:text-3xl font-display font-black text-white tracking-tight leading-snug">
+                {buildInfo.hookHeadline}
+              </h2>
+
+              <p className="text-sm md:text-base text-zinc-200 leading-relaxed font-normal">
+                {buildInfo.hookSubtext}
+              </p>
+
+              {/* 3 Quick Benefit Pills so user understands everything */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2">
+                {buildInfo.benefitPills.map((pill, idx) => (
+                  <div key={idx} className="bg-black/40 border border-white/10 rounded-xl p-2.5 text-xs text-zinc-300 flex items-center gap-2">
+                    <CheckCircle className={`w-4 h-4 shrink-0 ${pill.color}`} />
+                    <span><strong>{pill.title}:</strong> {pill.text}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="shrink-0 w-full lg:w-auto flex flex-col sm:flex-row lg:flex-col gap-3">
+              {unlocked ? (
+                <button
+                  onClick={() => {
+                    setActiveTab("antigravity");
+                    window.scrollTo({ top: 440, behavior: "smooth" });
+                  }}
+                  className="w-full inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 hover:brightness-110 text-white font-extrabold text-sm rounded-2xl shadow-xl shadow-brand-500/30 transition-all hover:scale-[1.02]"
+                >
+                  <Sparkles className="w-5 h-5" /> View Project Blueprint & Code
+                </button>
+              ) : (
+                <button
+                  onClick={() => {
+                    const checkoutEl = document.querySelector('input[type="email"]');
+                    if (checkoutEl) {
+                      checkoutEl.scrollIntoView({ behavior: "smooth", block: "center" });
+                      (checkoutEl as HTMLInputElement).focus();
+                    }
+                  }}
+                  className="w-full inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-gradient-to-r from-emerald-500 via-brand-600 to-indigo-600 hover:brightness-110 text-white font-black text-sm rounded-2xl shadow-2xl shadow-emerald-500/25 transition-all hover:scale-[1.02] uppercase tracking-wider"
+                >
+                  <Sparkles className="w-5 h-5" /> {buildInfo.canBuild ? "Unlock 1-Prompt Blueprint — ₹19" : "Unlock Complete Blueprint — ₹19"}
+                </button>
+              )}
+              <p className="text-[11px] text-zinc-400 text-center font-medium">
+                {buildInfo.canBuild ? "⚡ 10-minute setup • Verified by college project guides" : "⚡ Complete verified build plan • 100% examiner approved"}
+              </p>
             </div>
           </div>
         </div>
@@ -295,14 +551,15 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
               ══════════════════════════════════════════════════════════ */
               <div className="space-y-8">
                 
-                {/* Navigation Pills */}
-                <div className="flex flex-wrap gap-2 p-1.5 bg-zinc-900/80 border border-white/10 rounded-2xl backdrop-blur-md">
+                {/* Navigation Pills — horizontally scrollable on mobile */}
+                <div className="flex gap-2 p-1.5 bg-zinc-900/80 border border-white/10 rounded-2xl backdrop-blur-md overflow-x-auto scrollbar-hide">
                   {[
-                    { id: "steps", label: "Build Steps & Code", icon: Wrench },
+                    { id: "antigravity", label: buildInfo.tab0Label, icon: buildInfo.canBuild ? Sparkles : Cpu },
+                    { id: "steps", label: "Step-by-Step Guide", icon: Wrench },
                     { id: "dataset", label: "Dataset Master Guide", icon: Database },
-                    { id: "viva", label: "Examiner Viva Defense", icon: Mic },
-                    { id: "architecture", label: "Architecture", icon: Cpu },
-                    { id: "deploy", label: "Deployment Guide", icon: Terminal },
+                    { id: "viva", label: "Evaluator Defense Q&A", icon: Mic },
+                    { id: "architecture", label: "Architecture", icon: Layers },
+                    { id: "deploy", label: "Deployment", icon: Terminal },
                     { id: "troubleshoot", label: "Troubleshooting", icon: ShieldAlert },
                     { id: "deliverables", label: "Black Book & PPT", icon: Presentation },
                   ].map((tab) => {
@@ -311,7 +568,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                       <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id as ActiveTab)}
-                        className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all ${
+                        className={`flex-shrink-0 flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all whitespace-nowrap ${
                           activeTab === tab.id
                             ? "bg-brand-600 text-white shadow-md shadow-brand-500/20 font-bold"
                             : "text-zinc-400 hover:text-white hover:bg-white/5"
@@ -324,95 +581,237 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                   })}
                 </div>
 
-                {/* TAB 1: BUILD STEPS & CODE */}
+                {/* TAB 0: BUILD GUIDE */}
+                {activeTab === "antigravity" && (
+                  <div className="space-y-6 tab-panel-enter">
+                    <div className="border-b border-white/10 pb-3">
+                      <div className="flex flex-wrap items-center justify-between gap-3">
+                        <div>
+                          <h2 className="text-xl font-display font-bold text-white flex items-center gap-2">
+                            {buildInfo.canBuild ? (
+                              <Sparkles className="w-5 h-5 text-brand-400" />
+                            ) : (
+                              <Cpu className="w-5 h-5 text-brand-400" />
+                            )}
+                            {buildInfo.tab0Title}
+                          </h2>
+                          <p className="text-xs text-zinc-400 mt-0.5">
+                            {buildInfo.tab0Sub}
+                          </p>
+                        </div>
+                        <button
+                          onClick={() => copyToClipboard(masterPrompt, 9999)}
+                          className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-blue-500/20 transition-all"
+                        >
+                          {copiedIndex === 9999 ? (
+                            <><Check className="w-3.5 h-3.5 text-emerald-300" /> Copied!</>
+                          ) : (
+                            <><Copy className="w-3.5 h-3.5" /> {buildInfo.copyButtonText}</>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* 3-Step Baby-Step Workflow */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
+                      {buildInfo.workflowSteps.map((step) => (
+                        <div key={step.step} className="bg-zinc-900/60 border border-white/10 rounded-xl p-4 space-y-2">
+                          <div className={`flex items-center gap-2 font-bold text-xs ${step.color}`}>
+                            <span className="w-6 h-6 rounded-md bg-white/5 border border-white/15 flex items-center justify-center font-mono text-xs">{step.step}</span>
+                            {step.title}
+                          </div>
+                          <p className="text-xs text-zinc-300 leading-relaxed">
+                            {step.desc}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Master Prompt Box */}
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-mono font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-1.5">
+                          <Terminal className="w-3.5 h-3.5 text-brand-400" />
+                          {buildInfo.promptBoxTitle}
+                        </span>
+                        <span className="text-[11px] text-zinc-500 font-mono">
+                          {masterPrompt.length} characters • Ready to use
+                        </span>
+                      </div>
+
+                      <div className="relative group">
+                        <pre className="bg-black/90 border border-zinc-800 rounded-2xl p-5 font-mono text-xs text-zinc-200 overflow-x-auto leading-relaxed max-h-[420px] whitespace-pre-wrap select-all">
+                          {masterPrompt}
+                        </pre>
+                        <div className="absolute top-3 right-3">
+                          <button
+                            onClick={() => copyToClipboard(masterPrompt, 9999)}
+                            className="flex items-center gap-1.5 px-3 py-1.5 bg-zinc-800/90 hover:bg-zinc-700 text-zinc-200 hover:text-white rounded-lg text-xs font-medium border border-white/10 backdrop-blur-md transition-all"
+                          >
+                            {copiedIndex === 9999 ? (
+                              <><Check className="w-3.5 h-3.5 text-emerald-400" /> Copied!</>
+                            ) : (
+                              <><Copy className="w-3.5 h-3.5" /> Copy</>
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Creative Freedom & Base MVP Callout */}
+                    <div className="rounded-2xl border border-amber-500/30 bg-gradient-to-r from-amber-950/30 via-zinc-900 to-amber-950/20 p-5 space-y-2 text-xs text-amber-200 shadow-xl">
+                      <div className="flex items-center gap-2 font-bold text-amber-300 text-sm">
+                        <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
+                        Base MVP Foundation & Complete Creative Freedom
+                      </div>
+                      <p className="text-zinc-300 leading-relaxed text-xs">
+                        <strong>Important Note:</strong> This Master Prompt generates a complete, fully working <strong>Base MVP (Minimum Viable Product)</strong> of your project right out of the box. Use this as your solid operational foundation! As per your personal creativity and college project guidelines, you can freely update, refine, and customize the system whenever you want simply by asking the AI (e.g. <em>&ldquo;Add dark/light theme switch&rdquo;</em>, <em>&ldquo;Export records as Excel / PDF&rdquo;</em>, or <em>&ldquo;Integrate email alerts&rdquo;</em>). You have complete freedom to make it uniquely yours!
+                      </p>
+                    </div>
+
+                    {/* Why this master prompt works */}
+                    <div className="glass-card bg-zinc-900/50 border border-white/10 rounded-2xl p-6 space-y-4">
+                      <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                        <CheckCircle className="w-4 h-4 text-emerald-400" />
+                        Why This Master Prompt Produces Working Code On First Try:
+                      </h3>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                        <div className="bg-zinc-950/60 border border-white/5 rounded-xl p-3.5 space-y-1">
+                          <strong className="text-white block font-semibold">Includes Synthetic Data Generator</strong>
+                          <p className="text-zinc-400 leading-relaxed">
+                            Instructs the AI to generate a standalone data script so your project works right out of the box without needing 2GB dataset downloads.
+                          </p>
+                        </div>
+                        <div className="bg-zinc-950/60 border border-white/5 rounded-xl p-3.5 space-y-1">
+                          <strong className="text-white block font-semibold">Strict No-Placeholder Rule</strong>
+                          <p className="text-zinc-400 leading-relaxed">
+                            Forbids lazy comments like &ldquo;// implement here&rdquo;. Demands complete, line-by-line execution logic.
+                          </p>
+                        </div>
+                        <div className="bg-zinc-950/60 border border-white/5 rounded-xl p-3.5 space-y-1">
+                          <strong className="text-white block font-semibold">Modern Responsive Dashboard</strong>
+                          <p className="text-zinc-400 leading-relaxed">
+                            Mandates a dark-mode interactive UI with live metrics and real-time visualization that impresses college evaluators.
+                          </p>
+                        </div>
+                        <div className="bg-zinc-950/60 border border-white/5 rounded-xl p-3.5 space-y-1">
+                          <strong className="text-white block font-semibold">Built-in Automated Tests</strong>
+                          <p className="text-zinc-400 leading-relaxed">
+                            Forces unit tests verifying accuracy and error handling, giving you tangible proof to show in Chapter 5 of your Black Book.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* TAB 1: STEP-BY-STEP IMPLEMENTATION (CONCEPTUAL BABY STEPS - NO RAW CODE) */}
                 {activeTab === "steps" && (
-                  <div className="space-y-6">
-                    <div className="flex items-center justify-between border-b border-white/10 pb-3">
+                  <div className="space-y-6 tab-panel-enter">
+                    <div className="flex flex-wrap items-center justify-between border-b border-white/10 pb-3 gap-2">
                       <div>
                         <h2 className="text-xl font-display font-bold text-white flex items-center gap-2">
                           <Wrench className="w-5 h-5 text-brand-400" />
                           Step-by-Step Implementation Guide
                         </h2>
                         <p className="text-xs text-zinc-400 mt-0.5">
-                          Follow these {topic.buildSteps?.length || 0} practical steps from environment setup to working project.
+                          Follow these {topic.buildSteps?.length || 0} clear conceptual baby steps from environment setup to live demo.
                         </p>
                       </div>
+                      <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-300">
+                        100% Theory & Architecture • Zero Code Clutter
+                      </span>
                     </div>
 
                     <div className="space-y-5">
                       {topic.buildSteps && topic.buildSteps.length > 0 ? (
-                        topic.buildSteps.map((step, idx) => (
-                          <div key={idx} className="glass-card bg-zinc-900/50 border border-white/10 rounded-2xl p-5 md:p-6 space-y-4">
-                            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/5 pb-3">
-                              <div className="flex items-center gap-2.5">
-                                <span className="w-7 h-7 rounded-lg bg-brand-500/15 border border-brand-500/30 text-brand-400 font-bold text-xs flex items-center justify-center font-mono">
-                                  {step.step}
+                        topic.buildSteps.map((step, idx) => {
+                          const babySteps = deriveConceptualSteps(step.title);
+                          return (
+                            <div key={idx} className="glass-card bg-zinc-900/50 border border-white/10 rounded-2xl p-5 md:p-6 space-y-4">
+                              <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/5 pb-3">
+                                <div className="flex items-center gap-2.5">
+                                  <span className="w-7 h-7 rounded-lg bg-brand-500/15 border border-brand-500/30 text-brand-400 font-bold text-xs flex items-center justify-center font-mono">
+                                    {step.step}
+                                  </span>
+                                  <h3 className="text-base font-display font-bold text-white">
+                                    {step.title}
+                                  </h3>
+                                </div>
+                                <span className="text-xs text-zinc-400 flex items-center gap-1">
+                                  <Clock className="w-3.5 h-3.5 text-zinc-500" /> {step.duration}
                                 </span>
-                                <h3 className="text-base font-display font-bold text-white">
-                                  {step.title}
-                                </h3>
                               </div>
-                              <span className="text-xs text-zinc-400 flex items-center gap-1">
-                                <Clock className="w-3.5 h-3.5 text-zinc-500" /> {step.duration}
-                              </span>
-                            </div>
 
-                            <p className="text-sm text-zinc-300 leading-relaxed">
-                              {step.description}
-                            </p>
+                              <p className="text-sm text-zinc-300 leading-relaxed">
+                                {step.description}
+                              </p>
 
-                            {/* Commands */}
-                            {step.commands && step.commands.length > 0 && (
-                              <div className="space-y-1.5">
-                                <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block">Terminal Commands:</span>
-                                <div className="bg-black/80 border border-zinc-800 rounded-xl p-3.5 font-mono text-xs text-emerald-400 space-y-1 overflow-x-auto">
-                                  {step.commands.map((cmd, cIdx) => (
-                                    <div key={cIdx} className="flex items-center justify-between gap-2">
-                                      <span>$ {cmd}</span>
-                                      <button
-                                        onClick={() => copyToClipboard(cmd, idx * 100 + cIdx)}
-                                        className="text-zinc-500 hover:text-white p-1"
-                                        title="Copy command"
-                                      >
-                                        {copiedIndex === idx * 100 + cIdx ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                                      </button>
-                                    </div>
+                              {/* Conceptual Baby Steps Breakdown */}
+                              <div className="space-y-2 bg-zinc-950/60 border border-white/5 rounded-xl p-4">
+                                <span className="text-[11px] font-bold text-brand-400 uppercase tracking-wider block">
+                                  Detailed Implementation Mechanics:
+                                </span>
+                                <ul className="space-y-2 text-xs text-zinc-300">
+                                  {babySteps.map((bStep, bIdx) => (
+                                    <li key={bIdx} className="flex items-start gap-2.5">
+                                      <span className="w-4 h-4 rounded-full bg-brand-500/20 text-brand-300 font-mono text-[10px] flex items-center justify-center shrink-0 mt-0.5">
+                                        {bIdx + 1}
+                                      </span>
+                                      <span className="leading-relaxed">{bStep}</span>
+                                    </li>
                                   ))}
-                                </div>
+                                </ul>
                               </div>
-                            )}
 
-                            {/* Code Snippet */}
-                            {step.codeSnippet && (
-                              <div className="space-y-1.5">
-                                <div className="flex items-center justify-between">
-                                  <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider">Source Code:</span>
-                                  <button
-                                    onClick={() => copyToClipboard(step.codeSnippet!, idx)}
-                                    className="text-xs text-brand-400 hover:text-brand-300 font-medium flex items-center gap-1"
-                                  >
-                                    {copiedIndex === idx ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                                    {copiedIndex === idx ? "Copied!" : "Copy Code"}
-                                  </button>
+                              {/* Commands */}
+                              {step.commands && step.commands.length > 0 && (
+                                <div className="space-y-1.5">
+                                  <span className="text-[11px] font-bold text-zinc-500 uppercase tracking-wider block">Terminal Commands:</span>
+                                  <div className="bg-black/80 border border-zinc-800 rounded-xl p-3.5 font-mono text-xs text-emerald-400 space-y-1 overflow-x-auto">
+                                    {step.commands.map((cmd, cIdx) => (
+                                      <div key={cIdx} className="flex items-center justify-between gap-2">
+                                        <span>$ {cmd}</span>
+                                        <button
+                                          onClick={() => copyToClipboard(cmd, idx * 100 + cIdx)}
+                                          className="text-zinc-500 hover:text-white p-1"
+                                          title="Copy command"
+                                        >
+                                          {copiedIndex === idx * 100 + cIdx ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                                        </button>
+                                      </div>
+                                    ))}
+                                  </div>
                                 </div>
-                                <pre className="bg-black/90 border border-zinc-800 rounded-xl p-4 font-mono text-xs text-zinc-300 overflow-x-auto leading-relaxed max-h-96">
-                                  <code>{step.codeSnippet}</code>
-                                </pre>
-                              </div>
-                            )}
+                              )}
 
-                            {/* Expected Output */}
-                            {step.expectedOutput && (
-                              <div className="rounded-xl bg-emerald-500/5 border border-emerald-500/20 p-3 text-xs text-zinc-300 flex items-start gap-2">
-                                <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-                                <div>
-                                  <strong className="text-emerald-400 font-semibold block">Expected Output:</strong>
-                                  <span>{step.expectedOutput}</span>
+                              {/* Expected Output */}
+                              {step.expectedOutput && (
+                                <div className="rounded-xl bg-emerald-500/5 border border-emerald-500/20 p-3 text-xs text-zinc-300 flex items-start gap-2">
+                                  <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                                  <div>
+                                    <strong className="text-emerald-400 font-semibold block">Expected Output & Verification:</strong>
+                                    <span>{step.expectedOutput}</span>
+                                  </div>
                                 </div>
+                              )}
+
+                              {/* Zero-Code Antigravity Callout */}
+                              <div className="flex items-center justify-between p-3 rounded-xl bg-purple-950/20 border border-purple-500/20 text-xs text-purple-200">
+                                <span className="flex items-center gap-2">
+                                  <Sparkles className="w-3.5 h-3.5 text-purple-400 shrink-0" />
+                                  <span>Build this step without code in seconds using the Antigravity Master Prompt.</span>
+                                </span>
+                                <button
+                                  onClick={() => setActiveTab("antigravity")}
+                                  className="text-xs font-bold text-purple-300 hover:text-white underline shrink-0 ml-2"
+                                >
+                                  View Master Prompt →
+                                </button>
                               </div>
-                            )}
-                          </div>
-                        ))
+                            </div>
+                          );
+                        })
                       ) : (
                         <p className="text-sm text-zinc-400">No build steps defined for this preview.</p>
                       )}
@@ -422,7 +821,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
 
                 {/* TAB 2: DATASET MASTER GUIDE */}
                 {activeTab === "dataset" && (
-                  <div className="space-y-6">
+                  <div className="space-y-6 tab-panel-enter">
                     <div className="border-b border-white/10 pb-3">
                       <h2 className="text-xl font-display font-bold text-white flex items-center gap-2">
                         <Database className="w-5 h-5 text-emerald-400" />
@@ -499,71 +898,84 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                   </div>
                 )}
 
-                {/* TAB 3: EXAMINER VIVA DEFENSE */}
+                {/* TAB 3: EVALUATOR DEFENSE */}
                 {activeTab === "viva" && (
-                  <div className="space-y-6">
+                  <div className="space-y-6 tab-panel-enter">
                     <div className="border-b border-white/10 pb-3">
                       <h2 className="text-xl font-display font-bold text-white flex items-center gap-2">
                         <Mic className="w-5 h-5 text-purple-400" />
-                        Examiner Viva Defense Masterpack
+                        System Understanding & Defense Mastery (Easy to Understand)
                       </h2>
                       <p className="text-xs text-zinc-400 mt-0.5">
-                        Word-for-word scripts to answer tricky external examiner questions in easy English.
+                        Key engineering decisions explained in simple English so you can explain your system to any evaluator with total confidence.
                       </p>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="space-y-5">
                       {topic.vivaQA && topic.vivaQA.length > 0 ? (
-                        topic.vivaQA.map((qa, qIdx) => (
-                          <div key={qIdx} className="glass-card bg-zinc-900/50 border border-white/10 rounded-2xl p-5 md:p-6 space-y-4">
-                            <div className="flex items-start gap-3">
-                              <span className="w-6 h-6 rounded-md bg-purple-500/15 border border-purple-500/30 text-purple-400 font-mono text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
-                                Q{qIdx + 1}
-                              </span>
-                              <h3 className="text-base font-display font-bold text-white leading-snug">
-                                "{qa.question}"
-                              </h3>
-                            </div>
+                        topic.vivaQA.map((qa, qIdx) => {
+                          const cleanTitle = qa.question
+                            .replace(/\?$/, "")
+                            .replace(/^(What is the|What is|Why did you choose|Why use|How does the|How does|Can you explain|What happens if|How would you handle|How do you)\s+/i, "")
+                            .trim();
+                          const conceptTitle = cleanTitle.charAt(0).toUpperCase() + cleanTitle.slice(1);
 
-                            {/* Why asked */}
-                            <div className="rounded-xl bg-zinc-950/60 border border-white/5 p-3.5 text-xs">
-                              <span className="text-zinc-500 font-semibold block mb-0.5">Why Examiner Asks This:</span>
-                              <p className="text-zinc-300">{qa.whyAsked}</p>
-                            </div>
-
-                            {/* Perfect Answer */}
-                            <div className="rounded-xl bg-emerald-500/5 border border-emerald-500/20 p-4 text-xs space-y-1.5">
-                              <div className="flex items-center justify-between">
-                                <span className="text-emerald-400 font-bold flex items-center gap-1.5 uppercase tracking-wider text-[11px]">
-                                  <CheckCircle className="w-3.5 h-3.5" /> Perfect Answer in Easy English:
+                          return (
+                            <div key={qIdx} className="glass-card bg-zinc-900/50 border border-white/10 rounded-2xl p-5 md:p-6 space-y-4">
+                              <div className="flex items-start gap-3">
+                                <span className="w-7 h-7 rounded-lg bg-purple-500/15 border border-purple-500/30 text-purple-400 font-mono text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
+                                  0{qIdx + 1}
                                 </span>
-                                <button
-                                  onClick={() => copyToClipboard(qa.perfectAnswer, 500 + qIdx)}
-                                  className="text-zinc-400 hover:text-white"
-                                  title="Copy answer"
-                                >
-                                  {copiedIndex === 500 + qIdx ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                                </button>
-                              </div>
-                              <p className="text-zinc-200 leading-relaxed text-sm">
-                                "{qa.perfectAnswer}"
-                              </p>
-                            </div>
-
-                            {/* Trap to avoid */}
-                            {qa.avoidSaying && (
-                              <div className="rounded-xl bg-red-500/5 border border-red-500/20 p-3.5 text-xs text-red-300 flex items-start gap-2">
-                                <AlertTriangle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
                                 <div>
-                                  <strong className="text-red-400 font-semibold block">Trap to NEVER Say:</strong>
-                                  <span>"{qa.avoidSaying}"</span>
+                                  <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block font-mono">Core System Concept:</span>
+                                  <h3 className="text-base font-display font-bold text-white leading-snug">
+                                    {conceptTitle}
+                                  </h3>
                                 </div>
                               </div>
-                            )}
-                          </div>
-                        ))
+
+                              {/* Plain English explanation */}
+                              <div className="rounded-xl bg-emerald-500/5 border border-emerald-500/20 p-4 text-xs space-y-1.5">
+                                <div className="flex items-center justify-between">
+                                  <span className="text-emerald-400 font-bold flex items-center gap-1.5 uppercase tracking-wider text-[11px]">
+                                    <CheckCircle className="w-3.5 h-3.5" /> Plain-English Explanation:
+                                  </span>
+                                  <button
+                                    onClick={() => copyToClipboard(qa.perfectAnswer, 500 + qIdx)}
+                                    className="text-zinc-400 hover:text-white"
+                                    title="Copy explanation"
+                                  >
+                                    {copiedIndex === 500 + qIdx ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                                  </button>
+                                </div>
+                                <p className="text-zinc-200 leading-relaxed text-sm">
+                                  "{qa.perfectAnswer}"
+                                </p>
+                              </div>
+
+                              {/* Why this matters in the architecture */}
+                              <div className="rounded-xl bg-zinc-950/60 border border-white/5 p-3.5 text-xs">
+                                <span className="text-zinc-500 font-semibold block mb-0.5">Why This Matters in the Architecture:</span>
+                                <p className="text-zinc-300">{qa.whyAsked}</p>
+                              </div>
+
+                              {/* Evaluator Scoring Edge / Pro Tip */}
+                              {qa.avoidSaying && (
+                                <div className="rounded-xl bg-amber-500/10 border border-amber-500/25 p-3.5 text-xs text-amber-200 flex items-start gap-2.5">
+                                  <Sparkles className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                                  <div>
+                                    <strong className="text-amber-300 font-bold block">💡 Evaluator Scoring Edge & Key Insight:</strong>
+                                    <span className="text-zinc-300 leading-relaxed">
+                                      {qa.avoidSaying.replace(/^(Do not say\s*"?|Trap:\s*"?)/i, "Always highlight that: ")}
+                                    </span>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          );
+                        })
                       ) : (
-                        <p className="text-sm text-zinc-400">Viva questions loading...</p>
+                        <p className="text-sm text-zinc-400">System defense concepts loading...</p>
                       )}
                     </div>
                   </div>
@@ -571,7 +983,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
 
                 {/* TAB 4: ARCHITECTURE */}
                 {activeTab === "architecture" && (
-                  <div className="space-y-6">
+                  <div className="space-y-6 tab-panel-enter">
                     <div className="border-b border-white/10 pb-3">
                       <h2 className="text-xl font-display font-bold text-white flex items-center gap-2">
                         <Cpu className="w-5 h-5 text-brand-400" />
@@ -619,7 +1031,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
 
                 {/* TAB 5: DEPLOYMENT */}
                 {activeTab === "deploy" && (
-                  <div className="space-y-6">
+                  <div className="space-y-6 tab-panel-enter">
                     <div className="border-b border-white/10 pb-3">
                       <h2 className="text-xl font-display font-bold text-white flex items-center gap-2">
                         <Terminal className="w-5 h-5 text-blue-400" />
@@ -652,7 +1064,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
 
                 {/* TAB 6: TROUBLESHOOTING */}
                 {activeTab === "troubleshoot" && (
-                  <div className="space-y-6">
+                  <div className="space-y-6 tab-panel-enter">
                     <div className="border-b border-white/10 pb-3">
                       <h2 className="text-xl font-display font-bold text-white flex items-center gap-2">
                         <ShieldAlert className="w-5 h-5 text-amber-400" />
@@ -664,28 +1076,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                     </div>
 
                     <div className="space-y-4">
-                      {[
-                        {
-                          error: "ModuleNotFoundError: No module named 'xyz'",
-                          cause: "The library is not installed in the current virtual environment.",
-                          fix: "Run: pip install [module_name] or verify your active python environment with 'which python' / 'where python'."
-                        },
-                        {
-                          error: "Address already in use / Port 5000 busy",
-                          cause: "A previous server session is still running in the background.",
-                          fix: "Kill the process: On Windows run 'taskkill /F /IM python.exe' or change port to 5001 in app.py."
-                        },
-                        {
-                          error: "Out of Memory (OOM) / System Freezes",
-                          cause: "The batch size or image resolution is too high for laptop RAM/GPU.",
-                          fix: "Reduce batch size from 32 to 8 or 16, and resize images to 128x128 or 224x224 before training."
-                        },
-                        {
-                          error: "Accuracy stuck at 50% or Loss not decreasing",
-                          cause: "Learning rate too high, or labels not encoded properly.",
-                          fix: "Lower learning rate to 0.0001 (1e-4) and verify that labels are 0-indexed integers."
-                        }
-                      ].map((item, idx) => (
+                      {getTroubleshootingErrors(topic.category).map((item, idx) => (
                         <div key={idx} className="glass-card bg-zinc-900/50 border border-white/10 rounded-2xl p-5 space-y-3">
                           <div className="flex items-center gap-2 text-red-400 text-sm font-bold font-mono">
                             <AlertTriangle className="w-4 h-4 shrink-0" />
@@ -705,7 +1096,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
 
                 {/* TAB 7: BLACK BOOK & PPT */}
                 {activeTab === "deliverables" && (
-                  <div className="space-y-6">
+                  <div className="space-y-6 tab-panel-enter">
                     <div className="border-b border-white/10 pb-3">
                       <h2 className="text-xl font-display font-bold text-white flex items-center gap-2">
                         <Presentation className="w-5 h-5 text-indigo-400" />
@@ -773,19 +1164,6 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                  LOCKED STATE: FREE HIGH-VALUE TEASER + PSYCHOLOGICAL HOOKS
               ══════════════════════════════════════════════════════════ */
               <div className="space-y-8">
-
-                {/* Hook 1: Examiner Warning Alert */}
-                <div className="rounded-2xl border border-red-500/30 bg-red-950/20 p-5 flex gap-3.5 shadow-lg shadow-red-950/30">
-                  <AlertTriangle className="w-5 h-5 text-red-400 shrink-0 mt-0.5" />
-                  <div className="space-y-1">
-                    <p className="font-display font-bold text-red-400 text-sm tracking-wide">
-                      EXAMINER ALERT: WHY STUDENTS LOSE MARKS HERE
-                    </p>
-                    <p className="text-zinc-300 text-xs sm:text-sm leading-relaxed">
-                      Most students get grilled in the viva for this project — not because the code doesn't work, but because they can't explain the underlying algorithm or dataset limitations. This blueprint prepares you for every question your examiner will throw at you.
-                    </p>
-                  </div>
-                </div>
 
                 {/* Section: What this project does */}
                 <section className="glass-card bg-zinc-900/50 border border-white/10 rounded-2xl p-6 space-y-3">
@@ -926,23 +1304,13 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                   </p>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div className="bg-zinc-950/60 border border-white/5 rounded-xl p-3.5 text-center">
-                      <span className="text-[11px] text-zinc-500 font-medium block">Model Accuracy / F1</span>
-                      <p className="text-xl font-display font-black text-emerald-400 mt-1">92% – 98%</p>
-                      <span className="text-[10px] text-zinc-500 block mt-0.5">On standard test split</span>
-                    </div>
-
-                    <div className="bg-zinc-950/60 border border-white/5 rounded-xl p-3.5 text-center">
-                      <span className="text-[11px] text-zinc-500 font-medium block">Inference Speed</span>
-                      <p className="text-xl font-display font-black text-brand-400 mt-1">&lt; 45 ms</p>
-                      <span className="text-[10px] text-zinc-500 block mt-0.5">Real-time response</span>
-                    </div>
-
-                    <div className="bg-zinc-950/60 border border-white/5 rounded-xl p-3.5 text-center">
-                      <span className="text-[11px] text-zinc-500 font-medium block">Dataset Split</span>
-                      <p className="text-xl font-display font-black text-purple-400 mt-1">80 / 20</p>
-                      <span className="text-[10px] text-zinc-500 block mt-0.5">Train / Test ratio</span>
-                    </div>
+                    {getTopicMetrics(topic.category).map((metric, mIdx) => (
+                      <div key={mIdx} className="bg-zinc-950/60 border border-white/5 rounded-xl p-3.5 text-center">
+                        <span className="text-[11px] text-zinc-500 font-medium block">{metric.label}</span>
+                        <p className={`text-xl font-display font-black mt-1 ${metric.color}`}>{metric.value}</p>
+                        <span className="text-[10px] text-zinc-500 block mt-0.5">{metric.sub}</span>
+                      </div>
+                    ))}
                   </div>
                 </section>
 
@@ -967,7 +1335,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                       <div>
                         <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-wider font-mono">Step {step} of 8</span>
                         <p className="text-zinc-600 text-xs blur-sm select-none">
-                          This step contains exact terminal commands, copy-pasteable Python code snippets, and expected terminal output.
+                          This step contains detailed architecture baby steps, terminal commands, and Antigravity Zero-Code prompt instructions.
                         </p>
                       </div>
                     </div>
@@ -975,7 +1343,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
 
                   <div className="text-center pt-2">
                     <p className="text-xs text-zinc-400">
-                      🔒 All 8+ steps with code snippets, architecture flow, and deployment — unlock for ₹19
+                      🔒 All 8+ steps with {buildInfo.canBuild ? "Antigravity Master Prompt" : "verified implementation code"}, architecture flow, and evaluator Q&A — unlock for ₹19
                     </p>
                   </div>
                 </section>
@@ -1002,7 +1370,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                 <div className="rounded-2xl border border-amber-500/25 bg-amber-950/15 p-5 flex gap-3.5">
                   <span className="text-amber-400 text-xl shrink-0">⏰</span>
                   <p className="text-zinc-300 text-xs sm:text-sm leading-relaxed">
-                    Final year deadlines are approaching fast. Every day you wait is one less day to test your project, fix bugs, and practice your viva defense.
+                    Final year deadlines are approaching fast. Every day you wait is one less day to test your project, fix bugs, and master your evaluator defense.
                   </p>
                 </div>
 
@@ -1043,17 +1411,29 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
 
                   {/* Checkout inputs */}
                   <div className="space-y-3">
+                    {payError && (
+                      <div className="flex items-start gap-2 text-xs text-red-400 bg-red-950/40 border border-red-500/30 rounded-xl p-3">
+                        <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-red-400" />
+                        <span>{payError}</span>
+                      </div>
+                    )}
                     <input
                       type="email"
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                        if (payError) setPayError(null);
+                      }}
                       placeholder="Your email address"
                       className="w-full px-3.5 py-3 bg-zinc-950 border border-white/10 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-brand-500 text-xs transition-colors"
                     />
                     <input
                       type="tel"
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
+                      onChange={(e) => {
+                        setPhone(e.target.value);
+                        if (payError) setPayError(null);
+                      }}
                       placeholder="WhatsApp phone number (10 digits)"
                       className="w-full px-3.5 py-3 bg-zinc-950 border border-white/10 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-brand-500 text-xs transition-colors"
                     />
@@ -1075,15 +1455,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                     <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block mb-1">
                       Everything Included for ₹19:
                     </span>
-                    {[
-                      "Official 20-page Word/PDF download",
-                      "All build steps with copy-paste code",
-                      "Exact dataset link + preprocessing script",
-                      "Full examiner viva Q&A with model answers",
-                      "Common error troubleshooting guide",
-                      "Black Book chapter breakdown & PPT outline",
-                      "Free deployment guide (laptop & cloud)",
-                    ].map((item, i) => (
+                    {buildInfo.checklist.map((item, i) => (
                       <div key={i} className="flex items-start gap-2 text-xs text-zinc-300">
                         <CheckCircle className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
                         <span>{item}</span>
@@ -1117,6 +1489,18 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                       </p>
                     )}
                   </div>
+
+                  {/* WhatsApp Support CTA in Sidebar */}
+                  <div className="pt-3 border-t border-white/5">
+                    <a
+                      href={`https://wa.me/918799814256?text=${encodeURIComponent(`Hi SubmitKit team! I have a question about the blueprint: ${topic.title}`)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-[#25D366]/10 border border-[#25D366]/25 text-[#25D366] text-xs font-semibold hover:bg-[#25D366]/20 transition-colors"
+                    >
+                      <MessageCircle className="w-4 h-4" /> Need help? Chat on WhatsApp
+                    </a>
+                  </div>
                 </div>
               ) : (
                 <div className="glass-card bg-zinc-900/80 border border-emerald-500/40 rounded-2xl p-6 space-y-4 shadow-2xl backdrop-blur-xl">
@@ -1136,8 +1520,34 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                     )}
                   </button>
                   <p className="text-xs text-zinc-500 text-center leading-relaxed">
-                    Document includes full code, architecture diagrams, viva Q&A, and Black Book template.
+                    Document includes {buildInfo.canBuild ? "Antigravity Master Prompt" : "verified source code guide"}, conceptual baby steps, architecture diagrams, evaluator scoring pack, and Black Book template.
                   </p>
+
+                  <a
+                    href={`https://wa.me/918799814256?text=${encodeURIComponent(`Hi SubmitKit! I have unlocked the blueprint for: ${topic.title} and would like project assistance.`)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-[#25D366]/10 border border-[#25D366]/25 text-[#25D366] text-xs font-semibold hover:bg-[#25D366]/20 transition-colors"
+                  >
+                    <MessageCircle className="w-4 h-4" /> Chat with Project Guide
+                  </a>
+
+                  {/* Cross-Sell Card to Full Projects */}
+                  <div className="rounded-xl border border-brand-500/30 bg-gradient-to-b from-brand-500/10 to-transparent p-4 space-y-2.5 mt-2">
+                    <div className="flex items-center gap-1.5 text-xs font-bold text-white">
+                      <Sparkles className="w-3.5 h-3.5 text-brand-400" />
+                      Want the full working project?
+                    </div>
+                    <p className="text-[11px] text-zinc-400 leading-relaxed">
+                      Get complete tested source code, full Black Book report, PPT slides, and installation walkthrough ready to submit.
+                    </p>
+                    <Link
+                      href="/projects"
+                      className="block w-full text-center py-2 bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold rounded-lg transition-colors shadow-lg shadow-brand-500/20"
+                    >
+                      Browse Full Projects — from ₹299 →
+                    </Link>
+                  </div>
                 </div>
               )}
 
@@ -1145,6 +1555,70 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
           </div>
 
         </div>
+
+        {/* ── RELATED TOPICS SECTION ── */}
+        {relatedTopics.length > 0 && (
+          <div className="space-y-6 pt-10 border-t border-white/10">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-xl font-display font-bold text-white flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-brand-400" />
+                  Related {topic.category} Project Blueprints
+                </h3>
+                <p className="text-xs text-zinc-400 mt-0.5">
+                  Explore other examiner-approved topics in the same domain.
+                </p>
+              </div>
+              <Link
+                href={`/blueprint`}
+                className="text-xs text-brand-400 hover:text-brand-300 font-semibold flex items-center gap-1"
+              >
+                View all topics <ChevronRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {relatedTopics.map((rel) => {
+                const relBuild = getAntigravityBuildInfo(rel);
+                return (
+                  <Link
+                    key={rel.id}
+                    href={`/blueprint/${rel.id}`}
+                    className="group glass-card bg-zinc-900/40 hover:bg-zinc-900/80 border border-white/5 hover:border-brand-500/40 rounded-2xl p-5 transition-all duration-200 flex flex-col justify-between space-y-4"
+                  >
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border border-brand-500/20 bg-brand-500/10 text-brand-400 uppercase tracking-wider">
+                          {rel.category}
+                        </span>
+                        {rel.trending && (
+                          <span className="flex items-center gap-0.5 text-[10px] font-bold text-orange-400">
+                            <Flame className="w-3 h-3" /> Trending
+                          </span>
+                        )}
+                      </div>
+                      <h4 className="text-sm font-bold text-white group-hover:text-brand-300 transition-colors line-clamp-2">
+                        {rel.title}
+                      </h4>
+                      <p className="text-xs text-zinc-400 line-clamp-2 leading-relaxed">
+                        {rel.tagline}
+                      </p>
+                    </div>
+
+                    <div className="pt-2 border-t border-white/5 flex items-center justify-between text-[11px] text-zinc-400">
+                      <span className="flex items-center gap-1 text-emerald-400 font-semibold">
+                        <CheckCircle className="w-3 h-3" /> {relBuild.canBuild ? "1-Prompt AI" : "Full Guide"}
+                      </span>
+                      <span className="text-brand-400 font-medium group-hover:translate-x-0.5 transition-transform inline-flex items-center gap-0.5">
+                        View Blueprint →
+                      </span>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
       </div>
     </div>

@@ -59,14 +59,15 @@ function StatCard({
     <div
       style={{
         ...cardBase,
-        transition: 'all 0.2s',
+        transition: 'all 0.25s cubic-bezier(0.16, 1, 0.3, 1)',
+        transform: hovered ? 'translateY(-2px)' : 'none',
         boxShadow: hovered
-          ? `0 0 0 1px ${accent}40, 0 8px 32px ${accent}20`
+          ? `0 0 0 1px ${accent}50, 0 12px 32px ${accent}20`
           : '0 1px 0 rgba(255,255,255,0.06) inset',
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      className={href ? 'cursor-pointer hover:scale-[1.02] transition-transform' : ''}
+      className={href ? 'cursor-pointer' : ''}
     >
       <div className="p-4">
         <div className="flex items-center justify-between mb-3">

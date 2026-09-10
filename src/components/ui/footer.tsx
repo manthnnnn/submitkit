@@ -56,7 +56,9 @@ export function Footer() {
           <div>
             <h3 className="text-white text-sm font-semibold mb-4">Browse</h3>
             <ul className="space-y-2.5 text-sm text-zinc-500">
+              <li><Link href="/blueprint" className="text-zinc-300 hover:text-white font-medium transition-colors flex items-center gap-1.5"><span>Choose Your Topic</span><span className="text-[10px] px-1.5 py-0.2 bg-white/10 text-zinc-300 rounded font-bold">1,000+</span></Link></li>
               <li><Link href="/projects" className="hover:text-zinc-300 transition-colors">All Projects</Link></li>
+              <li><Link href="/projects#custom" className="text-brand-400 hover:text-brand-300 font-medium transition-colors flex items-center gap-1.5"><span>Custom Project</span><span className="text-[10px] px-1.5 py-0.2 bg-brand-500/20 text-brand-300 rounded border border-brand-500/30 font-bold">48h</span></Link></li>
               <li><Link href="/projects?tier=MINI" className="hover:text-zinc-300 transition-colors">Mini Projects</Link></li>
               <li><Link href="/projects?tier=MAJOR" className="hover:text-zinc-300 transition-colors">Major Projects</Link></li>
               <li><Link href="/projects?category=AIML" className="hover:text-zinc-300 transition-colors">AI / ML Projects</Link></li>

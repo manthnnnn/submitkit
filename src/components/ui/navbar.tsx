@@ -5,11 +5,12 @@ import { Menu, X, Zap } from 'lucide-react';
 import { useState } from 'react';
 import { Logo } from '@/components/ui/logo';
 
-const NAV_LINKS = [
-  { href: '/projects', label: 'Browse Projects' },
-  { href: '/blueprint', label: 'Topic Blueprints' },
+const NAV_LINKS: { href: string; label: string; badge?: string }[] = [
+  { href: '/blueprint', label: 'Choose Your Topic' },
+  { href: '/projects',  label: 'Full Projects' },
+  { href: '/projects#custom', label: 'Custom Project', badge: '1-on-1' },
   { href: '/#pricing',  label: 'Pricing' },
-  { href: '/order/lookup', label: 'Find My Order' },
+  { href: '/order/lookup', label: 'Track Order' },
 ];
 
 export function Navbar() {
@@ -17,7 +18,7 @@ export function Navbar() {
   const pathname = usePathname();
 
   const isActive = (href: string) => {
-    if (href.startsWith('/#')) return false; // anchor links never "active"
+    if (href.includes('#')) return false; // anchor links never "active"
     return pathname === href || pathname.startsWith(href + '/');
   };
 
@@ -31,17 +32,22 @@ export function Navbar() {
 
           {/* Desktop Nav */}
           <div className="hidden md:flex items-center gap-1">
-            {NAV_LINKS.map(({ href, label }) => (
+            {NAV_LINKS.map(({ href, label, badge }) => (
               <Link
                 key={href}
                 href={href}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-sm font-medium transition-colors ${
                   isActive(href)
                     ? 'text-white bg-white/8'
                     : 'text-zinc-400 hover:text-white hover:bg-white/5'
                 }`}
               >
-                {label}
+                <span>{label}</span>
+                {badge && (
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30">
+                    {badge}
+                  </span>
+                )}
               </Link>
             ))}
 
@@ -69,20 +75,25 @@ export function Navbar() {
 
       {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden border-t border-white/5 bg-[#09090b]/95 backdrop-blur-2xl">
+        <div className="md:hidden border-t border-white/5 bg-[#09090b]/95 backdrop-blur-2xl menu-slide-down">
           <div className="container mx-auto px-4 py-3 space-y-1">
-            {NAV_LINKS.map(({ href, label }) => (
+            {NAV_LINKS.map(({ href, label, badge }) => (
               <Link
                 key={href}
                 href={href}
                 onClick={() => setIsOpen(false)}
-                className={`block px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                className={`flex items-center justify-between px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${
                   isActive(href)
                     ? 'text-white bg-white/8'
                     : 'text-zinc-400 hover:text-white hover:bg-white/5'
                 }`}
               >
-                {label}
+                <span>{label}</span>
+                {badge && (
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-brand-500/20 text-brand-300 border border-brand-500/30">
+                    {badge}
+                  </span>
+                )}
               </Link>
             ))}
             <div className="pt-2 pb-1">

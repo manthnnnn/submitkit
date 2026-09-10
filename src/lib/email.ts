@@ -451,3 +451,188 @@ export async function sendPreOrderEmails(params: PreOrderEmailParams): Promise<v
   await Promise.all(emailTasks);
   console.log(`[email] Pre-order email queue processed for ${projectSlug} by ${email}`);
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Blueprint Purchase Confirmation Email (₹19)
+// ─────────────────────────────────────────────────────────────────────────────
+
+interface BlueprintEmailParams {
+  customerEmail: string;
+  topicTitle:    string;
+  topicId:       string;
+}
+
+export async function sendBlueprintConfirmationEmail(params: BlueprintEmailParams): Promise<void> {
+  const { customerEmail, topicTitle, topicId } = params;
+
+  const apiKey = process.env.BREVO_API_KEY;
+  if (!apiKey) {
+    console.warn('[email] BREVO_API_KEY not set — skipping blueprint confirmation email');
+    return;
+  }
+
+  const baseUrl     = (process.env.NEXT_PUBLIC_BASE_URL || 'https://submitkit.in').replace(/\/$/, '');
+  const downloadUrl = `${baseUrl}/blueprint/${encodeURIComponent(topicId)}`;
+  const waText      = `Hi! I just purchased the "${topicTitle}" Blueprint on SubmitKit (₹19). I need help accessing my document.`;
+  const waLink      = `https://wa.me/918799814256?text=${encodeURIComponent(waText)}`;
+
+  const htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+</head>
+<body style="margin:0;padding:0;background-color:#09090b;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#f8fafc;">
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr><td align="center" style="padding:32px 16px;">
+<table width="580" cellpadding="0" cellspacing="0" style="max-width:580px;width:100%;">
+
+  <!-- Logo -->
+  <tr><td style="padding-bottom:24px;">
+    <span style="font-size:1.4rem;font-weight:800;color:#ffffff;letter-spacing:-0.02em;">
+      Submit<span style="color:#10b981;font-weight:800;">Kit</span>
+    </span>
+  </td></tr>
+
+  <!-- Hero -->
+  <tr><td style="background:linear-gradient(135deg,rgba(99,102,241,0.18),rgba(99,102,241,0.06));border:1px solid rgba(99,102,241,0.4);border-radius:16px;padding:28px;text-align:center;">
+    <div style="font-size:2.5rem;margin-bottom:8px;">&#128204;</div>
+    <h1 style="margin:0 0 6px;font-size:1.45rem;font-weight:800;color:#ffffff;">Blueprint Unlocked!</h1>
+    <p style="margin:0;color:#a5b4fc;font-size:0.9rem;">Your complete technical roadmap is ready to use</p>
+  </td></tr>
+
+  <tr><td style="height:16px;"></td></tr>
+
+  <!-- Purchase details -->
+  <tr><td style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:20px;">
+    <p style="margin:0 0 4px;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.05em;color:#71717a;font-weight:700;">You purchased</p>
+    <p style="margin:0 0 16px;font-size:1.1rem;font-weight:700;color:#ffffff;">${topicTitle}</p>
+    <table width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid rgba(255,255,255,0.06);padding-top:14px;">
+      <tr>
+        <td>
+          <p style="margin:0 0 2px;font-size:0.7rem;color:#71717a;text-transform:uppercase;font-weight:700;">Amount Paid</p>
+          <p style="margin:0;font-size:1.1rem;font-weight:800;color:#10b981;">&#8377;19</p>
+        </td>
+        <td align="right">
+          <span style="display:inline-block;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.35);border-radius:8px;padding:6px 14px;font-size:0.72rem;font-weight:700;color:#a5b4fc;text-transform:uppercase;letter-spacing:0.06em;">
+            &#10003; Verified
+          </span>
+        </td>
+      </tr>
+    </table>
+
+    <!-- Access recovery box -->
+    <table width="100%" cellpadding="0" cellspacing="0"
+      style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.25);border-radius:10px;padding:14px;margin-top:16px;">
+      <tr><td>
+        <p style="margin:0 0 4px;font-size:0.65rem;font-weight:700;color:#a5b4fc;text-transform:uppercase;letter-spacing:0.07em;">&#128273; Re-access Your Blueprint Anytime</p>
+        <p style="margin:0;font-size:0.78rem;color:#818cf8;line-height:1.6;">
+          Visit <a href="${downloadUrl}" style="color:#818cf8;font-weight:700;text-decoration:underline;">${downloadUrl.replace('https://', '')}</a>
+          and enter your email <strong style="color:#c7d2fe;">${customerEmail}</strong> in the &ldquo;Already Purchased?&rdquo; field.
+        </p>
+      </td></tr>
+    </table>
+  </td></tr>
+
+  <!-- Download CTA -->
+  <tr><td style="padding:20px 0;text-align:center;">
+    <a href="${downloadUrl}"
+      style="display:inline-block;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#ffffff;font-weight:800;font-size:1rem;padding:16px 40px;border-radius:12px;text-decoration:none;letter-spacing:-0.01em;">
+      Open My Blueprint &#8594;
+    </a>
+    <p style="margin:10px 0 0;font-size:0.72rem;color:#52525b;">
+      Use your email <span style="font-family:monospace;color:#818cf8;">${customerEmail}</span> to unlock
+    </p>
+  </td></tr>
+
+  <!-- What's included -->
+  <tr><td style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:20px;">
+    <p style="margin:0 0 14px;font-size:0.78rem;font-weight:700;color:#ffffff;text-transform:uppercase;letter-spacing:0.04em;">
+      &#128230; What&apos;s In Your Blueprint
+    </p>
+    <table width="100%" cellpadding="0" cellspacing="0">
+      <tr><td style="padding:6px 0;">
+        <table cellpadding="0" cellspacing="0"><tr>
+          <td style="padding-right:10px;font-size:0.9rem;vertical-align:top;">&#9889;</td>
+          <td><p style="margin:0;font-size:0.82rem;font-weight:600;color:#f4f4f5;">1-Prompt AI Build Guide</p>
+              <p style="margin:0;font-size:0.72rem;color:#71717a;">Paste into any AI tool and get a working project</p></td>
+        </tr></table>
+      </td></tr>
+      <tr><td style="padding:6px 0;">
+        <table cellpadding="0" cellspacing="0"><tr>
+          <td style="padding-right:10px;font-size:0.9rem;vertical-align:top;">&#128196;</td>
+          <td><p style="margin:0;font-size:0.82rem;font-weight:600;color:#f4f4f5;">Full Technical Architecture</p>
+              <p style="margin:0;font-size:0.72rem;color:#71717a;">System design, data flow, module breakdown</p></td>
+        </tr></table>
+      </td></tr>
+      <tr><td style="padding:6px 0;">
+        <table cellpadding="0" cellspacing="0"><tr>
+          <td style="padding-right:10px;font-size:0.9rem;vertical-align:top;">&#128187;</td>
+          <td><p style="margin:0;font-size:0.82rem;font-weight:600;color:#f4f4f5;">Step-by-Step Build Roadmap</p>
+              <p style="margin:0;font-size:0.72rem;color:#71717a;">Every implementation step with code hints</p></td>
+        </tr></table>
+      </td></tr>
+      <tr><td style="padding:6px 0;">
+        <table cellpadding="0" cellspacing="0"><tr>
+          <td style="padding-right:10px;font-size:0.9rem;vertical-align:top;">&#128218;</td>
+          <td><p style="margin:0;font-size:0.82rem;font-weight:600;color:#f4f4f5;">Downloadable .docx Report</p>
+              <p style="margin:0;font-size:0.72rem;color:#71717a;">Professionally formatted, ready to submit</p></td>
+        </tr></table>
+      </td></tr>
+    </table>
+  </td></tr>
+
+  <tr><td style="height:16px;"></td></tr>
+
+  <!-- Support -->
+  <tr><td style="background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.15);border-radius:12px;padding:16px;">
+    <p style="margin:0;font-size:0.82rem;color:#93c5fd;line-height:1.6;">
+      Need help? <strong>Reply to this email</strong> or WhatsApp
+      <a href="${waLink}" style="color:#60a5fa;text-decoration:none;font-weight:600;">+91 87998 14256</a>
+    </p>
+  </td></tr>
+
+  <tr><td style="height:24px;"></td></tr>
+
+  <!-- Footer -->
+  <tr><td style="text-align:center;border-top:1px solid rgba(255,255,255,0.05);padding-top:20px;">
+    <p style="margin:0 0 3px;font-size:0.72rem;color:#52525b;">
+      &#169; ${new Date().getFullYear()} SubmitKit.in &mdash; India&apos;s Premier Academic Project Marketplace
+    </p>
+    <p style="margin:0;font-size:0.68rem;color:#3f3f46;">Sold as educational reference material only.</p>
+  </td></tr>
+
+</table>
+</td></tr>
+</table>
+</body>
+</html>`;
+
+  const payload = {
+    sender:      { name: 'SubmitKit', email: 'team@submitkit.in' },
+    to:          [{ email: customerEmail, name: 'SubmitKit User' }],
+    subject:     `Your Blueprint is Ready — ${topicTitle} | SubmitKit`,
+    htmlContent,
+  };
+
+  try {
+    const res = await fetch(BREVO_API_URL, {
+      method:  'POST',
+      headers: {
+        'accept':       'application/json',
+        'api-key':      apiKey,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const errBody = await res.text().catch(() => '');
+      console.error(`[email] Blueprint confirm Brevo error ${res.status}:`, errBody);
+    } else {
+      console.log(`[email] Blueprint confirmation sent to ${customerEmail} for topic ${topicId}`);
+    }
+  } catch (err) {
+    console.error('[email] Blueprint confirm fetch failed:', err);
+  }
+}

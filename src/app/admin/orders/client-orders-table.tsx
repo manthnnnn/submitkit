@@ -333,7 +333,7 @@ export function ClientOrdersTable({ initialOrders }: { initialOrders: OrderRow[]
                     {isExpanded && (
                       <tr key={`${o.id}-exp`}>
                         <td colSpan={8} style={{ borderBottom: isLast ? 'none' : '1px solid rgba(255,255,255,0.04)', background: 'rgba(99,102,241,0.03)' }}>
-                          <div className="px-6 py-5">
+                          <div className="px-6 py-5 row-expand">
                             {/* Detail grid */}
                             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-5">
                               <DetailCell label="Short Order ID" value={

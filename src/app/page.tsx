@@ -3,14 +3,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { CONSTANTS } from "@/lib/constants";
-import { ArrowRight, CheckCircle2, Zap, Download, ShieldCheck, Star, Sparkles, MonitorPlay, Search, BookOpen, ChevronRight } from "lucide-react";
+import { ArrowRight, CheckCircle2, Zap, Download, ShieldCheck, Star, Sparkles, MonitorPlay, Search, BookOpen, ChevronRight, MessageCircle, Compass } from "lucide-react";
 import { PricingHook } from "@/components/ui/pricing-hook";
 import { CompareSlider } from "@/components/ui/compare-slider";
 import { FleetSection } from "@/components/ui/fleet-section";
 import { Testimonials } from "@/components/ui/testimonials";
 import { LiveTicker } from "@/components/ui/live-ticker";
 import { useEffect, useState, useRef } from "react";
-import { searchTopics, TopicCard } from "@/lib/blueprint-engine";
+import { searchTopics, TopicCard, ALL_TOPICS } from "@/lib/blueprint-engine";
 
 // Animated counter hook
 function useCounter(target: number, duration: number = 1500) {
@@ -34,7 +34,7 @@ function useCounter(target: number, duration: number = 1500) {
           requestAnimationFrame(animate);
         }
       },
-      { threshold: 0.5 }
+      { threshold: 0.1 }
     );
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
@@ -43,7 +43,7 @@ function useCounter(target: number, duration: number = 1500) {
   return { count, ref };
 }
 
-function StatCounter({ target, suffix, label }: { target: number; suffix: string; label: string }) {
+function StatCounter({ target, suffix = '', label }: { target: number; suffix?: string; label: string }) {
   const { count, ref } = useCounter(target);
   return (
     <div ref={ref} className="text-center">
@@ -57,9 +57,22 @@ function StatCounter({ target, suffix, label }: { target: number; suffix: string
 
 export default function Home() {
   const router = useRouter();
+  const [stats, setStats] = useState<{
+    totalScans: number;
+    totalOrders: number;
+    moneySaved: number;
+    moneySavedFormatted: string;
+    recentActivities: any[];
+  }>({
+    totalScans: 852,
+    totalOrders: 189,
+    moneySaved: 120000,
+    moneySavedFormatted: '₹1,20,000+',
+    recentActivities: []
+  });
+
   const [topicQuery, setTopicQuery] = useState("");
   const [topicResults, setTopicResults] = useState<TopicCard[]>([]);
-  const [stats, setStats] = useState({ totalScans: 3847, moneySavedFormatted: "₹12 Lakh+", totalOrders: 150 });
 
   useEffect(() => {
     fetch('/api/stats/global')
@@ -81,10 +94,10 @@ export default function Home() {
     e.preventDefault();
     if (topicQuery.trim()) {
       const matches = searchTopics(topicQuery);
-      if (matches.length > 0) {
+      if (matches.length === 1) {
         router.push(`/blueprint/${matches[0].id}`);
       } else {
-        router.push('/blueprint');
+        router.push(`/blueprint?q=${encodeURIComponent(topicQuery.trim())}`);
       }
     } else {
       router.push('/blueprint');
@@ -156,110 +169,133 @@ export default function Home() {
                 </Link>
               </motion.div>
 
-              {/* Divider / Visual Separation */}
-              <div className="mt-12 mb-8 w-full max-w-lg flex items-center gap-4">
-                <div className="h-px bg-zinc-800 flex-1"></div>
-                <span className="text-xs font-semibold text-zinc-500 uppercase tracking-widest">Or Search Any Topic Free</span>
-                <div className="h-px bg-zinc-800 flex-1"></div>
+              {/* Divider / Clean Visual Portal Entrance */}
+              <div className="mt-12 mb-6 w-full max-w-lg flex items-center gap-3">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400/90 flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                  Topic Intelligence & 1-Prompt Roadmaps
+                </span>
+                <div className="h-px bg-gradient-to-r from-emerald-500/25 via-white/10 to-transparent flex-1" />
               </div>
 
-              {/* Free Project Topic Blueprint Search */}
+              {/* Ultra-Professional Topic Explorer Portal */}
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.4 }}
-                className="w-full max-w-lg bg-gradient-to-br from-zinc-900/90 to-zinc-950/90 border border-zinc-800/80 rounded-2xl p-5 md:p-6 shadow-2xl backdrop-blur-md relative"
+                className="w-full max-w-lg relative rounded-3xl border border-white/10 bg-gradient-to-b from-zinc-900/95 via-zinc-950/95 to-black p-6 md:p-7 shadow-2xl backdrop-blur-2xl transition-all duration-300 hover:border-emerald-500/30 group"
               >
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-8 h-8 shrink-0 rounded-lg bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
-                    <BookOpen className="w-4 h-4 text-blue-400" />
+                {/* Ambient glow accent */}
+                <div className="absolute -top-12 -right-12 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+
+                {/* Top header */}
+                <div className="flex items-start gap-3.5 mb-4">
+                  <div className="w-10 h-10 shrink-0 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-brand-500/10 border border-emerald-500/30 flex items-center justify-center shadow-inner">
+                    <Compass className="w-5 h-5 text-emerald-400" />
                   </div>
                   <div>
-                    <h3 className="text-white font-bold tracking-tight text-lg">Free Project Topic Blueprint</h3>
-                    <span className="inline-block text-[11px] text-emerald-400 font-medium">100% Free Search • 1000+ Topics</span>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-white font-bold tracking-tight text-lg md:text-xl">
+                        Choose Your Project Topic
+                      </h3>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 uppercase tracking-wide">
+                        1,000+ Free
+                      </span>
+                    </div>
+                    <p className="text-zinc-400 text-xs md:text-sm mt-1 leading-relaxed">
+                      Full system architecture, step-by-step code roadmaps, and 1-Prompt AI build prompts.
+                    </p>
                   </div>
                 </div>
-                <p className="text-zinc-400 text-sm mb-4 leading-relaxed">
-                  Have a topic in mind? Search it to see what examiners expect, sample viva questions, and the complete build plan.
-                </p>
 
+                {/* Frosted Modern Search Bar */}
                 <form 
                   onSubmit={handleTopicSubmit}
-                  className="relative flex items-center bg-black border border-zinc-700/80 rounded-xl p-1.5 focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/20 transition-all shadow-inner"
+                  className="relative flex items-center bg-black/70 border border-white/15 focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-500/20 rounded-2xl p-1.5 transition-all shadow-inner"
                 >
-                  <Search className="w-4 h-4 text-zinc-500 ml-2 shrink-0" />
+                  <Search className="w-4 h-4 text-zinc-400 ml-2.5 shrink-0" />
                   <input
                     type="text"
-                    placeholder="Search e.g. Face Recognition, Fraud, IoT..."
+                    placeholder="Search e.g. Face Recognition, IoT, Fraud, RAG..."
                     value={topicQuery}
                     onChange={(e) => handleTopicSearchChange(e.target.value)}
-                    className="w-full bg-transparent border-none text-white px-3 py-2 outline-none text-sm placeholder:text-zinc-600"
+                    className="w-full bg-transparent border-none text-white px-3 py-2 outline-none text-xs md:text-sm placeholder:text-zinc-500"
                   />
                   <button
                     type="submit"
-                    className="shrink-0 bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg font-bold text-sm flex items-center gap-1.5 transition-colors shadow-sm"
+                    className="shrink-0 bg-white hover:bg-zinc-100 text-zinc-950 px-4 py-2 rounded-xl font-bold text-xs md:text-sm flex items-center gap-1.5 transition-all shadow-sm hover:shadow-[0_0_15px_rgba(255,255,255,0.25)]"
                   >
-                    Search <ArrowRight className="w-4 h-4" />
+                    Search <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </form>
 
                 {/* Instant Topic Autocomplete Results */}
                 {topicResults.length > 0 && (
-                  <div className="mt-3 bg-zinc-950 border border-zinc-800 rounded-xl divide-y divide-zinc-800/80 overflow-hidden shadow-xl">
+                  <div className="mt-3 bg-zinc-950/95 border border-white/10 rounded-2xl divide-y divide-white/5 overflow-hidden shadow-2xl backdrop-blur-xl">
                     {topicResults.map((t) => (
                       <Link
                         key={t.id}
                         href={`/blueprint/${t.id}`}
-                        className="flex items-center justify-between p-3 hover:bg-blue-600/10 transition-colors group"
+                        className="flex items-center justify-between p-3 hover:bg-emerald-500/10 transition-colors group"
                       >
                         <div className="min-w-0 pr-2">
                           <div className="flex items-center gap-2">
-                            <span className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors truncate">
+                            <span className="text-xs font-bold text-white group-hover:text-emerald-400 transition-colors truncate">
                               {t.title}
                             </span>
-                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 font-mono shrink-0">
+                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/5 text-zinc-400 border border-white/10 font-mono shrink-0">
                               {t.category}
                             </span>
                           </div>
                           <p className="text-[11px] text-zinc-500 truncate mt-0.5">{t.tagline}</p>
                         </div>
-                        <span className="text-xs text-blue-400 font-semibold shrink-0 flex items-center gap-1">
-                          Free Preview <ChevronRight className="w-3.5 h-3.5" />
+                        <span className="text-xs text-emerald-400 font-semibold shrink-0 flex items-center gap-1">
+                          View Roadmap <ChevronRight className="w-3.5 h-3.5" />
                         </span>
                       </Link>
                     ))}
                   </div>
                 )}
 
-                {/* Popular Quick Chips */}
+                {/* Popular Quick Chips with Domain Pills */}
                 <div className="mt-4">
-                  <span className="text-[11px] text-zinc-500 font-medium block mb-2">Trending topics:</span>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-[11px] text-zinc-400 font-medium">Trending searches:</span>
+                    <span className="text-[10px] text-zinc-500">Free preview available</span>
+                  </div>
                   <div className="flex flex-wrap gap-1.5">
                     {[
-                      { name: "Face Recognition", id: "face-recognition-attendance" },
-                      { name: "Plant Disease", id: "plant-disease-detection" },
-                      { name: "Fraud Detection", id: "credit-card-fraud-detection" },
-                      { name: "Smart Traffic", id: "smart-traffic-system" },
+                      { name: "Face Recognition", domain: "AI", id: "face-recognition-attendance" },
+                      { name: "Plant Disease", domain: "Vision", id: "plant-disease-detection" },
+                      { name: "Fraud Detection", domain: "Fintech", id: "credit-card-fraud-detection" },
+                      { name: "IoT Telemetry", domain: "ESP32", id: "iot-smart-energy-meter" },
                     ].map((chip) => (
                       <Link
                         key={chip.id}
                         href={`/blueprint/${chip.id}`}
-                        className="text-[11px] px-2.5 py-1 rounded-full bg-zinc-800/60 hover:bg-blue-600/20 hover:text-blue-300 hover:border-blue-500/30 text-zinc-400 border border-zinc-700/60 transition-all"
+                        className="text-[11px] px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/10 hover:text-white hover:border-emerald-500/30 text-zinc-300 border border-white/10 transition-all flex items-center gap-1.5"
                       >
-                        {chip.name}
+                        <span>{chip.name}</span>
+                        <span className="text-[9px] px-1 py-0.2 rounded bg-white/10 text-zinc-400 font-mono">{chip.domain}</span>
                       </Link>
                     ))}
                   </div>
                 </div>
 
-                {/* Blueprint Teaser & A-Z Link */}
-                <div className="mt-4 pt-3 border-t border-zinc-800/80 flex items-center justify-between text-xs">
-                  <span className="text-zinc-500">Full 20-page build PDF only ₹19</span>
+                {/* High-Impact Direct Catalog Link */}
+                <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="text-xs text-zinc-400">
+                      Looking for a specific domain or stack?
+                    </span>
+                  </div>
                   <Link
                     href="/blueprint"
-                    className="text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-1"
+                    className="text-xs text-emerald-400 hover:text-emerald-300 font-bold flex items-center gap-1.5 transition-colors group/link"
                   >
-                    Browse 1000+ Trending Topics A-Z <ArrowRight className="w-3.5 h-3.5" />
+                    <span>Browse 1,000+ Topics A–Z</span>
+                    <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-0.5 transition-transform" />
                   </Link>
                 </div>
               </motion.div>
@@ -302,7 +338,7 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
             <StatCounter target={stats.totalScans} suffix="+" label="Projects Analyzed" />
-            <StatCounter target={9}    suffix=""   label="Available Projects" />
+            <StatCounter target={ALL_TOPICS.length} suffix="+" label="Topic Blueprints" />
             <div className="text-center">
               <div className="text-2xl md:text-3xl font-display font-bold text-emerald-400">
                 {stats.moneySavedFormatted}
@@ -477,7 +513,7 @@ export default function Home() {
             <p className="text-zinc-500 max-w-lg mx-auto mb-12">Pay once, download instantly. No subscriptions. No nonsense.</p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto text-left">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto text-left">
 
             {/* Mini */}
             <motion.div
@@ -491,7 +527,7 @@ export default function Home() {
               <p className="text-xs text-zinc-500 mb-5">Perfect for 5th or 6th semester submissions.</p>
               <div className="flex items-baseline gap-2 mb-6 pb-6 border-b border-white/5">
                 <span className="text-4xl font-bold text-white">₹{CONSTANTS.PRICING.MINI_PROJECT}</span>
-                <span className="text-zinc-600 text-sm line-through">₹1,499</span>
+                <span className="text-zinc-600 text-sm line-through">₹999</span>
               </div>
               <ul className="space-y-3 mb-8 flex-grow">
                 {['Working Source Code', 'Setup Guide', '30-page Black Book Report', 'Instant Download'].map(item => (
@@ -534,6 +570,51 @@ export default function Home() {
               <Link href="/projects?tier=MAJOR" className="block w-full py-3 px-4 bg-white hover:bg-zinc-100 text-center rounded-xl text-zinc-950 font-bold transition-all text-sm shadow-[0_0_20px_rgba(255,255,255,0.1)]">
                 Browse Major Projects
               </Link>
+            </motion.div>
+
+            {/* Custom Project - Tailored Build */}
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="glass-card rounded-2xl p-8 flex flex-col hover-glow transition-all duration-500 hover:-translate-y-1 border-t-2 border-t-emerald-500/80 bg-emerald-950/10 relative overflow-hidden"
+            >
+              <div className="flex justify-between items-start mb-1">
+                <h3 className="text-xl font-medium text-white">Custom Project</h3>
+                <span className="bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-[10px] uppercase tracking-wider font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                  <Sparkles className="w-2.5 h-2.5 text-emerald-400" /> Tailored Build
+                </span>
+              </div>
+              <p className="text-xs text-zinc-500 mb-5">Engineered strictly to your specifications & feature requirements.</p>
+              <div className="flex items-baseline gap-2 mb-6 pb-6 border-b border-white/5">
+                <span className="text-4xl font-bold text-white">₹1,999</span>
+                <span className="text-zinc-600 text-sm line-through">₹5,999</span>
+                <span className="text-xs text-emerald-400 font-semibold ml-1">Starting from</span>
+              </div>
+              <ul className="space-y-3 mb-8 flex-grow">
+                {[
+                  'Custom feature scope & architecture',
+                  'Production-ready source code repository',
+                  '20-Page comprehensive technical report',
+                  'Architecture & defense presentation slides',
+                  '1-on-1 code walkthrough & setup guide',
+                  '48-Hour delivery with dedicated engineer',
+                ].map(item => (
+                  <li key={item} className="flex items-center gap-2.5">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                    <span className="text-zinc-300 text-sm">{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <a
+                href={`https://wa.me/918799814256?text=${encodeURIComponent("Hi SubmitKit team! I want to build a custom project. Here are my requirements:\n\n• Project Title / Idea:\n• Preferred Tech Stack:\n• Core Features Needed:\n• Target Timeline / Deadline:")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full py-3 px-4 bg-[#25D366] hover:bg-[#20bd5a] text-center rounded-xl text-black font-bold transition-all text-sm shadow-[0_0_20px_rgba(37,211,102,0.25)] flex items-center justify-center gap-2"
+              >
+                <MessageCircle className="w-4 h-4 fill-black" /> Order Custom Build on WhatsApp
+              </a>
             </motion.div>
 
           </div>

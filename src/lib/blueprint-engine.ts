@@ -12,6 +12,7 @@ import { TOPICS_EXTRA } from "./blueprint-catalog-extra";
 import { TOPICS_EXTRA2 } from "./blueprint-catalog-extra2";
 import { TOPICS_EXTRA3 } from "./blueprint-catalog-extra3";
 import { TOPICS_EXTRA4 } from "./blueprint-catalog-extra4";
+import { TOPICS_MODERN_2025 } from "./blueprint-catalog-modern2025";
 import { synthesizeFullBlueprint } from "./blueprint-synthesizer";
 
 export type BlueprintCategory =
@@ -1844,6 +1845,7 @@ const ORIGINAL_STUBS: TopicCard[] = [
 ];
 
 const rawTopicList: TopicCard[] = [
+  ...TOPICS_MODERN_2025,
   TOPIC_MAP['face-recognition-attendance'],
   TOPIC_MAP['plant-disease-detection'],
   TOPIC_MAP['credit-card-fraud-detection'],
@@ -1896,13 +1898,441 @@ export function getAllLetters(): string[] {
   return Array.from(letters).sort();
 }
 
-export function searchTopics(query: string): TopicCard[] {
-  if (!query.trim()) return ALL_TOPICS;
-  const q = query.toLowerCase();
-  return ALL_TOPICS.filter(t =>
-    t.title.toLowerCase().includes(q) ||
-    t.tagline.toLowerCase().includes(q) ||
-    t.whatItDoes.toLowerCase().includes(q) ||
-    t.category.toLowerCase().includes(q)
-  );
+let _cachedSearchIndex: { topic: TopicCard; searchStr: string; size: 'Mini' | 'Mid' | 'Major'; isStartup: boolean; isNoCode: boolean }[] | null = null;
+
+export type ProjectSize = 'Mini' | 'Mid' | 'Major';
+
+/**
+ * Determines project scope based on difficulty score (1-5).
+ * Mini: 1-2 (2-3 days, easy viva, fast build)
+ * Mid: 3 (3-5 days, moderate complexity)
+ * Major: 4-5 (5+ days, capstone, comprehensive)
+ */
+export function getProjectSize(topic: { difficulty: number }): ProjectSize {
+  if (topic.difficulty <= 2) return 'Mini';
+  if (topic.difficulty === 3) return 'Mid';
+  return 'Major';
 }
+
+/**
+ * Returns intuitive tech/domain tags for a topic.
+ */
+export function getProjectTypeTags(topic: { category?: string; title?: string; tagline?: string; id?: string }): string[] {
+  const tags: string[] = [];
+  const text = `${topic.title || ''} ${topic.tagline || ''} ${topic.category || ''} ${topic.id || ''}`.toLowerCase();
+
+  // RAG and Knowledge Retrieval
+  if (text.includes('rag') || text.includes('retrieval augmented') || text.includes('vector db') || text.includes('chromadb') || text.includes('llamaindex') || text.includes('knowledge graph') || text.includes('semantic search')) {
+    tags.push('RAG');
+  }
+
+  // LLM and Autonomous Agents
+  if (text.includes('agent') || text.includes('crewai') || text.includes('langgraph') || text.includes('function calling') || text.includes('autonomous') || text.includes('prompt injection') || text.includes('guardrail')) {
+    tags.push('Agent');
+  }
+
+  if (text.includes('llm') || text.includes('large language model') || text.includes('llama') || text.includes('mistral') || text.includes('ollama') || text.includes('gpt') || text.includes('genai')) {
+    tags.push('LLM');
+  }
+
+  if (topic.category === 'AIML' || text.includes('ai') || text.includes('artificial intelligence') || text.includes('deep learning') || text.includes('neural') || text.includes('vision') || text.includes('yolo')) {
+    tags.push('AI');
+  }
+  if (topic.category === 'AIML' || topic.category === 'DataScience' || text.includes('ml') || text.includes('machine learning') || text.includes('classifier') || text.includes('prediction') || text.includes('forecast')) {
+    tags.push('ML');
+  }
+  if (topic.category === 'FullStack' || text.includes('web') || text.includes('full stack') || text.includes('fullstack') || text.includes('react') || text.includes('next') || text.includes('portal')) {
+    tags.push('Web');
+  }
+  if (topic.category === 'NLP' || text.includes('nlp') || text.includes('chatbot') || text.includes('sentiment') || text.includes('language') || text.includes('speech')) {
+    tags.push('NLP');
+  }
+  if (topic.category === 'Cybersecurity' || text.includes('cyber') || text.includes('security') || text.includes('phishing') || text.includes('malware') || text.includes('intrusion') || text.includes('encryption')) {
+    tags.push('Cybersecurity');
+  }
+  if (topic.category === 'DataScience' || text.includes('data science') || text.includes('analytics') || text.includes('visualization')) {
+    tags.push('DataScience');
+  }
+  if (topic.category === 'IoT' || text.includes('iot') || text.includes('sensor') || text.includes('smart') || text.includes('arduino') || text.includes('esp32') || text.includes('telemetry') || text.includes('lorawan')) {
+    tags.push('IoT');
+  }
+  if (topic.category === 'Blockchain' || text.includes('blockchain') || text.includes('crypto') || text.includes('web3') || text.includes('smart contract')) {
+    tags.push('Blockchain');
+  }
+  if (topic.category === 'Mobile' || text.includes('mobile') || text.includes('android') || text.includes('flutter') || text.includes('ios')) {
+    tags.push('Mobile');
+  }
+  if (topic.category === 'Fintech' || text.includes('fintech') || text.includes('fraud') || text.includes('banking') || text.includes('stock')) {
+    tags.push('Fintech');
+  }
+  if ((topic.id && topic.id.startsWith('startup-')) || text.includes('startup') || text.includes('saas')) {
+    tags.push('Startup');
+  }
+
+  return tags.length > 0 ? tags : [topic.category || 'General'];
+}
+
+function getSearchIndex(): { topic: TopicCard; searchStr: string; size: 'Mini' | 'Mid' | 'Major'; isStartup: boolean; isNoCode: boolean }[] {
+  if (!_cachedSearchIndex) {
+    _cachedSearchIndex = ALL_TOPICS.map((t) => {
+      const size = getProjectSize(t);
+      const isStartup = t.id.startsWith("startup-") || t.title.toLowerCase().includes("startup") || t.tagline.toLowerCase().includes("startup");
+      const isNoCode = canBuildOnAntigravity(t);
+      const tags = getProjectTypeTags(t);
+
+      // Add synonyms so students searching "ai based", "ml based", "mini project", "major project", "rag", "llm", etc. match instantly
+      const sizeKeywords = size === 'Mini'
+        ? 'mini project mini easy beginner simple 2-3 days small'
+        : size === 'Mid'
+        ? 'mid project mid-level moderate 3-5 days intermediate'
+        : 'major project major final year capstone advanced complex 5+ days';
+
+      const ragKeywords = tags.includes('RAG') ? 'rag retrieval augmented generation vector database chromadb pinecone llamaindex langchain embeddings hybrid search' : '';
+      const agentKeywords = tags.includes('Agent') ? 'agent multi agent crewai langgraph autonomous tool calling function calling workflow' : '';
+      const llmKeywords = tags.includes('LLM') ? 'llm large language model generative ai genai ollama mistral llama gpt prompt' : '';
+      const iotKeywords = tags.includes('IoT') ? 'iot internet of things esp32 esp32-cam arduino raspberry pi sensor telemetry lorawan tinyml edge ai mqtt' : '';
+      const aiKeywords = tags.includes('AI') ? 'ai based ai project artificial intelligence computer vision neural deep learning' : '';
+      const mlKeywords = tags.includes('ML') ? 'ml based ml project machine learning model classifier prediction dataset scikit' : '';
+      const nlpKeywords = tags.includes('NLP') ? 'nlp natural language processing indicbert bert sentiment text speech voice translation summarization' : '';
+      const webKeywords = tags.includes('Web') ? 'web based web project full stack fullstack website portal dashboard app' : '';
+      const noCodeKeywords = isNoCode ? 'no code nocode 1 prompt one prompt antigravity without coding' : '';
+      const startupKeywords = isStartup ? 'startup idea startup project business product saas' : '';
+
+      return {
+        topic: t,
+        size,
+        isStartup,
+        isNoCode,
+        searchStr: `${t.title} ${t.tagline} ${t.whatItDoes} ${t.category} ${t.id} ${tags.join(' ')} ${sizeKeywords} ${ragKeywords} ${agentKeywords} ${llmKeywords} ${iotKeywords} ${aiKeywords} ${mlKeywords} ${nlpKeywords} ${webKeywords} ${noCodeKeywords} ${startupKeywords} final year project college project cse it`.toLowerCase(),
+      };
+    });
+  }
+  return _cachedSearchIndex;
+}
+
+export function searchTopics(query: string): TopicCard[] {
+  if (!query || !query.trim()) return ALL_TOPICS;
+  const q = query.trim().toLowerCase();
+  const index = getSearchIndex();
+  const results: TopicCard[] = [];
+  for (let i = 0; i < index.length; i++) {
+    if (index[i].searchStr.includes(q)) {
+      results.push(index[i].topic);
+    }
+  }
+  return results;
+}
+
+/**
+ * Generates an IIT/NIT examiner-grade Master Prompt for Antigravity AI.
+ * Enables students to build a full working project in 10 minutes without manual coding.
+ */
+export function generateAntigravityMasterPrompt(topic: FullBlueprint): string {
+  const objectives = (topic.objectives || []).map(o => `  • ${o}`).join("\n");
+  const stack = (topic.techStack || []).map(t => `  • ${t.component}: ${t.tool} — Reason: ${t.reason}`).join("\n");
+
+  return `Act as a Senior Principal Software Architect and IIT/NIT Project Evaluation Committee Member.
+
+Build a complete, 100% production-ready, functional codebase for the following project:
+
+PROJECT NAME: "${topic.title}"
+DISCIPLINE: ${topic.category}
+ESTIMATED DIFFICULTY: ${topic.difficulty}/5
+DATASET TO EMULATE/LOAD: ${topic.dataset?.name || topic.datasetName || "Standard Benchmark Dataset"}
+
+PROJECT OBJECTIVES:
+${objectives}
+
+RECOMMENDED ARCHITECTURE & TECH STACK:
+${stack}
+
+TECHNICAL ARCHITECTURE & FLOW:
+${topic.architectureExplanation}
+
+DELIVERABLE INSTRUCTIONS FOR THE AI:
+1. Directory Structure: Output a clean, modular project folder layout separating backend APIs, frontend UI, data ingestion, and models.
+2. Full Working Logic: Provide complete, functional files. Do NOT omit logic or leave placeholders like "// implement here".
+3. Standalone Mock Data Generator: Include a self-contained script (e.g., generate_data.py or seed.ts) that creates realistic synthetic data matching the real dataset schema so the application runs immediately on first launch.
+4. Clean Web Dashboard: Implement a modern, responsive web dashboard with dark-mode aesthetic, live status cards, and real-time inference/demonstration view.
+5. Automated Test Suite: Write unit tests verifying core algorithms, input sanitization, and output accuracy.
+6. Setup Instructions: Include a complete README.md with exact setup commands (pip install / npm install), environment variables, and a step-by-step viva demo checklist.`;
+}
+
+/**
+ * Determines if a project can be 100% built in Antigravity in ONE prompt with zero manual coding.
+ *
+ * YES (1-Prompt No-Code):
+ * - Mini projects (difficulty 1-2): lightweight demos, predictors, chatbots, CRUD tools.
+ * - Mid software projects (difficulty 3) in AI, ML, Web, NLP, Data Science, Fintech, Startups.
+ *
+ * NO (Requires Step-by-Step Code Guide, Hardware, or Multi-Tier Architecture):
+ * - IoT & Embedded: Requires physical microcontrollers (ESP32, Arduino, Raspberry Pi), physical sensors, pin wiring, firmware flashing.
+ * - Cybersecurity: Requires network sockets, packet capture, Linux root permissions, penetration tools.
+ * - Blockchain: Requires smart contracts, Solidity compiler, Web3 wallet keys, testnet RPCs.
+ * - Major Capstone projects (difficulty 4-5): Comprehensive multi-tier final year architectures requiring custom pipelines.
+ */
+export function canBuildOnAntigravity(topic: { title: string; category?: string; tagline?: string; difficulty?: number; id?: string }): boolean {
+  const cat = topic.category || '';
+  const diff = topic.difficulty ?? 3;
+  const text = `${topic.title || ''} ${topic.tagline || ''} ${cat} ${topic.id || ''}`.toLowerCase();
+
+  // Hardware / Embedded IoT require physical components & circuit wiring
+  if (
+    cat === 'IoT' ||
+    text.includes('arduino') ||
+    text.includes('raspberry') ||
+    text.includes('esp32') ||
+    text.includes('sensor') ||
+    text.includes('breadboard') ||
+    text.includes('robot chassis') ||
+    text.includes('drone') ||
+    text.includes('microcontroller') ||
+    text.includes('hardware solder')
+  ) {
+    return false;
+  }
+
+  // Network & System Cybersecurity require network cards, packet injection, OS level tools
+  if (
+    cat === 'Cybersecurity' ||
+    text.includes('wireshark') ||
+    text.includes('metasploit') ||
+    text.includes('packet sniff') ||
+    text.includes('penetration testing') ||
+    text.includes('intrusion detection') ||
+    text.includes('firewall')
+  ) {
+    return false;
+  }
+
+  // Blockchain requires Web3 wallet connection, smart contract deployments, gas
+  if (
+    cat === 'Blockchain' ||
+    text.includes('solidity') ||
+    text.includes('smart contract') ||
+    text.includes('ethereum') ||
+    text.includes('metamask')
+  ) {
+    return false;
+  }
+
+  // High complexity Major Capstone projects (difficulty 4 and 5) require multi-stage engineering
+  if (diff >= 4) {
+    return false;
+  }
+
+  // Mini & Mid Software, AI/ML, NLP, Web, Data Science, Fintech, Startups are 1-Prompt buildable
+  return true;
+}
+
+export interface AntigravityBuildInfo {
+  canBuild: boolean;
+  badgeText: string;
+  hookHeadline: string;
+  hookSubtext: string;
+  pillBadgeText: string;
+  tab0Label: string;
+  tab0Title: string;
+  tab0Sub: string;
+  promptBoxTitle: string;
+  promptBoxSub: string;
+  copyButtonText: string;
+  workflowSteps: { step: number; title: string; desc: string; color: string }[];
+  benefitPills: { title: string; text: string; color: string }[];
+  checklist: string[];
+}
+
+export function getAntigravityBuildInfo(topic: { title: string; category?: string; tagline?: string; difficulty?: number; id?: string }): AntigravityBuildInfo {
+  const cat = topic.category || '';
+  if (canBuildOnAntigravity(topic)) {
+    return {
+      canBuild: true,
+      badgeText: "⚡ 1-Prompt AI Build",
+      hookHeadline: "Make This Complete Project in ONE Prompt without Coding",
+      hookSubtext: "Don't waste 3+ weeks getting stuck with missing packages, broken environments, and syntax errors. Paste our engineer-tuned Master Prompt into Antigravity AI to generate the complete working codebase, mock dataset generator, and responsive web UI in under 10 minutes!",
+      pillBadgeText: "100% Zero-Code on Antigravity AI",
+      tab0Label: "⚡ 1-Prompt Build",
+      tab0Title: "Zero-Coding Build Guide with Antigravity AI",
+      tab0Sub: "Build this entire application in 10 minutes without manual coding. Save 40+ hours of debugging.",
+      promptBoxTitle: "IIT/NIT Examiner-Tuned Master Prompt:",
+      promptBoxSub: "Paste directly into Antigravity AI (or Cursor / Claude) to scaffold code, dataset & UI",
+      copyButtonText: "Copy Master Prompt",
+      workflowSteps: [
+        { step: 1, title: "Open Antigravity AI", desc: "Open Antigravity (or Claude 3.7 / Cursor / ChatGPT). Antigravity natively creates files, runs commands, and sets up your environment.", color: "text-brand-400" },
+        { step: 2, title: "Paste Master Prompt", desc: "Click the copy button below. The prompt contains exact project requirements, dataset schemas, architecture constraints, and examiner standards.", color: "text-purple-400" },
+        { step: 3, title: "Instant Running Project", desc: "The AI generates the folder structure, a synthetic data generator script, the core models, and a sleek web dashboard ready for your evaluator demo.", color: "text-emerald-400" },
+      ],
+      benefitPills: [
+        { title: "1 Single Prompt", text: "Full project generated", color: "text-emerald-400" },
+        { title: "Self-Contained Data", text: "No 2GB download", color: "text-brand-400" },
+        { title: "2 Commands to Run", text: "pip install & go", color: "text-purple-400" },
+      ],
+      checklist: [
+        "Official 20-page Word/PDF download (Dense & publication-grade)",
+        "Antigravity AI Master Prompt (1-Prompt build in 10 mins)",
+        "Step-by-step conceptual guide (Zero code clutter)",
+        "Exact dataset source + synthetic data generation script",
+        "15 Examiner evaluation Q&A with scoring traps & model answers",
+        "Common error troubleshooting & 1-minute fixes",
+        "Black Book 6-chapter breakdown & 12-slide PPT outline",
+        "Free cloud & local deployment guide",
+      ],
+    };
+  }
+
+  if (cat === 'IoT') {
+    return {
+      canBuild: false,
+      badgeText: "🔌 Hardware & Firmware Blueprint",
+      hookHeadline: "Step-by-Step Circuit, Code & Hardware Implementation Blueprint",
+      hookSubtext: "Includes exact microcontroller pin wiring, C/C++ firmware logic, web dashboard code, and examiner scoring defense.",
+      pillBadgeText: "Complete Hardware & Firmware Guide",
+      tab0Label: "🔌 Hardware & Firmware",
+      tab0Title: "Circuit Wiring, Pinouts & Firmware Implementation Guide",
+      tab0Sub: "Step-by-step microcontroller pinouts, sensor interfacing, and C++/MicroPython driver code.",
+      promptBoxTitle: "Microcontroller Firmware & Hardware Integration Prompt:",
+      promptBoxSub: "Use with your AI assistant to generate C++/MicroPython firmware and sensor telemetry logic",
+      copyButtonText: "Copy Firmware Prompt",
+      workflowSteps: [
+        { step: 1, title: "Hardware Pinout & Wiring", desc: "Connect your microcontroller to sensor modules using the exact 3.3V, GND, and GPIO pin mapping provided in Section 4.", color: "text-cyan-400" },
+        { step: 2, title: "Firmware Driver Generation", desc: "Copy our engineer-tuned prompt below into your AI IDE to generate verified C++/MicroPython driver firmware.", color: "text-brand-400" },
+        { step: 3, title: "Flash & Live Telemetry", desc: "Upload firmware via Arduino IDE or PlatformIO, then launch the telemetry dashboard to inspect real-time sensor streams.", color: "text-emerald-400" },
+      ],
+      benefitPills: [
+        { title: "Wiring Schematics", text: "Exact pinouts & voltage rails", color: "text-cyan-400" },
+        { title: "Firmware Drivers", text: "Tested C++/MicroPython code", color: "text-brand-400" },
+        { title: "Telemetry Dashboard", text: "Live real-time sensor charts", color: "text-emerald-400" },
+      ],
+      checklist: [
+        "Official 20-page Word/PDF download (Dense & publication-grade)",
+        "Microcontroller pinout wiring schematics & C++/Python firmware drivers",
+        "Step-by-step circuit, sensor & hardware interfacing guide",
+        "Synthetic telemetry pipeline + local dashboard setup",
+        "15 Examiner evaluation Q&A with scoring traps & model answers",
+        "Hardware, serial COM & sensor error troubleshooting",
+        "Black Book 6-chapter breakdown & 12-slide PPT outline",
+        "Local serial & free cloud IoT telemetry dashboard guide",
+      ],
+    };
+  }
+
+  if (cat === 'Cybersecurity') {
+    return {
+      canBuild: false,
+      badgeText: "🛡️ Security & Script Blueprint",
+      hookHeadline: "Step-by-Step Security Architecture & Implementation Blueprint",
+      hookSubtext: "Includes network defense scripts, vulnerability detection logic, architecture blueprints, and examiner scoring insights.",
+      pillBadgeText: "Security Architecture & Script Lab",
+      tab0Label: "🛡️ Security Lab & Scripts",
+      tab0Title: "Security Analysis Architecture & Defense Scripts Guide",
+      tab0Sub: "Step-by-step packet inspection algorithms, defensive rule engines, and incident reporting.",
+      promptBoxTitle: "Security Analysis & Packet Pipeline Prompt:",
+      promptBoxSub: "Paste into your AI assistant to generate modular scanning, packet inspection & rule engines",
+      copyButtonText: "Copy Security Prompt",
+      workflowSteps: [
+        { step: 1, title: "Isolated Sandbox Setup", desc: "Configure an isolated Python virtual environment or container with elevated packet capture permissions.", color: "text-red-400" },
+        { step: 2, title: "Defensive Engine Generation", desc: "Copy the prompt below to generate modular packet parsers, rule inspection algorithms, and telemetry scripts.", color: "text-brand-400" },
+        { step: 3, title: "Benchmark Attack Testing", desc: "Feed synthetic exploit vectors into the detection engine and verify real-time alert telemetry on the dashboard.", color: "text-emerald-400" },
+      ],
+      benefitPills: [
+        { title: "Detection Engines", text: "Rule-based & heuristic detection", color: "text-red-400" },
+        { title: "Mock Payloads", text: "Synthetic attack validation lab", color: "text-brand-400" },
+        { title: "Audit Reporting", text: "Real-time incident log telemetry", color: "text-emerald-400" },
+      ],
+      checklist: [
+        "Official 20-page Word/PDF download (Dense & publication-grade)",
+        "Security analysis engine & packet parser engineering prompt",
+        "Step-by-step vulnerability detection & defense script guide",
+        "Synthetic exploit payloads + sandbox test harness",
+        "15 Examiner evaluation Q&A with scoring traps & model answers",
+        "Raw socket, permission & network error troubleshooting",
+        "Black Book 6-chapter breakdown & 12-slide PPT outline",
+        "Local sandbox & security incident dashboard guide",
+      ],
+    };
+  }
+
+  if (cat === 'Blockchain') {
+    return {
+      canBuild: false,
+      badgeText: "⛓️ Smart Contract & Web3 Blueprint",
+      hookHeadline: "Full Solidity Contract & Web3 Architecture Blueprint",
+      hookSubtext: "Includes complete smart contract logic, testnet deployment walkthrough, frontend integration, and evaluator scoring guide.",
+      pillBadgeText: "Smart Contract & Web3 Architecture",
+      tab0Label: "⛓️ Smart Contracts & dApp",
+      tab0Title: "Solidity Architecture & Web3 Integration Guide",
+      tab0Sub: "Step-by-step smart contract engineering, reentrancy guards, and frontend Web3 connectivity.",
+      promptBoxTitle: "Smart Contract Engineering & Test Suite Prompt:",
+      promptBoxSub: "Paste into your AI assistant to scaffold Solidity contracts, Hardhat tests & ethers.js code",
+      copyButtonText: "Copy Web3 Prompt",
+      workflowSteps: [
+        { step: 1, title: "Hardhat & Web3 Workspace", desc: "Initialize an isolated Hardhat environment and configure testnet RPC endpoints (Sepolia / Polygon).", color: "text-amber-400" },
+        { step: 2, title: "Smart Contract Generation", desc: "Copy the prompt below to generate battle-tested Solidity contracts with OpenZeppelin reentrancy guards.", color: "text-brand-400" },
+        { step: 3, title: "Testnet Deploy & Web3 UI", desc: "Run automated Hardhat test suites, deploy contracts to testnet, and connect the frontend via MetaMask.", color: "text-emerald-400" },
+      ],
+      benefitPills: [
+        { title: "Secure Solidity", text: "OpenZeppelin verified standards", color: "text-amber-400" },
+        { title: "Automated Tests", text: "Full Hardhat unit test coverage", color: "text-brand-400" },
+        { title: "Web3 Frontend", text: "MetaMask & ethers.js ready", color: "text-emerald-400" },
+      ],
+      checklist: [
+        "Official 20-page Word/PDF download (Dense & publication-grade)",
+        "Solidity smart contract & Hardhat test suite engineering prompt",
+        "Step-by-step smart contract architecture & Web3 connectivity guide",
+        "Testnet deployment scripts + mock wallet integration",
+        "15 Examiner evaluation Q&A with scoring traps & model answers",
+        "Gas estimation, MetaMask & RPC error troubleshooting",
+        "Black Book 6-chapter breakdown & 12-slide PPT outline",
+        "Testnet deployment & Web3 frontend integration guide",
+      ],
+    };
+  }
+
+  return {
+    canBuild: false,
+    badgeText: "🛠️ Multi-Tier Engineering Blueprint",
+    hookHeadline: "Production-Grade System Architecture & Implementation Blueprint",
+    hookSubtext: "Includes multi-tier architectural schematics, clean separation of concerns, synthetic validation pipelines, and evaluator scoring defense.",
+    pillBadgeText: "Multi-Tier Production Architecture",
+    tab0Label: "🛠️ Architecture & Code",
+    tab0Title: "Production Architecture & Multi-Module Implementation Guide",
+    tab0Sub: "Clean layered design, scalable service boundaries, and external examiner evaluation standards.",
+    promptBoxTitle: "Multi-Module System Architecture Prompt:",
+    promptBoxSub: "Use with your AI assistant to generate layered domain models, controllers & responsive UI",
+    copyButtonText: "Copy Architecture Prompt",
+    workflowSteps: [
+      { step: 1, title: "Multi-Tier Workspace", desc: "Set up isolated modular directories (/data, /models, /services, /ui) ensuring clean separation of concerns.", color: "text-indigo-400" },
+      { step: 2, title: "Core Pipeline Generation", desc: "Copy the prompt below into your AI assistant to scaffold domain logic, REST controllers, and data pipelines.", color: "text-brand-400" },
+      { step: 3, title: "Integration & Demo Launch", desc: "Run automated integration tests, verify performance benchmarks, and launch the responsive presentation UI.", color: "text-emerald-400" },
+    ],
+    benefitPills: [
+      { title: "Layered Architecture", text: "Clean separation of concerns", color: "text-indigo-400" },
+      { title: "Synthetic Pipeline", text: "Realistic automated test fixtures", color: "text-brand-400" },
+      { title: "Evaluator Defense", text: "A+ scoring traps & model answers", color: "text-emerald-400" },
+    ],
+    checklist: [
+      "Official 20-page Word/PDF download (Dense & publication-grade)",
+      "Multi-module architecture & production codebase engineering prompt",
+      "Step-by-step modular engineering guide (Clean separation of concerns)",
+      "Synthetic test vector generator + automated validation pipeline",
+      "15 Examiner evaluation Q&A with scoring traps & model answers",
+      "Common runtime, memory & build error troubleshooting",
+      "Black Book 6-chapter breakdown & 12-slide PPT outline",
+      "Production deployment & evaluator presentation guide",
+    ],
+  };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RELATED TOPICS
+// Returns up to `limit` topics from the same category (trending first),
+// excluding the current topic. Used on the blueprint detail page sidebar.
+// ─────────────────────────────────────────────────────────────────────────────
+export function getRelatedTopics(topicId: string, category: string, limit = 3): TopicCard[] {
+  return ALL_TOPICS
+    .filter(t => t.id !== topicId && t.category === category)
+    .sort((a, b) => (b.trending ? 1 : 0) - (a.trending ? 1 : 0))
+    .slice(0, limit);
+}
+
+

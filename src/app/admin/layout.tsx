@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-  LayoutDashboard, Package, ShoppingCart, Clock, BarChart3, LogOut, ShieldCheck
+  LayoutDashboard, Package, ShoppingCart, Clock, BarChart3, LogOut, ShieldCheck, Map
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { NavProgress } from './components/nav-progress';
@@ -24,10 +24,11 @@ const NAV_SECTIONS: {
   {
     label: 'Manage',
     items: [
-      { href: '/admin/projects',  label: 'Projects',   Icon: Package,      exact: false, badge: false },
-      { href: '/admin/orders',    label: 'Orders',     Icon: ShoppingCart, exact: false, badge: false },
-      { href: '/admin/preorders', label: 'Pre-orders', Icon: Clock,        exact: false, badge: true  },
-      { href: '/admin/benchmarks',label: 'Benchmarks', Icon: ShieldCheck,  exact: false, badge: false },
+      { href: '/admin/projects',    label: 'Projects',    Icon: Package,      exact: false, badge: false },
+      { href: '/admin/orders',      label: 'Orders',      Icon: ShoppingCart, exact: false, badge: false },
+      { href: '/admin/blueprints',  label: 'Blueprints',  Icon: Map,          exact: false, badge: false },
+      { href: '/admin/preorders',   label: 'Pre-orders',  Icon: Clock,        exact: false, badge: true  },
+      { href: '/admin/benchmarks',  label: 'Benchmarks',  Icon: ShieldCheck,  exact: false, badge: false },
     ],
   },
 ];
@@ -235,7 +236,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(4px)' }}
           />
           <div
-            className="absolute left-0 top-0 bottom-0 w-64"
+            className="absolute left-0 top-0 bottom-0 w-64 drawer-slide-in"
             onClick={e => e.stopPropagation()}
           >
             <AdminSidebar pathname={pathname} hasNewPreorders={hasNewPreorders} />
