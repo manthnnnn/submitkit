@@ -176,7 +176,7 @@ export default function Home() {
                   </div>
                   <div>
                     <h3 className="text-white font-bold tracking-tight text-lg">Free Project Topic Blueprint</h3>
-                    <span className="inline-block text-[11px] text-emerald-400 font-medium">100% Free Search • 120+ Topics</span>
+                    <span className="inline-block text-[11px] text-emerald-400 font-medium">100% Free Search • 1000+ Topics</span>
                   </div>
                 </div>
                 <p className="text-zinc-400 text-sm mb-4 leading-relaxed">
@@ -259,7 +259,7 @@ export default function Home() {
                     href="/blueprint"
                     className="text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-1"
                   >
-                    Browse 120+ Topics A-Z <ArrowRight className="w-3.5 h-3.5" />
+                    Browse 1000+ Trending Topics A-Z <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>
               </motion.div>

@@ -1,11 +1,18 @@
 /**
  * Blueprint Engine
- * Contains all 120 project topic blueprints.
+ * Contains all 1000+ project topic blueprints.
  * Free info is always visible. Full blueprint unlocks after ₹19 payment.
  *
  * Language rule: Simple English only. Max 15 words per sentence.
  * No jargon without explanation.
  */
+
+import { TOPICS_555 } from "./blueprint-catalog-555";
+import { TOPICS_EXTRA } from "./blueprint-catalog-extra";
+import { TOPICS_EXTRA2 } from "./blueprint-catalog-extra2";
+import { TOPICS_EXTRA3 } from "./blueprint-catalog-extra3";
+import { TOPICS_EXTRA4 } from "./blueprint-catalog-extra4";
+import { synthesizeFullBlueprint } from "./blueprint-synthesizer";
 
 export type BlueprintCategory =
   | 'AIML'
@@ -15,7 +22,8 @@ export type BlueprintCategory =
   | 'Blockchain'
   | 'NLP'
   | 'DataScience'
-  | 'Mobile';
+  | 'Mobile'
+  | 'Fintech';
 
 export interface VivaQA {
   question: string;
@@ -76,7 +84,7 @@ export interface FullBlueprint extends TopicCard {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// MASTER TOPIC MAP — 120 topics
+// MASTER TOPIC MAP — 120 hand-crafted blueprints + 1000+ synthesized topics
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const TOPIC_MAP: Record<string, FullBlueprint> = {
@@ -1794,17 +1802,10 @@ Response:
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
-// TOPIC LIST (for A-Z browser) — extends above with stubs for remaining topics
+// TOPIC LIST (for A-Z browser)
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const ALL_TOPICS: TopicCard[] = [
-  // Full blueprints (featured)
-  TOPIC_MAP['face-recognition-attendance'],
-  TOPIC_MAP['plant-disease-detection'],
-  TOPIC_MAP['credit-card-fraud-detection'],
-  TOPIC_MAP['ai-chatbot-college-faq'],
-
-  // Remaining A-Z stubs — full content to be completed in Phase 2.2
+const ORIGINAL_STUBS: TopicCard[] = [
   { id: 'attendance-management-ml', letter: 'A', title: 'Attendance Management using ML', category: 'AIML', difficulty: 2, buildTimeDays: '2-3 days', trending: false, tagline: 'Automated class attendance using machine learning.', whatItDoes: 'Tracks and manages student attendance automatically using machine learning algorithms to detect patterns and anomalies.', realWorldUse: 'Universities and corporate offices use automated attendance systems to reduce manual effort.', examinerExpects: ['Demonstrate the attendance marking process', 'Explain the ML algorithm used', 'Show attendance report generation'], freeVivaQuestions: ['What ML algorithm did you use for classification?', 'How do you handle new students not in the training data?'], freeStep1Title: 'Set up Python environment and install scikit-learn', datasetName: 'Custom attendance dataset' },
   { id: 'blood-bank-management', letter: 'B', title: 'Blood Bank Management System', category: 'FullStack', difficulty: 2, buildTimeDays: '3-4 days', trending: false, tagline: 'Connects blood donors with hospitals in real time.', whatItDoes: 'A web application that manages blood inventory, donor registration, and hospital requests. Donors register with their blood group. Hospitals search for available blood. The system matches requests with available donors.', realWorldUse: 'Red Cross and government blood banks use similar systems. eBloodServices.in is an example.', examinerExpects: ['Show donor registration and blood request matching', 'Explain the database schema', 'Demonstrate search by blood group functionality'], freeVivaQuestions: ['How did you design the database for this system?', 'What happens when the blood inventory runs low?'], freeStep1Title: 'Set up Node.js and create Express server', datasetName: 'Custom blood bank database' },
   { id: 'blockchain-certificate', letter: 'B', title: 'Blockchain-based Certificate Verification', category: 'Blockchain', difficulty: 4, buildTimeDays: '5-7 days', trending: false, tagline: 'Fake degree certificates become impossible with blockchain.', whatItDoes: 'Universities issue certificates that are stored on a blockchain. Anyone can scan a QR code and verify instantly if a certificate is real or fake. The certificate data cannot be changed once on the blockchain.', realWorldUse: 'IIT Bombay and BITS Pilani have piloted blockchain certificates. MIT already issues blockchain diplomas.', examinerExpects: ['Demonstrate certificate issuance and verification', 'Explain why blockchain prevents forgery', 'Show the QR code scanning verification flow'], freeVivaQuestions: ['Why is blockchain better than a regular database for certificates?', 'What happens if a university loses access to their blockchain wallet?'], freeStep1Title: 'Install Node.js and Truffle framework for Ethereum', datasetName: 'No external dataset — you create certificate records' },
@@ -1842,16 +1843,48 @@ export const ALL_TOPICS: TopicCard[] = [
   { id: 'voice-assistant', letter: 'V', title: 'Virtual Assistant (Voice-Controlled)', category: 'NLP', difficulty: 2, buildTimeDays: '2-3 days', trending: false, tagline: 'Say a command. Your computer does it automatically.', whatItDoes: 'The user speaks a command: "Open Chrome", "What time is it?", "Search for weather in Mumbai". The system converts speech to text, understands the command, and executes it. A simple personal Siri or Alexa.', realWorldUse: 'Amazon Alexa, Google Assistant, Apple Siri, and Microsoft Cortana are all built on this concept. Indian startup Haptik powers voice assistants for Jio and other companies.', examinerExpects: ['Demonstrate at least 10 different voice commands working', 'Explain how speech-to-text conversion works', 'Show how you handle commands your assistant does not understand'], freeVivaQuestions: ['What is the speech recognition library you used and how does it convert audio to text?', 'How does your assistant understand the meaning of a command, not just the words?'], freeStep1Title: 'Install SpeechRecognition and pyttsx3 Python libraries', datasetName: 'No external dataset — you train with your own voice commands' },
 ];
 
+const rawTopicList: TopicCard[] = [
+  TOPIC_MAP['face-recognition-attendance'],
+  TOPIC_MAP['plant-disease-detection'],
+  TOPIC_MAP['credit-card-fraud-detection'],
+  TOPIC_MAP['ai-chatbot-college-faq'],
+  ...ORIGINAL_STUBS,
+  ...TOPICS_555,
+  ...TOPICS_EXTRA,
+  ...TOPICS_EXTRA2,
+  ...TOPICS_EXTRA3,
+  ...TOPICS_EXTRA4,
+];
+
+const seenTopicIds = new Set<string>();
+export const ALL_TOPICS: TopicCard[] = [];
+for (const item of rawTopicList) {
+  if (item && item.id && !seenTopicIds.has(item.id)) {
+    seenTopicIds.add(item.id);
+    ALL_TOPICS.push(item);
+  }
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // HELPER FUNCTIONS
 // ─────────────────────────────────────────────────────────────────────────────
 
+const GENERATED_BLUEPRINT_CACHE = new Map<string, FullBlueprint>();
+
 export function getTopicById(id: string): FullBlueprint | undefined {
-  return TOPIC_MAP[id];
+  if (TOPIC_MAP[id]) return TOPIC_MAP[id];
+  if (GENERATED_BLUEPRINT_CACHE.has(id)) return GENERATED_BLUEPRINT_CACHE.get(id);
+
+  const card = ALL_TOPICS.find((t) => t.id === id);
+  if (!card) return undefined;
+
+  const full = synthesizeFullBlueprint(card);
+  GENERATED_BLUEPRINT_CACHE.set(id, full);
+  return full;
 }
 
 export function getFeaturedTopics(): TopicCard[] {
-  return ALL_TOPICS.filter(t => t.trending);
+  return ALL_TOPICS.filter(t => t.trending).slice(0, 6);
 }
 
 export function getTopicsByLetter(letter: string): TopicCard[] {
