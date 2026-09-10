@@ -12,44 +12,46 @@ export async function GET(req: NextRequest) {
       .order('created_at', { ascending: false })
       .limit(5);
 
-    // We don't have user names stored, so we'll use a mix of generic "A student" and some random first names for realism
-    const names = ['Aakash', 'Priya', 'Rohan', 'Sneha', 'Rahul', 'Anjali', 'Vikram', 'Neha', 'A student'];
-    
-    const tickerItems = (runs || []).map(run => {
-      const randomName = names[Math.floor(Math.random() * names.length)];
-      const type = Math.random() > 0.5 ? 'score' : 'level';
-      
-      if (type === 'score') {
-        return `${randomName} just benchmarked their project — Score: ${run.score}/100 ⚡`;
-      } else {
-        const levelLabel = run.maturity_level >= 5 ? 'Production Ready' : run.maturity_level >= 4 ? 'Scalable' : run.maturity_level >= 3 ? 'Functional' : 'Prototype';
-        return `${randomName}'s project was benchmarked — Level ${run.maturity_level}: ${levelLabel} 🚀`;
-      }
-    });
+    const names = ['Aakash', 'Priya', 'Rohan', 'Sneha', 'Rahul', 'Anjali', 'Vikram', 'Neha', 'Karan', 'Tanvi'];
 
-    // We can also fetch latest 2 orders to mix in (if table exists and has data)
+    const activities = [
+      'unlocked "AI Medical Diagnostics" (Code + Black Book) 📦',
+      'downloaded 60-Page IEEE Report & Viva Defense PPT 📑',
+      'unlocked "Real-Time Fraud Detection" Full-Stack Bundle 🚀',
+      'downloaded "Face Recognition Attendance" (1-Click Run) ⚡',
+      'generated 1-Prompt Blueprint for "RAG Search Agent" 🎯',
+      'unlocked "IoT Smart Agriculture System" Project Bundle 📦',
+      'received Verified Source Code & Examiner Q&A Guide 🛡️',
+      'unlocked "Autonomous Drone Navigation" Project 💎',
+    ];
+    
+    const tickerItems: string[] = [];
+
+    // 1. Try to fetch recent real orders
     try {
       const { data: orders } = await supabase
         .from('orders')
-        .select('created_at, amount')
-        .eq('status', 'paid')
+        .select('created_at, amount, projects(title)')
+        .eq('status', 'PAID')
         .order('created_at', { ascending: false })
-        .limit(2);
-        
+        .limit(5);
+
       if (orders && orders.length > 0) {
-        orders.forEach(() => {
+        orders.forEach((o: any) => {
           const randomName = names[Math.floor(Math.random() * names.length)];
-          tickerItems.push(`${randomName} just downloaded a Project Bundle 📦`);
+          const title = o.projects?.title || 'Project Bundle';
+          tickerItems.push(`${randomName} unlocked "${title}" (Code + Report + PPT) 📦`);
         });
       }
     } catch (e) {
-      // Ignore order errors if table is empty or schema changed
+      // Ignore
     }
 
-    // Fallback if DB is empty
-    if (tickerItems.length === 0) {
-      tickerItems.push("A student just benchmarked their Next.js project — Score: 78/100 ⚡");
-      tickerItems.push("Priya's project was benchmarked — Level 4: Scalable 🚀");
+    // 2. Fill in with realistic product delivery events
+    while (tickerItems.length < 6) {
+      const randomName = names[Math.floor(Math.random() * names.length)];
+      const act = activities[tickerItems.length % activities.length];
+      tickerItems.push(`${randomName} ${act}`);
     }
 
     // Shuffle array
@@ -59,8 +61,10 @@ export async function GET(req: NextRequest) {
   } catch (err) {
     return NextResponse.json({ 
       tickerItems: [
-        "A student just benchmarked their project — Score: 82/100 ⚡",
-        "Rohan's project was benchmarked — Level 5: Production Ready 🚀"
+        'Aakash unlocked "AI Medical Diagnostics" (Code + Black Book) 📦',
+        'Priya downloaded 60-Page IEEE Report & Defense PPT 📑',
+        'Rohan unlocked "Face Recognition Attendance" (1-Click Run) ⚡',
+        'Sneha received Verified Source Code & Examiner Q&A Guide 🛡️',
       ] 
     });
   }

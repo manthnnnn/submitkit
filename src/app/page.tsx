@@ -1,9 +1,9 @@
 'use client';
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { CONSTANTS } from "@/lib/constants";
-import { ArrowRight, CheckCircle2, Zap, Download, ShieldCheck, Star, Sparkles, MonitorPlay, Search, BookOpen, ChevronRight, MessageCircle, Compass } from "lucide-react";
+import { ArrowRight, CheckCircle2, Zap, Download, ShieldCheck, Star, Sparkles, MonitorPlay, Search, BookOpen, ChevronRight, MessageCircle, Compass, Code2, FileText, Presentation } from "lucide-react";
 import { PricingHook } from "@/components/ui/pricing-hook";
 import { CompareSlider } from "@/components/ui/compare-slider";
 import { FleetSection } from "@/components/ui/fleet-section";
@@ -55,8 +55,36 @@ function StatCounter({ target, suffix = '', label }: { target: number; suffix?: 
   );
 }
 
+const ROTATING_HERO_TITLES = [
+  {
+    line1: "Production-Ready Projects.",
+    line2: "Shipped in 5 Minutes.",
+  },
+  {
+    line1: "Working Code + Black Book.",
+    line2: "All in 1 Download.",
+  },
+  {
+    line1: "Built Like a Tech Startup.",
+    line2: "Ready to Demo Today.",
+  },
+  {
+    line1: "1,000+ Verified Blueprints.",
+    line2: "Source Code to Viva Defense.",
+  },
+];
+
 export default function Home() {
   const router = useRouter();
+  const [heroIndex, setHeroIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setHeroIndex((prev) => (prev + 1) % ROTATING_HERO_TITLES.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
   const [stats, setStats] = useState<{
     totalScans: number;
     totalOrders: number;
@@ -121,27 +149,52 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
 
             {/* Left: Pitch */}
-            <div className="text-left max-w-xl">
+            <div className="text-left max-w-2xl">
               <LiveTicker />
 
-              <motion.h1
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.1 }}
-                className="text-4xl md:text-5xl lg:text-6xl font-display font-medium tracking-tight mb-5 text-white leading-[1.1]"
-              >
-                Skip the tension.<br />
-                <span className="text-gradient font-bold">Project ready in 5 mins.</span>
-              </motion.h1>
+              {/* Rotating Title (Changes Every 5 Seconds) */}
+              <div className="min-h-[140px] md:min-h-[160px] lg:min-h-[180px] flex items-center mb-4">
+                <AnimatePresence mode="wait">
+                  <motion.h1
+                    key={heroIndex}
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -16 }}
+                    transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                    className="text-4xl md:text-5xl lg:text-6xl font-display font-medium tracking-tight text-white leading-[1.1]"
+                  >
+                    {ROTATING_HERO_TITLES[heroIndex].line1}<br />
+                    <span className="text-gradient font-bold whitespace-normal sm:whitespace-nowrap">
+                      {ROTATING_HERO_TITLES[heroIndex].line2}
+                    </span>
+                  </motion.h1>
+                </AnimatePresence>
+              </div>
 
               <motion.p
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="text-base text-zinc-400 mb-7 leading-relaxed"
+                className="text-base text-zinc-300 mb-5 leading-relaxed"
               >
-                Stop begging seniors. Stop paying ₹10,000 to local shops. Get working code, a 60-page print-ready Black Book, and PPT slides — instantly.
+                The digital marketplace for complete, verified engineering projects. You get <strong className="text-white font-semibold">1-click runnable source code</strong>, an <strong className="text-white font-semibold">IEEE 60-page Black Book report</strong>, <strong className="text-white font-semibold">presentation PPT slides</strong>, and a complete <strong className="text-white font-semibold">Viva defense question bank</strong> — delivered instantly with zero stress.
               </motion.p>
+
+              {/* Deliverable Highlights */}
+              <div className="flex flex-wrap gap-2 mb-6">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-xs font-medium text-zinc-200">
+                  <Code2 className="w-3.5 h-3.5 text-brand-400" /> Working Source Code
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-xs font-medium text-zinc-200">
+                  <FileText className="w-3.5 h-3.5 text-emerald-400" /> 60-Page Black Book (.docx)
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-xs font-medium text-zinc-200">
+                  <Presentation className="w-3.5 h-3.5 text-purple-400" /> Viva Defense PPT
+                </span>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-xs font-medium text-zinc-200">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400" /> 1-Click Runnable
+                </span>
+              </div>
 
               {/* Star rating social proof */}
               <motion.div
