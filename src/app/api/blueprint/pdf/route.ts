@@ -1,12 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { getTopicById } from "@/lib/blueprint-engine";
 import { generateBlueprintDocx } from "@/lib/blueprint-pdf";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
   try {
@@ -18,12 +15,14 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Missing topicId or email" }, { status: 400 });
     }
 
+    const supabase = createAdminClient();
+
     // 1. Verify purchase exists and is paid
     const { data: purchases, error } = await supabase
       .from("blueprint_purchases")
-      .select("id, status")
+      .select("id, status, pdf_downloads")
       .eq("topic_id", topicId)
-      .eq("customer_email", email)
+      .eq("customer_email", email.trim().toLowerCase())
       .eq("status", "PAID")
       .limit(1);
 
@@ -49,12 +48,13 @@ export async function GET(req: NextRequest) {
     }
 
     // 4. Generate docx buffer
-    const buffer = await generateBlueprintDocx(blueprint, email);
+    const buffer = await generateBlueprintDocx(blueprint, email.trim().toLowerCase());
 
-    // 5. Increment download count
+    // 5. Increment download count safely without RPC dependency
+    const currentDownloads = purchases[0].pdf_downloads || 0;
     await supabase
       .from("blueprint_purchases")
-      .update({ pdf_downloads: supabase.rpc("increment", { x: 1 }) as any })
+      .update({ pdf_downloads: currentDownloads + 1 })
       .eq("id", purchases[0].id);
 
     // 6. Return the file

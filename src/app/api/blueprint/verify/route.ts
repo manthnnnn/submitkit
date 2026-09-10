@@ -1,11 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import crypto from "crypto";
-import { createClient } from "@supabase/supabase-js";
+import { verifySignature } from "@/lib/razorpay";
+import { createAdminClient } from "@/lib/supabase/admin";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
   try {
@@ -16,18 +13,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing parameters" }, { status: 400 });
     }
 
-    // 1. Verify signature
-    const text = `${razorpay_order_id}|${razorpay_payment_id}`;
-    const generated_signature = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET!)
-      .update(text)
-      .digest("hex");
+    // 1. Verify signature safely
+    const isValid = verifySignature(
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature
+    );
 
-    if (generated_signature !== razorpay_signature) {
+    if (!isValid) {
       return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
     }
 
     // 2. Update status in Supabase
+    const supabase = createAdminClient();
     const { data: purchase, error } = await supabase
       .from("blueprint_purchases")
       .update({

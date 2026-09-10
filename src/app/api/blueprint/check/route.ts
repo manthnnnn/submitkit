@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { createAdminClient } from "@/lib/supabase/admin";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
   try {
@@ -15,12 +12,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing parameters" }, { status: 400 });
     }
 
-    // Check if there is a successful payment for this email/phone and topic
+    const supabase = createAdminClient();
+
+    // Check if there is a successful payment for this email and topic
     const { data: purchases, error } = await supabase
       .from("blueprint_purchases")
       .select("id, status")
       .eq("topic_id", topicId)
-      .eq("customer_email", email)
+      .eq("customer_email", email.trim().toLowerCase())
       .eq("status", "PAID")
       .limit(1);
 
@@ -29,11 +28,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Database error" }, { status: 500 });
     }
 
-    const hasPaid = purchases && purchases.length > 0;
+    const hasPaid = Boolean(purchases && purchases.length > 0);
     
     return NextResponse.json({ 
       hasPaid, 
-      purchaseId: hasPaid ? purchases[0].id : null 
+      purchaseId: hasPaid && purchases ? purchases[0].id : null 
     });
 
   } catch (error) {

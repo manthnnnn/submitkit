@@ -1,18 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import Razorpay from "razorpay";
-import { createClient } from "@supabase/supabase-js";
+import { razorpay } from "@/lib/razorpay";
+import { createAdminClient } from "@/lib/supabase/admin";
 import crypto from "crypto";
 import { CONSTANTS } from "@/lib/constants";
 
-const razorpay = new Razorpay({
-  key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
-  key_secret: process.env.RAZORPAY_KEY_SECRET!,
-});
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
   try {
@@ -34,21 +26,22 @@ export async function POST(req: NextRequest) {
       receipt: `bp_${crypto.randomBytes(8).toString("hex")}`,
       notes: {
         topicId,
-        email,
+        email: email.trim().toLowerCase(),
       },
     };
 
     const order = await razorpay.orders.create(options);
 
     // 2. Store pending purchase in Supabase
+    const supabase = createAdminClient();
     const { data: purchase, error } = await supabase
       .from("blueprint_purchases")
       .insert([
         {
           topic_id: topicId,
           topic_title: topicTitle,
-          customer_email: email,
-          customer_phone: phone,
+          customer_email: email.trim().toLowerCase(),
+          customer_phone: phone.trim(),
           razorpay_order_id: order.id,
           amount: CONSTANTS.PRICING.BLUEPRINT,
           status: "PENDING",
