@@ -13,8 +13,13 @@ export function StickyBuyBar({ price, title, available = true }: StickyBuyBarPro
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
+    let lastVisibility = false;
     const handleScroll = () => {
-      setVisible(window.scrollY > 400);
+      const isPast = window.scrollY > 400;
+      if (isPast !== lastVisibility) {
+        lastVisibility = isPast;
+        setVisible(isPast);
+      }
     };
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);

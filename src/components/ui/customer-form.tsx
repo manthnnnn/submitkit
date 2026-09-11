@@ -197,6 +197,8 @@ export function CustomerForm({ projectId, price }: CheckoutFormProps) {
         </label>
       </div>
 
+
+
       <button
         type="submit"
         disabled={loading}

@@ -45,6 +45,9 @@ export async function POST(req: NextRequest) {
     if (body.addPersonalization) totalAmount += CONSTANTS.PRICING.ADDONS.PERSONALIZATION;
     if (body.addPlagiarismCert) totalAmount += CONSTANTS.PRICING.ADDONS.PLAGIARISM_CERT;
     if (body.addVivaCall) totalAmount += CONSTANTS.PRICING.ADDONS.VIVA_CALL;
+
+    // Always charge the real price — never override with ₹1
+    // (test email and dev shortcuts removed to ensure consistent real-money transactions)
     
     // Create Razorpay Order
     const receiptId = `rcpt_${crypto.randomBytes(8).toString('hex')}`;

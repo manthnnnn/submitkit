@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { verifySignature } from "@/lib/razorpay";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendBlueprintConfirmationEmail } from "@/lib/email";
+import { createAccessToken } from "@/lib/blueprint-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -50,9 +51,11 @@ export async function POST(req: NextRequest) {
       customerEmail: purchase.customer_email,
       topicTitle:    purchase.topic_title,
       topicId:       purchase.topic_id,
+      customerPhone: purchase.customer_phone,
     }).catch(err => console.error('[blueprint/verify] email send failed (non-blocking):', err));
 
-    return NextResponse.json({ success: true, purchaseId: purchase.id });
+    const accessToken = createAccessToken(purchase.customer_email, purchase.topic_id);
+    return NextResponse.json({ success: true, purchaseId: purchase.id, accessToken });
   } catch (error) {
     console.error("Blueprint verify error:", error);
     return NextResponse.json(

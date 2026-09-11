@@ -4,7 +4,8 @@ import { ProjectCard } from "@/components/ui/project-card";
 import { Project } from "@/lib/types";
 import { Terminal, Zap, Clock, CheckCircle2, Sparkles, Search, MessageCircle, ArrowRight, Bell, Check } from "lucide-react";
 import { isProjectAvailable } from "@/lib/available-projects";
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Link from "next/link";
 import { CONSTANTS } from "@/lib/constants";
 
@@ -13,10 +14,26 @@ type TierFilter = 'ALL' | 'MINI' | 'MAJOR';
 type CategoryFilter = string;
 
 export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[] }) {
+  const searchParams = useSearchParams();
+  const rawTier = searchParams.get('tier')?.toUpperCase();
+  const initialTier: TierFilter = (rawTier === 'MINI' || rawTier === 'MAJOR') ? rawTier : 'ALL';
+  const initialCat = searchParams.get('category') || 'ALL';
+
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('ALL');
-  const [tierFilter, setTierFilter] = useState<TierFilter>('ALL');
-  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>('ALL');
+  const [tierFilter, setTierFilter] = useState<TierFilter>(initialTier);
+  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>(initialCat);
   const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    const t = searchParams.get('tier')?.toUpperCase();
+    if (t === 'MINI' || t === 'MAJOR') {
+      setTierFilter(t);
+    }
+    const c = searchParams.get('category');
+    if (c) {
+      setCategoryFilter(c);
+    }
+  }, [searchParams]);
 
   // Derive unique categories from project list
   const categories = useMemo(() => {
@@ -115,10 +132,10 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
           </div>
         </div>
         <h1 className="text-4xl md:text-5xl font-display font-medium text-white mb-4 tracking-tight">
-          Project <span className="text-zinc-500">Database & Showcase</span>
+          Verified Engineering Projects. <span className="text-gradient">Ready to Run &amp; Submit.</span>
         </h1>
         <p className="text-zinc-400 max-w-2xl text-lg leading-relaxed">
-          Every available project includes 100% bug-free source code, a 60-page IEEE format Black Book report, and Viva defense slides. Instant download upon checkout.
+          Skip the endless GitHub bugs, missing Python libraries, and 3 AM panics. Every project kit comes with 100% working code, an IEEE format Black Book report (.docx), defense PPT slides, and top 25 Viva Q&amp;A with answers.
         </p>
       </div>
 
@@ -141,11 +158,11 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
               </span>
             </div>
             <p className="text-xs text-zinc-400 mt-0.5 flex items-center gap-2 flex-wrap">
-              <span>Working code repository</span>
+              <span>100% working custom code</span>
               <span className="text-zinc-600">•</span>
-              <span>20-page technical report & PPT</span>
+              <span>IEEE Black Book (.docx) &amp; PPT</span>
               <span className="text-zinc-600">•</span>
-              <span>1-on-1 walkthrough</span>
+              <span>1-on-1 setup walkthrough</span>
               <span className="text-zinc-600">•</span>
               <span className="text-emerald-400 font-semibold">Starts ₹1,999</span>
             </p>
@@ -171,7 +188,7 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
         <input
           type="text"
-          placeholder="Search by name, tech stack, category..."
+          placeholder="Search projects (e.g. Face Recognition, Fraud, EHR, Python, React)..."
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
           className="w-full bg-white/5 border border-white/10 rounded-2xl pl-11 pr-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:border-brand-500/30 focus:ring-1 focus:ring-brand-500/20 transition-all text-sm"

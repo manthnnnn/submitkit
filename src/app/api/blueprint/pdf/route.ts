@@ -33,13 +33,23 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // 2. Get full blueprint content
+    // 2. Enforce maximum 5 downloads limit to prevent sharing/resale
+    const MAX_DOWNLOADS = 5;
+    const currentDownloads = purchases[0].pdf_downloads || 0;
+    if (currentDownloads >= MAX_DOWNLOADS) {
+      return NextResponse.json(
+        { error: `Download limit reached (${MAX_DOWNLOADS}/${MAX_DOWNLOADS} downloads used). To prevent resale abuse, downloads are capped at ${MAX_DOWNLOADS}. Contact support on WhatsApp for help.` },
+        { status: 403 }
+      );
+    }
+
+    // 3. Get full blueprint content
     const blueprint = getTopicById(topicId);
     if (!blueprint) {
       return NextResponse.json({ error: "Topic not found" }, { status: 404 });
     }
 
-    // 3. Check if this is a stub topic (no full blueprint data)
+    // 4. Check if this is a stub topic (no full blueprint data)
     if (!blueprint.buildSteps || blueprint.buildSteps.length === 0) {
       return NextResponse.json(
         { error: "Full blueprint for this topic is coming soon. Please contact support." },
@@ -47,11 +57,10 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // 4. Generate docx buffer
+    // 5. Generate docx buffer
     const buffer = await generateBlueprintDocx(blueprint, email.trim().toLowerCase());
 
-    // 5. Increment download count safely without RPC dependency
-    const currentDownloads = purchases[0].pdf_downloads || 0;
+    // 6. Increment download count
     await supabase
       .from("blueprint_purchases")
       .update({ pdf_downloads: currentDownloads + 1 })

@@ -18,8 +18,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // 1. Create Razorpay order for ₹19
-    const amount = CONSTANTS.PRICING.BLUEPRINT * 100; // in paise
+    // Always charge the real blueprint price (₹19)
+    const finalPrice = CONSTANTS.PRICING.BLUEPRINT;
+    const amount = finalPrice * 100; // in paise
     const options = {
       amount,
       currency: "INR",
@@ -43,7 +44,7 @@ export async function POST(req: NextRequest) {
           customer_email: email.trim().toLowerCase(),
           customer_phone: phone.trim(),
           razorpay_order_id: order.id,
-          amount: CONSTANTS.PRICING.BLUEPRINT,
+          amount: finalPrice,
           status: "PENDING",
         },
       ])
@@ -58,7 +59,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    return NextResponse.json({ orderId: order.id });
+    return NextResponse.json({ orderId: order.id, amount: order.amount });
   } catch (error) {
     console.error("Create blueprint order error:", error);
     return NextResponse.json(

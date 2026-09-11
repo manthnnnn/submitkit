@@ -46,5 +46,5 @@ scratch/
 
 .vercel
 .env*
-p u b l i c / * . M O V  
- 
+public/*.mov
+public/*.MOV

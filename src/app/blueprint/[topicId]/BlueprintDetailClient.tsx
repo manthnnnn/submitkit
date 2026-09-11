@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import {
   ArrowLeft, Lock, Clock, Star, AlertTriangle, ChevronRight,
   Mic, Wrench, Database, Cpu, FileDown, CheckCircle, XCircle, Loader2,
   Copy, Check, ExternalLink, Terminal, ShieldAlert, BookOpen, Layers,
   Presentation, FileText, Sparkles, HelpCircle, Flame,
-  Share2, Mail, MessageCircle
+  Share2, Mail, MessageCircle, KeyRound, ShieldCheck
 } from "lucide-react";
 import { FullBlueprint, generateAntigravityMasterPrompt, canBuildOnAntigravity, getAntigravityBuildInfo, getRelatedTopics } from "@/lib/blueprint-engine";
 
@@ -171,9 +171,13 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
   const [loading, setLoading] = useState(false);
   const [unlocked, setUnlocked] = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
+  // Dual-Key Instant Re-access (Email + Phone, Zero Email/OTP)
   const [checkEmail, setCheckEmail] = useState("");
+  const [checkPhone, setCheckPhone] = useState("");
   const [checkLoading, setCheckLoading] = useState(false);
-  const [checkResult, setCheckResult] = useState<"found" | "not-found" | null>(null);
+  const [checkError, setCheckError] = useState<string | null>(null);
+  const [downloadStats, setDownloadStats] = useState<{ downloads: number; maxDownloads: number } | null>(null);
+
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<ActiveTab>("antigravity");
   const [payError, setPayError] = useState<string | null>(null);
@@ -190,6 +194,31 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
     setCopiedIndex(index);
     setTimeout(() => setCopiedIndex(null), 2000);
   };
+
+  // Check saved device access token for passwordless instant unlock
+  useEffect(() => {
+    try {
+      const savedToken = typeof window !== "undefined" ? localStorage.getItem(`submitkit_bp_token_${topic.id}`) : null;
+      if (savedToken) {
+        fetch("/api/blueprint/check", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ topicId: topic.id, accessToken: savedToken }),
+        })
+          .then((r) => r.json())
+          .then((d) => {
+            if (d && d.hasPaid) {
+              if (d.email) setEmail(d.email);
+              if (typeof d.downloads === "number") {
+                setDownloadStats({ downloads: d.downloads, maxDownloads: d.maxDownloads || 5 });
+              }
+              setUnlocked(true);
+            }
+          })
+          .catch(() => {});
+      }
+    } catch {}
+  }, [topic.id]);
 
   const handlePay = async () => {
     setPayError(null);
@@ -228,14 +257,10 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
       }
 
       // 2. Open Razorpay
-      const script = document.createElement("script");
-      script.src = "https://checkout.razorpay.com/v1/checkout.js";
-      document.body.appendChild(script);
-
-      script.onload = () => {
+      const openRazorpay = () => {
         const options = {
           key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-          amount: 1900,
+          amount: orderData.amount || 1900,
           currency: "INR",
           name: "SubmitKit",
           description: `Project Blueprint: ${topic.title}`,
@@ -244,21 +269,32 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
           theme: { color: "#6366f1" },
           handler: async (response: any) => {
             // 3. Verify payment
-            const verifyRes = await fetch("/api/blueprint/verify", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature,
-              }),
-            });
-            const verifyData = await verifyRes.json();
-            if (verifyData.success) {
-              setUnlocked(true);
-              setLoading(false);
-              window.scrollTo({ top: 0, behavior: "smooth" });
-            } else {
+            try {
+              const verifyRes = await fetch("/api/blueprint/verify", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                }),
+              });
+              const verifyData = await verifyRes.json();
+              if (verifyData.success) {
+                try {
+                  localStorage.setItem("submitkit_user_email", email.trim().toLowerCase());
+                  if (verifyData.accessToken) {
+                    localStorage.setItem(`submitkit_bp_token_${topic.id}`, verifyData.accessToken);
+                  }
+                } catch {}
+                setUnlocked(true);
+                setLoading(false);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              } else {
+                setPayError(verifyData.error || "Payment verification failed. Please contact support on WhatsApp.");
+                setLoading(false);
+              }
+            } catch {
               setPayError("Payment verification failed. Please contact support on WhatsApp.");
               setLoading(false);
             }
@@ -267,18 +303,67 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
             ondismiss: () => setLoading(false),
           },
         };
-        const rzp = new window.Razorpay(options);
+        const rzp = new (window as any).Razorpay(options);
         rzp.open();
       };
 
-      script.onerror = () => {
-        setPayError("Failed to load payment gateway. Please check your internet connection.");
-        setLoading(false);
-      };
-    } catch (err) {
+      if ((window as any).Razorpay) {
+        openRazorpay();
+      } else {
+        const script = document.createElement("script");
+        script.src = "https://checkout.razorpay.com/v1/checkout.js";
+        script.onload = () => openRazorpay();
+        script.onerror = () => {
+          setPayError("Failed to load payment gateway. Please check your internet connection.");
+          setLoading(false);
+        };
+        document.body.appendChild(script);
+      }
+    } catch (err: any) {
       console.error(err);
-      setPayError("Something went wrong. Please try again or contact support.");
+      setPayError(err?.message ? `Network error: ${err.message}. Ensure dev server is running.` : "Something went wrong. Please try again or contact support.");
       setLoading(false);
+    }
+  };
+
+  const checkoutCardRef = useRef<HTMLDivElement>(null);
+  const [showStickyBar, setShowStickyBar] = useState(false);
+
+  useEffect(() => {
+    if (unlocked) return;
+
+    const updateVisibility = () => {
+      const scrollY = window.scrollY || document.documentElement.scrollTop || 0;
+      const pastHero = scrollY > 300;
+
+      let checkoutInView = false;
+      if (checkoutCardRef.current) {
+        const rect = checkoutCardRef.current.getBoundingClientRect();
+        checkoutInView = rect.top < window.innerHeight && rect.bottom > 0;
+      }
+
+      setShowStickyBar(pastHero && !checkoutInView);
+    };
+
+    window.addEventListener("scroll", updateVisibility, { passive: true });
+    window.addEventListener("resize", updateVisibility, { passive: true });
+    updateVisibility();
+
+    return () => {
+      window.removeEventListener("scroll", updateVisibility);
+      window.removeEventListener("resize", updateVisibility);
+    };
+  }, [unlocked]);
+
+  const handleStickyCtaClick = () => {
+    if (email && phone && !payError) {
+      handlePay();
+    } else {
+      if (checkoutCardRef.current) {
+        checkoutCardRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+        const input = checkoutCardRef.current.querySelector('input[type="email"]') as HTMLInputElement | null;
+        if (input) input.focus();
+      }
     }
   };
 
@@ -288,38 +373,72 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
     window.open(`https://wa.me/?text=${encodeURIComponent(text + "\n" + url)}`, "_blank");
   };
 
-  const handleCheckAccess = async () => {
-    if (!checkEmail) return;
+  const handleRestoreAccess = async () => {
+    const targetEmail = checkEmail.trim().toLowerCase();
+    const cleanPhone = checkPhone.replace(/\D/g, "").slice(-10);
+
+    if (!targetEmail) {
+      setCheckError("Please enter your registered purchase email.");
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(targetEmail)) {
+      setCheckError("Please enter a valid email address.");
+      return;
+    }
+    if (!cleanPhone || cleanPhone.length !== 10) {
+      setCheckError("Please enter your registered 10-digit phone number.");
+      return;
+    }
+
     setCheckLoading(true);
-    setCheckResult(null);
+    setCheckError(null);
     try {
       const res = await fetch("/api/blueprint/check", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ topicId: topic.id, email: checkEmail.trim().toLowerCase() }),
+        body: JSON.stringify({
+          topicId: topic.id,
+          email: targetEmail,
+          phone: cleanPhone,
+        }),
       });
       const data = await res.json();
-      if (data.hasPaid) {
-        setCheckResult("found");
-        setEmail(checkEmail);
+      if (data.hasPaid && data.accessToken) {
+        try {
+          localStorage.setItem(`submitkit_bp_token_${topic.id}`, data.accessToken);
+          localStorage.setItem("submitkit_user_email", data.email);
+        } catch {}
+        setEmail(data.email);
+        if (typeof data.downloads === "number") {
+          setDownloadStats({ downloads: data.downloads, maxDownloads: data.maxDownloads || 5 });
+        }
         setUnlocked(true);
+        window.scrollTo({ top: 0, behavior: "smooth" });
       } else {
-        setCheckResult("not-found");
+        setCheckError(data.error || "No purchase found matching this email and phone number.");
       }
     } catch {
-      setCheckResult("not-found");
+      setCheckError("Verification failed. Please check your internet connection.");
     }
     setCheckLoading(false);
   };
 
   const handleDownloadPdf = async () => {
+    if (downloadStats && downloadStats.downloads >= downloadStats.maxDownloads) {
+      setPayError(`Download limit reached (${downloadStats.maxDownloads}/${downloadStats.maxDownloads} downloads used). Contact support on WhatsApp if you need more.`);
+      return;
+    }
     setPdfLoading(true);
     try {
       const res = await fetch(
         `/api/blueprint/pdf?topicId=${topic.id}&email=${encodeURIComponent(email || checkEmail)}`,
         { method: "GET" }
       );
-      if (!res.ok) throw new Error("PDF generation failed");
+      if (!res.ok) {
+        const errJson = await res.json().catch(() => null);
+        throw new Error(errJson?.error || "PDF generation failed");
+      }
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -327,8 +446,11 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
       a.download = `SubmitKit-Blueprint-${topic.id}.docx`;
       a.click();
       URL.revokeObjectURL(url);
-    } catch (err) {
-      setPayError("Failed to generate the document. Please try again or contact support.");
+      setDownloadStats((prev) =>
+        prev ? { ...prev, downloads: Math.min(prev.downloads + 1, prev.maxDownloads) } : { downloads: 1, maxDownloads: 5 }
+      );
+    } catch (err: any) {
+      setPayError(err?.message || "Failed to generate the document. Please try again or contact support.");
     }
     setPdfLoading(false);
   };
@@ -1384,7 +1506,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
             <div className="sticky top-28 space-y-4">
 
               {!unlocked ? (
-                <div className="glass-card bg-zinc-900/80 border border-white/10 rounded-2xl p-6 space-y-5 shadow-2xl backdrop-blur-xl">
+                <div ref={checkoutCardRef} className="glass-card bg-zinc-900/80 border border-white/10 rounded-2xl p-6 space-y-5 shadow-2xl backdrop-blur-xl">
                   {/* PDF Document Preview Card */}
                   <div className="relative rounded-xl overflow-hidden bg-zinc-950 border border-white/5 h-36 flex items-center justify-center group">
                     <div className="absolute inset-0 flex flex-col items-center justify-center p-4 opacity-25 blur-[1.5px] pointer-events-none select-none">
@@ -1463,29 +1585,63 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                     ))}
                   </div>
 
-                  {/* Re-Access Check */}
-                  <div className="pt-3 border-t border-white/5 space-y-2.5">
-                    <span className="text-[11px] text-zinc-400 text-center block">Already purchased? Re-access here:</span>
-                    <div className="flex gap-2">
+                  {/* Instant Re-Access with Email + Phone Dual-Key Check */}
+                  <div className="pt-3.5 border-t border-white/5 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-semibold text-zinc-300 flex items-center gap-1.5">
+                        <KeyRound className="w-3.5 h-3.5 text-brand-400" /> Already purchased?
+                      </span>
+                      <span className="text-[10px] text-emerald-400 font-semibold flex items-center gap-1 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                        <ShieldCheck className="w-3 h-3" /> Anti-Piracy Locked
+                      </span>
+                    </div>
+
+                    <div className="space-y-2">
+                      <p className="text-[11px] text-zinc-400 leading-relaxed">
+                        Enter your registered email & phone number to instantly restore access on this device.
+                      </p>
                       <input
                         type="email"
                         value={checkEmail}
-                        onChange={(e) => setCheckEmail(e.target.value)}
-                        placeholder="Enter your email"
-                        className="flex-1 px-3 py-2 bg-zinc-950 border border-white/10 rounded-xl text-white placeholder-zinc-500 text-xs focus:outline-none focus:border-brand-500"
+                        onChange={(e) => {
+                          setCheckEmail(e.target.value);
+                          if (checkError) setCheckError(null);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") handleRestoreAccess();
+                        }}
+                        placeholder="Registered purchase email"
+                        className="w-full px-3 py-2 bg-zinc-950 border border-white/10 rounded-xl text-white placeholder-zinc-500 text-xs focus:outline-none focus:border-brand-500"
                       />
-                      <button
-                        onClick={handleCheckAccess}
-                        disabled={checkLoading}
-                        className="px-3.5 py-2 bg-white/10 hover:bg-white/20 text-white text-xs font-semibold rounded-xl transition-colors disabled:opacity-50"
-                      >
-                        {checkLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : "Verify"}
-                      </button>
+                      <div className="flex gap-2">
+                        <input
+                          type="tel"
+                          value={checkPhone}
+                          onChange={(e) => {
+                            setCheckPhone(e.target.value.replace(/\D/g, "").slice(0, 10));
+                            if (checkError) setCheckError(null);
+                          }}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") handleRestoreAccess();
+                          }}
+                          placeholder="10-digit phone number"
+                          className="flex-1 px-3 py-2 bg-zinc-950 border border-white/10 rounded-xl text-white placeholder-zinc-500 text-xs focus:outline-none focus:border-brand-500 font-mono"
+                        />
+                        <button
+                          type="button"
+                          onClick={handleRestoreAccess}
+                          disabled={checkLoading || !checkEmail || checkPhone.length < 10}
+                          className="px-3.5 py-2 bg-gradient-to-r from-brand-500 to-indigo-600 hover:brightness-110 text-white text-xs font-semibold rounded-xl transition-all disabled:opacity-50 shrink-0 flex items-center gap-1.5 cursor-pointer disabled:cursor-not-allowed shadow-md shadow-brand-500/20"
+                        >
+                          {checkLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <>Restore <ChevronRight className="w-3.5 h-3.5" /></>}
+                        </button>
+                      </div>
                     </div>
 
-                    {checkResult === "not-found" && (
-                      <p className="text-xs text-red-400 flex items-center gap-1">
-                        <XCircle className="w-3.5 h-3.5 shrink-0" /> No purchase found for this email.
+                    {checkError && (
+                      <p className="text-xs text-red-400 bg-red-950/40 border border-red-500/30 rounded-xl p-2.5 flex items-start gap-1.5">
+                        <AlertTriangle className="w-3.5 h-3.5 shrink-0 mt-0.5 text-red-400" />
+                        <span>{checkError}</span>
                       </p>
                     )}
                   </div>
@@ -1504,17 +1660,26 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                 </div>
               ) : (
                 <div className="glass-card bg-zinc-900/80 border border-emerald-500/40 rounded-2xl p-6 space-y-4 shadow-2xl backdrop-blur-xl">
-                  <div className="flex items-center gap-2 text-emerald-400 font-bold text-sm">
-                    <CheckCircle className="w-4 h-4" />
-                    Blueprint Unlocked
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-emerald-400 font-bold text-sm">
+                      <CheckCircle className="w-4 h-4" />
+                      Blueprint Unlocked
+                    </div>
+                    {downloadStats && (
+                      <span className="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-zinc-800 border border-white/10 text-zinc-300">
+                        Downloads: <strong className={downloadStats.downloads >= downloadStats.maxDownloads ? "text-red-400" : "text-emerald-400"}>{downloadStats.downloads}</strong>/{downloadStats.maxDownloads}
+                      </span>
+                    )}
                   </div>
                   <button
                     onClick={handleDownloadPdf}
-                    disabled={pdfLoading}
+                    disabled={pdfLoading || (downloadStats !== null && downloadStats.downloads >= downloadStats.maxDownloads)}
                     className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] disabled:opacity-60 flex items-center justify-center gap-2 text-sm"
                   >
                     {pdfLoading ? (
                       <><Loader2 className="w-4 h-4 animate-spin" /> Generating Document…</>
+                    ) : downloadStats && downloadStats.downloads >= downloadStats.maxDownloads ? (
+                      <>Download Limit Reached (5/5)</>
                     ) : (
                       <><FileDown className="w-4 h-4" /> Download DOCX / PDF</>
                     )}
@@ -1621,6 +1786,50 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
         )}
 
       </div>
+
+      {/* ── STICKY BOTTOM BAR FOR ₹19 BLUEPRINT (Shown when !unlocked and scrolled past hero) ── */}
+      {!unlocked && showStickyBar && (
+        <div className="fixed bottom-0 left-0 right-0 z-40 bg-zinc-950/95 backdrop-blur-xl border-t border-amber-500/30 px-4 py-3 shadow-[0_-10px_35px_rgba(0,0,0,0.85)] animate-in fade-in slide-in-from-bottom duration-300">
+          <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="hidden sm:flex w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 items-center justify-center text-amber-400 shrink-0">
+                <FileText className="w-4 h-4" />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="hidden xs:inline-flex text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold uppercase tracking-wider">
+                    ₹19 Blueprint
+                  </span>
+                  <p className="text-xs sm:text-sm font-bold text-white truncate">
+                    {topic.title}
+                  </p>
+                </div>
+                <p className="text-[11px] text-zinc-400 hidden sm:block truncate">
+                  Includes Complete IEEE Roadmap, Mock Dataset &amp; Top 10 Viva Q&amp;A
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 shrink-0">
+              <div className="text-right hidden xs:block">
+                <div className="flex items-baseline gap-1.5 justify-end">
+                  <span className="text-sm font-black text-white">₹19</span>
+                  <span className="text-[10px] text-zinc-500 line-through">₹149</span>
+                </div>
+                <span className="text-[9px] text-emerald-400 font-medium block">Instant PDF Unlock</span>
+              </div>
+              <button
+                onClick={handleStickyCtaClick}
+                disabled={loading}
+                className="px-4 sm:px-6 py-2.5 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:brightness-110 text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-lg shadow-amber-500/25 transition-all hover:scale-[1.02] flex items-center gap-1.5"
+              >
+                <span>{loading ? "Processing…" : "Unlock Blueprint — ₹19"}</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

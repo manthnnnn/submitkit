@@ -19,7 +19,7 @@ const TESTIMONIALS = [
     avatar: 'PN',
     project: 'TalentScan AI Resume Parser',
     rating: 5,
-    text: "Was searching everywhere for a proper mini project. Local shops were quoting ₹8,000 and couldn't even explain the code. Paid ₹299 here and got better code, better report, and the PPT with speaker notes. Genuine value.",
+    text: "Was searching everywhere for a proper mini project. Local shops were quoting ₹8,000 and couldn't even explain the code. Paid ₹499 here and got better code, better report, and the PPT with speaker notes. Genuine value.",
     color: 'from-brand-500/20 to-brand-500/5',
     border: 'border-brand-500/20',
   },

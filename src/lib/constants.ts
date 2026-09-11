@@ -3,6 +3,7 @@ export const CONSTANTS = {
   APP_URL: process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000',
   SUPPORT_EMAIL: 'team@submitkit.in',
   
+  TOTAL_TOPICS: 1250,
   PRICING: {
     MINI_PROJECT: 299,
     MAJOR_PROJECT: 499,

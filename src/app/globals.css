@@ -43,129 +43,117 @@
     --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   }
   
-  html {
-    scroll-behavior: smooth;
-  }
-
   body {
     background-color: var(--background);
     color: var(--foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
-    letter-spacing: -0.04em;
-  }
-
-  /* Universal transition defaults on interactive elements */
-  a, button, [role="button"] {
-    transition:
-      color      var(--t-fast)   ease,
-      background var(--t-normal) ease,
-      border-color var(--t-normal) ease,
-      box-shadow var(--t-normal) ease,
-      opacity    var(--t-fast)   ease,
-      transform  var(--t-normal) var(--ease-out-expo);
-  }
-
-  input, textarea, select {
-    transition:
-      border-color var(--t-normal) ease,
-      box-shadow   var(--t-normal) ease,
-      background   var(--t-normal) ease;
+    letter-spacing: -0.03em;
   }
 }
 
 @layer utilities {
   .glass {
-    @apply bg-[#09090b]/60 backdrop-blur-2xl border border-white/5;
+    background-color: rgba(18, 18, 22, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
   }
   
+  /* Glass card — composite-only transitions (no paint on hover) */
   .glass-card {
-    @apply bg-gradient-to-b from-[#18181b]/50 to-[#09090b]/50 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl;
+    background: linear-gradient(180deg, #18181d 0%, #101014 100%);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1rem;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
     position: relative;
     overflow: hidden;
-    transition: transform var(--t-normal) var(--ease-out-expo),
-                box-shadow var(--t-normal) ease,
-                border-color var(--t-normal) ease;
+    /* Promote to its own GPU layer */
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    /* Composite-only: transform + opacity never trigger layout/paint */
+    transition: transform 120ms cubic-bezier(0.16,1,0.3,1), opacity 120ms ease;
+    will-change: transform;
   }
   
   .glass-card:hover {
-    transform: translateY(-1px);
-    border-color: rgba(255,255,255,0.14);
-    box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+    transform: translateY(-2px) translateZ(0);
   }
   
-  .glass-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: 1px;
-    background: linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(255,255,255,0));
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    pointer-events: none;
-  }
-
   .text-gradient {
-    @apply bg-clip-text text-transparent bg-gradient-to-b from-white via-white/90 to-white/50;
+    @apply bg-clip-text text-transparent bg-gradient-to-b from-white via-white/95 to-zinc-400;
   }
   
   .text-gradient-brand {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-400 to-accent-400;
   }
 
+  /* hover-glow: use box-shadow only (compositor can handle this) */
   .hover-glow {
-    @apply transition-all duration-500 hover:border-white/20 hover:shadow-[0_8px_30px_rgb(0,0,0,0.5)];
+    transition: box-shadow 150ms ease, transform 120ms cubic-bezier(0.16,1,0.3,1);
+    transform: translateZ(0);
+    will-change: transform;
+  }
+  .hover-glow:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
   }
 
-  /* Card lift on hover — use on stat cards */
+  /* Card lift on hover — hardware accelerated composite-only */
   .card-lift {
-    transition:
-      transform  var(--t-normal) var(--ease-out-expo),
-      box-shadow var(--t-normal) ease,
-      border-color var(--t-normal) ease;
+    transition: transform 120ms cubic-bezier(0.16,1,0.3,1), box-shadow 120ms ease;
+    transform: translateZ(0);
+    will-change: transform;
   }
   .card-lift:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-    border-color: rgba(255,255,255,0.12);
+    transform: translateY(-2px) translateZ(0);
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5);
   }
 
-  /* Soft glowing orb backgrounds */
+  /* Ambient glow orbs — static radial gradient, no filter:blur, GPU composited */
   .glow-orb {
     position: absolute;
     border-radius: 50%;
-    filter: blur(100px);
     z-index: -10;
     pointer-events: none;
-    opacity: 0.15;
+    opacity: 0.10;
+    background: radial-gradient(circle, currentColor 0%, transparent 70%);
+    /* Promote to GPU layer once, no animation needed */
+    transform: translateZ(0);
+    will-change: opacity;
+    contain: strict;
+  }
+
+  /* Deferred rendering for off-screen sections — huge paint savings */
+  .section-deferred {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 600px;
   }
 }
 
-/* ─── Page enter animation ─── */
+/* ─── Page enter animation (hardware-accelerated) ─── */
 @keyframes pageEnter {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(8px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
 .page-enter {
-  animation: pageEnter 0.45s var(--ease-out-expo, cubic-bezier(0.16,1,0.3,1)) both;
+  animation: pageEnter 0.35s var(--ease-out-expo, cubic-bezier(0.16,1,0.3,1)) both;
+  transform: translateZ(0);
 }
 
-/* ─── Slide-up fade (hero / feature cards) ─── */
+/* ─── Slide-up fade (hardware-accelerated, composite-only) ─── */
 @keyframes slideUpFade {
-  from { opacity: 0; transform: translateY(20px); filter: blur(4px); }
-  to   { opacity: 1; transform: translateY(0);    filter: blur(0); }
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .animate-slide-up {
-  animation: slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: slideUpFade 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform: translateZ(0);
 }
 
 /* ─── Mobile menu slide-down ─── */
@@ -178,7 +166,22 @@
   animation: menuSlideDown 0.22s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* ─── Sidebar drawer slide-in ─── */
+/* ─── Sidebar drawer slide-in & backdrop guard ─── */
+@keyframes backdropFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes backdropGuard {
+  from { pointer-events: none; }
+  to   { pointer-events: auto; }
+}
+
+.drawer-backdrop {
+  animation: backdropFadeIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) both,
+             backdropGuard 0.28s step-end forwards;
+}
+
 @keyframes drawerSlideIn {
   from { opacity: 0; transform: translateX(-12px); }
   to   { opacity: 1; transform: translateX(0); }

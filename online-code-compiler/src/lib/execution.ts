@@ -153,7 +153,7 @@ export function extractExecutableFunction(code: string, functionName: string): a
     const wrapped = new Function(`
       ${fnBody}
       if (typeof ${functionName} === 'function') {
-        return ${functionName};
+        return ${functionName};    
       }
       return null;
     `);

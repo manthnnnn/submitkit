@@ -12,11 +12,11 @@ import { formatCurrency } from '@/lib/utils';
 interface Props {
   stats: {
     totalRevenue:   string;
-    totalPaidCount: number;
-    projectCount:   number;
-    pendingOrders:  number;
-    preOrderCount:  number;
-    todayViews:     number;
+    totalPaidCount: string;
+    projectCount:   string;
+    pendingOrders:  string;
+    preOrderCount:  string;
+    todayViews:     string;
   };
   revenueChartData: { date: string; revenue: number }[];
   recentOrders: {
@@ -51,7 +51,7 @@ const STAT_CONFIG = [
 function StatCard({
   label, value, Icon, accent, iconBg, href,
 }: {
-  label: string; value: string | number; Icon: React.ElementType;
+  label: string; value: string; Icon: React.ElementType;
   accent: string; iconBg: string; href?: string;
 }) {
   const [hovered, setHovered] = useState(false);

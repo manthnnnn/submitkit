@@ -16,8 +16,8 @@ const PRICE_MAP: Record<string, number> = {
   'blood-bank-management':  CONSTANTS.PRICING.MINI_PROJECT,
   'resume-parsing-engine':  CONSTANTS.PRICING.MAJOR_PROJECT,
   'online-code-compiler':   CONSTANTS.PRICING.MAJOR_PROJECT,
-  'credit-card-fraud':      CONSTANTS.PRICING.MAJOR_PROJECT,
-  'phishing-detector-ai':   CONSTANTS.PRICING.MAJOR_PROJECT,
+  'credit-card-fraud':      CONSTANTS.PRICING.MINI_PROJECT,
+  'phishing-detector-ai':   CONSTANTS.PRICING.MINI_PROJECT,
   'restaurant-qr-ordering': CONSTANTS.PRICING.MINI_PROJECT,
   'aerofuel-predictor':     CONSTANTS.PRICING.MAJOR_PROJECT,
   'smart-expense-tracker':  CONSTANTS.PRICING.MINI_PROJECT,
@@ -36,68 +36,68 @@ const TAG_COLORS: Record<string, string> = {
 const UPCOMING_CATALOG = [
   {
     slug: 'crop-disease-detector',
-    name: 'Agricultural Crop Disease Detector AI',
+    name: 'Smart Crop Disease Detector AI',
     category: 'AIML',
     tier: 'MAJOR',
     price: CONSTANTS.PRICING.MAJOR_PROJECT,
     requests: '1,420+ students',
-    description: 'CNN pathology classifier for infected leaf photos outputs pesticide treatment plans with confidence scores.',
-    tenthGradeExplainer: 'A plant doctor on your phone that looks at leaf photos and tells farmers exactly how to save their crops.',
+    description: 'Snap a photo of any sick crop leaf. The AI detects the exact plant disease in seconds and prescribes the right treatment plan.',
+    tenthGradeExplainer: 'Works like a digital plant doctor on your phone. Farmers upload a photo of a sick leaf, and the AI instantly identifies the disease and tells them which spray or medicine will save their crop.',
     tag: 'Dropping Friday',
   },
   {
     slug: 'skin-lesion-classifier',
-    name: 'DermatoScan Skin Lesion Classifier',
+    name: 'DermatoScan Skin Lesion & Cancer AI',
     category: 'AIML',
     tier: 'MAJOR',
     price: CONSTANTS.PRICING.MAJOR_PROJECT,
     requests: '1,180+ students',
-    description: 'Computer-vision dermatology triage classifying benign vs malignant melanoma with heatmap confidence overlays.',
-    tenthGradeExplainer: 'Takes a photo of a skin mole and warns you if you should visit a doctor.',
+    description: 'AI medical screening tool that spots suspicious skin spots and mole changes with 94%+ diagnostic accuracy.',
+    tenthGradeExplainer: 'Takes a photo of any skin mole or rash and immediately analyzes whether it looks harmless or warrants a doctor checkup, highlighting the danger areas with visual heatmaps.',
     tag: 'High Demand',
   },
   {
     slug: 'face-attendance-system',
-    name: 'Smart Class Attendance via Face Recognition',
+    name: 'Smart Classroom Face Recognition Attendance',
     category: 'AIML',
     tier: 'MINI',
     price: CONSTANTS.PRICING.MINI_PROJECT,
     requests: '2,350+ students',
-    description: 'Real-time CCTV classroom attendance marking with anti-spoofing blink detection and Excel export.',
-    tenthGradeExplainer: 'Walk into class, the camera recognises your face, and your roll call is marked automatically.',
+    description: 'Automated attendance system using classroom cameras with anti-spoofing photo protection and 1-click Excel export.',
+    tenthGradeExplainer: 'Replaces manual roll-call. Scans students faces as they enter class, detects if anyone tries holding up a fake phone photo, and auto-marks attendance in an Excel sheet in real time.',
     tag: 'Most Requested',
   },
   {
     slug: 'spaceshield-ai',
-    name: 'SpaceShield AI: Orbital Debris Avoidance',
+    name: 'SpaceShield AI: Satellite Debris Collision Radar',
     category: 'AIML',
     tier: 'MAJOR',
     price: CONSTANTS.PRICING.MAJOR_PROJECT,
     requests: '960+ students',
-    description: 'Keplerian orbital trajectory simulator warning satellite constellations of millimeter debris collisions.',
-    tenthGradeExplainer: 'Traffic control for satellites to stop them crashing into million-dollar space junk.',
+    description: 'Predicts space junk orbits and alerts satellite operators before high-speed space collisions happen.',
+    tenthGradeExplainer: 'Tracks thousands of pieces of space junk flying around Earth and calculates safety warnings so satellites can steer out of the danger zone in time.',
     tag: 'Trending',
   },
   {
     slug: 'smart-city-traffic',
-    name: 'Smart City Traffic & Accident Detector',
+    name: 'Smart City Traffic & Live Accident Detection',
     category: 'AIML',
     tier: 'MAJOR',
     price: CONSTANTS.PRICING.MAJOR_PROJECT,
     requests: '880+ students',
-    description: 'Intersection surveillance detecting vehicular crashes and broadcasting SOS coordinates to 911 dispatch.',
-    tenthGradeExplainer: 'Watches street cameras, spots crashes instantly, and calls ambulances automatically.',
+    description: 'CCTV video analytics system that detects road crashes in real time and automatically alerts emergency response teams with GPS coordinates.',
+    tenthGradeExplainer: 'Monitors traffic camera feeds 24/7. When two vehicles crash, it instantly spots the impact and sends the exact GPS location to emergency services.',
     tag: 'In Testing',
   },
   {
     slug: 'ransomware-sandbox',
-    name: 'Autonomous Ransomware Detonation Sandbox',
+    name: 'Automated Ransomware Detonation & Defense Sandbox',
     category: 'Cybersecurity',
     tier: 'MAJOR',
     price: CONSTANTS.PRICING.MAJOR_PROJECT,
     requests: '790+ students',
-    description: 'Isolated behavioral chamber monitoring encryption heuristics and shadow copy deletion signatures.',
-    tenthGradeExplainer: 'A bulletproof glass room for dangerous viruses so researchers can watch how they attack files.',
+    description: 'Safe, isolated testing chamber that safely unleashes malware samples to detect malicious encryption before it spreads across a network.',
+    tenthGradeExplainer: 'A secure digital quarantine room. It runs dangerous malware safely inside an isolated environment to study how it attacks files and stop it before real computers get hit.',
     tag: 'Security Lab',
   },
 ];
@@ -267,22 +267,22 @@ export function FleetSection() {
                         {project.oneLiner}
                       </p>
 
-                      {/* Plain-English callout */}
-                      <div className="p-3 rounded-xl bg-emerald-950/25 border border-emerald-500/20 mb-5 text-[11px] text-zinc-300 leading-relaxed">
-                        <div className="flex items-center gap-1.5 font-bold text-emerald-400 mb-1">
-                          <Star className="w-3 h-3 fill-emerald-400 text-emerald-400" />
-                          In plain English:
+                      {/* Quick Overview callout */}
+                      <div className="p-3 rounded-xl bg-zinc-900/60 border border-white/5 mb-5 text-[11px] text-zinc-300 leading-relaxed">
+                        <div className="flex items-center gap-1.5 font-semibold text-emerald-400 text-[10px] uppercase tracking-wider mb-1">
+                          <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                          Quick Overview:
                         </div>
-                        <p>{project.tenthGradeExplainer}</p>
+                        <p className="text-zinc-300">{project.tenthGradeExplainer}</p>
                       </div>
 
                       {/* Deliverables */}
                       <div className="grid grid-cols-2 gap-1.5 mb-6 pt-3 border-t border-white/5 text-[10px] text-zinc-400">
                         {[
-                          'Bug-Free Source Code',
+                          '1-Click Runnable Code',
                           '60-Page IEEE Black Book',
-                          'Defense PPT + Notes',
-                          'Top 25 Viva Q&As',
+                          'Defense PPT Slides',
+                          'Top 25 Viva Q&A Answers',
                         ].map(item => (
                           <div key={item} className="flex items-center gap-1.5">
                             <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
@@ -335,7 +335,7 @@ export function FleetSection() {
               transition={{ duration: 0.18 }}
             >
               <div className="p-4 rounded-2xl bg-purple-500/10 border border-purple-500/30 max-w-3xl mx-auto mb-10 text-center text-purple-200 text-sm leading-relaxed">
-                <span className="font-bold text-white">Batch 2 Release Pipeline:</span> These projects are in final QA packaging. Reserve now to lock launch pricing and get priority download access — plus a free viva coaching session.
+                <span className="font-bold text-white">Batch 2 Release Pipeline:</span> These high-demand projects are undergoing final QA tests and documentation. Pre-order now to lock in launch discounts and get instant WhatsApp delivery the moment they drop!
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
@@ -373,9 +373,12 @@ export function FleetSection() {
                       </h3>
                       <p className="text-zinc-400 text-xs leading-relaxed mb-4">{project.description}</p>
 
-                      <div className="p-3 rounded-xl bg-purple-950/20 border border-purple-500/20 mb-5 text-[11px] text-zinc-300 leading-relaxed">
-                        <span className="text-purple-400 font-bold mr-1">💡 In plain terms:</span>
-                        {project.tenthGradeExplainer}
+                      <div className="p-3 rounded-xl bg-zinc-900/60 border border-purple-500/20 mb-5 text-[11px] text-zinc-300 leading-relaxed">
+                        <div className="flex items-center gap-1.5 font-semibold text-purple-400 text-[10px] uppercase tracking-wider mb-1">
+                          <CheckCircle2 className="w-3 h-3 text-purple-400" />
+                          Quick Overview:
+                        </div>
+                        <p className="text-zinc-300">{project.tenthGradeExplainer}</p>
                       </div>
 
                       <div className="mt-auto pt-4 border-t border-white/5 flex items-center justify-between gap-2">

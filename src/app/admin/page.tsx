@@ -120,11 +120,11 @@ export default async function AdminDashboard() {
     <DashboardClient
       stats={{
         totalRevenue:   formatCurrency(data.totalRevenue),
-        totalPaidCount: data.totalPaidCount,
-        projectCount:   data.projectCount,
-        pendingOrders:  data.pendingOrders,
-        preOrderCount:  data.preOrderCount,
-        todayViews:     data.todayViews,
+        totalPaidCount: data.totalPaidCount.toLocaleString('en-IN'),
+        projectCount:   data.projectCount.toLocaleString('en-IN'),
+        pendingOrders:  data.pendingOrders.toLocaleString('en-IN'),
+        preOrderCount:  data.preOrderCount.toLocaleString('en-IN'),
+        todayViews:     data.todayViews.toLocaleString('en-IN'),
       }}
       revenueChartData={data.revenueChartData}
       recentOrders={data.recentOrders}

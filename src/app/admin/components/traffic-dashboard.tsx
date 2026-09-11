@@ -120,14 +120,18 @@ export function TrafficAnalyticsDashboard({
       if (res.ok) {
         setViews([]);
         setShowConfirmModal(false);
-        setResetNotice('All recorded page views have been deleted.');
+        setResetNotice('✅ All recorded page views have been deleted.');
         setTimeout(() => setResetNotice(null), 4000);
       } else {
         const data = await res.json().catch(() => ({}));
-        alert('Failed to reset views: ' + (data.error || 'Server error'));
+        setShowConfirmModal(false);
+        setResetNotice('❌ Reset failed: ' + (data.error || 'Server error'));
+        setTimeout(() => setResetNotice(null), 5000);
       }
     } catch (err: any) {
-      alert('Network exception: ' + err.message);
+      setShowConfirmModal(false);
+      setResetNotice('❌ Network error: ' + err.message);
+      setTimeout(() => setResetNotice(null), 5000);
     } finally {
       setIsResetting(false);
     }
@@ -450,7 +454,7 @@ export function TrafficAnalyticsDashboard({
       )}
 
       {/* KPI Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div key={timeRange} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 tab-panel-enter">
         {/* Card 1: Unique Visitors (New Users) */}
         <div className="rounded-2xl p-5" style={cardStyle}>
           <div className="flex items-center justify-between">

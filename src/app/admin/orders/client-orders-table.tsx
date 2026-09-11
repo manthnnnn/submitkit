@@ -1,10 +1,11 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import { formatCurrency } from '@/lib/utils';
 import {
   Download, Search, FileDown, ChevronDown, ChevronUp,
-  Mail, RotateCcw, Loader2, Phone, Building2, Check, AlertCircle, X,
+  Mail, RotateCcw, Loader2, Phone, Building2, Check, AlertCircle, X, RefreshCw,
 } from 'lucide-react';
 
 export type OrderRow = {
@@ -49,6 +50,8 @@ const STATUS_CONFIG: Record<string, { bg: string; border: string; text: string; 
 };
 
 export function ClientOrdersTable({ initialOrders }: { initialOrders: OrderRow[] }) {
+  const router = useRouter();
+  const [isRefreshing, setIsRefreshing]   = useState(false);
   const [searchQuery, setSearchQuery]     = useState('');
   const [statusFilter, setStatusFilter]   = useState<'ALL' | 'PAID' | 'PENDING' | 'FAILED'>('ALL');
   const [dateFilter, setDateFilter]       = useState<DateFilter>('all');
@@ -58,6 +61,12 @@ export function ClientOrdersTable({ initialOrders }: { initialOrders: OrderRow[]
   const [resetState, setResetState]       = useState<Record<string, 'idle' | 'loading' | 'done' | 'err'>>({});
   const [resetConfirm, setResetConfirm]   = useState<string | null>(null);
   const [dlCounts, setDlCounts]           = useState<Record<string, number>>({});
+
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    router.refresh();
+    setTimeout(() => setIsRefreshing(false), 800);
+  };
 
   const projectTitles = useMemo(() =>
     Array.from(new Set(initialOrders.map(o => o.projects?.title ?? 'Unknown'))).sort(),
@@ -201,6 +210,17 @@ export function ClientOrdersTable({ initialOrders }: { initialOrders: OrderRow[]
             <option value="ALL">All Projects</option>
             {projectTitles.map(t => <option key={t} value={t}>{t}</option>)}
           </select>
+
+          <button
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            title="Refresh orders"
+            className="flex items-center gap-1.5 px-3 py-2.5 text-sm font-medium text-zinc-300 hover:text-white transition-all disabled:opacity-50"
+            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px' }}
+          >
+            <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-indigo-400' : ''}`} />
+            <span>Refresh</span>
+          </button>
 
           <button onClick={handleExportCSV}
             className="flex items-center gap-1.5 px-3 py-2.5 text-sm font-medium text-zinc-300 hover:text-white transition-all"

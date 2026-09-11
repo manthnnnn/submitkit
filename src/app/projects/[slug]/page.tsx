@@ -211,6 +211,7 @@ export default async function ProjectDetailPage({
                     <img 
                       src={SHOWCASE_DATA[p.slug][0].img} 
                       alt={`${p.title} Screenshot`} 
+                      decoding="async"
                       className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
                     />
                     <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.8)] pointer-events-none" />
@@ -247,6 +248,7 @@ export default async function ProjectDetailPage({
                             src={item.img}
                             alt={item.title}
                             loading="lazy"
+                            decoding="async"
                             className="w-full h-full object-cover group-hover:scale-105 group-hover:opacity-80 transition-all duration-500"
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-[#09090b]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-5">

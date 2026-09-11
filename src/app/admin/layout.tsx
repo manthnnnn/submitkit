@@ -6,7 +6,6 @@ import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard, Package, ShoppingCart, Clock, BarChart3, LogOut, ShieldCheck, Map
 } from 'lucide-react';
-import { createClient } from '@/lib/supabase/client';
 import { NavProgress } from './components/nav-progress';
 import { BrandIcon, Logo } from '@/components/ui/logo';
 
@@ -160,15 +159,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const check = async () => {
       try {
         const lastViewed = localStorage.getItem(LAST_VIEWED_KEY);
-        const supabase = createClient();
-        let query = supabase
-          .from('pre_orders')
-          .select('created_at')
-          .order('created_at', { ascending: false })
-          .limit(1);
-        if (lastViewed) query = query.gt('created_at', lastViewed);
-        const { data } = await query;
-        setHasNewPreorders((data?.length ?? 0) > 0);
+        const url = lastViewed
+          ? `/api/admin/preorders/unread-count?since=${encodeURIComponent(lastViewed)}`
+          : '/api/admin/preorders/unread-count';
+        const res = await fetch(url);
+        if (res.ok) {
+          const data = await res.json();
+          setHasNewPreorders(Boolean(data.hasUnread));
+        }
       } catch { /* ignore */ }
     };
     check();
@@ -228,7 +226,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Mobile drawer overlay */}
       {sidebarOpen && (
         <div
-          className="md:hidden fixed inset-0 z-30"
+          className="md:hidden fixed inset-0 z-30 drawer-backdrop"
           onClick={() => setSidebarOpen(false)}
         >
           <div
@@ -246,7 +244,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       {/* Main content */}
       <main className="flex-1 min-w-0 overflow-auto md:p-8 p-4 pt-20 md:pt-8">
-        <div className="max-w-7xl mx-auto">
+        <div key={pathname} className="max-w-7xl mx-auto page-enter">
           {children}
         </div>
       </main>

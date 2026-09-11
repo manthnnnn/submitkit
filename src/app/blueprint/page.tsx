@@ -23,6 +23,7 @@ import {
   Rocket,
   RefreshCw,
   MessageCircle,
+  FileText,
 } from "lucide-react";
 import {
   ALL_TOPICS,
@@ -66,6 +67,25 @@ export default function BlueprintBrowserPage() {
   const [sortBy, setSortBy] = useState<"popular" | "difficulty-asc" | "difficulty-desc" | "name-asc">("popular");
   const [visibleCount, setVisibleCount] = useState<number>(24);
   const [expandedLetters, setExpandedLetters] = useState<Set<string>>(new Set());
+  const [bannerDismissed, setBannerDismissed] = useState(false);
+
+  useEffect(() => {
+    try {
+      if (typeof window !== "undefined") {
+        const dismissed = sessionStorage.getItem("blueprint_starter_banner_dismissed");
+        if (dismissed === "true") setBannerDismissed(true);
+      }
+    } catch {}
+  }, []);
+
+  const handleDismissBanner = () => {
+    setBannerDismissed(true);
+    try {
+      if (typeof window !== "undefined") {
+        sessionStorage.setItem("blueprint_starter_banner_dismissed", "true");
+      }
+    } catch {}
+  };
 
   const toggleLetter = useCallback((letter: string) => {
     setExpandedLetters((prev) => {
@@ -364,6 +384,55 @@ export default function BlueprintBrowserPage() {
               ))}
             </div>
           </div>
+
+          {/* ₹19 Blueprint Starter Callout Banner (Dismissable) */}
+          {!bannerDismissed && (
+            <div className="relative overflow-hidden rounded-2xl border border-amber-500/30 bg-gradient-to-r from-amber-950/40 via-zinc-900/90 to-amber-950/30 p-4 sm:p-5 shadow-xl shadow-amber-500/5 backdrop-blur-md">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex items-start gap-3.5">
+                  <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0 mt-0.5 shadow-sm">
+                    <FileText className="w-5 h-5" />
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="text-sm font-bold text-white">
+                        Every Topic Includes a ₹19 Blueprint Starter Pack
+                      </span>
+                      <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-extrabold uppercase tracking-wider">
+                        ₹19 Only
+                      </span>
+                    </div>
+                    <p className="text-xs text-zinc-300 max-w-2xl leading-relaxed">
+                      Need topic approval first? Get the complete step-by-step IEEE roadmap (.docx &amp; .pdf), system architecture, mock dataset, and top 10 examiner viva Q&amp;A for any topic below before buying code.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                  <button
+                    onClick={() => {
+                      const sampleCard = document.querySelector('a[href^="/blueprint/"]');
+                      if (sampleCard) {
+                        sampleCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                      }
+                    }}
+                    className="px-3.5 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-xs font-bold transition-all flex items-center gap-1"
+                  >
+                    <span>Pick a Topic</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={handleDismissBanner}
+                    className="p-1.5 rounded-lg text-zinc-500 hover:text-zinc-300 hover:bg-white/5 transition-colors"
+                    title="Dismiss"
+                    aria-label="Dismiss banner"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Unified Domain Category Tabs with Live Counts */}
           <div className="flex flex-wrap items-center justify-center gap-2 max-w-4xl mx-auto py-1">

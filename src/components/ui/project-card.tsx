@@ -16,28 +16,29 @@ export function ProjectCard({ project, onReserve }: { project: Project; onReserv
 
   return (
     <div
-      className={`glass-card flex flex-col hover-glow group transition-all duration-300 hover:-translate-y-1 relative overflow-hidden ${
+      style={{ transform: 'translateZ(0)' }}
+      className={`glass-card flex flex-col hover-glow group transition-all duration-200 hover:-translate-y-1 relative overflow-hidden ${
         isAvailable
-          ? 'border-emerald-500/20 hover:border-emerald-500/50 shadow-lg shadow-emerald-500/5'
-          : 'border-white/5 hover:border-white/25'
+          ? 'border-emerald-500/20 hover:border-emerald-500/40'
+          : 'border-white/5 hover:border-white/20'
       }`}
     >
       {/* Status badges */}
       <div className="absolute top-3 right-3 z-20 flex items-center gap-1.5">
         {isAvailable ? (
-          <div className="flex items-center gap-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 text-[10px] font-bold px-2.5 py-0.5 rounded-full shadow-[0_0_12px_rgba(16,185,129,0.2)]">
+          <div className="flex items-center gap-1 bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold px-2.5 py-0.5 rounded-full">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span>Ready to Ship</span>
+            <span>Available</span>
           </div>
         ) : (
           <div className="flex items-center gap-1 bg-purple-500/15 text-purple-300 border border-purple-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full">
             <Clock className="w-2.5 h-2.5" />
-            <span>Upcoming Drop</span>
+            <span>Upcoming</span>
           </div>
         )}
         {isTrending && !isAvailable && (
           <div className="flex items-center gap-1 bg-orange-500/15 text-orange-400 border border-orange-500/25 text-[10px] font-bold px-2 py-0.5 rounded-full">
-            <Flame className="w-2.5 h-2.5" /> Hot
+            <Flame className="w-2.5 h-2.5" /> High Demand
           </div>
         )}
       </div>
@@ -72,15 +73,20 @@ export function ProjectCard({ project, onReserve }: { project: Project; onReserv
         </p>
 
         {meta && (
-          <div className="mb-4 p-2.5 rounded-xl bg-white/[0.02] border border-white/5 text-[11px] text-zinc-400 leading-relaxed">
-            <span className="text-emerald-400 font-semibold mr-1">💡 In simple terms:</span>
+          <div className="mb-4 p-2.5 rounded-xl bg-zinc-900/60 border border-white/5 text-[11px] text-zinc-300 leading-relaxed">
+            <span className="text-emerald-400 font-semibold text-[10px] uppercase tracking-wider block mb-0.5">Quick Overview:</span>
             {meta.tenthGradeExplainer}
           </div>
         )}
 
         {/* Deliverables */}
         <div className="mb-4 pt-2 border-t border-white/5 grid grid-cols-2 gap-1.5 text-[10px] text-zinc-400">
-          {['Working Source Code', '60-Page Black Book', 'Viva PPT & Defense', '0-Bug Guarantee'].map(item => (
+          {[
+            '1-Click Runnable Code',
+            isMajor ? '60-Page Black Book' : '30-Page Black Book',
+            'Viva Defense PPT',
+            isMajor ? 'Top 25 Viva Q&As' : 'Top 15 Viva Q&As'
+          ].map(item => (
             <div key={item} className="flex items-center gap-1">
               <CheckCircle2 className={`w-3 h-3 shrink-0 ${isAvailable ? 'text-emerald-400' : 'text-zinc-600'}`} />
               <span>{item}</span>

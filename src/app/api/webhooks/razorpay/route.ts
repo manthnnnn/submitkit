@@ -99,6 +99,29 @@ export async function POST(req: NextRequest) {
         }
       }
 
+      // ── Safety net for ₹19 Blueprint Purchases ──
+      const { data: bpUpdated } = await supabase
+        .from('blueprint_purchases')
+        .update({ status: 'PAID', razorpay_payment_id: paymentId })
+        .eq('razorpay_order_id', razorpayOrderId)
+        .eq('status', 'PENDING')
+        .select()
+        .single();
+
+      if (bpUpdated) {
+        try {
+          const { sendBlueprintConfirmationEmail } = await import('@/lib/email');
+          await sendBlueprintConfirmationEmail({
+            customerEmail: bpUpdated.customer_email,
+            topicTitle: bpUpdated.topic_title,
+            topicId: bpUpdated.topic_id,
+            customerPhone: bpUpdated.customer_phone,
+          }).catch(err => console.error('Webhook: blueprint email send failed:', err));
+        } catch (bpErr) {
+          console.error('Webhook: blueprint notification failed:', bpErr);
+        }
+      }
+
     } else if (event === 'payment.failed' && payment) {
       const razorpayOrderId = payment.order_id as string;
 

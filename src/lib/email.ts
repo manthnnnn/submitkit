@@ -460,10 +460,11 @@ interface BlueprintEmailParams {
   customerEmail: string;
   topicTitle:    string;
   topicId:       string;
+  customerPhone?: string;
 }
 
 export async function sendBlueprintConfirmationEmail(params: BlueprintEmailParams): Promise<void> {
-  const { customerEmail, topicTitle, topicId } = params;
+  const { customerEmail, topicTitle, topicId, customerPhone } = params;
 
   const apiKey = process.env.BREVO_API_KEY;
   if (!apiKey) {
@@ -527,8 +528,12 @@ export async function sendBlueprintConfirmationEmail(params: BlueprintEmailParam
       <tr><td>
         <p style="margin:0 0 4px;font-size:0.65rem;font-weight:700;color:#a5b4fc;text-transform:uppercase;letter-spacing:0.07em;">&#128273; Re-access Your Blueprint Anytime</p>
         <p style="margin:0;font-size:0.78rem;color:#818cf8;line-height:1.6;">
-          Visit <a href="${downloadUrl}" style="color:#818cf8;font-weight:700;text-decoration:underline;">${downloadUrl.replace('https://', '')}</a>
-          and enter your email <strong style="color:#c7d2fe;">${customerEmail}</strong> in the &ldquo;Already Purchased?&rdquo; field.
+          If you close your browser or change devices, visit: <br/>
+          <a href="${downloadUrl}" style="color:#c7d2fe;font-weight:700;text-decoration:underline;">${downloadUrl.replace('https://', '')}</a><br/>
+          Click <strong>&ldquo;Already Purchased?&rdquo;</strong> and enter your registered Email (${customerEmail})${customerPhone ? ` &amp; Phone (${customerPhone})` : ''}.
+        </p>
+        <p style="margin:8px 0 0;font-size:0.7rem;color:#94a3b8;">
+          &#128737;&#65039; To protect against link piracy, up to 5 document downloads are permitted per purchase.
         </p>
       </td></tr>
     </table>
@@ -540,9 +545,6 @@ export async function sendBlueprintConfirmationEmail(params: BlueprintEmailParam
       style="display:inline-block;background:linear-gradient(135deg,#6366f1,#8b5cf6);color:#ffffff;font-weight:800;font-size:1rem;padding:16px 40px;border-radius:12px;text-decoration:none;letter-spacing:-0.01em;">
       Open My Blueprint &#8594;
     </a>
-    <p style="margin:10px 0 0;font-size:0.72rem;color:#52525b;">
-      Use your email <span style="font-family:monospace;color:#818cf8;">${customerEmail}</span> to unlock
-    </p>
   </td></tr>
 
   <!-- What's included -->
@@ -636,3 +638,107 @@ export async function sendBlueprintConfirmationEmail(params: BlueprintEmailParam
     console.error('[email] Blueprint confirm fetch failed:', err);
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Blueprint Re-Access OTP Verification Email
+// ─────────────────────────────────────────────────────────────────────────────
+
+interface BlueprintOtpEmailParams {
+  customerEmail: string;
+  topicTitle:    string;
+  code:          string;
+}
+
+export async function sendBlueprintOtpEmail(params: BlueprintOtpEmailParams): Promise<void> {
+  const { customerEmail, topicTitle, code } = params;
+
+  const apiKey = process.env.BREVO_API_KEY;
+  if (!apiKey) {
+    console.warn('[email] BREVO_API_KEY not set — skipping OTP email');
+    return;
+  }
+
+  const htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+</head>
+<body style="margin:0;padding:0;background-color:#09090b;font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#f8fafc;">
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr><td align="center" style="padding:32px 16px;">
+<table width="540" cellpadding="0" cellspacing="0" style="max-width:540px;width:100%;">
+
+  <!-- Logo -->
+  <tr><td style="padding-bottom:20px;">
+    <span style="font-size:1.4rem;font-weight:800;color:#ffffff;letter-spacing:-0.02em;">
+      Submit<span style="color:#10b981;font-weight:800;">Kit</span>
+    </span>
+  </td></tr>
+
+  <!-- Main Card -->
+  <tr><td style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:28px;">
+    <h1 style="margin:0 0 8px;font-size:1.3rem;font-weight:700;color:#ffffff;">
+      Your Blueprint Access Code
+    </h1>
+    <p style="margin:0 0 20px;font-size:0.88rem;color:#94a3b8;line-height:1.5;">
+      Use the 6-digit code below to securely unlock your purchased blueprint for <strong>${topicTitle}</strong>.
+    </p>
+
+    <!-- OTP Code Box -->
+    <div style="background:rgba(99,102,241,0.12);border:1px dashed rgba(99,102,241,0.4);border-radius:12px;padding:18px 24px;text-align:center;margin:20px 0;">
+      <span style="font-family:monospace;font-size:2.2rem;font-weight:900;letter-spacing:8px;color:#a5b4fc;display:inline-block;">
+        ${code}
+      </span>
+      <p style="margin:8px 0 0;font-size:0.75rem;color:#64748b;">
+        Valid for 10 minutes &bull; Do not share this code with anyone
+      </p>
+    </div>
+
+    <p style="margin:20px 0 0;font-size:0.75rem;color:#64748b;line-height:1.5;">
+      If you did not request this code, someone may have entered your email address. You can safely ignore this email — your account remains completely secure.
+    </p>
+  </td></tr>
+
+  <!-- Footer -->
+  <tr><td style="text-align:center;padding-top:20px;">
+    <p style="margin:0;font-size:0.7rem;color:#52525b;">
+      &copy; ${new Date().getFullYear()} SubmitKit.in &bull; Anti-Piracy Protected
+    </p>
+  </td></tr>
+
+</table>
+</td></tr>
+</table>
+</body>
+</html>`;
+
+  const payload = {
+    sender:      { name: 'SubmitKit Security', email: 'team@submitkit.in' },
+    to:          [{ email: customerEmail, name: 'SubmitKit User' }],
+    subject:     `Your SubmitKit Access Code: ${code} — ${topicTitle}`,
+    htmlContent,
+  };
+
+  try {
+    const res = await fetch(BREVO_API_URL, {
+      method:  'POST',
+      headers: {
+        'accept':       'application/json',
+        'api-key':      apiKey,
+        'content-type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const errBody = await res.text().catch(() => '');
+      console.error(`[email] Blueprint OTP Brevo error ${res.status}:`, errBody);
+    } else {
+      console.log(`[email] Blueprint OTP sent to ${customerEmail}`);
+    }
+  } catch (err) {
+    console.error('[email] Blueprint OTP send failed:', err);
+  }
+}
+

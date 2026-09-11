@@ -3,14 +3,20 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { CONSTANTS } from "@/lib/constants";
-import { ArrowRight, CheckCircle2, Zap, Download, ShieldCheck, Star, Sparkles, MonitorPlay, Search, BookOpen, ChevronRight, MessageCircle, Compass, Code2, FileText, Presentation } from "lucide-react";
+import { ArrowRight, CheckCircle2, Zap, Download, ShieldCheck, Star, Sparkles, MonitorPlay, Search, BookOpen, ChevronRight, MessageCircle, Compass, Code2, FileText, Presentation, Flame } from "lucide-react";
 import { PricingHook } from "@/components/ui/pricing-hook";
 import { CompareSlider } from "@/components/ui/compare-slider";
 import { FleetSection } from "@/components/ui/fleet-section";
 import { Testimonials } from "@/components/ui/testimonials";
 import { LiveTicker } from "@/components/ui/live-ticker";
 import { useEffect, useState, useRef } from "react";
-import { searchTopics, TopicCard, ALL_TOPICS } from "@/lib/blueprint-engine";
+
+interface SearchTopicResult {
+  id: string;
+  title: string;
+  category: string;
+  tagline: string;
+}
 
 // Animated counter hook
 function useCounter(target: number, duration: number = 1500) {
@@ -57,20 +63,24 @@ function StatCounter({ target, suffix = '', label }: { target: number; suffix?: 
 
 const ROTATING_HERO_TITLES = [
   {
-    line1: "Production-Ready Projects.",
-    line2: "Shipped in 5 Minutes.",
+    line1: "Not Sure Which Project to Pick?",
+    line2: "Get the Full Roadmap for Just ₹19.",
   },
   {
-    line1: "Working Code + Black Book.",
-    line2: "All in 1 Download.",
+    line1: "Final Year Project Due?",
+    line2: "Download & Run in 5 Minutes.",
   },
   {
-    line1: "Built Like a Tech Startup.",
-    line2: "Ready to Demo Today.",
+    line1: "Code. Report. PPT. Viva Q&A.",
+    line2: "100% Guaranteed to Work.",
   },
   {
-    line1: "1,000+ Verified Blueprints.",
-    line2: "Source Code to Viva Defense.",
+    line1: "Never Submit Broken Code.",
+    line2: "Get an A+ in Your College Viva.",
+  },
+  {
+    line1: "Don't Pay ₹10,000 at Local Shops.",
+    line2: "Verified Project Kits from ₹299.",
   },
 ];
 
@@ -100,7 +110,8 @@ export default function Home() {
   });
 
   const [topicQuery, setTopicQuery] = useState("");
-  const [topicResults, setTopicResults] = useState<TopicCard[]>([]);
+  const [topicResults, setTopicResults] = useState<SearchTopicResult[]>([]);
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     fetch('/api/stats/global')
@@ -111,8 +122,21 @@ export default function Home() {
 
   const handleTopicSearchChange = (val: string) => {
     setTopicQuery(val);
-    if (val.trim().length >= 1) {
-      setTopicResults(searchTopics(val).slice(0, 4));
+    if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
+
+    const trimmed = val.trim();
+    if (trimmed.length >= 1) {
+      searchTimeoutRef.current = setTimeout(async () => {
+        try {
+          const res = await fetch(`/api/blueprint/search?q=${encodeURIComponent(trimmed)}&limit=4`);
+          if (res.ok) {
+            const data = await res.json();
+            setTopicResults(data.results || []);
+          }
+        } catch {
+          // silently handle network error
+        }
+      }, 100);
     } else {
       setTopicResults([]);
     }
@@ -121,12 +145,7 @@ export default function Home() {
   const handleTopicSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (topicQuery.trim()) {
-      const matches = searchTopics(topicQuery);
-      if (matches.length === 1) {
-        router.push(`/blueprint/${matches[0].id}`);
-      } else {
-        router.push(`/blueprint?q=${encodeURIComponent(topicQuery.trim())}`);
-      }
+      router.push(`/blueprint?q=${encodeURIComponent(topicQuery.trim())}`);
     } else {
       router.push('/blueprint');
     }
@@ -135,8 +154,8 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen relative overflow-hidden bg-[#09090b]">
 
-      {/* Background Orbs */}
-      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+      {/* Background Orbs — GPU composited, no filter:blur */}
+      <div className="fixed inset-0 pointer-events-none -z-10" aria-hidden>
         <div className="glow-orb w-[800px] h-[600px] bg-brand-500/15 -translate-y-1/2 -translate-x-1/4" />
         <div className="glow-orb w-[600px] h-[600px] bg-emerald-500/10 translate-y-1/3 translate-x-1/3" />
       </div>
@@ -177,22 +196,22 @@ export default function Home() {
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="text-base text-zinc-300 mb-5 leading-relaxed"
               >
-                The digital marketplace for complete, verified engineering projects. You get <strong className="text-white font-semibold">1-click runnable source code</strong>, an <strong className="text-white font-semibold">IEEE 60-page Black Book report</strong>, <strong className="text-white font-semibold">presentation PPT slides</strong>, and a complete <strong className="text-white font-semibold">Viva defense question bank</strong> — delivered instantly with zero stress.
+                Tired of broken GitHub code that won&apos;t run? Skip the stress. Get a <strong className="text-white font-semibold">100% working project</strong> with a <strong className="text-white font-semibold">60-page IEEE Black Book report (.docx)</strong>, <strong className="text-white font-semibold">defense presentation PPT</strong>, and the <strong className="text-white font-semibold">top 25 Viva Q&amp;A with answers</strong>. Just download, double-click, and submit with total confidence!
               </motion.p>
 
               {/* Deliverable Highlights */}
               <div className="flex flex-wrap gap-2 mb-6">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-xs font-medium text-zinc-200">
-                  <Code2 className="w-3.5 h-3.5 text-brand-400" /> Working Source Code
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/25 text-xs font-semibold text-emerald-300">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> 1-Click Runnable (Zero Errors)
                 </span>
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-xs font-medium text-zinc-200">
-                  <FileText className="w-3.5 h-3.5 text-emerald-400" /> 60-Page Black Book (.docx)
+                  <FileText className="w-3.5 h-3.5 text-blue-400" /> 60-Page Black Book (.docx)
                 </span>
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-xs font-medium text-zinc-200">
-                  <Presentation className="w-3.5 h-3.5 text-purple-400" /> Viva Defense PPT
+                  <Presentation className="w-3.5 h-3.5 text-purple-400" /> Ready-to-Present PPT
                 </span>
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-xs font-medium text-zinc-200">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400" /> 1-Click Runnable
+                  <Code2 className="w-3.5 h-3.5 text-amber-400" /> Top 25 Viva Q&amp;A Answers
                 </span>
               </div>
 
@@ -391,7 +410,7 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
             <StatCounter target={stats.totalScans} suffix="+" label="Projects Analyzed" />
-            <StatCounter target={ALL_TOPICS.length} suffix="+" label="Topic Blueprints" />
+            <StatCounter target={CONSTANTS.TOTAL_TOPICS} suffix="+" label="Topic Blueprints" />
             <div className="text-center">
               <div className="text-2xl md:text-3xl font-display font-bold text-emerald-400">
                 {stats.moneySavedFormatted}
@@ -407,7 +426,7 @@ export default function Home() {
       {/* ═══════════════════════════════════════
           DEMO VIDEO (How it works)
       ═══════════════════════════════════════ */}
-      <section className="py-16 border-b border-white/5 relative bg-zinc-950/50">
+      <section className="py-16 border-b border-white/5 relative bg-zinc-950/50 section-deferred">
         <div className="container mx-auto px-4 z-10 relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -447,7 +466,7 @@ export default function Home() {
       {/* ═══════════════════════════════════════
           BENTO GRID (What & Why)
       ═══════════════════════════════════════ */}
-      <section className="py-16 relative">
+      <section className="py-16 relative section-deferred">
         <div className="container mx-auto px-4 z-10 relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -456,8 +475,11 @@ export default function Home() {
             transition={{ duration: 0.5 }}
             className="text-center mb-10"
           >
-            <h2 className="text-3xl md:text-4xl font-display font-medium mb-3 text-white">Everything you need to pass</h2>
-            <p className="text-zinc-500 max-w-lg mx-auto">One download. Zero headaches. Working in under 5 minutes.</p>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 text-brand-400 text-xs font-bold mb-4 border border-brand-500/20 uppercase tracking-wider">
+              Why Students Choose SubmitKit
+            </div>
+            <h2 className="text-3xl md:text-4xl font-display font-medium mb-3 text-white">Stop Wasting Weeks Fixing Broken Code</h2>
+            <p className="text-zinc-400 max-w-lg mx-auto text-sm">One download. Zero headaches. Running on your screen in under 5 minutes.</p>
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
@@ -471,7 +493,10 @@ export default function Home() {
               className="lg:col-span-2 glass-card rounded-3xl overflow-hidden"
             >
               <div className="p-5 pb-0">
-                <h3 className="text-sm font-semibold text-zinc-400">Which side are you on at 3 AM before your Viva?</h3>
+                <h3 className="text-sm font-semibold text-zinc-300 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-brand-400 inline-block" />
+                  Compare: Building Alone from Random GitHub Code vs. SubmitKit Complete Bundle
+                </h3>
               </div>
               <div className="p-3 w-full flex items-center justify-center min-h-[380px]">
                 <CompareSlider />
@@ -494,11 +519,12 @@ export default function Home() {
                 </h3>
                 <ul className="space-y-3">
                   {[
-                    'Starts from just ₹299',
-                    '1-click run — zero errors',
-                    'Top 25 Viva Q&As included',
-                    'PPT Slides for your defense',
-                    'Instant email delivery',
+                    'Starts from just ₹299 (Save ₹10,000)',
+                    '1-Click Runnable Code (Zero Errors)',
+                    'Pre-formatted 60-Page IEEE Black Book',
+                    'Defense PPT Slides with Speaker Notes',
+                    'Top 25 Viva Q&A with Full Answers',
+                    'Instant WhatsApp & Email Download',
                   ].map(item => (
                     <li key={item} className="flex items-center gap-2.5 text-zinc-300 text-xs">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
@@ -521,15 +547,18 @@ export default function Home() {
                 </h3>
                 <div className="flex flex-col gap-3">
                   {[
-                    { num: '1', text: 'Buy instantly via UPI', color: 'bg-brand-500/20 text-brand-400' },
-                    { num: '2', text: 'Download & run the code', color: 'bg-emerald-500/20 text-emerald-400' },
-                    { num: '3', text: 'Print report & pass Viva', color: 'bg-amber-500/20 text-amber-400' },
+                    { num: '1', text: 'Pick Your Kit & Pay via UPI', sub: 'Instant QR / Google Pay / PhonePe' },
+                    { num: '2', text: 'Download & Double-Click to Run', sub: 'Runs on any laptop in 2 mins' },
+                    { num: '3', text: 'Print Black Book & Ace Your Viva', sub: 'Full report & top 25 answers' },
                   ].map((step, i) => (
                     <div key={step.num}>
                       {i > 0 && <div className="w-px h-3 bg-white/10 ml-3.5 mb-3" />}
-                      <div className="flex items-center gap-2.5">
-                        <div className={`w-7 h-7 rounded-full ${step.color} font-bold flex items-center justify-center text-xs shrink-0`}>{step.num}</div>
-                        <span className="text-xs text-zinc-300 font-medium">{step.text}</span>
+                      <div className="flex items-start gap-2.5">
+                        <div className="w-7 h-7 rounded-full bg-brand-500/20 text-brand-400 font-bold flex items-center justify-center text-xs shrink-0 mt-0.5">{step.num}</div>
+                        <div>
+                          <span className="text-xs text-white font-medium block">{step.text}</span>
+                          <span className="text-[11px] text-zinc-500">{step.sub}</span>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -554,7 +583,7 @@ export default function Home() {
       {/* ═══════════════════════════════════════
           PRICING SECTION
       ═══════════════════════════════════════ */}
-      <section id="pricing" className="py-16 relative border-t border-white/5">
+      <section id="pricing" className="py-16 relative border-t border-white/5 section-deferred">
         <div className="container mx-auto px-4 text-center z-10 relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -566,7 +595,46 @@ export default function Home() {
             <p className="text-zinc-500 max-w-lg mx-auto mb-12">Pay once, download instantly. No subscriptions. No nonsense.</p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto text-left">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto text-left">
+
+            {/* Blueprint Starter - ₹19 */}
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.05 }}
+              className="glass-card rounded-2xl p-6 md:p-7 flex flex-col hover-glow transition-all duration-500 hover:-translate-y-1 border-t-2 border-t-amber-400 bg-amber-950/10 relative overflow-hidden"
+            >
+              <div className="flex justify-between items-start mb-1">
+                <h3 className="text-xl font-medium text-white">Blueprint Starter</h3>
+                <span className="bg-amber-500/20 border border-amber-500/30 text-amber-400 text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                  <Flame className="w-2.5 h-2.5 text-amber-400" /> Best Entry
+                </span>
+              </div>
+              <p className="text-xs text-zinc-400 mb-5">Topic roadmap &amp; evaluator defense before writing code.</p>
+              <div className="flex items-baseline gap-2 mb-6 pb-6 border-b border-white/5">
+                <span className="text-4xl font-bold text-white">₹19</span>
+                <span className="text-zinc-600 text-sm line-through">₹149</span>
+                <span className="text-xs text-amber-400 font-semibold ml-1">Save ₹130</span>
+              </div>
+              <ul className="space-y-3 mb-8 flex-grow">
+                {[
+                  'Topic Roadmap (.docx & .pdf)',
+                  '1-Prompt AI Master Build Guide',
+                  'Mock Dataset & Architecture Schema',
+                  'Top 10 Viva Q&A with Answers',
+                  'Instant WhatsApp & Email Access',
+                ].map(item => (
+                  <li key={item} className="flex items-center gap-2.5">
+                    <CheckCircle2 className="h-4 w-4 text-amber-400 shrink-0" />
+                    <span className="text-zinc-300 text-sm">{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <Link href="/blueprint" className="block w-full py-3 px-4 bg-amber-500/10 hover:bg-amber-500/20 text-center rounded-xl text-amber-300 font-medium transition-all text-sm border border-amber-500/30 hover:border-amber-500/50">
+                Browse 1,000+ Topics
+              </Link>
+            </motion.div>
 
             {/* Mini */}
             <motion.div
@@ -574,19 +642,26 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="glass-card rounded-2xl p-8 flex flex-col hover-glow transition-all duration-500 hover:-translate-y-1 border-t-2 border-t-white/20"
+              className="glass-card rounded-2xl p-6 md:p-7 flex flex-col hover-glow transition-all duration-500 hover:-translate-y-1 border-t-2 border-t-white/20"
             >
-              <h3 className="text-xl font-medium text-white mb-1">Mini Project</h3>
-              <p className="text-xs text-zinc-500 mb-5">Perfect for 5th or 6th semester submissions.</p>
+              <h3 className="text-xl font-medium text-white mb-1">Mini Project Kit</h3>
+              <p className="text-xs text-zinc-400 mb-5">Perfect for 5th or 6th semester college submissions.</p>
               <div className="flex items-baseline gap-2 mb-6 pb-6 border-b border-white/5">
                 <span className="text-4xl font-bold text-white">₹{CONSTANTS.PRICING.MINI_PROJECT}</span>
-                <span className="text-zinc-600 text-sm line-through">₹999</span>
+                <span className="text-zinc-600 text-sm line-through">₹1,699</span>
+                <span className="text-xs text-emerald-400 font-semibold ml-1">Save ₹1,200</span>
               </div>
               <ul className="space-y-3 mb-8 flex-grow">
-                {['Working Source Code', 'Setup Guide', '30-page Black Book Report', 'Instant Download'].map(item => (
+                {[
+                  '1-Click Runnable Code (Zero Errors)',
+                  '30-Page IEEE Black Book (.docx)',
+                  'Viva Defense PPT with Speaker Notes',
+                  'Top 15 Viva Q&A with Answers',
+                  'Instant Download to WhatsApp & Email',
+                ].map(item => (
                   <li key={item} className="flex items-center gap-2.5">
-                    <CheckCircle2 className="h-4 w-4 text-zinc-500 shrink-0" />
-                    <span className="text-zinc-400 text-sm">{item}</span>
+                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                    <span className="text-zinc-300 text-sm">{item}</span>
                   </li>
                 ))}
               </ul>
@@ -601,22 +676,30 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="glass-card rounded-2xl p-8 flex flex-col relative hover-glow transition-all duration-500 hover:-translate-y-2 border-t-2 border-t-brand-500 md:-translate-y-3 shadow-2xl shadow-brand-500/10"
+              className="glass-card rounded-2xl p-6 md:p-7 flex flex-col relative hover-glow transition-all duration-500 hover:-translate-y-2 border-t-2 border-t-brand-500 md:-translate-y-3 shadow-2xl shadow-brand-500/10"
             >
               <div className="absolute top-4 right-4 bg-brand-500/20 border border-brand-500/30 text-brand-400 text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
                 <Zap className="w-2.5 h-2.5 fill-brand-400" /> Most Popular
               </div>
-              <h3 className="text-xl font-medium text-white mb-1">Major Project</h3>
-              <p className="text-xs text-zinc-500 mb-5">Best for Final Year BE/BTech/MCA (7th/8th sem).</p>
+              <h3 className="text-xl font-medium text-white mb-1">Major Project Kit</h3>
+              <p className="text-xs text-zinc-400 mb-5">Built for 7th &amp; 8th Sem Final Year BE / BTech / MCA.</p>
               <div className="flex items-baseline gap-2 mb-6 pb-6 border-b border-white/5">
                 <span className="text-4xl font-bold text-white">₹{CONSTANTS.PRICING.MAJOR_PROJECT}</span>
-                <span className="text-zinc-600 text-sm line-through">₹3,999</span>
+                <span className="text-zinc-600 text-sm line-through">₹4,999</span>
+                <span className="text-xs text-emerald-400 font-semibold ml-1">Save ₹3,500</span>
               </div>
               <ul className="space-y-3 mb-8 flex-grow">
-                {['Advanced ML / Full-Stack App', '60-page IEEE Black Book', 'Defense PPT with Speaker Notes', 'Top 25 Viva Q&As', 'Instant Secure Download'].map(item => (
+                {[
+                  'Complete Full-Stack / ML Source Code',
+                  '60-Page IEEE Black Book (.docx)',
+                  'Viva Defense PPT with Talking Points',
+                  'Top 25 External Examiner Viva Q&A',
+                  'Step-by-Step Video Setup Guide',
+                  'Instant WhatsApp & Email Delivery',
+                ].map(item => (
                   <li key={item} className="flex items-center gap-2.5">
                     <CheckCircle2 className="h-4 w-4 text-brand-400 shrink-0" />
-                    <span className="text-zinc-300 text-sm">{item}</span>
+                    <span className="text-zinc-200 text-sm">{item}</span>
                   </li>
                 ))}
               </ul>
@@ -631,15 +714,15 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="glass-card rounded-2xl p-8 flex flex-col hover-glow transition-all duration-500 hover:-translate-y-1 border-t-2 border-t-emerald-500/80 bg-emerald-950/10 relative overflow-hidden"
+              className="glass-card rounded-2xl p-6 md:p-7 flex flex-col hover-glow transition-all duration-500 hover:-translate-y-1 border-t-2 border-t-emerald-500/80 bg-emerald-950/10 relative overflow-hidden"
             >
               <div className="flex justify-between items-start mb-1">
                 <h3 className="text-xl font-medium text-white">Custom Project</h3>
                 <span className="bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-[10px] uppercase tracking-wider font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
-                  <Sparkles className="w-2.5 h-2.5 text-emerald-400" /> Tailored Build
+                  <Sparkles className="w-2.5 h-2.5 text-emerald-400" /> 48-Hr Delivery
                 </span>
               </div>
-              <p className="text-xs text-zinc-500 mb-5">Engineered strictly to your specifications & feature requirements.</p>
+              <p className="text-xs text-zinc-400 mb-5">Custom-built to your exact college syllabus &amp; problem statement.</p>
               <div className="flex items-baseline gap-2 mb-6 pb-6 border-b border-white/5">
                 <span className="text-4xl font-bold text-white">₹1,999</span>
                 <span className="text-zinc-600 text-sm line-through">₹5,999</span>
@@ -647,16 +730,16 @@ export default function Home() {
               </div>
               <ul className="space-y-3 mb-8 flex-grow">
                 {[
-                  'Custom feature scope & architecture',
-                  'Production-ready source code repository',
-                  '20-Page comprehensive technical report',
-                  'Architecture & defense presentation slides',
-                  '1-on-1 code walkthrough & setup guide',
-                  '48-Hour delivery with dedicated engineer',
+                  '100% Unique Code Written to Your Topic',
+                  'Full IEEE Black Book Report (.docx)',
+                  'Defense Presentation PPT Deck',
+                  '1-on-1 Code Walkthrough on Google Meet',
+                  '48-Hour Delivery Guarantee',
+                  'Direct WhatsApp Engineer Support',
                 ].map(item => (
                   <li key={item} className="flex items-center gap-2.5">
                     <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                    <span className="text-zinc-300 text-sm">{item}</span>
+                    <span className="text-zinc-200 text-sm">{item}</span>
                   </li>
                 ))}
               </ul>

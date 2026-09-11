@@ -11,8 +11,8 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 
 const STEPS = [
-  { icon: <FolderOpen className="w-4 h-4 text-blue-400" />, bg: 'bg-blue-500/10 border-blue-500/30', title: '1. Extract the ZIP', body: 'Right-click â†’ "Extract All". You\'ll find Code, Report, and PPT folders inside.' },
-  { icon: <Terminal className="w-4 h-4 text-emerald-400" />, bg: 'bg-emerald-500/10 border-emerald-500/30', title: '2. Windows â€” double-click', body: <span>Double-click <code className="bg-zinc-800 text-emerald-400 px-1.5 py-0.5 rounded font-mono text-[11px]">run.bat</code> in the Code folder. Installs &amp; starts automatically.</span> },
+  { icon: <FolderOpen className="w-4 h-4 text-blue-400" />, bg: 'bg-blue-500/10 border-blue-500/30', title: '1. Extract the ZIP', body: 'Right-click → "Extract All". You\'ll find Code, Report, and PPT folders inside.' },
+  { icon: <Terminal className="w-4 h-4 text-emerald-400" />, bg: 'bg-emerald-500/10 border-emerald-500/30', title: '2. Windows — double-click', body: <span>Double-click <code className="bg-zinc-800 text-emerald-400 px-1.5 py-0.5 rounded font-mono text-[11px]">run.bat</code> in the Code folder. Installs &amp; starts automatically.</span> },
   { icon: <Terminal className="w-4 h-4 text-purple-400" />, bg: 'bg-purple-500/10 border-purple-500/30', title: '2. Mac / Linux', body: <span>Open Terminal in Code folder and run: <code className="bg-zinc-800 text-purple-400 px-1.5 py-0.5 rounded font-mono text-[11px]">bash run.sh</code></span> },
   { icon: <Play className="w-4 h-4 text-amber-400" />, bg: 'bg-amber-500/10 border-amber-500/30', title: '3. Open in browser', body: <span>When terminal shows "Ready", open <code className="bg-zinc-800 text-amber-400 px-1.5 py-0.5 rounded font-mono text-[11px]">localhost:3000</code></span> },
   { icon: <GraduationCap className="w-4 h-4 text-rose-400" />, bg: 'bg-rose-500/10 border-rose-500/30', title: '4. Prepare for Viva', body: 'Read PPT speaker notes, print the IEEE Black Book, use the 25 Q&A answers.' },
