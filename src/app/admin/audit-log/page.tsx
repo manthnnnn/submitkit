@@ -14,21 +14,28 @@ import { safeQuery } from '@/lib/safe-query';
 
 export default async function AuditLogPage() {
   const supabase = createAdminClient();
-  const rawLogs = await safeQuery(
-    supabase
-      .from('audit_logs')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(100)
-      .then(r => r.data || []),
-    [],
-    2000
+  const res = await safeQuery<{ data: any[] | null; error: any }>(
+    Promise.resolve(
+      supabase
+        .from('audit_logs')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(100)
+    ),
+    { data: [], error: null },
+    2500
   );
 
-  const isFallback = rawLogs.length === 0;
-  const logs: AuditLogEntry[] = isFallback ? getFallbackAuditLogs() : (rawLogs as AuditLogEntry[]);
+  // Fallback is only true if Supabase explicitly returned a missing table error
+  const tableMissing = Boolean(
+    res?.error && (res.error.code === '42P01' || res.error.message?.toLowerCase().includes('does not exist'))
+  );
+
+  const logs = tableMissing
+    ? getFallbackAuditLogs()
+    : ((res?.data || []) as AuditLogEntry[]);
 
   return (
-    <AuditLogClient initialLogs={logs} isFallback={isFallback} />
+    <AuditLogClient initialLogs={logs} isFallback={tableMissing} />
   );
 }
