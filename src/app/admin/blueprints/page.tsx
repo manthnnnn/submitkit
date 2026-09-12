@@ -27,21 +27,28 @@ export type BlueprintRow = {
 };
 
 import { unstable_cache } from 'next/cache';
+import { safeQuery } from '@/lib/safe-query';
 
 const getCachedBlueprints = unstable_cache(
   async () => {
     const supabase = createAdminClient();
-    const { data, error } = await supabase
-      .from('blueprint_purchases')
-      .select(
-        'id, topic_id, topic_title, customer_email, customer_phone, razorpay_order_id, razorpay_payment_id, amount, status, pdf_downloads, created_at'
-      )
-      .order('created_at', { ascending: false })
-      .limit(500);
+    const result = await safeQuery<{ data: any[] | null; error: any }>(
+      Promise.resolve(
+        supabase
+          .from('blueprint_purchases')
+          .select(
+            'id, topic_id, topic_title, customer_email, customer_phone, razorpay_order_id, razorpay_payment_id, amount, status, pdf_downloads, created_at'
+          )
+          .order('created_at', { ascending: false })
+          .limit(300)
+      ),
+      { data: [], error: null },
+      3000
+    );
 
-    return { data, error: error?.message || null };
+    return { data: (result?.data || []) as BlueprintRow[], error: (result?.error?.message as string) || null };
   },
-  ['admin-blueprint-purchases-cache'],
+  ['admin-blueprint-purchases-safe-cache'],
   { revalidate: 30, tags: ['blueprints', 'orders'] }
 );
 

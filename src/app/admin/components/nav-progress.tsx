@@ -16,21 +16,45 @@ export function NavProgress() {
   const timer    = useRef<ReturnType<typeof setTimeout> | null>(null);
   const raf      = useRef<number | null>(null);
 
+  // Start progress on click of any internal admin link
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      const target = (e.target as HTMLElement)?.closest('a');
+      if (target && target.href) {
+        try {
+          const url = new URL(target.href, window.location.origin);
+          if (
+            url.origin === window.location.origin &&
+            url.pathname.startsWith('/admin') &&
+            url.pathname !== window.location.pathname
+          ) {
+            setVisible(true);
+            setProgress(30);
+          }
+        } catch {
+          /* ignore */
+        }
+      }
+    };
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
+  }, []);
+
   useEffect(() => {
     if (pathname === prevPath.current) return;
     prevPath.current = pathname;
 
     // Start a rapid fake-progress animation
     setVisible(true);
-    setProgress(10);
+    setProgress(40);
 
-    let p = 10;
+    let p = 40;
     const tick = () => {
-      // Ease toward 90% — never reaches 100 until done
-      const increment = p < 50 ? 8 : p < 75 ? 4 : p < 85 ? 1 : 0.3;
-      p = Math.min(p + increment, 90);
+      // Ease toward 95%
+      const increment = p < 65 ? 8 : p < 85 ? 4 : 0.5;
+      p = Math.min(p + increment, 95);
       setProgress(p);
-      if (p < 90) raf.current = requestAnimationFrame(tick);
+      if (p < 95) raf.current = requestAnimationFrame(tick);
     };
     raf.current = requestAnimationFrame(tick);
 
@@ -42,8 +66,8 @@ export function NavProgress() {
       timer.current = setTimeout(() => {
         setVisible(false);
         setProgress(0);
-      }, 300);
-    }, 80);
+      }, 250);
+    }, 50);
 
     return () => {
       if (raf.current) cancelAnimationFrame(raf.current);

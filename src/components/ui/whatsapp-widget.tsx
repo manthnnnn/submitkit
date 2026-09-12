@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 
@@ -13,6 +14,12 @@ function WhatsAppIcon({ className }: { className?: string }) {
 
 export function WhatsAppWidget() {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
+
+  if (pathname.startsWith('/admin')) {
+    return null;
+  }
+
   const waNumber = '918799814256';
   const defaultMessage = 'Hi! I need help with a project from SubmitKit.';
 

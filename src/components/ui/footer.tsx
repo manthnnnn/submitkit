@@ -1,4 +1,6 @@
+'use client';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Logo } from '@/components/ui/logo';
 
 // Inline SVG icons for Instagram & WhatsApp (lucide-react version doesn't include them)
@@ -21,6 +23,11 @@ function WhatsAppIcon({ className }: { className?: string }) {
 }
 
 export function Footer() {
+  const pathname = usePathname();
+  if (pathname.startsWith('/admin')) {
+    return null;
+  }
+
   return (
     <footer className="bg-[#09090b] border-t border-white/5 pt-14 pb-8">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">

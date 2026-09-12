@@ -10,28 +10,23 @@ export const metadata: Metadata = {
 
 export const dynamic = 'force-dynamic';
 
-export default async function AuditLogPage() {
-  let logs: AuditLogEntry[] = [];
-  let isFallback = false;
+import { safeQuery } from '@/lib/safe-query';
 
-  try {
-    const supabase = createAdminClient();
-    const { data, error } = await supabase
+export default async function AuditLogPage() {
+  const supabase = createAdminClient();
+  const rawLogs = await safeQuery(
+    supabase
       .from('audit_logs')
       .select('*')
       .order('created_at', { ascending: false })
-      .limit(200);
+      .limit(100)
+      .then(r => r.data || []),
+    [],
+    2000
+  );
 
-    if (error || !data) {
-      logs = getFallbackAuditLogs();
-      isFallback = true;
-    } else {
-      logs = data as AuditLogEntry[];
-    }
-  } catch {
-    logs = getFallbackAuditLogs();
-    isFallback = true;
-  }
+  const isFallback = rawLogs.length === 0;
+  const logs: AuditLogEntry[] = isFallback ? getFallbackAuditLogs() : (rawLogs as AuditLogEntry[]);
 
   return (
     <AuditLogClient initialLogs={logs} isFallback={isFallback} />

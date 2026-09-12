@@ -4,40 +4,32 @@ import { AlertTriangle } from 'lucide-react';
 import { DashboardClient } from './components/dashboard-client';
 import { unstable_cache } from 'next/cache';
 
+import { safeQuery } from '@/lib/safe-query';
+
 async function fetchDashboardData() {
   const supabase = createAdminClient();
   const [
-    { count: projectCount },
-    { data: paidOrders },
-    { count: pendingOrders },
-    { data: preOrders },
-    { data: recentOrders },
-    { data: allOrdersForChart },
-    { count: todayViewsCount },
+    projectCount,
+    paidOrders,
+    pendingOrders,
+    preOrders,
+    recentOrders,
+    allOrdersForChart,
+    todayViewsCount,
   ] = await Promise.all([
-    supabase.from('projects').select('*', { count: 'exact', head: true }),
-    supabase.from('orders').select('amount_paid').eq('status', 'PAID'),
-    supabase.from('orders').select('*', { count: 'exact', head: true }).eq('status', 'PENDING'),
-    supabase.from('pre_orders').select('project_slug, project_title').order('created_at', { ascending: false }),
-    supabase.from('orders')
-      .select('id, customer_name, amount_paid, created_at, projects(title)')
-      .eq('status', 'PAID')
-      .order('created_at', { ascending: false })
-      .limit(5),
-    supabase.from('orders')
-      .select('amount_paid, created_at')
-      .eq('status', 'PAID')
-      .gte('created_at', new Date(Date.now() - 14 * 86400000).toISOString()),
-    supabase
-      .from('page_views')
-      .select('*', { count: 'exact', head: true })
-      .gte('created_at', new Date(Date.now() - 86400000).toISOString()),
+    safeQuery(supabase.from('projects').select('*', { count: 'exact', head: true }).then(r => r.count ?? 0), 0, 2500),
+    safeQuery(supabase.from('orders').select('amount_paid').eq('status', 'PAID').limit(500).then(r => r.data ?? []), [], 2500),
+    safeQuery(supabase.from('orders').select('*', { count: 'exact', head: true }).eq('status', 'PENDING').then(r => r.count ?? 0), 0, 2500),
+    safeQuery(supabase.from('pre_orders').select('project_slug, project_title').limit(200).then(r => r.data ?? []), [], 2500),
+    safeQuery(supabase.from('orders').select('id, customer_name, amount_paid, created_at, projects(title)').eq('status', 'PAID').order('created_at', { ascending: false }).limit(5).then(r => r.data ?? []), [], 2500),
+    safeQuery(supabase.from('orders').select('amount_paid, created_at').eq('status', 'PAID').gte('created_at', new Date(Date.now() - 14 * 86400000).toISOString()).limit(500).then(r => r.data ?? []), [], 2500),
+    safeQuery(supabase.from('page_views').select('*', { count: 'exact', head: true }).gte('created_at', new Date(Date.now() - 86400000).toISOString()).then(r => r.count ?? 0), 0, 2000),
   ]);
 
-  const totalRevenue   = paidOrders?.reduce((s, o) => s + o.amount_paid, 0) ?? 0;
-  const totalPaidCount = paidOrders?.length ?? 0;
-  const preOrderCount  = preOrders?.length ?? 0;
-  const todayViews     = todayViewsCount ?? 0;
+  const totalRevenue   = paidOrders.reduce((s, o) => s + (o.amount_paid || 0), 0);
+  const totalPaidCount = paidOrders.length;
+  const preOrderCount  = preOrders.length;
+  const todayViews     = todayViewsCount;
 
   // Build daily revenue for last 14 days
   const dailyMap: Record<string, number> = {};

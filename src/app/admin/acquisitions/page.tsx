@@ -15,14 +15,21 @@ const cardStyle: React.CSSProperties = {
   boxShadow: '0 1px 0 rgba(255,255,255,0.06) inset',
 };
 
+import { safeQuery } from '@/lib/safe-query';
+
 const getCachedAcquisitions = unstable_cache(
   async () => {
     const supabase = createAdminClient();
-    const { data: views } = await supabase
-      .from('page_views')
-      .select('referrer, device, created_at')
-      .order('created_at', { ascending: false })
-      .limit(2000);
+    const views = await safeQuery(
+      supabase
+        .from('page_views')
+        .select('referrer, device, created_at')
+        .order('created_at', { ascending: false })
+        .limit(300)
+        .then(r => r.data || []),
+      [],
+      2500
+    );
 
     const rawViews = views || [];
     const channelMap: Record<string, number> = {

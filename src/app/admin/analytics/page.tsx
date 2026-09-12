@@ -16,62 +16,68 @@ const cardStyle = {
 };
 
 import { unstable_cache } from 'next/cache';
+import { safeQuery } from '@/lib/safe-query';
 
 const getCachedAnalyticsData = unstable_cache(
   async () => {
     const supabase = createAdminClient();
-    const [
-      { data: paidOrders, error: e1 },
-      { data: preOrders,  error: e2 },
-      { data: rawProjects },
-      { data: rawPageViews, error: trafficErr },
-    ] = await Promise.all([
-      supabase
-        .from('orders')
-        .select('amount_paid, created_at, has_personalization, has_plagiarism_cert, has_viva_call, projects(title, tier)')
-        .eq('status', 'PAID')
-        .order('created_at', { ascending: false }),
-      supabase.from('pre_orders').select('project_slug, project_title'),
-      supabase.from('projects').select('slug, title'),
-      supabase
-        .from('page_views')
-        .select('id, visitor_id, path, referrer, device, created_at')
-        .order('created_at', { ascending: false })
-        .limit(3000),
+
+    const [paidOrders, preOrders, rawProjects, rawPageViews] = await Promise.all([
+      safeQuery(
+        supabase
+          .from('orders')
+          .select('amount_paid, created_at, has_personalization, has_plagiarism_cert, has_viva_call, projects(title, tier)')
+          .eq('status', 'PAID')
+          .order('created_at', { ascending: false })
+          .limit(300)
+          .then(r => r.data || []),
+        [],
+        3000
+      ),
+      safeQuery(
+        supabase
+          .from('pre_orders')
+          .select('project_slug, project_title')
+          .limit(300)
+          .then(r => r.data || []),
+        [],
+        3000
+      ),
+      safeQuery(
+        supabase
+          .from('projects')
+          .select('slug, title')
+          .limit(100)
+          .then(r => r.data || []),
+        [],
+        2500
+      ),
+      safeQuery(
+        supabase
+          .from('page_views')
+          .select('id, visitor_id, path, referrer, device, created_at')
+          .order('created_at', { ascending: false })
+          .limit(200)
+          .then(r => r.data || []),
+        [],
+        3000
+      ),
     ]);
 
     return {
-      paidOrders: paidOrders || [],
-      preOrders: preOrders || [],
-      rawProjects: rawProjects || [],
-      rawPageViews: rawPageViews || [],
-      trafficError: Boolean(trafficErr),
-      error: (e1 ?? e2)?.message || null,
+      paidOrders,
+      preOrders,
+      rawProjects,
+      rawPageViews,
+      trafficError: rawPageViews.length === 0,
     };
   },
-  ['admin-analytics-cache'],
+  ['admin-analytics-safe-cache'],
   { revalidate: 60, tags: ['analytics', 'orders'] }
 );
 
 export default async function AnalyticsPage() {
-  const { paidOrders, preOrders, rawProjects, rawPageViews, trafficError, error: queryError } = await getCachedAnalyticsData();
-
-  if (queryError) {
-    return (
-      <div className="space-y-5">
-        <div>
-          <h1 className="text-2xl font-display font-bold text-white tracking-tight">Analytics</h1>
-        </div>
-        <div className="rounded-2xl p-5 flex items-start gap-4" style={{ ...cardStyle, borderColor: 'rgba(239,68,68,0.25)' }}>
-          <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-            style={{ background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.25)' }}>
-            <AlertTriangle className="h-4 w-4 text-red-400" />
-          </div>
-          <p className="text-red-300 text-sm">{queryError}</p>
-        </div>
-      </div>
-    );
-  }
+  const { paidOrders, preOrders, rawProjects, rawPageViews, trafficError } = await getCachedAnalyticsData();
 
   const orders = paidOrders ?? [];
   const preOrderList = preOrders ?? [];

@@ -13,27 +13,34 @@ const cardStyle = {
 };
 
 import { unstable_cache } from 'next/cache';
+import { safeQuery } from '@/lib/safe-query';
 
 const getCachedOrders = unstable_cache(
   async () => {
     const supabase = createAdminClient();
-    const { data, error } = await supabase
-      .from('orders')
-      .select(`
-        id, order_id, payment_id,
-        customer_name, customer_email, customer_phone, college_name,
-        amount_paid, status,
-        download_count, download_limit,
-        created_at,
-        has_personalization, has_plagiarism_cert, has_viva_call,
-        projects(title)
-      `)
-      .order('created_at', { ascending: false })
-      .limit(300);
+    const result = await safeQuery<{ data: any[] | null; error: any }>(
+      Promise.resolve(
+        supabase
+          .from('orders')
+          .select(`
+            id, order_id, payment_id,
+            customer_name, customer_email, customer_phone, college_name,
+            amount_paid, status,
+            download_count, download_limit,
+            created_at,
+            has_personalization, has_plagiarism_cert, has_viva_call,
+            projects(title)
+          `)
+          .order('created_at', { ascending: false })
+          .limit(300)
+      ),
+      { data: [], error: null },
+      3500
+    );
 
-    return { data, error: error?.message || null };
+    return { data: (result?.data || []) as OrderRow[], error: (result?.error?.message as string) || null };
   },
-  ['admin-orders-list-cache'],
+  ['admin-orders-list-safe-cache'],
   { revalidate: 30, tags: ['orders'] }
 );
 

@@ -26,29 +26,30 @@ const cardStyle = {
 };
 
 import { unstable_cache } from 'next/cache';
+import { safeQuery } from '@/lib/safe-query';
 
 const getCachedPreOrders = (slugFilter?: string) =>
   unstable_cache(
     async () => {
       const supabase = createAdminClient();
-      let query = supabase.from('pre_orders').select('*').order('created_at', { ascending: false });
+      let query = supabase.from('pre_orders').select('*').order('created_at', { ascending: false }).limit(300);
       if (slugFilter) query = query.eq('project_slug', slugFilter);
 
-      let resQuery = supabase.from('reservations').select('*').order('created_at', { ascending: false });
+      let resQuery = supabase.from('reservations').select('*').order('created_at', { ascending: false }).limit(300);
       if (slugFilter) resQuery = resQuery.eq('project_slug', slugFilter);
 
-      const [{ data: preOrders, error }, { data: reservations }] = await Promise.all([
-        query,
-        resQuery,
+      const [preOrders, reservations] = await Promise.all([
+        safeQuery(query.then(r => (r.data || []) as PreOrder[]), [], 2500),
+        safeQuery(resQuery.then(r => (r.data || []) as any[]), [], 2500),
       ]);
 
       return {
-        preOrders: (preOrders || []) as PreOrder[],
-        reservations: (reservations || []) as any[],
-        error: error?.message || null,
+        preOrders,
+        reservations,
+        error: null,
       };
     },
-    ['admin-preorders-cache', slugFilter || 'all'],
+    ['admin-preorders-cache-v2', slugFilter || 'all'],
     { revalidate: 30, tags: ['preorders'] }
   )();
 
