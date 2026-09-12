@@ -1,49 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { cookies } from 'next/headers';
-
-// ── Auth helper (mirrors middleware logic, for API routes) ──────────────────
-async function hmacSHA256(key: string, data: string): Promise<string> {
-  const encoder = new TextEncoder();
-  const cryptoKey = await crypto.subtle.importKey(
-    'raw', encoder.encode(key),
-    { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
-  );
-  const sig = await crypto.subtle.sign('HMAC', cryptoKey, encoder.encode(data));
-  return Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
-function constantTimeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  let result = 0;
-  for (let i = 0; i < a.length; i++) result |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return result === 0;
-}
-
-async function verifyAdminCookie(): Promise<boolean> {
-  const cookieStore = await cookies();
-  const token = cookieStore.get('admin_token')?.value;
-  const secret = process.env.ADMIN_SECRET_KEY || '';
-  if (!token || !secret) return false;
-
-  const dotIndex = token.lastIndexOf('.');
-  if (dotIndex === -1) return constantTimeEqual(token, secret);
-
-  const sessionToken = token.substring(0, dotIndex);
-  const providedHmac = token.substring(dotIndex + 1);
-  if (!sessionToken || !providedHmac) return false;
-
-  const expectedHmac = await hmacSHA256(secret, sessionToken);
-  return constantTimeEqual(expectedHmac, providedHmac);
-}
+import { parseAdminSession, hasPermission } from '@/lib/rbac';
+import { logAuditAction } from '@/lib/audit';
+import { revalidateTag } from 'next/cache';
 
 // ── PATCH /api/admin/projects/[id] ─────────────────────────────────────────
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  if (!(await verifyAdminCookie())) {
+  const token = req.cookies.get('admin_token')?.value;
+  const session = await parseAdminSession(token);
+
+  if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  if (!hasPermission(session.role, 'projects:edit')) {
+    return NextResponse.json({ error: 'Forbidden: Insufficient role permissions' }, { status: 403 });
   }
 
   const { id } = await params;
@@ -74,16 +48,39 @@ export async function PATCH(
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  await logAuditAction({
+    admin_email: session.email,
+    action: 'PROJECT_UPDATE',
+    entity_type: 'PROJECT',
+    entity_id: id,
+    metadata: update,
+  });
+
+  try {
+    revalidateTag('projects', { expire: 0 });
+    revalidateTag('dashboard', { expire: 0 });
+  } catch {
+    // ignore
+  }
+
   return NextResponse.json({ project: data });
 }
 
 // ── DELETE /api/admin/projects/[id] ────────────────────────────────────────
 export async function DELETE(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  if (!(await verifyAdminCookie())) {
+  const token = req.cookies.get('admin_token')?.value;
+  const session = await parseAdminSession(token);
+
+  if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  if (!hasPermission(session.role, 'projects:delete')) {
+    return NextResponse.json({ error: 'Forbidden: Insufficient role permissions to delete' }, { status: 403 });
   }
 
   const { id } = await params;
@@ -96,8 +93,21 @@ export async function DELETE(
     .eq('id', id);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  await logAuditAction({
+    admin_email: session.email,
+    action: 'PROJECT_DELETE',
+    entity_type: 'PROJECT',
+    entity_id: id,
+    metadata: { soft_delete: true, is_active: false },
+  });
+
+  try {
+    revalidateTag('projects', { expire: 0 });
+    revalidateTag('dashboard', { expire: 0 });
+  } catch {
+    // ignore
+  }
+
   return NextResponse.json({ success: true });
 }
-
-// ── POST /api/admin/projects/[id] — create (used from /new form) ───────────
-// We use [id] = "new" as the sentinel handled by the new page calling POST /api/admin/projects

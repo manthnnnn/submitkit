@@ -1,11 +1,8 @@
 import { createAdminClient } from '@/lib/supabase/admin';
 import { formatCurrency } from '@/lib/utils';
 import { AlertTriangle } from 'lucide-react';
-import Link from 'next/link';
-import { RevenueDayChart } from './components/revenue-chart';
 import { DashboardClient } from './components/dashboard-client';
-
-export const dynamic = 'force-dynamic';
+import { unstable_cache } from 'next/cache';
 
 async function fetchDashboardData() {
   const supabase = createAdminClient();
@@ -81,10 +78,24 @@ async function fetchDashboardData() {
   };
 }
 
+const getCachedDashboardData = unstable_cache(
+  async () => fetchDashboardData(),
+  ['admin-dashboard-stats-cache'],
+  {
+    revalidate: 60,
+    tags: ['dashboard', 'orders', 'projects', 'preorders'],
+  }
+);
+
 export default async function AdminDashboard() {
   let data = null;
   let fetchError = false;
-  try { data = await fetchDashboardData(); } catch { fetchError = true; }
+  try {
+    data = await getCachedDashboardData();
+  } catch (err) {
+    console.error('Admin Dashboard Cache Fetch Error:', err);
+    fetchError = true;
+  }
 
   if (fetchError || !data) {
     return (

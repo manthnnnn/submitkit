@@ -15,30 +15,48 @@ const cardStyle = {
   boxShadow: '0 1px 0 rgba(255,255,255,0.06) inset',
 };
 
+import { unstable_cache } from 'next/cache';
+
+const getCachedAnalyticsData = unstable_cache(
+  async () => {
+    const supabase = createAdminClient();
+    const [
+      { data: paidOrders, error: e1 },
+      { data: preOrders,  error: e2 },
+      { data: rawProjects },
+      { data: rawPageViews, error: trafficErr },
+    ] = await Promise.all([
+      supabase
+        .from('orders')
+        .select('amount_paid, created_at, has_personalization, has_plagiarism_cert, has_viva_call, projects(title, tier)')
+        .eq('status', 'PAID')
+        .order('created_at', { ascending: false }),
+      supabase.from('pre_orders').select('project_slug, project_title'),
+      supabase.from('projects').select('slug, title'),
+      supabase
+        .from('page_views')
+        .select('id, visitor_id, path, referrer, device, created_at')
+        .order('created_at', { ascending: false })
+        .limit(3000),
+    ]);
+
+    return {
+      paidOrders: paidOrders || [],
+      preOrders: preOrders || [],
+      rawProjects: rawProjects || [],
+      rawPageViews: rawPageViews || [],
+      trafficError: Boolean(trafficErr),
+      error: (e1 ?? e2)?.message || null,
+    };
+  },
+  ['admin-analytics-cache'],
+  { revalidate: 60, tags: ['analytics', 'orders'] }
+);
+
 export default async function AnalyticsPage() {
-  const supabase = createAdminClient();
+  const { paidOrders, preOrders, rawProjects, rawPageViews, trafficError, error: queryError } = await getCachedAnalyticsData();
 
-  const [
-    { data: paidOrders, error: e1 },
-    { data: preOrders,  error: e2 },
-    { data: rawProjects },
-    { data: rawPageViews, error: trafficErr },
-  ] = await Promise.all([
-    supabase
-      .from('orders')
-      .select('amount_paid, created_at, has_personalization, has_plagiarism_cert, has_viva_call, projects(title, tier)')
-      .eq('status', 'PAID')
-      .order('created_at', { ascending: false }),
-    supabase.from('pre_orders').select('project_slug, project_title'),
-    supabase.from('projects').select('slug, title'),
-    supabase
-      .from('page_views')
-      .select('id, visitor_id, path, referrer, device, created_at')
-      .order('created_at', { ascending: false })
-      .limit(3000),
-  ]);
-
-  if (e1 || e2) {
+  if (queryError) {
     return (
       <div className="space-y-5">
         <div>
@@ -49,7 +67,7 @@ export default async function AnalyticsPage() {
             style={{ background: 'rgba(239,68,68,0.12)', border: '1px solid rgba(239,68,68,0.25)' }}>
             <AlertTriangle className="h-4 w-4 text-red-400" />
           </div>
-          <p className="text-red-300 text-sm">{(e1 ?? e2)?.message}</p>
+          <p className="text-red-300 text-sm">{queryError}</p>
         </div>
       </div>
     );
@@ -130,7 +148,7 @@ export default async function AnalyticsPage() {
       {/* Website Traffic, Visitors & Engagement Pulse */}
       <TrafficAnalyticsDashboard
         initialViews={(rawPageViews ?? []) as any}
-        isTableReady={!trafficErr}
+        isTableReady={!trafficError}
         projectMap={projectMap}
       />
 

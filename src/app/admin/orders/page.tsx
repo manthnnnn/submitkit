@@ -12,22 +12,33 @@ const cardStyle = {
   boxShadow: '0 1px 0 rgba(255,255,255,0.06) inset',
 };
 
-export default async function AdminOrdersPage() {
-  const supabase = createAdminClient();
+import { unstable_cache } from 'next/cache';
 
-  const { data, error } = await supabase
-    .from('orders')
-    .select(`
-      id, order_id, payment_id,
-      customer_name, customer_email, customer_phone, college_name,
-      amount_paid, status,
-      download_count, download_limit,
-      created_at,
-      has_personalization, has_plagiarism_cert, has_viva_call,
-      projects(title)
-    `)
-    .order('created_at', { ascending: false })
-    .limit(200);
+const getCachedOrders = unstable_cache(
+  async () => {
+    const supabase = createAdminClient();
+    const { data, error } = await supabase
+      .from('orders')
+      .select(`
+        id, order_id, payment_id,
+        customer_name, customer_email, customer_phone, college_name,
+        amount_paid, status,
+        download_count, download_limit,
+        created_at,
+        has_personalization, has_plagiarism_cert, has_viva_call,
+        projects(title)
+      `)
+      .order('created_at', { ascending: false })
+      .limit(300);
+
+    return { data, error: error?.message || null };
+  },
+  ['admin-orders-list-cache'],
+  { revalidate: 30, tags: ['orders'] }
+);
+
+export default async function AdminOrdersPage() {
+  const { data, error } = await getCachedOrders();
 
   if (error) {
     return (
@@ -42,7 +53,7 @@ export default async function AdminOrdersPage() {
           </div>
           <div>
             <p className="text-red-300 font-semibold text-sm mb-1">Failed to load orders</p>
-            <p className="text-zinc-500 text-xs">{error.message}</p>
+            <p className="text-zinc-500 text-xs">{error}</p>
           </div>
         </div>
       </div>

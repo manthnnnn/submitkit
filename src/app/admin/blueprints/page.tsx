@@ -26,16 +26,27 @@ export type BlueprintRow = {
   created_at: string;
 };
 
-export default async function AdminBlueprintsPage() {
-  const supabase = createAdminClient();
+import { unstable_cache } from 'next/cache';
 
-  const { data, error } = await supabase
-    .from('blueprint_purchases')
-    .select(
-      'id, topic_id, topic_title, customer_email, customer_phone, razorpay_order_id, razorpay_payment_id, amount, status, pdf_downloads, created_at'
-    )
-    .order('created_at', { ascending: false })
-    .limit(500);
+const getCachedBlueprints = unstable_cache(
+  async () => {
+    const supabase = createAdminClient();
+    const { data, error } = await supabase
+      .from('blueprint_purchases')
+      .select(
+        'id, topic_id, topic_title, customer_email, customer_phone, razorpay_order_id, razorpay_payment_id, amount, status, pdf_downloads, created_at'
+      )
+      .order('created_at', { ascending: false })
+      .limit(500);
+
+    return { data, error: error?.message || null };
+  },
+  ['admin-blueprint-purchases-cache'],
+  { revalidate: 30, tags: ['blueprints', 'orders'] }
+);
+
+export default async function AdminBlueprintsPage() {
+  const { data, error } = await getCachedBlueprints();
 
   if (error) {
     return (
@@ -51,7 +62,7 @@ export default async function AdminBlueprintsPage() {
           </div>
           <div>
             <p className="text-red-300 font-semibold text-sm mb-1">Failed to load blueprint purchases</p>
-            <p className="text-zinc-500 text-xs">{error.message}</p>
+            <p className="text-zinc-500 text-xs">{error}</p>
           </div>
         </div>
       </div>

@@ -36,21 +36,24 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
 
-    // Generate a random session token — never store the raw secret in the cookie
-    const sessionToken = crypto.randomBytes(32).toString('hex');
+    // Issue signed RBAC token
+    const { createAdminSessionToken } = await import('@/lib/rbac');
+    const { logAuditAction } = await import('@/lib/audit');
 
-    // Store token + hash of secret so middleware can re-verify without storing the secret
-    // For this MVP: store HMAC(sessionToken, ADMIN_SECRET_KEY) as the cookie value.
-    // Middleware verifies by checking cookie === HMAC(cookie, secret) — but simpler:
-    // we hash the secret and store that. The middleware checks hash(cookie) === stored hash.
-    // Simplest correct approach: store HMAC of a server-generated nonce with the secret.
-    const tokenValue = crypto
-      .createHmac('sha256', process.env.ADMIN_SECRET_KEY || '')
-      .update(sessionToken)
-      .digest('hex');
+    const cookieValue = await createAdminSessionToken({
+      email: 'admin@submitkit.in',
+      role: 'SUPER_ADMIN',
+      displayName: 'Super Admin',
+    });
 
-    // Cookie contains: sessionToken.tokenValue — middleware reconstructs and verifies
-    const cookieValue = `${sessionToken}.${tokenValue}`;
+    await logAuditAction({
+      admin_email: 'admin@submitkit.in',
+      action: 'ADMIN_LOGIN',
+      entity_type: 'AUTH',
+      entity_id: 'session',
+      ip_address: ip,
+      metadata: { timestamp: new Date().toISOString() },
+    });
 
     const response = NextResponse.json({ success: true });
 

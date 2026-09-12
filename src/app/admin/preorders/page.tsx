@@ -25,24 +25,40 @@ const cardStyle = {
   boxShadow: '0 1px 0 rgba(255,255,255,0.06) inset',
 };
 
+import { unstable_cache } from 'next/cache';
+
+const getCachedPreOrders = (slugFilter?: string) =>
+  unstable_cache(
+    async () => {
+      const supabase = createAdminClient();
+      let query = supabase.from('pre_orders').select('*').order('created_at', { ascending: false });
+      if (slugFilter) query = query.eq('project_slug', slugFilter);
+
+      let resQuery = supabase.from('reservations').select('*').order('created_at', { ascending: false });
+      if (slugFilter) resQuery = resQuery.eq('project_slug', slugFilter);
+
+      const [{ data: preOrders, error }, { data: reservations }] = await Promise.all([
+        query,
+        resQuery,
+      ]);
+
+      return {
+        preOrders: (preOrders || []) as PreOrder[],
+        reservations: (reservations || []) as any[],
+        error: error?.message || null,
+      };
+    },
+    ['admin-preorders-cache', slugFilter || 'all'],
+    { revalidate: 30, tags: ['preorders'] }
+  )();
+
 export default async function PreOrdersAdminPage({
   searchParams,
 }: {
   searchParams: Promise<{ filter?: string }>;
 }) {
   const { filter } = await searchParams;
-  const supabase = createAdminClient();
-
-  let query = supabase.from('pre_orders').select('*').order('created_at', { ascending: false });
-  if (filter) query = query.eq('project_slug', filter);
-
-  let resQuery = supabase.from('reservations').select('*').order('created_at', { ascending: false });
-  if (filter) resQuery = resQuery.eq('project_slug', filter);
-
-  const [{ data: preOrders, error }, { data: reservations }] = await Promise.all([
-    query,
-    resQuery,
-  ]);
+  const { preOrders, reservations, error } = await getCachedPreOrders(filter);
 
   if (error) {
     return (
@@ -57,7 +73,7 @@ export default async function PreOrdersAdminPage({
           </div>
           <div>
             <p className="text-amber-300 font-semibold text-sm mb-1">Pre-orders table error</p>
-            <p className="text-zinc-500 text-xs">{error.message}</p>
+            <p className="text-zinc-500 text-xs">{error}</p>
           </div>
         </div>
       </div>

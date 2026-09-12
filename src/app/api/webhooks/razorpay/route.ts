@@ -59,6 +59,12 @@ export async function POST(req: NextRequest) {
       // Only do this if WE flipped the status to PAID
       if (updated) {
         try {
+          const { revalidateTag } = await import('next/cache');
+          revalidateTag('dashboard', { expire: 0 });
+          revalidateTag('orders', { expire: 0 });
+        } catch { /* ignore non-blocking */ }
+
+        try {
           const { data: order } = await supabase
             .from('orders')
             .select('*, projects(title, tier)')

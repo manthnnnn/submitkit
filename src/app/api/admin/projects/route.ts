@@ -1,42 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
-import { cookies } from 'next/headers';
-
-async function hmacSHA256(key: string, data: string): Promise<string> {
-  const encoder = new TextEncoder();
-  const cryptoKey = await crypto.subtle.importKey(
-    'raw', encoder.encode(key),
-    { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
-  );
-  const sig = await crypto.subtle.sign('HMAC', cryptoKey, encoder.encode(data));
-  return Array.from(new Uint8Array(sig)).map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
-function constantTimeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  let result = 0;
-  for (let i = 0; i < a.length; i++) result |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return result === 0;
-}
-
-async function verifyAdminCookie(): Promise<boolean> {
-  const cookieStore = await cookies();
-  const token = cookieStore.get('admin_token')?.value;
-  const secret = process.env.ADMIN_SECRET_KEY || '';
-  if (!token || !secret) return false;
-  const dotIndex = token.lastIndexOf('.');
-  if (dotIndex === -1) return constantTimeEqual(token, secret);
-  const sessionToken = token.substring(0, dotIndex);
-  const providedHmac = token.substring(dotIndex + 1);
-  if (!sessionToken || !providedHmac) return false;
-  const expectedHmac = await hmacSHA256(secret, sessionToken);
-  return constantTimeEqual(expectedHmac, providedHmac);
-}
+import { parseAdminSession, hasPermission } from '@/lib/rbac';
+import { logAuditAction } from '@/lib/audit';
+import { revalidateTag } from 'next/cache';
 
 // ── POST /api/admin/projects — create new project ──────────────────────────
 export async function POST(req: NextRequest) {
-  if (!(await verifyAdminCookie())) {
+  const token = req.cookies.get('admin_token')?.value;
+  const session = await parseAdminSession(token);
+
+  if (!session) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  if (!hasPermission(session.role, 'projects:create')) {
+    return NextResponse.json({ error: 'Forbidden: Insufficient role permissions' }, { status: 403 });
   }
 
   const body = await req.json();
@@ -69,5 +47,21 @@ export async function POST(req: NextRequest) {
     .single();
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+
+  await logAuditAction({
+    admin_email: session.email,
+    action: 'PROJECT_CREATE',
+    entity_type: 'PROJECT',
+    entity_id: data.id,
+    metadata: { title: data.title, slug: data.slug, tier: data.tier, price_inr: data.price_inr },
+  });
+
+  try {
+    revalidateTag('projects', { expire: 0 });
+    revalidateTag('dashboard', { expire: 0 });
+  } catch {
+    // ignore
+  }
+
   return NextResponse.json({ project: data }, { status: 201 });
 }
