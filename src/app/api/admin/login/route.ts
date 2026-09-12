@@ -46,21 +46,22 @@ export async function POST(req: NextRequest) {
       displayName: 'Super Admin',
     });
 
-    await logAuditAction({
+    // Fire audit log asynchronously (never block authentication)
+    logAuditAction({
       admin_email: 'admin@submitkit.in',
       action: 'ADMIN_LOGIN',
       entity_type: 'AUTH',
       entity_id: 'session',
       ip_address: ip,
       metadata: { timestamp: new Date().toISOString() },
-    });
+    }).catch(() => {});
 
     const response = NextResponse.json({ success: true });
 
     response.cookies.set('admin_token', cookieValue, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      sameSite: 'lax',
       path: '/',
       maxAge: 86400, // 24 hours
     });
