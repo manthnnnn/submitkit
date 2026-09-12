@@ -17,12 +17,12 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
 
-  if (pathname.startsWith('/admin')) {
+  if (pathname?.startsWith('/admin')) {
     return null;
   }
 
   const isActive = (href: string) => {
-    if (href.includes('#')) return false; // anchor links never "active"
+    if (!pathname || href.includes('#')) return false; // anchor links never "active"
     return pathname === href || pathname.startsWith(href + '/');
   };
 

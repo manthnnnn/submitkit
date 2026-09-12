@@ -19,8 +19,6 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-export default middleware;
-
 export const config = {
   matcher: '/admin/:path*',
 };

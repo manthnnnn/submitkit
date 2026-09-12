@@ -20,7 +20,7 @@ export function NavProgress() {
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
       const target = (e.target as HTMLElement)?.closest('a');
-      if (target && target.href) {
+      if (target && typeof target.href === 'string' && target.href) {
         try {
           const url = new URL(target.href, window.location.origin);
           if (
