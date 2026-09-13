@@ -41,7 +41,7 @@ export function Footer() {
             </p>
             <div className="flex gap-3">
               <a
-                href="https://instagram.com/submitkit"
+                href="https://instagram.com/submitkit.in"
                 target="_blank" rel="noopener noreferrer"
                 className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-brand-500/20 hover:border-brand-500/30 transition-all group"
                 aria-label="Instagram"
