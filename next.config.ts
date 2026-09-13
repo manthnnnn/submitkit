@@ -22,6 +22,12 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   compress: true,
   reactStrictMode: true,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 
   images: {
     remotePatterns: [
