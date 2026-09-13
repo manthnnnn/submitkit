@@ -28,12 +28,12 @@ export function BrandIcon({ size = 'md', className = '' }: { size?: 'sm' | 'md' 
       >
         <defs>
           <linearGradient id="folder-grad" x1="6" y1="10" x2="42" y2="42" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#34d399" />
-            <stop offset="100%" stopColor="#10b981" />
+            <stop offset="0%" stopColor="#10b981" />
+            <stop offset="100%" stopColor="#047857" />
           </linearGradient>
           <linearGradient id="arrow-grad" x1="16" y1="12" x2="42" y2="36" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#6ee7b7" />
-            <stop offset="100%" stopColor="#34d399" />
+            <stop offset="0%" stopColor="#34d399" />
+            <stop offset="100%" stopColor="#10b981" />
           </linearGradient>
         </defs>
 
@@ -41,14 +41,14 @@ export function BrandIcon({ size = 'md', className = '' }: { size?: 'sm' | 'md' 
         <path
           d="M6 14C6 11.7909 7.79086 10 10 10H18L24 16H38C40.2091 16 42 17.7909 42 20V24"
           stroke="url(#folder-grad)"
-          strokeWidth="8"
+          strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
         <path
           d="M6 14V38C6 40.2091 7.79086 42 10 42H30"
           stroke="url(#folder-grad)"
-          strokeWidth="8"
+          strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
@@ -57,14 +57,14 @@ export function BrandIcon({ size = 'md', className = '' }: { size?: 'sm' | 'md' 
         <path
           d="M16 28L24 36L42 12"
           stroke="url(#arrow-grad)"
-          strokeWidth="8"
+          strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
         <path
           d="M30 12H42V24"
           stroke="url(#arrow-grad)"
-          strokeWidth="8"
+          strokeWidth="2.5"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
