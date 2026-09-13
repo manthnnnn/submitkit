@@ -11,9 +11,9 @@ interface LogoProps {
 
 export function BrandIcon({ size = 'md', className = '' }: { size?: 'sm' | 'md' | 'lg'; className?: string }) {
   const dimensions = {
-    sm: { box: 'w-8 h-8 p-1.5 rounded-xl', icon: 20 },
-    md: { box: 'w-9 h-9 p-1.5 rounded-xl', icon: 24 },
-    lg: { box: 'w-12 h-12 p-2 rounded-2xl', icon: 34 },
+    sm: { box: 'w-8 h-8 p-1.5 rounded-xl' },
+    md: { box: 'w-9 h-9 p-1.5 rounded-xl' },
+    lg: { box: 'w-12 h-12 p-2 rounded-2xl' },
   }[size];
 
   return (
@@ -27,40 +27,47 @@ export function BrandIcon({ size = 'md', className = '' }: { size?: 'sm' | 'md' 
         className="w-full h-full transform group-hover:scale-105 transition-transform duration-300"
       >
         <defs>
-          {/* Top Facet (Submission Platform: Sky Cyan -> Mint Emerald) */}
-          <linearGradient id="sk-top-facet" x1="10" y1="14" x2="38" y2="14" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#38bdf8" />
-            <stop offset="50%" stopColor="#34d399" />
+          <linearGradient id="folder-grad" x1="6" y1="10" x2="42" y2="42" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#10b981" />
+            <stop offset="100%" stopColor="#047857" />
+          </linearGradient>
+          <linearGradient id="arrow-grad" x1="16" y1="12" x2="42" y2="36" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#34d399" />
             <stop offset="100%" stopColor="#10b981" />
-          </linearGradient>
-
-          {/* Left Facet (Core Code Engine: Electric Indigo) */}
-          <linearGradient id="sk-left-facet" x1="10" y1="16" x2="23" y2="38" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#818cf8" />
-            <stop offset="100%" stopColor="#4338ca" />
-          </linearGradient>
-
-          {/* Right Facet (Verified Bundle: Cyan to Teal) */}
-          <linearGradient id="sk-right-facet" x1="25" y1="16" x2="38" y2="38" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#06b6d4" />
-            <stop offset="100%" stopColor="#0f766e" />
           </linearGradient>
         </defs>
 
-        {/* Top Isometric Face */}
-        <path d="M24 6L38.5 14.5L24 23L9.5 14.5L24 6Z" fill="url(#sk-top-facet)" />
-
-        {/* Left Vertical Face */}
-        <path d="M9.5 17L22.5 24.5V39L9.5 31.5V17Z" fill="url(#sk-left-facet)" />
-
-        {/* Right Vertical Face */}
-        <path d="M25.5 24.5L38.5 17V31.5L25.5 39V24.5Z" fill="url(#sk-right-facet)" />
-
-        {/* Specular Apex Chevron (Upward launch indicator) */}
-        <path d="M24 10L31 14.2L24 18.5L17 14.2L24 10Z" fill="#ffffff" fillOpacity="0.45" />
-
-        {/* Center Apex Specular Node */}
-        <circle cx="24" cy="14.2" r="1.5" fill="#ffffff" />
+        {/* Folder Base Outline */}
+        <path
+          d="M6 14C6 11.7909 7.79086 10 10 10H18L24 16H38C40.2091 16 42 17.7909 42 20V24"
+          stroke="url(#folder-grad)"
+          strokeWidth="4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M6 14V38C6 40.2091 7.79086 42 10 42H30"
+          stroke="url(#folder-grad)"
+          strokeWidth="4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        
+        {/* The Launch Checkmark Arrow */}
+        <path
+          d="M16 28L24 36L42 12"
+          stroke="url(#arrow-grad)"
+          strokeWidth="4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <path
+          d="M30 12H42V24"
+          stroke="url(#arrow-grad)"
+          strokeWidth="4"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
       </svg>
     </div>
   );
