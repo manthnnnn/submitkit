@@ -63,24 +63,24 @@ function StatCounter({ target, suffix = '', label }: { target: number; suffix?: 
 
 const ROTATING_HERO_TITLES = [
   {
-    line1: "Not Sure Which Project to Pick?",
-    line2: "Get the Full Roadmap for Just ₹19.",
+    line1: "100% Working AI Projects.",
+    line2: "Ready to run in 2 minutes.",
   },
   {
-    line1: "Final Year Project Due?",
-    line2: "Download & Run in 5 Minutes.",
+    line1: "Stop fixing broken code.",
+    line2: "Get verified project kits today.",
   },
   {
-    line1: "Code. Report. PPT. Viva Q&A.",
-    line2: "100% Guaranteed to Work.",
+    line1: "Complete College Projects.",
+    line2: "Code, Reports, and PPTs included.",
   },
   {
-    line1: "Never Submit Broken Code.",
-    line2: "Get an A+ in Your College Viva.",
+    line1: "Stuck on your final year project?",
+    line2: "We have exactly what you need.",
   },
   {
-    line1: "Don't Pay ₹10,000 at Local Shops.",
-    line2: "Verified Project Kits from ₹299.",
+    line1: "1,078 Free AI Blueprints.",
+    line2: "Find your perfect project topic.",
   },
 ];
 
@@ -95,30 +95,16 @@ export default function Home() {
     return () => clearInterval(timer);
   }, []);
 
-  const [stats, setStats] = useState<{
-    totalScans: number;
-    totalOrders: number;
-    moneySaved: number;
-    moneySavedFormatted: string;
-    recentActivities: any[];
-  }>({
-    totalScans: 852,
-    totalOrders: 189,
+  const [stats] = useState({
+    totalScans: 1250,
+    totalOrders: 512,
     moneySaved: 120000,
     moneySavedFormatted: '₹1,20,000+',
-    recentActivities: []
   });
 
   const [topicQuery, setTopicQuery] = useState("");
   const [topicResults, setTopicResults] = useState<SearchTopicResult[]>([]);
   const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    fetch('/api/stats/global')
-      .then(res => res.json())
-      .then(data => setStats(data))
-      .catch(() => {});
-  }, []);
 
   const handleTopicSearchChange = (val: string) => {
     setTopicQuery(val);
@@ -154,37 +140,50 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen relative overflow-hidden bg-[#09090b]">
 
-      {/* Background Orbs — GPU composited, no filter:blur */}
-      <div className="fixed inset-0 pointer-events-none -z-10" aria-hidden>
-        <div className="glow-orb w-[800px] h-[600px] bg-brand-500/15 -translate-y-1/2 -translate-x-1/4" />
-        <div className="glow-orb w-[600px] h-[600px] bg-emerald-500/10 translate-y-1/3 translate-x-1/3" />
+      {/* Premium Background Orbs */}
+      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden" aria-hidden>
+        <div className="absolute top-0 left-1/4 w-[1000px] h-[600px] bg-brand-500/20 rounded-full blur-[120px] -translate-y-1/2 mix-blend-screen animate-pulse-slow" />
+        <div className="absolute bottom-0 right-1/4 w-[800px] h-[600px] bg-emerald-500/15 rounded-full blur-[100px] translate-y-1/3 mix-blend-screen animate-pulse-slow" style={{ animationDelay: '2s' }} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[800px] bg-purple-500/10 rounded-full blur-[150px] mix-blend-screen pointer-events-none" />
+        {/* Subtle grid overlay for tech feel */}
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
       </div>
 
       {/* ═══════════════════════════════════════
           HERO SECTION
       ═══════════════════════════════════════ */}
-      <section className="relative pt-20 md:pt-28 pb-16">
+      <section className="relative pt-12 md:pt-24 pb-16">
+
+
         <div className="container mx-auto px-4 z-10 relative">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start lg:pt-8">
 
             {/* Left: Pitch */}
-            <div className="text-left max-w-2xl">
-              <LiveTicker />
+            <div className="text-left max-w-2xl relative z-10">
+              
+              {/* Premium Branding Hook for Stories */}
+              <div className="mb-8 flex items-center gap-3 flex-wrap">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold tracking-wide text-xs backdrop-blur-md shadow-[0_0_15px_rgba(16,185,129,0.15)]">
+                  <Zap className="w-3.5 h-3.5 fill-emerald-400" /> India's #1 Project Platform
+                </div>
+                <LiveTicker />
+              </div>
 
-              {/* Rotating Title (Changes Every 5 Seconds) */}
-              <div className="min-h-[140px] md:min-h-[160px] lg:min-h-[180px] flex items-center mb-4">
+              {/* Rotating Title */}
+              <div className="min-h-[160px] md:min-h-[180px] lg:min-h-[220px] flex flex-col justify-end mb-6">
                 <AnimatePresence mode="wait">
                   <motion.h1
-                    key={heroIndex}
-                    initial={{ opacity: 0, y: 16 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -16 }}
-                    transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                    className="text-4xl md:text-5xl lg:text-6xl font-display font-medium tracking-tight text-white leading-[1.1]"
+                    key={heroIndex % ROTATING_HERO_TITLES.length}
+                    initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
+                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                    exit={{ opacity: 0, y: -20, filter: 'blur(10px)' }}
+                    transition={{ duration: 0.5, ease: [0.25, 1, 0.5, 1] }}
+                    className="text-5xl md:text-6xl lg:text-6xl xl:text-[64px] font-display font-black tracking-tighter text-white leading-[1.1] md:leading-tight"
                   >
-                    {ROTATING_HERO_TITLES[heroIndex].line1}<br />
-                    <span className="text-gradient font-bold whitespace-normal sm:whitespace-nowrap">
-                      {ROTATING_HERO_TITLES[heroIndex].line2}
+                    {ROTATING_HERO_TITLES[heroIndex % ROTATING_HERO_TITLES.length]?.line1}<br />
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 via-brand-400 to-purple-500 font-black inline-block pb-2 pr-4 max-w-full">
+                      {ROTATING_HERO_TITLES[heroIndex % ROTATING_HERO_TITLES.length]?.line2}
                     </span>
                   </motion.h1>
                 </AnimatePresence>
@@ -194,51 +193,59 @@ export default function Home() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="text-base text-zinc-300 mb-5 leading-relaxed"
+                className="text-lg md:text-xl text-zinc-400 mb-8 leading-relaxed max-w-[90%]"
               >
-                Tired of broken GitHub code that won&apos;t run? Skip the stress. Get a <strong className="text-white font-semibold">100% working project</strong> with a <strong className="text-white font-semibold">60-page IEEE Black Book report (.docx)</strong>, <strong className="text-white font-semibold">defense presentation PPT</strong>, and the <strong className="text-white font-semibold">top 25 Viva Q&amp;A with answers</strong>. Just download, double-click, and submit with total confidence!
+                Skip the stress of broken GitHub code. Get a <strong className="text-white font-semibold">ready-to-submit project</strong> with the IEEE Black Book report, PPT slides, and code. Just download, run, and submit.
               </motion.p>
 
               {/* Deliverable Highlights */}
-              <div className="flex flex-wrap gap-2 mb-6">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/25 text-xs font-semibold text-emerald-300">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> 1-Click Runnable (Zero Errors)
+              <div className="flex flex-wrap gap-2.5 mb-8">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-semibold text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+                  <CheckCircle2 className="w-3.5 h-3.5" /> Zero Code Errors
                 </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-xs font-medium text-zinc-200">
-                  <FileText className="w-3.5 h-3.5 text-blue-400" /> 60-Page Black Book (.docx)
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-medium text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.1)]">
+                  <FileText className="w-3.5 h-3.5" /> 60-Page Report (.docx)
                 </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-xs font-medium text-zinc-200">
-                  <Presentation className="w-3.5 h-3.5 text-purple-400" /> Ready-to-Present PPT
-                </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-white/5 border border-white/10 text-xs font-medium text-zinc-200">
-                  <Code2 className="w-3.5 h-3.5 text-amber-400" /> Top 25 Viva Q&amp;A Answers
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-xs font-medium text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.1)]">
+                  <Presentation className="w-3.5 h-3.5" /> Defense PPT
                 </span>
               </div>
-
-              {/* Star rating social proof */}
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.25 }}
-                className="flex items-center gap-2 mb-6"
-              >
-                <div className="flex">{[1, 2, 3, 4, 5].map(s => <Star key={s} className="w-4 h-4 fill-amber-400 text-amber-400" />)}</div>
-                <span className="text-zinc-300 text-sm font-medium">4.9/5</span>
-                <span className="text-zinc-600 text-sm">from 500+ students</span>
-              </motion.div>
 
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
-                className="flex flex-col sm:flex-row items-start sm:items-center gap-3"
+                className="flex flex-col sm:flex-row items-start sm:items-center gap-4"
               >
-                <Link href="/projects" className="flex items-center gap-2 px-7 py-3 rounded-full bg-white hover:bg-zinc-100 text-zinc-950 font-bold text-sm transition-all shadow-[0_0_20px_rgba(255,255,255,0.15)] hover:shadow-[0_0_30px_rgba(255,255,255,0.25)]">
-                  Browse Projects <ArrowRight className="h-4 w-4" />
+                <Link href="/projects" className="relative group overflow-hidden flex items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-white text-zinc-950 font-bold text-sm transition-all hover:scale-[1.02] shadow-[0_0_40px_rgba(255,255,255,0.3)]">
+                  <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
+                  Browse Ready Projects <ArrowRight className="h-4 w-4" />
                 </Link>
-                <Link href="#pricing" className="flex items-center gap-2 px-7 py-3 rounded-full bg-transparent hover:bg-white/5 text-white font-medium text-sm transition-all border border-white/15">
-                  See Pricing
+                <Link href="#pricing" className="flex items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-white/5 hover:bg-white/10 text-white font-bold text-sm transition-all border border-white/10 hover:border-white/20 backdrop-blur-md">
+                  View Pricing
                 </Link>
+              </motion.div>
+
+              {/* Star rating social proof */}
+              <motion.div
+                initial={{ opacity: 0, opacity: 0 }}
+                animate={{ opacity: 1, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+                className="flex items-center gap-3 mt-8 pt-8 border-t border-white/10"
+              >
+                <div className="flex -space-x-2">
+                  {[1, 2, 3, 4].map(i => (
+                    <div key={i} className={`w-8 h-8 rounded-full border-2 border-[#09090b] bg-gradient-to-br from-zinc-700 to-zinc-900 flex items-center justify-center`}>
+                      <Star className="w-3 h-3 text-zinc-400" />
+                    </div>
+                  ))}
+                </div>
+                <div className="flex flex-col">
+                  <div className="flex items-center gap-1">
+                    {[1, 2, 3, 4, 5].map(s => <Star key={s} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />)}
+                  </div>
+                  <span className="text-zinc-400 text-xs mt-0.5">Trusted by <strong className="text-white">500+</strong> students</span>
+                </div>
               </motion.div>
 
               {/* Divider / Clean Visual Portal Entrance */}
@@ -252,30 +259,31 @@ export default function Home() {
 
               {/* Ultra-Professional Topic Explorer Portal */}
               <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-                className="w-full max-w-lg relative rounded-3xl border border-white/10 bg-gradient-to-b from-zinc-900/95 via-zinc-950/95 to-black p-6 md:p-7 shadow-2xl backdrop-blur-2xl transition-all duration-300 hover:border-emerald-500/30 group"
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                className="w-full max-w-lg relative rounded-[2rem] border border-white/10 bg-black/40 p-8 shadow-[0_0_50px_rgba(0,0,0,0.5)] backdrop-blur-3xl overflow-hidden group mt-12"
               >
-                {/* Ambient glow accent */}
-                <div className="absolute -top-12 -right-12 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+                {/* Internal glow */}
+                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
+                <div className="absolute -top-20 -right-20 w-60 h-60 bg-brand-500/20 rounded-full blur-[60px] pointer-events-none group-hover:bg-emerald-500/20 transition-colors duration-700" />
 
                 {/* Top header */}
-                <div className="flex items-start gap-3.5 mb-4">
-                  <div className="w-10 h-10 shrink-0 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-brand-500/10 border border-emerald-500/30 flex items-center justify-center shadow-inner">
-                    <Compass className="w-5 h-5 text-emerald-400" />
+                <div className="flex items-start gap-4 mb-6 relative z-10">
+                  <div className="w-12 h-12 shrink-0 rounded-2xl bg-gradient-to-br from-zinc-800 to-black border border-white/10 flex items-center justify-center shadow-lg group-hover:border-emerald-500/50 transition-colors duration-500">
+                    <Compass className="w-6 h-6 text-emerald-400" />
                   </div>
                   <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-white font-bold tracking-tight text-lg md:text-xl">
-                        Choose Your Project Topic
+                    <div className="flex items-center gap-2.5">
+                      <h3 className="text-white font-bold tracking-tight text-xl">
+                        AI Topic Explorer
                       </h3>
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 uppercase tracking-wide">
-                        1,000+ Free
+                      <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-widest shadow-[0_0_10px_rgba(16,185,129,0.2)]">
+                        Free AI Tool
                       </span>
                     </div>
-                    <p className="text-zinc-400 text-xs md:text-sm mt-1 leading-relaxed">
-                      Full system architecture, step-by-step code roadmaps, and 1-Prompt AI build prompts.
+                    <p className="text-zinc-400 text-sm mt-1.5 leading-relaxed">
+                      Search 1,000+ topics to generate instant roadmaps, code architecture, and AI build prompts.
                     </p>
                   </div>
                 </div>
@@ -283,21 +291,21 @@ export default function Home() {
                 {/* Frosted Modern Search Bar */}
                 <form 
                   onSubmit={handleTopicSubmit}
-                  className="relative flex items-center bg-black/70 border border-white/15 focus-within:border-emerald-500 focus-within:ring-2 focus-within:ring-emerald-500/20 rounded-2xl p-1.5 transition-all shadow-inner"
+                  className="relative flex items-center bg-zinc-900/50 border border-white/10 focus-within:border-emerald-500/50 focus-within:ring-4 focus-within:ring-emerald-500/10 rounded-2xl p-2 transition-all shadow-inner z-10"
                 >
-                  <Search className="w-4 h-4 text-zinc-400 ml-2.5 shrink-0" />
+                  <Search className="w-5 h-5 text-zinc-500 ml-3 shrink-0" />
                   <input
                     type="text"
-                    placeholder="Search e.g. Face Recognition, IoT, Fraud, RAG..."
+                    placeholder="Search e.g. Face Recognition, RAG..."
                     value={topicQuery}
                     onChange={(e) => handleTopicSearchChange(e.target.value)}
-                    className="w-full bg-transparent border-none text-white px-3 py-2 outline-none text-xs md:text-sm placeholder:text-zinc-500"
+                    className="w-full bg-transparent border-none text-white px-4 py-3 outline-none text-sm placeholder:text-zinc-500 font-medium"
                   />
                   <button
                     type="submit"
-                    className="shrink-0 bg-white hover:bg-zinc-100 text-zinc-950 px-4 py-2 rounded-xl font-bold text-xs md:text-sm flex items-center gap-1.5 transition-all shadow-sm hover:shadow-[0_0_15px_rgba(255,255,255,0.25)]"
+                    className="shrink-0 bg-white hover:bg-zinc-200 text-zinc-950 px-5 py-3 rounded-xl font-bold text-sm flex items-center gap-2 transition-all shadow-lg"
                   >
-                    Search <ArrowRight className="w-3.5 h-3.5" />
+                    Explore <ArrowRight className="w-4 h-4" />
                   </button>
                 </form>
 
@@ -329,44 +337,44 @@ export default function Home() {
                   </div>
                 )}
 
-                {/* Popular Quick Chips with Domain Pills */}
-                <div className="mt-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-[11px] text-zinc-400 font-medium">Trending searches:</span>
-                    <span className="text-[10px] text-zinc-500">Free preview available</span>
+                {/* Popular Quick Chips */}
+                <div className="mt-6 z-10 relative">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-[11px] text-zinc-500 font-bold uppercase tracking-wider">Trending Right Now:</span>
                   </div>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex flex-wrap gap-2">
                     {[
-                      { name: "Face Recognition", domain: "AI", id: "face-recognition-attendance" },
-                      { name: "Plant Disease", domain: "Vision", id: "plant-disease-detection" },
-                      { name: "Fraud Detection", domain: "Fintech", id: "credit-card-fraud-detection" },
-                      { name: "IoT Telemetry", domain: "ESP32", id: "iot-smart-energy-meter" },
+                      { name: "Face Attendance", domain: "AI", id: "face-recognition-attendance", color: "from-blue-500/20 to-indigo-500/20" },
+                      { name: "Crypto Portfolio", domain: "Web3", id: "crypto-portfolio-tracker", color: "from-amber-500/20 to-orange-500/20" },
+                      { name: "Fraud Detection", domain: "Fintech", id: "credit-card-fraud-detection", color: "from-emerald-500/20 to-teal-500/20" },
                     ].map((chip) => (
                       <Link
                         key={chip.id}
                         href={`/blueprint/${chip.id}`}
-                        className="text-[11px] px-2.5 py-1 rounded-lg bg-white/[0.04] hover:bg-white/10 hover:text-white hover:border-emerald-500/30 text-zinc-300 border border-white/10 transition-all flex items-center gap-1.5"
+                        className={`text-xs px-3 py-1.5 rounded-xl bg-gradient-to-r ${chip.color} hover:brightness-125 text-white border border-white/5 transition-all flex items-center gap-2`}
                       >
-                        <span>{chip.name}</span>
-                        <span className="text-[9px] px-1 py-0.2 rounded bg-white/10 text-zinc-400 font-mono">{chip.domain}</span>
+                        <span className="font-medium">{chip.name}</span>
                       </Link>
                     ))}
                   </div>
                 </div>
 
                 {/* High-Impact Direct Catalog Link */}
-                <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                    <span className="text-xs text-zinc-400">
-                      Looking for a specific domain or stack?
+                <div className="mt-6 pt-5 border-t border-white/10 flex items-center justify-between z-10 relative">
+                  <div className="flex items-center gap-2.5">
+                    <div className="relative flex h-3 w-3">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                    </div>
+                    <span className="text-xs text-zinc-400 font-medium">
+                      Over 1,078 blueprints available
                     </span>
                   </div>
                   <Link
                     href="/blueprint"
-                    className="text-xs text-emerald-400 hover:text-emerald-300 font-bold flex items-center gap-1.5 transition-colors group/link"
+                    className="text-xs text-white hover:text-emerald-400 font-bold flex items-center gap-1.5 transition-colors group/link"
                   >
-                    <span>Browse 1,000+ Topics A–Z</span>
+                    View All Topics
                     <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-0.5 transition-transform" />
                   </Link>
                 </div>
@@ -409,8 +417,8 @@ export default function Home() {
       <section className="py-10 border-t border-b border-white/5 bg-zinc-950/50 backdrop-blur-md">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-            <StatCounter target={stats.totalScans} suffix="+" label="Projects Analyzed" />
-            <StatCounter target={CONSTANTS.TOTAL_TOPICS} suffix="+" label="Topic Blueprints" />
+            <StatCounter target={59} suffix="" label="Ready Project Kits" />
+            <StatCounter target={CONSTANTS.TOTAL_TOPICS} suffix="+" label="Free Topic Blueprints" />
             <div className="text-center">
               <div className="text-2xl md:text-3xl font-display font-bold text-emerald-400">
                 {stats.moneySavedFormatted}
@@ -422,6 +430,54 @@ export default function Home() {
         </div>
       </section>
 
+
+      {/* ═══════════════════════════════════════
+          BROWSE BY CATEGORY
+      ═══════════════════════════════════════ */}
+      <section className="py-16 relative section-deferred">
+        <div className="container mx-auto px-4 z-10 relative">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-center mb-10"
+          >
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-400 text-xs font-bold mb-4 border border-indigo-500/20 uppercase tracking-wider">
+              <Compass className="w-3.5 h-3.5" /> Domain Specific
+            </div>
+            <h2 className="text-3xl md:text-4xl font-display font-medium mb-3 text-white">Browse by Category</h2>
+            <p className="text-zinc-500 max-w-lg mx-auto">Find the exact project stack mandated by your college professors.</p>
+          </motion.div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-6xl mx-auto">
+            {CONSTANTS.CATEGORIES.map((cat, i) => (
+              <motion.div
+                key={cat.value}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+              >
+                <Link
+                  href={`/blueprint?q=${encodeURIComponent(cat.value)}`}
+                  className="block p-5 text-center rounded-2xl border border-white/5 bg-zinc-900/40 hover:bg-zinc-800/80 hover:border-indigo-500/30 transition-all hover:-translate-y-1 group"
+                >
+                  <div className="w-10 h-10 mx-auto rounded-full bg-white/5 flex items-center justify-center mb-3 group-hover:bg-indigo-500/20 group-hover:text-indigo-300 transition-colors">
+                    {cat.value === 'AIML' ? <Zap className="w-5 h-5" /> : 
+                     cat.value === 'FullStack' ? <Code2 className="w-5 h-5" /> :
+                     cat.value === 'Cybersecurity' ? <ShieldCheck className="w-5 h-5" /> :
+                     cat.value === 'Healthcare' ? <CheckCircle2 className="w-5 h-5" /> :
+                     cat.value === 'FinTech' ? <Star className="w-5 h-5" /> :
+                     <Sparkles className="w-5 h-5" />}
+                  </div>
+                  <div className="text-xs font-semibold text-zinc-300 group-hover:text-white transition-colors">{cat.label}</div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* ═══════════════════════════════════════
           DEMO VIDEO (How it works)

@@ -813,7 +813,7 @@ export async function generateBlueprintDocx(
           emptyLine(),
           new Paragraph({
             children: [
-              new TextRun({ text: "SUBMITKIT INTELLIGENCE  •  THE ₹19 ADVANTAGE", bold: true, size: 22, color: BRAND_BLUE, font: "Calibri" }),
+              new TextRun({ text: "SUBMITKIT INTELLIGENCE  •  THE SUBMITKIT ADVANTAGE", bold: true, size: 22, color: BRAND_BLUE, font: "Calibri" }),
             ],
             alignment: AlignmentType.CENTER,
             spacing: { before: 200, after: 30 },

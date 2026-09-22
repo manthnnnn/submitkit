@@ -1,15 +1,16 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import {
-  ArrowLeft, Lock, Clock, Star, AlertTriangle, ChevronRight,
-  Mic, Wrench, Database, Cpu, FileDown, CheckCircle, XCircle, Loader2,
+  ArrowLeft, Clock, Star, ChevronRight,
+  Mic, Wrench, Database, Cpu, FileDown, CheckCircle, Loader2,
   Copy, Check, ExternalLink, Terminal, ShieldAlert, BookOpen, Layers,
   Presentation, FileText, Sparkles, HelpCircle, Flame,
-  Share2, Mail, MessageCircle, KeyRound, ShieldCheck
+  Share2, MessageCircle, Zap, Lock, AlertTriangle
 } from "lucide-react";
-import { FullBlueprint, generateAntigravityMasterPrompt, canBuildOnAntigravity, getAntigravityBuildInfo, getRelatedTopics } from "@/lib/blueprint-engine";
+import { FullBlueprint, generateAntigravityMasterPrompt, getAntigravityBuildInfo, getRelatedTopics } from "@/lib/blueprint-engine";
+import { isProjectAvailable } from "@/lib/available-projects";
 
 declare global {
   interface Window {
@@ -166,21 +167,13 @@ function getTroubleshootingErrors(category: string) {
 type ActiveTab = "antigravity" | "steps" | "dataset" | "viva" | "architecture" | "deploy" | "troubleshoot" | "deliverables";
 
 export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint }) {
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [unlocked, setUnlocked] = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
-  // Dual-Key Instant Re-access (Email + Phone, Zero Email/OTP)
-  const [checkEmail, setCheckEmail] = useState("");
-  const [checkPhone, setCheckPhone] = useState("");
-  const [checkLoading, setCheckLoading] = useState(false);
-  const [checkError, setCheckError] = useState<string | null>(null);
-  const [downloadStats, setDownloadStats] = useState<{ downloads: number; maxDownloads: number } | null>(null);
-
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState<ActiveTab>("antigravity");
-  const [payError, setPayError] = useState<string | null>(null);
+  const [preBookEmail, setPreBookEmail] = useState("");
+  const [preBookDone, setPreBookDone] = useState(false);
+  // Blueprint is always free — no paywall
+  const unlocked = true;
   const masterPrompt = generateAntigravityMasterPrompt(topic);
   const buildInfo = getAntigravityBuildInfo(topic);
   const relatedTopics = getRelatedTopics(topic.id, topic.category, 3);
@@ -195,265 +188,36 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
     setTimeout(() => setCopiedIndex(null), 2000);
   };
 
-  // Check saved device access token for passwordless instant unlock
-  useEffect(() => {
-    try {
-      const savedToken = typeof window !== "undefined" ? localStorage.getItem(`submitkit_bp_token_${topic.id}`) : null;
-      if (savedToken) {
-        fetch("/api/blueprint/check", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ topicId: topic.id, accessToken: savedToken }),
-        })
-          .then((r) => r.json())
-          .then((d) => {
-            if (d && d.hasPaid) {
-              if (d.email) setEmail(d.email);
-              if (typeof d.downloads === "number") {
-                setDownloadStats({ downloads: d.downloads, maxDownloads: d.maxDownloads || 5 });
-              }
-              setUnlocked(true);
-            }
-          })
-          .catch(() => {});
-      }
-    } catch {}
-  }, [topic.id]);
 
-  const handlePay = async () => {
-    setPayError(null);
-    if (!email || !phone) {
-      setPayError("Please enter your email and phone number.");
-      return;
-    }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setPayError("Please enter a valid email address.");
-      return;
-    }
-    if (phone.replace(/\D/g, '').length < 10) {
-      setPayError("Please enter a valid 10-digit phone number.");
-      return;
-    }
 
-    setLoading(true);
-    try {
-      // 1. Create order
-      const orderRes = await fetch("/api/blueprint/create", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          topicId: topic.id,
-          topicTitle: topic.title,
-          email: email.trim().toLowerCase(),
-          phone: phone.trim(),
-        }),
-      });
-      const orderData = await orderRes.json();
-      if (!orderRes.ok || !orderData.orderId) {
-        setPayError("Failed to create order. Please try again or contact support.");
-        setLoading(false);
-        return;
-      }
-
-      // 2. Open Razorpay
-      const openRazorpay = () => {
-        const options = {
-          key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-          amount: orderData.amount || 1900,
-          currency: "INR",
-          name: "SubmitKit",
-          description: `Project Blueprint: ${topic.title}`,
-          order_id: orderData.orderId,
-          prefill: { email, contact: phone },
-          theme: { color: "#6366f1" },
-          handler: async (response: any) => {
-            // 3. Verify payment
-            try {
-              const verifyRes = await fetch("/api/blueprint/verify", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  razorpay_order_id: response.razorpay_order_id,
-                  razorpay_payment_id: response.razorpay_payment_id,
-                  razorpay_signature: response.razorpay_signature,
-                }),
-              });
-              const verifyData = await verifyRes.json();
-              if (verifyData.success) {
-                try {
-                  localStorage.setItem("submitkit_user_email", email.trim().toLowerCase());
-                  if (verifyData.accessToken) {
-                    localStorage.setItem(`submitkit_bp_token_${topic.id}`, verifyData.accessToken);
-                  }
-                } catch {}
-                setUnlocked(true);
-                setLoading(false);
-                window.scrollTo({ top: 0, behavior: "smooth" });
-              } else {
-                setPayError(verifyData.error || "Payment verification failed. Please contact support on WhatsApp.");
-                setLoading(false);
-              }
-            } catch {
-              setPayError("Payment verification failed. Please contact support on WhatsApp.");
-              setLoading(false);
-            }
-          },
-          modal: {
-            ondismiss: () => setLoading(false),
-          },
-        };
-        const rzp = new (window as any).Razorpay(options);
-        rzp.open();
-      };
-
-      if ((window as any).Razorpay) {
-        openRazorpay();
-      } else {
-        const script = document.createElement("script");
-        script.src = "https://checkout.razorpay.com/v1/checkout.js";
-        script.onload = () => openRazorpay();
-        script.onerror = () => {
-          setPayError("Failed to load payment gateway. Please check your internet connection.");
-          setLoading(false);
-        };
-        document.body.appendChild(script);
-      }
-    } catch (err: any) {
-      console.error(err);
-      setPayError(err?.message ? `Network error: ${err.message}. Ensure dev server is running.` : "Something went wrong. Please try again or contact support.");
-      setLoading(false);
-    }
-  };
-
-  const checkoutCardRef = useRef<HTMLDivElement>(null);
-  const [showStickyBar, setShowStickyBar] = useState(false);
-
-  useEffect(() => {
-    if (unlocked) return;
-
-    const updateVisibility = () => {
-      const scrollY = window.scrollY || document.documentElement.scrollTop || 0;
-      const pastHero = scrollY > 300;
-
-      let checkoutInView = false;
-      if (checkoutCardRef.current) {
-        const rect = checkoutCardRef.current.getBoundingClientRect();
-        checkoutInView = rect.top < window.innerHeight && rect.bottom > 0;
-      }
-
-      setShowStickyBar(pastHero && !checkoutInView);
-    };
-
-    window.addEventListener("scroll", updateVisibility, { passive: true });
-    window.addEventListener("resize", updateVisibility, { passive: true });
-    updateVisibility();
-
-    return () => {
-      window.removeEventListener("scroll", updateVisibility);
-      window.removeEventListener("resize", updateVisibility);
-    };
-  }, [unlocked]);
-
-  const handleStickyCtaClick = () => {
-    if (email && phone && !payError) {
-      handlePay();
-    } else {
-      if (checkoutCardRef.current) {
-        checkoutCardRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
-        const input = checkoutCardRef.current.querySelector('input[type="email"]') as HTMLInputElement | null;
-        if (input) input.focus();
-      }
-    }
-  };
 
   const handleShare = () => {
     const url = window.location.href;
-    const text = `Check out this "${topic.title}" project blueprint on SubmitKit! Free preview + step-by-step guide 🚀`;
+    const text = `🚀 Free Blueprint: "${topic.title}" on SubmitKit! Full roadmap, AI prompts, viva Q&A — 100% free!`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text + "\n" + url)}`, "_blank");
   };
 
-  const handleRestoreAccess = async () => {
-    const targetEmail = checkEmail.trim().toLowerCase();
-    const cleanPhone = checkPhone.replace(/\D/g, "").slice(-10);
-
-    if (!targetEmail) {
-      setCheckError("Please enter your registered purchase email.");
-      return;
-    }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(targetEmail)) {
-      setCheckError("Please enter a valid email address.");
-      return;
-    }
-    if (!cleanPhone || cleanPhone.length !== 10) {
-      setCheckError("Please enter your registered 10-digit phone number.");
-      return;
-    }
-
-    setCheckLoading(true);
-    setCheckError(null);
-    try {
-      const res = await fetch("/api/blueprint/check", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          topicId: topic.id,
-          email: targetEmail,
-          phone: cleanPhone,
-        }),
-      });
-      const data = await res.json();
-      if (data.hasPaid && data.accessToken) {
-        try {
-          localStorage.setItem(`submitkit_bp_token_${topic.id}`, data.accessToken);
-          localStorage.setItem("submitkit_user_email", data.email);
-        } catch {}
-        setEmail(data.email);
-        if (typeof data.downloads === "number") {
-          setDownloadStats({ downloads: data.downloads, maxDownloads: data.maxDownloads || 5 });
-        }
-        setUnlocked(true);
-        window.scrollTo({ top: 0, behavior: "smooth" });
-      } else {
-        setCheckError(data.error || "No purchase found matching this email and phone number.");
-      }
-    } catch {
-      setCheckError("Verification failed. Please check your internet connection.");
-    }
-    setCheckLoading(false);
-  };
-
   const handleDownloadPdf = async () => {
-    if (downloadStats && downloadStats.downloads >= downloadStats.maxDownloads) {
-      setPayError(`Download limit reached (${downloadStats.maxDownloads}/${downloadStats.maxDownloads} downloads used). Contact support on WhatsApp if you need more.`);
-      return;
-    }
     setPdfLoading(true);
     try {
       const res = await fetch(
-        `/api/blueprint/pdf?topicId=${topic.id}&email=${encodeURIComponent(email || checkEmail)}`,
+        `/api/blueprint/pdf?topicId=${topic.id}&email=free`,
         { method: "GET" }
       );
-      if (!res.ok) {
-        const errJson = await res.json().catch(() => null);
-        throw new Error(errJson?.error || "PDF generation failed");
-      }
+      if (!res.ok) throw new Error("PDF generation failed");
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `SubmitKit-Blueprint-${topic.id}.docx`;
+      a.download = `SubmitKit-Blueprint-${topic.id}.pdf`;
       a.click();
       URL.revokeObjectURL(url);
-      setDownloadStats((prev) =>
-        prev ? { ...prev, downloads: Math.min(prev.downloads + 1, prev.maxDownloads) } : { downloads: 1, maxDownloads: 5 }
-      );
-    } catch (err: any) {
-      setPayError(err?.message || "Failed to generate the document. Please try again or contact support.");
+    } catch {
+      alert("PDF generation failed. Please try again.");
     }
     setPdfLoading(false);
   };
+
 
   return (
     <div className="min-h-screen bg-[#09090b] text-white relative overflow-hidden page-enter">
@@ -485,53 +249,37 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 space-y-10 relative z-10">
 
-        {/* ── UNLOCKED BANNER ── */}
-        {unlocked && (
-          <div className="glass-card rounded-2xl border border-emerald-500/40 bg-emerald-950/20 p-6 md:p-8 space-y-5 text-center shadow-2xl relative overflow-hidden">
-            <div className="w-14 h-14 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center mx-auto text-emerald-400 shadow-[0_0_25px_rgba(16,185,129,0.3)]">
-              <CheckCircle className="w-7 h-7" />
+        {/* ── FREE ACCESS BANNER ── */}
+        <div className="glass-card rounded-2xl border border-emerald-500/30 bg-gradient-to-r from-emerald-950/30 via-zinc-900 to-emerald-950/20 p-5 md:p-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center shrink-0">
+              <CheckCircle className="w-5 h-5 text-emerald-400" />
             </div>
-
-            <div className="space-y-1.5 max-w-xl mx-auto">
-              <h2 className="text-2xl font-display font-bold text-white">
-                Full Blueprint Unlocked!
-              </h2>
-              <p className="text-sm text-zinc-300 leading-relaxed">
-                You have lifetime access to the complete build plan, source code guide, dataset setup, and evaluator scoring defense.
-              </p>
-            </div>
-
-            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
-              <button
-                onClick={handleDownloadPdf}
-                disabled={pdfLoading}
-                className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition-all shadow-[0_0_25px_rgba(16,185,129,0.4)] disabled:opacity-60 text-sm"
-              >
-                {pdfLoading ? (
-                  <><Loader2 className="w-4 h-4 animate-spin" /> Generating Document…</>
-                ) : (
-                  <><FileDown className="w-4 h-4" /> Download Official 20-Page Blueprint (DOCX / PDF)</>
-                )}
-              </button>
-              <button
-                onClick={handleShare}
-                className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#25D366]/10 border border-[#25D366]/30 text-[#25D366] text-sm font-semibold hover:bg-[#25D366]/20 transition-colors"
-              >
-                <Share2 className="w-4 h-4" /> Share with Classmates
-              </button>
-            </div>
-
-            <div className="space-y-1.5">
-              <p className="text-xs text-zinc-500">
-                Purchased for: <span className="text-zinc-300 font-mono">{email || checkEmail}</span> • Lifetime access, re-download anytime.
-              </p>
-              <p className="text-xs text-emerald-500 flex items-center justify-center gap-1.5">
-                <Mail className="w-3.5 h-3.5" />
-                A confirmation email has been sent to your inbox.
-              </p>
+            <div>
+              <p className="text-sm font-bold text-white">🎉 Full Blueprint — 100% Free</p>
+              <p className="text-xs text-zinc-400">Architecture • Build steps • Dataset guide • Viva Q&amp;A • AI master prompts — everything unlocked.</p>
             </div>
           </div>
-        )}
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              onClick={handleDownloadPdf}
+              disabled={pdfLoading}
+              className="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs transition-all shadow-lg disabled:opacity-60"
+            >
+              {pdfLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FileDown className="w-3.5 h-3.5" />}
+              {pdfLoading ? "Generating..." : "Download PDF"}
+            </button>
+            <button
+              onClick={handleShare}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#25D366]/10 border border-[#25D366]/30 text-[#25D366] text-xs font-semibold hover:bg-[#25D366]/20 transition-colors"
+            >
+              <Share2 className="w-3.5 h-3.5" /> Share
+            </button>
+          </div>
+        </div>
+
+
+
 
         {/* ── HEADER HERO ── */}
         <div className="space-y-4">
@@ -628,33 +376,33 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
             </div>
 
             <div className="shrink-0 w-full lg:w-auto flex flex-col sm:flex-row lg:flex-col gap-3">
-              {unlocked ? (
-                <button
-                  onClick={() => {
-                    setActiveTab("antigravity");
-                    window.scrollTo({ top: 440, behavior: "smooth" });
-                  }}
-                  className="w-full inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 hover:brightness-110 text-white font-extrabold text-sm rounded-2xl shadow-xl shadow-brand-500/30 transition-all hover:scale-[1.02]"
-                >
-                  <Sparkles className="w-5 h-5" /> View Project Blueprint & Code
-                </button>
+              {buildInfo.projectSlug && buildInfo.isAvailable ? (
+                /* Project exists & is ready — link directly to it */
+                <>
+                  <Link
+                    href={`/projects/${buildInfo.projectSlug}`}
+                    className="w-full inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-gradient-to-r from-emerald-500 via-brand-600 to-indigo-600 hover:brightness-110 text-white font-black text-sm rounded-2xl shadow-2xl shadow-emerald-500/25 transition-all hover:scale-[1.02] uppercase tracking-wider"
+                  >
+                    <Zap className="w-5 h-5" /> Get Full Project Kit
+                  </Link>
+                  <p className="text-[11px] text-zinc-400 text-center font-medium">
+                    ⚡ Working code + IEEE Report + PPT + Viva Q&amp;A • Instant download
+                  </p>
+                </>
               ) : (
-                <button
-                  onClick={() => {
-                    const checkoutEl = document.querySelector('input[type="email"]');
-                    if (checkoutEl) {
-                      checkoutEl.scrollIntoView({ behavior: "smooth", block: "center" });
-                      (checkoutEl as HTMLInputElement).focus();
-                    }
-                  }}
-                  className="w-full inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-gradient-to-r from-emerald-500 via-brand-600 to-indigo-600 hover:brightness-110 text-white font-black text-sm rounded-2xl shadow-2xl shadow-emerald-500/25 transition-all hover:scale-[1.02] uppercase tracking-wider"
-                >
-                  <Sparkles className="w-5 h-5" /> {buildInfo.canBuild ? "Unlock 1-Prompt Blueprint — ₹19" : "Unlock Complete Blueprint — ₹19"}
-                </button>
+                /* Project not ready yet — show coming soon, link to waitlist on project page */
+                <>
+                  <Link
+                    href={buildInfo.projectSlug ? `/projects/${buildInfo.projectSlug}` : '/projects'}
+                    className="w-full inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-amber-500/20 hover:bg-amber-500/30 border-2 border-amber-500/50 text-amber-300 font-black text-sm rounded-2xl transition-all hover:scale-[1.02] uppercase tracking-wider"
+                  >
+                    🚧 Coming Soon — Join Waitlist
+                  </Link>
+                  <p className="text-[11px] text-zinc-400 text-center font-medium">
+                    🔔 Get notified when this project kit is ready — free to join
+                  </p>
+                </>
               )}
-              <p className="text-[11px] text-zinc-400 text-center font-medium">
-                {buildInfo.canBuild ? "⚡ 10-minute setup • Verified by college project guides" : "⚡ Complete verified build plan • 100% examiner approved"}
-              </p>
             </div>
           </div>
         </div>
@@ -1505,181 +1253,20 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
           <div className="lg:col-span-1">
             <div className="sticky top-28 space-y-4">
 
-              {!unlocked ? (
-                <div ref={checkoutCardRef} className="glass-card bg-zinc-900/80 border border-white/10 rounded-2xl p-6 space-y-5 shadow-2xl backdrop-blur-xl">
-                  {/* PDF Document Preview Card */}
-                  <div className="relative rounded-xl overflow-hidden bg-zinc-950 border border-white/5 h-36 flex items-center justify-center group">
-                    <div className="absolute inset-0 flex flex-col items-center justify-center p-4 opacity-25 blur-[1.5px] pointer-events-none select-none">
-                      <p className="text-3xl font-display font-black text-zinc-300">SUBMITKIT</p>
-                      <p className="text-[10px] font-bold text-brand-400 mt-1 tracking-widest">OFFICIAL BLUEPRINT PACK</p>
-                      <p className="text-xs text-zinc-400 font-medium">{topic.title}</p>
-                      <p className="text-[10px] text-zinc-600 mt-1 font-mono">submitkit.in</p>
-                    </div>
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[1px]">
-                      <div className="bg-zinc-900/90 border border-white/10 rounded-xl px-4 py-2 flex items-center gap-2 shadow-xl">
-                        <Lock className="w-4 h-4 text-brand-400" />
-                        <span className="text-xs text-white font-bold tracking-wide">20-Page Official Document</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="text-center space-y-1">
-                    <div className="flex items-baseline justify-center gap-2">
-                      <span className="text-3xl font-display font-black text-white">₹19</span>
-                      <span className="text-xs text-zinc-400">one-time payment</span>
-                    </div>
-                    <p className="text-[11px] text-emerald-400 font-medium">Instant Unlock • Lifetime Download</p>
-                  </div>
-
-                  {/* Checkout inputs */}
-                  <div className="space-y-3">
-                    {payError && (
-                      <div className="flex items-start gap-2 text-xs text-red-400 bg-red-950/40 border border-red-500/30 rounded-xl p-3">
-                        <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-red-400" />
-                        <span>{payError}</span>
-                      </div>
-                    )}
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => {
-                        setEmail(e.target.value);
-                        if (payError) setPayError(null);
-                      }}
-                      placeholder="Your email address"
-                      className="w-full px-3.5 py-3 bg-zinc-950 border border-white/10 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-brand-500 text-xs transition-colors"
-                    />
-                    <input
-                      type="tel"
-                      value={phone}
-                      onChange={(e) => {
-                        setPhone(e.target.value);
-                        if (payError) setPayError(null);
-                      }}
-                      placeholder="WhatsApp phone number (10 digits)"
-                      className="w-full px-3.5 py-3 bg-zinc-950 border border-white/10 rounded-xl text-white placeholder-zinc-500 focus:outline-none focus:border-brand-500 text-xs transition-colors"
-                    />
-                    <button
-                      onClick={handlePay}
-                      disabled={loading}
-                      className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(59,130,246,0.3)] disabled:opacity-60 flex items-center justify-center gap-2 text-sm"
-                    >
-                      {loading ? (
-                        <><Loader2 className="w-4 h-4 animate-spin" /> Processing…</>
-                      ) : (
-                        <>Unlock Full Blueprint — ₹19 <ChevronRight className="w-4 h-4" /></>
-                      )}
-                    </button>
-                  </div>
-
-                  {/* Feature Checklist */}
-                  <div className="space-y-2 pt-3 border-t border-white/5">
-                    <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider block mb-1">
-                      Everything Included for ₹19:
-                    </span>
-                    {buildInfo.checklist.map((item, i) => (
-                      <div key={i} className="flex items-start gap-2 text-xs text-zinc-300">
-                        <CheckCircle className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
-                        <span>{item}</span>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Instant Re-Access with Email + Phone Dual-Key Check */}
-                  <div className="pt-3.5 border-t border-white/5 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-semibold text-zinc-300 flex items-center gap-1.5">
-                        <KeyRound className="w-3.5 h-3.5 text-brand-400" /> Already purchased?
-                      </span>
-                      <span className="text-[10px] text-emerald-400 font-semibold flex items-center gap-1 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
-                        <ShieldCheck className="w-3 h-3" /> Anti-Piracy Locked
-                      </span>
-                    </div>
-
-                    <div className="space-y-2">
-                      <p className="text-[11px] text-zinc-400 leading-relaxed">
-                        Enter your registered email & phone number to instantly restore access on this device.
-                      </p>
-                      <input
-                        type="email"
-                        value={checkEmail}
-                        onChange={(e) => {
-                          setCheckEmail(e.target.value);
-                          if (checkError) setCheckError(null);
-                        }}
-                        onKeyDown={(e) => {
-                          if (e.key === "Enter") handleRestoreAccess();
-                        }}
-                        placeholder="Registered purchase email"
-                        className="w-full px-3 py-2 bg-zinc-950 border border-white/10 rounded-xl text-white placeholder-zinc-500 text-xs focus:outline-none focus:border-brand-500"
-                      />
-                      <div className="flex gap-2">
-                        <input
-                          type="tel"
-                          value={checkPhone}
-                          onChange={(e) => {
-                            setCheckPhone(e.target.value.replace(/\D/g, "").slice(0, 10));
-                            if (checkError) setCheckError(null);
-                          }}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") handleRestoreAccess();
-                          }}
-                          placeholder="10-digit phone number"
-                          className="flex-1 px-3 py-2 bg-zinc-950 border border-white/10 rounded-xl text-white placeholder-zinc-500 text-xs focus:outline-none focus:border-brand-500 font-mono"
-                        />
-                        <button
-                          type="button"
-                          onClick={handleRestoreAccess}
-                          disabled={checkLoading || !checkEmail || checkPhone.length < 10}
-                          className="px-3.5 py-2 bg-gradient-to-r from-brand-500 to-indigo-600 hover:brightness-110 text-white text-xs font-semibold rounded-xl transition-all disabled:opacity-50 shrink-0 flex items-center gap-1.5 cursor-pointer disabled:cursor-not-allowed shadow-md shadow-brand-500/20"
-                        >
-                          {checkLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <>Restore <ChevronRight className="w-3.5 h-3.5" /></>}
-                        </button>
-                      </div>
-                    </div>
-
-                    {checkError && (
-                      <p className="text-xs text-red-400 bg-red-950/40 border border-red-500/30 rounded-xl p-2.5 flex items-start gap-1.5">
-                        <AlertTriangle className="w-3.5 h-3.5 shrink-0 mt-0.5 text-red-400" />
-                        <span>{checkError}</span>
-                      </p>
-                    )}
-                  </div>
-
-                  {/* WhatsApp Support CTA in Sidebar */}
-                  <div className="pt-3 border-t border-white/5">
-                    <a
-                      href={`https://wa.me/918799814256?text=${encodeURIComponent(`Hi SubmitKit team! I have a question about the blueprint: ${topic.title}`)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-[#25D366]/10 border border-[#25D366]/25 text-[#25D366] text-xs font-semibold hover:bg-[#25D366]/20 transition-colors"
-                    >
-                      <MessageCircle className="w-4 h-4" /> Need help? Chat on WhatsApp
-                    </a>
-                  </div>
-                </div>
-              ) : (
                 <div className="glass-card bg-zinc-900/80 border border-emerald-500/40 rounded-2xl p-6 space-y-4 shadow-2xl backdrop-blur-xl">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 text-emerald-400 font-bold text-sm">
                       <CheckCircle className="w-4 h-4" />
-                      Blueprint Unlocked
+                      Blueprint Free
                     </div>
-                    {downloadStats && (
-                      <span className="text-[10px] font-semibold px-2.5 py-0.5 rounded-full bg-zinc-800 border border-white/10 text-zinc-300">
-                        Downloads: <strong className={downloadStats.downloads >= downloadStats.maxDownloads ? "text-red-400" : "text-emerald-400"}>{downloadStats.downloads}</strong>/{downloadStats.maxDownloads}
-                      </span>
-                    )}
                   </div>
                   <button
                     onClick={handleDownloadPdf}
-                    disabled={pdfLoading || (downloadStats !== null && downloadStats.downloads >= downloadStats.maxDownloads)}
+                    disabled={pdfLoading}
                     className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)] disabled:opacity-60 flex items-center justify-center gap-2 text-sm"
                   >
                     {pdfLoading ? (
                       <><Loader2 className="w-4 h-4 animate-spin" /> Generating Document…</>
-                    ) : downloadStats && downloadStats.downloads >= downloadStats.maxDownloads ? (
-                      <>Download Limit Reached (5/5)</>
                     ) : (
                       <><FileDown className="w-4 h-4" /> Download DOCX / PDF</>
                     )}
@@ -1689,7 +1276,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                   </p>
 
                   <a
-                    href={`https://wa.me/918799814256?text=${encodeURIComponent(`Hi SubmitKit! I have unlocked the blueprint for: ${topic.title} and would like project assistance.`)}`}
+                    href={`https://wa.me/918799814256?text=${encodeURIComponent(`Hi SubmitKit! I have downloaded the blueprint for: ${topic.title} and would like project assistance.`)}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-[#25D366]/10 border border-[#25D366]/25 text-[#25D366] text-xs font-semibold hover:bg-[#25D366]/20 transition-colors"
@@ -1707,14 +1294,13 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                       Get complete tested source code, full Black Book report, PPT slides, and installation walkthrough ready to submit.
                     </p>
                     <Link
-                      href="/projects"
+                      href={isProjectAvailable(topic.id) ? `/projects/${topic.id}` : "/projects"}
                       className="block w-full text-center py-2 bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold rounded-lg transition-colors shadow-lg shadow-brand-500/20"
                     >
-                      Browse Full Projects — from ₹299 →
+                      {isProjectAvailable(topic.id) ? "Get Full Project Kit — ₹299 →" : "Pre-book Project Kit — ₹99 →"}
                     </Link>
                   </div>
                 </div>
-              )}
 
             </div>
           </div>
@@ -1787,49 +1373,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
 
       </div>
 
-      {/* ── STICKY BOTTOM BAR FOR ₹19 BLUEPRINT (Shown when !unlocked and scrolled past hero) ── */}
-      {!unlocked && showStickyBar && (
-        <div className="fixed bottom-0 left-0 right-0 z-40 bg-zinc-950/95 backdrop-blur-xl border-t border-amber-500/30 px-4 py-3 shadow-[0_-10px_35px_rgba(0,0,0,0.85)] animate-in fade-in slide-in-from-bottom duration-300">
-          <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="hidden sm:flex w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 items-center justify-center text-amber-400 shrink-0">
-                <FileText className="w-4 h-4" />
-              </div>
-              <div className="min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="hidden xs:inline-flex text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold uppercase tracking-wider">
-                    ₹19 Blueprint
-                  </span>
-                  <p className="text-xs sm:text-sm font-bold text-white truncate">
-                    {topic.title}
-                  </p>
-                </div>
-                <p className="text-[11px] text-zinc-400 hidden sm:block truncate">
-                  Includes Complete IEEE Roadmap, Mock Dataset &amp; Top 10 Viva Q&amp;A
-                </p>
-              </div>
-            </div>
 
-            <div className="flex items-center gap-3 shrink-0">
-              <div className="text-right hidden xs:block">
-                <div className="flex items-baseline gap-1.5 justify-end">
-                  <span className="text-sm font-black text-white">₹19</span>
-                  <span className="text-[10px] text-zinc-500 line-through">₹149</span>
-                </div>
-                <span className="text-[9px] text-emerald-400 font-medium block">Instant PDF Unlock</span>
-              </div>
-              <button
-                onClick={handleStickyCtaClick}
-                disabled={loading}
-                className="px-4 sm:px-6 py-2.5 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:brightness-110 text-white font-extrabold text-xs sm:text-sm rounded-xl shadow-lg shadow-amber-500/25 transition-all hover:scale-[1.02] flex items-center gap-1.5"
-              >
-                <span>{loading ? "Processing…" : "Unlock Blueprint — ₹19"}</span>
-                <ChevronRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

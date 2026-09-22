@@ -19,6 +19,11 @@ import Link from "next/link";
 import { Metadata } from 'next';
 import { isProjectAvailable } from "@/lib/available-projects";
 import { SHOWCASE_DATA } from "@/lib/project-showcase";
+import { CONSTANTS } from "@/lib/constants";
+import { BreadcrumbsSchema, ProductSchema } from "@/components/seo/SeoSchema";
+import { Home } from "lucide-react";
+
+const BASE_URL = CONSTANTS.APP_URL.replace(/\/$/, '');
 
 // ─── Metadata ──────────────────────────────────────────────
 export async function generateMetadata(
@@ -33,15 +38,61 @@ export async function generateMetadata(
     project = data as Project;
   } catch { /* ignore — notFound handled below */ }
 
-  if (!project) return { title: 'Project Not Found | SubmitKit' };
+  if (!project) return { title: 'Project Not Found', robots: { index: false, follow: false } };
+  const p = project;
+
+  const tierLabel = p.tier === 'MAJOR'
+    ? `Major Final Year Project Kit (₹${p.price_inr})`
+    : `Mini Project Kit (₹${p.price_inr})`;
+
+  const title = `${p.title} — ${tierLabel} with IEEE Report & Viva | ${CONSTANTS.APP_NAME}`;
+  const shortDesc = (p.problem_statement || p.description || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 180);
+  const description = `${shortDesc} Full 1-click runnable source code, IEEE format Black Book report (.docx), Viva defense PPT, and top 25 examiner Q&A with answers. ${p.tier} project for CSE BE BTech MCA VTU SPPU Mumbai Anna JNTU GTU. Instant WhatsApp download.`;
 
   return {
-    title: `${project.title} | SubmitKit`,
-    description: project.problem_statement?.substring(0, 160) || project.description,
+    title: { absolute: title },
+    description,
+    keywords: [
+      p.title,
+      `${p.title} project`,
+      `${p.title} project report`,
+      `${p.title} source code`,
+      `${p.title} project ppt`,
+      `${p.title} viva questions`,
+      `${p.title.toLowerCase()} for final year`,
+      `${p.category} final year project`,
+      `ieee format project report`,
+      `black book report ${p.title.toLowerCase()}`,
+      `vtu ${p.title.toLowerCase()} project`,
+      `sppu ${p.title.toLowerCase()} project`,
+      `mumbai university final year project`,
+      `anna university ${p.category.toLowerCase()} project`,
+      `cse final year projects with source code`,
+      `btech major project kit`,
+      `sem 7 sem 8 project kit`,
+      ...CONSTANTS.SEO_KEYWORDS,
+    ],
+    alternates: {
+      canonical: `/projects/${slug}`,
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
     openGraph: {
-      title: project.title,
-      description: project.problem_statement?.substring(0, 160) || project.description,
       type: 'website',
+      locale: 'en_IN',
+      url: `${BASE_URL}/projects/${slug}`,
+      siteName: CONSTANTS.APP_NAME,
+      title,
+      description,
+      images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: `${p.title} project kit preview` }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+      images: ['/og-image.jpg'],
     },
   };
 }
@@ -102,8 +153,23 @@ export default async function ProjectDetailPage({
   const hasVideo   = !!p.demo_video_id;
   const hasShots   = p.demo_screenshots && p.demo_screenshots.length > 0;
 
+  const cleanDesc = (p.problem_statement || p.description || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 220);
+
   return (
     <div className="min-h-screen pb-32 bg-[#09090b] relative overflow-hidden">
+      <BreadcrumbsSchema items={[
+        { name: 'Home', url: '/' },
+        { name: 'Projects', url: '/projects' },
+        { name: p.category, url: `/projects?category=${p.category}` },
+        { name: p.title },
+      ]} />
+      <ProductSchema
+        name={`${p.title} — ${p.tier} Project Kit (₹${p.price_inr})`}
+        description={`${cleanDesc} 1-click runnable source code, IEEE format 60-page Black Book report .docx, defense PPT, and ${isMajor ? 'top 25 Viva Q&A' : 'top 15 Viva Q&A'} with examiner answers.`}
+        price={p.price_inr}
+        category={`${p.tier} ${p.category} Engineering Project Bundle`}
+        slug={slug}
+      />
 
       {/* Ambient background */}
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
@@ -119,7 +185,11 @@ export default async function ProjectDetailPage({
         <div className="container mx-auto px-4">
 
           {/* Breadcrumb */}
-          <nav className="flex items-center text-xs text-zinc-600 mb-6 gap-1 flex-wrap">
+          <nav aria-label="Breadcrumb" className="flex items-center text-xs text-zinc-600 mb-6 gap-1 flex-wrap">
+            <Link href="/" className="hover:text-white transition-colors inline-flex items-center gap-1">
+              <Home className="w-3 h-3" /> Home
+            </Link>
+            <ChevronRight className="h-3 w-3 shrink-0" />
             <Link href="/projects" className="hover:text-white transition-colors">Projects</Link>
             <ChevronRight className="h-3 w-3 shrink-0" />
             <Link href={`/projects?category=${p.category}`} className="hover:text-white transition-colors">{p.category}</Link>

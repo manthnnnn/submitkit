@@ -453,7 +453,7 @@ export async function sendPreOrderEmails(params: PreOrderEmailParams): Promise<v
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Blueprint Purchase Confirmation Email (₹19)
+// Blueprint Purchase Confirmation Email (Free)
 // ─────────────────────────────────────────────────────────────────────────────
 
 interface BlueprintEmailParams {
@@ -474,7 +474,7 @@ export async function sendBlueprintConfirmationEmail(params: BlueprintEmailParam
 
   const baseUrl     = (process.env.NEXT_PUBLIC_BASE_URL || 'https://submitkit.in').replace(/\/$/, '');
   const downloadUrl = `${baseUrl}/blueprint/${encodeURIComponent(topicId)}`;
-  const waText      = `Hi! I just purchased the "${topicTitle}" Blueprint on SubmitKit (₹19). I need help accessing my document.`;
+  const waText      = `Hi! I just got the "${topicTitle}" Free Blueprint on SubmitKit. I need help accessing my document.`;
   const waLink      = `https://wa.me/918799814256?text=${encodeURIComponent(waText)}`;
 
   const htmlContent = `<!DOCTYPE html>
@@ -512,7 +512,7 @@ export async function sendBlueprintConfirmationEmail(params: BlueprintEmailParam
       <tr>
         <td>
           <p style="margin:0 0 2px;font-size:0.7rem;color:#71717a;text-transform:uppercase;font-weight:700;">Amount Paid</p>
-          <p style="margin:0;font-size:1.1rem;font-weight:800;color:#10b981;">&#8377;19</p>
+          <p style="margin:0;font-size:1.1rem;font-weight:800;color:#10b981;">FREE</p>
         </td>
         <td align="right">
           <span style="display:inline-block;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.35);border-radius:8px;padding:6px 14px;font-size:0.72rem;font-weight:700;color:#a5b4fc;text-transform:uppercase;letter-spacing:0.06em;">

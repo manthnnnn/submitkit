@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>PhishGuard AI — Cybersecurity Engine</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0a0f;color:#f1f5f9;font-family:Inter,sans-serif;display:flex;min-height:100vh}
+.sidebar{width:220px;min-width:220px;background:#0f0f1a;border-right:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column}
+.sidebar-logo{padding:20px 16px 16px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.sidebar-logo h1{font-size:18px;font-weight:800;letter-spacing:-0.5px}
+.sidebar-logo span{color:#f59e0b}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;font-size:13px;font-weight:500;color:#94a3b8;cursor:pointer;border-left:3px solid transparent;transition:.2s}
+.nav-item:hover,.nav-item.active{color:#fff;background:rgba(245,158,11,0.08);border-left-color:#f59e0b}
+.nav-item svg{width:16px;height:16px}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{height:56px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+.content{flex:1;overflow-y:auto;padding:24px}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#1e1e2e;border-radius:4px}
+.card{background:#111120;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:24px}
+.section-title{font-size:14px;font-weight:700;color:#e2e8f0;margin-bottom:16px}
+.btn{padding:10px 22px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:.2s;display:inline-flex;align-items:center;gap:8px}
+.btn-primary{background:#f59e0b;color:#451a03}.btn-primary:hover{background:#d97706}
+.btn-ghost{background:rgba(255,255,255,0.06);color:#94a3b8;border:1px solid rgba(255,255,255,0.1)}.btn-ghost:hover{color:#fff;background:rgba(255,255,255,0.1)}
+input[type="text"]{background:#0a0a0f;border:1px solid rgba(255,255,255,0.1);color:#f1f5f9;border-radius:10px;padding:14px;font-size:13px;outline:none;width:100%;font-family:monospace}
+input[type="text"]:focus{border-color:#f59e0b}
+.result-pill{display:inline-block;padding:8px 16px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);color:#f59e0b;border-radius:8px;font-size:16px;font-weight:700;margin:4px}
+.reason-box{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.05);padding:10px;border-radius:8px;font-size:12px;color:#94a3b8;margin-bottom:6px;display:flex;align-items:flex-start;gap:8px}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <h1>PhishGuard<span>AI</span></h1>
+    <div style="font-size:11px;color:#64748b;margin-top:2px">Cybersecurity Engine</div>
+  </div>
+  <nav style="padding:12px 0">
+    <div class="nav-item active" onclick="showSection('analyze')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      URL Scanner
+    </div>
+    <div class="nav-item" onclick="showSection('logs')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      Scanner Logs
+    </div>
+    <div class="nav-item" onclick="showSection('about')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Threat Model
+    </div>
+  </nav>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <div style="font-size:15px;font-weight:600">🛡️ Real-Time Phishing Threat Detection</div>
+  </div>
+
+  <div class="content">
+    <!-- ANALYZE -->
+    <div id="section-analyze">
+      <div style="display:grid;grid-template-columns:1fr 340px;gap:20px">
+        <div class="card">
+          <div class="section-title">URL Input</div>
+          <p style="font-size:13px;color:#94a3b8;margin-bottom:16px">Enter a URL to scan. Our model extracts 15 lexical and structural features (e.g. domain entropy, sub-domain depth, suspicious TLDs) to predict if the link is malicious.</p>
+          
+          <form id="analyzeForm" class="flex flex-col gap-4">
+            <input type="text" id="urlInput" placeholder="http://secure-login-paypal.com-verify.xyz/login.php" />
+            
+            <div style="display:flex;gap:12px;flex-wrap:wrap">
+              <button type="button" class="btn btn-ghost" onclick="loadSample('legit')" style="font-size:12px;padding:6px 12px">Legitimate Domain</button>
+              <button type="button" class="btn btn-ghost" onclick="loadSample('phish1')" style="font-size:12px;padding:6px 12px">Suspicious Subdomain</button>
+              <button type="button" class="btn btn-ghost" onclick="loadSample('phish2')" style="font-size:12px;padding:6px 12px">IP Address URL</button>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" id="analyzeBtn" style="justify-content:center;margin-top:10px">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              Scan for Threats
+            </button>
+          </form>
+        </div>
+        
+        <div>
+          <div class="card" style="margin-bottom:14px;min-height:200px">
+            <div class="section-title">Scan Verdict</div>
+            <div id="resultState" style="padding:20px 0;display:flex;flex-direction:column;align-items:center;text-align:center">
+              <div style="color:#64748b;font-size:13px">Awaiting URL input...</div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="section-title">Feature Extraction</div>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:#94a3b8">
+                <div style="width:24px;height:24px;border-radius:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center">1</div>
+                <div>Lexical Analysis (Length, Digits)</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:#94a3b8">
+                <div style="width:24px;height:24px;border-radius:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center">2</div>
+                <div>Structural Entropy Calculation</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:#94a3b8">
+                <div style="width:24px;height:24px;border-radius:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center">3</div>
+                <div>Random Forest Prediction</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOGS -->
+    <div id="section-logs" style="display:none">
+      <div class="card">
+        <div class="section-title">FastAPI Server Logs</div>
+        <pre id="logOutput" style="background:#000;padding:16px;border-radius:8px;font-family:monospace;font-size:12px;color:#f59e0b;border:1px solid rgba(255,255,255,0.05);min-height:300px;overflow-y:auto">Initializing PhishGuard scanner...</pre>
+      </div>
+    </div>
+
+    <!-- ABOUT -->
+    <div id="section-about" style="display:none">
+      <div class="card" style="max-width:720px">
+        <div class="section-title">About the Phishing Detection Model</div>
+        <p style="font-size:13px;color:#94a3b8;line-height:1.9;margin-bottom:14px">This system uses feature engineering to evaluate URLs based on patterns commonly found in phishing campaigns, such as high domain entropy, IP address obfuscation, and suspicious keywords.</p>
+        <p style="font-size:13px;color:#94a3b8;line-height:1.9;margin-bottom:14px">It implements 15 distinct heuristic rules modeled after the PhiUSIIL Phishing URL Dataset features, which are then passed to a Random Forest Classifier for a final probability score.</p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px">
+          <div style="background:#0a0a0f;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:14px;text-align:center">
+            <div style="font-size:20px;font-weight:800;color:#f59e0b">95.4%</div><div style="font-size:11px;color:#64748b;margin-top:2px">Test Accuracy</div>
+          </div>
+          <div style="background:#0a0a0f;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:14px;text-align:center">
+            <div style="font-size:20px;font-weight:800;color:#38bdf8">15</div><div style="font-size:11px;color:#64748b;margin-top:2px">Lexical Features</div>
+          </div>
+          <div style="background:#0a0a0f;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:14px;text-align:center">
+            <div style="font-size:20px;font-weight:800;color:#facc15">Random Forest</div><div style="font-size:11px;color:#64748b;margin-top:2px">Algorithm</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const urlInput = document.getElementById('urlInput');
+const analyzeBtn = document.getElementById('analyzeBtn');
+const resultState = document.getElementById('resultState');
+const logOutput = document.getElementById('logOutput');
+
+const samples = {
+  'legit': 'https://github.com/manthnnnn/submitkit/tree/main',
+  'phish1': 'http://secure-login-paypal.com-verify.xyz/account-update',
+  'phish2': 'http://192.168.1.154/bank/signin.php?session=active'
+};
+
+function loadSample(type) {
+  urlInput.value = samples[type];
+}
+
+function appendLog(msg) {
+  const time = new Date().toISOString().split('T')[1].split('.')[0];
+  logOutput.innerHTML += `\n[${time}] ${msg}`;
+  logOutput.scrollTop = logOutput.scrollHeight;
+}
+
+function showSection(name){
+  ['analyze','logs','about'].forEach(s=>{
+    document.getElementById('section-'+s).style.display=s===name?'block':'none';
+  });
+  document.querySelectorAll('.nav-item').forEach(el=>{
+    el.classList.toggle('active',el.textContent.trim().toLowerCase().startsWith(name));
+  });
+}
+
+document.getElementById('analyzeForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const url = urlInput.value.trim();
+  if(!url) return alert("Please enter a URL to scan.");
+
+  analyzeBtn.disabled = true;
+  analyzeBtn.innerHTML = 'Scanning...';
+  resultState.innerHTML = `
+    <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:20px 0">
+      <div style="width:30px;height:30px;border:3px solid rgba(245,158,11,0.2);border-top-color:#f59e0b;border-radius:50%;animation:spin 1s linear infinite"></div>
+      <div style="font-size:13px;color:#f59e0b;font-weight:600">Extracting features...</div>
+    </div>
+    <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>
+  `;
+  appendLog("POST /api/predict executing for URL: " + url);
+
+  try {
+    const response = await fetch('/api/predict', { 
+      method: 'POST', 
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url: url })
+    });
+    const data = await response.json();
+    appendLog("API Response: " + JSON.stringify(data));
+    
+    if (data.status === 'success') {
+      const isPhish = data.is_phishing;
+      const statusColor = isPhish ? '#ef4444' : '#10b981';
+      const bgCol = isPhish ? 'rgba(239,68,68,0.1)' : 'rgba(16,185,129,0.1)';
+      const borderCol = isPhish ? 'rgba(239,68,68,0.3)' : 'rgba(16,185,129,0.3)';
+      const label = isPhish ? '🚨 PHISHING THREAT' : '✅ SAFE URL';
+      
+      let html = `<div style="font-size:12px;color:#64748b;margin-bottom:8px">Risk Score: ${data.risk_score}%</div>`;
+      html += `<div style="display:inline-block;padding:8px 16px;background:${bgCol};border:1px solid ${borderCol};color:${statusColor};border-radius:8px;font-size:16px;font-weight:700;margin-bottom:16px">${label}</div>`;
+      
+      if (data.reasons && data.reasons.length > 0) {
+        html += `<div style="width:100%;text-align:left;margin-top:8px"><div style="font-size:11px;color:#94a3b8;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px">Threat Indicators</div>`;
+        data.reasons.forEach(r => {
+          html += `<div class="reason-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" style="width:14px;height:14px;flex-shrink:0;margin-top:2px"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>${r}</span>
+          </div>`;
+        });
+        html += `</div>`;
+      } else if (!isPhish) {
+        html += `<div style="font-size:12px;color:#64748b;margin-top:8px">No threat indicators detected based on lexical analysis.</div>`;
+      }
+      
+      resultState.innerHTML = html;
+    } else {
+      resultState.innerHTML = `<div style="color:#ef4444;font-size:13px">${data.message || 'Analysis failed'}</div>`;
+    }
+  } catch (err) {
+    appendLog("Exception caught: " + err.message);
+    resultState.innerHTML = `<div style="color:#ef4444;font-size:13px">Server connection failed.</div>`;
+  }
+  
+  analyzeBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Scan for Threats`;
+  analyzeBtn.disabled = false;
+});
+</script>
+</body>
+</html>

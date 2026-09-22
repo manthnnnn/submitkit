@@ -1,7 +1,7 @@
 /**
  * Blueprint Engine
  * Contains all 1000+ project topic blueprints.
- * Free info is always visible. Full blueprint unlocks after ₹19 payment.
+ * Free info is always visible. Full blueprint unlocks instantly for free.
  *
  * Language rule: Simple English only. Max 15 words per sentence.
  * No jargon without explanation.
@@ -2031,9 +2031,11 @@ export function generateAntigravityMasterPrompt(topic: FullBlueprint): string {
   const objectives = (topic.objectives || []).map(o => `  • ${o}`).join("\n");
   const stack = (topic.techStack || []).map(t => `  • ${t.component}: ${t.tool} — Reason: ${t.reason}`).join("\n");
 
-  return `Act as a Senior Principal Software Architect and IIT/NIT Project Evaluation Committee Member.
+  return `ACT AS A SENIOR PRINCIPAL SOFTWARE ARCHITECT, IIT/NIT EVALUATION COMMITTEE MEMBER, AND ELITE 10x ENGINEER.
 
-Build a complete, 100% production-ready, functional codebase for the following project:
+YOUR MISSION:
+You are tasked with building a complete, 100% production-ready, flawlessly functional codebase for an elite university-level engineering capstone project. 
+This is not a mockup, wireframe, or a conceptual design. This is a fully functional, end-to-end working software system. There can be zero glitches, zero placeholder code like "// implement later", and zero unhandled edge cases. It must be perfectly structured, robust, and mathematically sound, meeting the strict criteria of an IIT-Bombay level technical evaluation committee.
 
 PROJECT NAME: "${topic.title}"
 DISCIPLINE: ${topic.category}
@@ -2049,13 +2051,38 @@ ${stack}
 TECHNICAL ARCHITECTURE & FLOW:
 ${topic.architectureExplanation}
 
-DELIVERABLE INSTRUCTIONS FOR THE AI:
-1. Directory Structure: Output a clean, modular project folder layout separating backend APIs, frontend UI, data ingestion, and models.
-2. Full Working Logic: Provide complete, functional files. Do NOT omit logic or leave placeholders like "// implement here".
-3. Standalone Mock Data Generator: Include a self-contained script (e.g., generate_data.py or seed.ts) that creates realistic synthetic data matching the real dataset schema so the application runs immediately on first launch.
-4. Clean Web Dashboard: Implement a modern, responsive web dashboard with dark-mode aesthetic, live status cards, and real-time inference/demonstration view.
-5. Automated Test Suite: Write unit tests verifying core algorithms, input sanitization, and output accuracy.
-6. Setup Instructions: Include a complete README.md with exact setup commands (pip install / npm install), environment variables, and a step-by-step viva demo checklist.`;
+================================================================================
+PHASE 1: FOUNDATION, WORKSPACE SETUP, AND ARCHITECTURE DESIGN
+================================================================================
+1. Directory Structure: Define a highly rigorous, modular project folder layout. You must clearly separate concerns: backend APIs, frontend UI components, data ingestion pipelines, machine learning models, database schemas, and utility scripts.
+2. Initialization: Provide exact CLI commands to initialize the project (e.g., \`npm create next-app@latest\`, \`python -m venv\`, \`poetry init\`).
+3. Dependency Management: List every single dependency, package, and library required with strict versions. Provide the exact \`package.json\`, \`requirements.txt\`, or \`Cargo.toml\` file content.
+4. Environment Configuration: Provide a comprehensive \`.env.example\` file containing every environment variable the system will need (database URLs, API keys, JWT secrets, model paths).
+
+================================================================================
+PHASE 2: CORE ENGINEERING & IMPLEMENTATION (THE BRAIN)
+================================================================================
+5. Standalone Synthetic Data Generator: Provide a self-contained script (e.g., \`seed_db.py\`, \`generate_mock_data.ts\`) that programmatically generates highly realistic, statistically accurate synthetic data mirroring the real dataset schema. The application MUST run flawlessly on first launch using this data.
+6. Core Business Logic & Algorithms: Write the absolute core logic of the system. If it is an AI/ML project, provide the exact model architecture, training loop, hyperparameter configuration, and feature engineering pipeline. If it is Full Stack, provide the exact Prisma schema, SQL migrations, and complex backend controllers.
+7. End-to-End File Generation: Output the complete, un-truncated file contents for every critical component. Do NOT skip any lines. 
+   - Provide the complete Database Schema / ORM models.
+   - Provide the complete API Routes / GraphQL Resolvers.
+   - Provide the complete Machine Learning Inference Pipeline (loading the model, preprocessing input, predicting, returning JSON).
+   - Provide the complete Frontend UI code. Use a modern, ultra-premium dark-mode aesthetic (TailwindCSS, Lucide Icons, Framer Motion for micro-animations).
+
+================================================================================
+PHASE 3: ACADEMIC RIGOR, EVALUATION DEFENSE, AND DEPLOYMENT
+================================================================================
+8. Examiner Defensive Testing: The system must contain robust error handling. Write unit tests (Jest/PyTest) that specifically target edge cases (e.g., null values, network timeouts, zero-division, unauthorized access).
+9. Live Telemetry & Dashboard: Implement a real-time status dashboard that proves the system is working to an examiner. Include charts, metrics, logs, and system health indicators.
+10. Deployment & Execution Walkthrough: Write a flawless \`README.md\`. It must contain:
+    - Step 1: Clone & Setup
+    - Step 2: Database Seeding
+    - Step 3: Model Training (if applicable)
+    - Step 4: Starting the Servers
+    - Step 5: How to demonstrate the project to the evaluation committee (The "Golden Path" click-through).
+
+CRITICAL RULE: DO NOT SUMMARIZE. Write the actual code. You are generating a production-grade software system that will be executed immediately after you finish outputting.`;
 }
 
 /**

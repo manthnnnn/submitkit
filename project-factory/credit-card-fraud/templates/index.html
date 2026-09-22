@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>SentinelPay — Fraud Radar</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0a0f;color:#f1f5f9;font-family:Inter,sans-serif;display:flex;min-height:100vh}
+.sidebar{width:220px;min-width:220px;background:#0f0f1a;border-right:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column}
+.sidebar-logo{padding:20px 16px 16px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.sidebar-logo h1{font-size:18px;font-weight:800;letter-spacing:-0.5px}
+.sidebar-logo span{color:#3b82f6}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;font-size:13px;font-weight:500;color:#94a3b8;cursor:pointer;border-left:3px solid transparent;transition:.2s}
+.nav-item:hover,.nav-item.active{color:#fff;background:rgba(59,130,246,0.08);border-left-color:#3b82f6}
+.nav-item svg{width:16px;height:16px}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{height:56px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+.content{flex:1;overflow-y:auto;padding:24px}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#1e1e2e;border-radius:4px}
+.card{background:#111120;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:24px}
+.section-title{font-size:14px;font-weight:700;color:#e2e8f0;margin-bottom:16px}
+.btn{padding:10px 22px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:.2s;display:inline-flex;align-items:center;gap:8px}
+.btn-primary{background:#3b82f6;color:#fff}.btn-primary:hover{background:#2563eb}
+.btn-ghost{background:rgba(255,255,255,0.06);color:#94a3b8;border:1px solid rgba(255,255,255,0.1)}.btn-ghost:hover{color:#fff;background:rgba(255,255,255,0.1)}
+.input-group{margin-bottom:12px}
+.input-group label{display:block;font-size:12px;color:#94a3b8;margin-bottom:6px}
+.input-group input{background:#0a0a0f;border:1px solid rgba(255,255,255,0.1);color:#f1f5f9;border-radius:8px;padding:10px;font-size:13px;outline:none;width:100%;font-family:monospace}
+.input-group input:focus{border-color:#3b82f6}
+.result-pill{display:inline-block;padding:8px 16px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);color:#3b82f6;border-radius:8px;font-size:16px;font-weight:700;margin:4px}
+.conf-pill{display:inline-block;padding:6px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;font-size:12px;font-weight:600;color:#cbd5e1;margin:4px}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <h1>Sentinel<span>Pay</span></h1>
+    <div style="font-size:11px;color:#64748b;margin-top:2px">Fraud Radar AI</div>
+  </div>
+  <nav style="padding:12px 0">
+    <div class="nav-item active" onclick="showSection('analyze')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+      Tx Analysis
+    </div>
+    <div class="nav-item" onclick="showSection('logs')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      Network Logs
+    </div>
+    <div class="nav-item" onclick="showSection('about')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Isolation Forest
+    </div>
+  </nav>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <div style="font-size:15px;font-weight:600">💳 Real-Time Credit Card Fraud Detection</div>
+  </div>
+
+  <div class="content">
+    <!-- ANALYZE -->
+    <div id="section-analyze">
+      <div style="display:grid;grid-template-columns:1fr 340px;gap:20px">
+        <div class="card">
+          <div class="section-title">Transaction Telemetry Input</div>
+          <p style="font-size:13px;color:#94a3b8;margin-bottom:16px">Enter principal component (PCA) features of a transaction to determine if it is an outlier. Negative anomaly scores indicate fraud.</p>
+          
+          <form id="analyzeForm" class="flex flex-col gap-2">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <div class="input-group">
+                <label>Amount ($)</label>
+                <input type="number" step="0.01" id="val_amt" value="149.99" required />
+              </div>
+              <div class="input-group">
+                <label>Time (seconds since start)</label>
+                <input type="number" step="1" id="val_time" value="406.0" required />
+              </div>
+              <div class="input-group">
+                <label>Feature V1 (PCA)</label>
+                <input type="number" step="0.001" id="val_v1" value="-1.359" required />
+              </div>
+              <div class="input-group">
+                <label>Feature V2 (PCA)</label>
+                <input type="number" step="0.001" id="val_v2" value="-0.072" required />
+              </div>
+              <div class="input-group">
+                <label>Feature V3 (PCA)</label>
+                <input type="number" step="0.001" id="val_v3" value="2.536" required />
+              </div>
+            </div>
+            
+            <div style="display:flex;gap:12px;margin-top:8px">
+              <button type="button" class="btn btn-ghost" onclick="loadSample('legit')" style="font-size:12px;padding:6px 12px">Load Normal Profile</button>
+              <button type="button" class="btn btn-ghost" onclick="loadSample('fraud')" style="font-size:12px;padding:6px 12px">Load Anomaly Profile</button>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" id="analyzeBtn" style="justify-content:center;margin-top:14px">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              Process Transaction
+            </button>
+          </form>
+        </div>
+        
+        <div>
+          <div class="card" style="margin-bottom:14px;min-height:200px">
+            <div class="section-title">Network Verdict</div>
+            <div id="resultState" style="text-align:center;padding:20px 0">
+              <div style="color:#64748b;font-size:13px">Awaiting transaction vector...</div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="section-title">Isolation Forest Logic</div>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:#94a3b8">
+                <div style="width:24px;height:24px;border-radius:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center">1</div>
+                <div>Random Feature Selection</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:#94a3b8">
+                <div style="width:24px;height:24px;border-radius:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center">2</div>
+                <div>Recursive Data Partitioning</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:#94a3b8">
+                <div style="width:24px;height:24px;border-radius:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center">3</div>
+                <div>Anomaly Score Calculation (Path Length)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOGS -->
+    <div id="section-logs" style="display:none">
+      <div class="card">
+        <div class="section-title">Network Pipeline Logs</div>
+        <pre id="logOutput" style="background:#000;padding:16px;border-radius:8px;font-family:monospace;font-size:12px;color:#3b82f6;border:1px solid rgba(255,255,255,0.05);min-height:300px;overflow-y:auto">Initializing SentinelPay Node...</pre>
+      </div>
+    </div>
+
+    <!-- ABOUT -->
+    <div id="section-about" style="display:none">
+      <div class="card" style="max-width:720px">
+        <div class="section-title">About Isolation Forest</div>
+        <p style="font-size:13px;color:#94a3b8;line-height:1.9;margin-bottom:14px">Unlike typical machine learning algorithms that profile normal behavior, an <strong>Isolation Forest</strong> explicitly isolates anomalies. Because fraud patterns are rare and different, they require fewer splits in a random decision tree to be completely isolated.</p>
+        <p style="font-size:13px;color:#94a3b8;line-height:1.9;margin-bottom:14px">By building an ensemble of trees, the model assigns an anomaly score based on how quickly a data point was isolated. A shorter average path length across all trees means the transaction is highly suspicious.</p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px">
+          <div style="background:#0a0a0f;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:14px;text-align:center">
+            <div style="font-size:20px;font-weight:800;color:#3b82f6">99.9%</div><div style="font-size:11px;color:#64748b;margin-top:2px">Precision</div>
+          </div>
+          <div style="background:#0a0a0f;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:14px;text-align:center">
+            <div style="font-size:20px;font-weight:800;color:#facc15">O(n)</div><div style="font-size:11px;color:#64748b;margin-top:2px">Time Complexity</div>
+          </div>
+          <div style="background:#0a0a0f;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:14px;text-align:center">
+            <div style="font-size:20px;font-weight:800;color:#ef4444">-1 to 1</div><div style="font-size:11px;color:#64748b;margin-top:2px">Decision Range</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const analyzeBtn = document.getElementById('analyzeBtn');
+const resultState = document.getElementById('resultState');
+const logOutput = document.getElementById('logOutput');
+
+const samples = {
+  'legit': {amt: 149.99, time: 406, v1: -1.359, v2: -0.072, v3: 2.536},
+  'fraud': {amt: 5200.00, time: 1100, v1: -2.312, v2: 3.421, v3: -5.113}
+};
+
+function loadSample(type) {
+  const s = samples[type];
+  document.getElementById('val_amt').value = s.amt;
+  document.getElementById('val_time').value = s.time;
+  document.getElementById('val_v1').value = s.v1;
+  document.getElementById('val_v2').value = s.v2;
+  document.getElementById('val_v3').value = s.v3;
+}
+
+function appendLog(msg) {
+  const time = new Date().toISOString().split('T')[1].split('.')[0];
+  logOutput.innerHTML += `\n[${time}] ${msg}`;
+  logOutput.scrollTop = logOutput.scrollHeight;
+}
+
+function showSection(name){
+  ['analyze','logs','about'].forEach(s=>{
+    document.getElementById('section-'+s).style.display=s===name?'block':'none';
+  });
+  document.querySelectorAll('.nav-item').forEach(el=>{
+    el.classList.toggle('active',el.textContent.trim().toLowerCase().startsWith(name));
+  });
+}
+
+document.getElementById('analyzeForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  
+  const payload = {
+    amount: parseFloat(document.getElementById('val_amt').value),
+    time: parseFloat(document.getElementById('val_time').value),
+    v1: parseFloat(document.getElementById('val_v1').value),
+    v2: parseFloat(document.getElementById('val_v2').value),
+    v3: parseFloat(document.getElementById('val_v3').value)
+  };
+
+  analyzeBtn.disabled = true;
+  analyzeBtn.innerHTML = 'Computing...';
+  resultState.innerHTML = `
+    <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:20px 0">
+      <div style="width:30px;height:30px;border:3px solid rgba(59,130,246,0.2);border-top-color:#3b82f6;border-radius:50%;animation:spin 1s linear infinite"></div>
+      <div style="font-size:13px;color:#3b82f6;font-weight:600">Calculating anomaly score...</div>
+    </div>
+    <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>
+  `;
+  appendLog("POST /api/predict executing with tensor: " + JSON.stringify(payload));
+
+  try {
+    const response = await fetch('/api/predict', { 
+      method: 'POST', 
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await response.json();
+    appendLog("API Response: " + JSON.stringify(data));
+    
+    if (data.status === 'success') {
+      const isFraud = data.prediction === 'FRAUDULENT';
+      const statusColor = isFraud ? '#ef4444' : '#10b981';
+      const label = isFraud ? '🚨 FRAUD BLOCKED' : '✅ TRANSACTION CLEARED';
+      
+      let html = `<div style="font-size:12px;color:#64748b;margin-bottom:8px">Isolation Verdict</div>`;
+      html += `<div class="result-pill" style="color:${statusColor};background:${statusColor}15;border-color:${statusColor}30">${label}</div>`;
+      html += `<div style="margin-top:12px"><span class="conf-pill">Anomaly Score (negative=outlier): ${data.anomaly_score}</span></div>`;
+      
+      if (data.is_simulation) {
+        html += `<div style="margin-top:16px;font-size:11px;color:#f59e0b;background:rgba(245,158,11,0.1);padding:6px;border-radius:4px">⚠️ Running in Simulation Mode (Models not loaded)</div>`;
+      }
+      
+      resultState.innerHTML = html;
+    } else {
+      resultState.innerHTML = `<div style="color:#ef4444;font-size:13px">${data.message || 'Analysis failed'}</div>`;
+    }
+  } catch (err) {
+    appendLog("Exception caught: " + err.message);
+    resultState.innerHTML = `<div style="color:#ef4444;font-size:13px">Server connection failed.</div>`;
+  }
+  
+  analyzeBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Process Transaction`;
+  analyzeBtn.disabled = false;
+});
+</script>
+</body>
+</html>

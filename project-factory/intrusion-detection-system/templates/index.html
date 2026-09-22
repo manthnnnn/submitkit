@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ project_name }} Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #09090b; color: #fafafa; }
+        .glass-panel { background: rgba(24, 24, 27, 0.8); border: 1px solid rgba(255,255,255,0.1); border-radius: 1rem; }
+    </style>
+</head>
+<body class="min-h-screen p-8 flex flex-col items-center justify-center">
+    <div class="glass-panel p-8 w-full max-w-2xl text-center">
+        <h1 class="text-3xl font-bold mb-4 text-emerald-400">{{ project_name }} Dashboard</h1>
+        <p class="text-zinc-400 mb-8">Upload data below to run inference through the FastAPI backend.</p>
+        
+        <form id="uploadForm" class="flex flex-col gap-4 items-center">
+            <input type="file" id="fileInput" class="block w-full text-sm text-zinc-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-emerald-500/10 file:text-emerald-400 hover:file:bg-emerald-500/20" />
+            <button type="submit" class="px-6 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold rounded-full transition-colors">Run Model</button>
+        </form>
+
+        <div id="resultBox" class="mt-8 hidden">
+            <h3 class="text-lg font-semibold text-white mb-2">Prediction Result:</h3>
+            <pre id="resultOutput" class="text-left bg-black/50 p-4 rounded-xl border border-white/10 text-emerald-300 font-mono text-sm overflow-x-auto"></pre>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fileInput = document.getElementById('fileInput');
+            if(!fileInput.files[0]) return alert("Please select a file.");
+
+            const formData = new FormData();
+            formData.append("file", fileInput.files[0]);
+
+            const resBox = document.getElementById('resultBox');
+            const resOut = document.getElementById('resultOutput');
+            resBox.classList.remove('hidden');
+            resOut.textContent = "Processing...";
+
+            try {
+                const response = await fetch('/api/predict', { method: 'POST', body: formData });
+                const data = await response.json();
+                resOut.textContent = JSON.stringify(data, null, 2);
+            } catch (err) {
+                resOut.textContent = "Error: " + err.message;
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>MailGuard AI — Spam Classifier</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0a0f;color:#f1f5f9;font-family:Inter,sans-serif;display:flex;min-height:100vh}
+.sidebar{width:220px;min-width:220px;background:#0f0f1a;border-right:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column}
+.sidebar-logo{padding:20px 16px 16px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.sidebar-logo h1{font-size:18px;font-weight:800;letter-spacing:-0.5px}
+.sidebar-logo span{color:#8b5cf6}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;font-size:13px;font-weight:500;color:#94a3b8;cursor:pointer;border-left:3px solid transparent;transition:.2s}
+.nav-item:hover,.nav-item.active{color:#fff;background:rgba(139,92,246,0.08);border-left-color:#8b5cf6}
+.nav-item svg{width:16px;height:16px}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{height:56px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+.content{flex:1;overflow-y:auto;padding:24px}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#1e1e2e;border-radius:4px}
+.card{background:#111120;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:24px}
+.section-title{font-size:14px;font-weight:700;color:#e2e8f0;margin-bottom:16px}
+.btn{padding:10px 22px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:.2s;display:inline-flex;align-items:center;gap:8px}
+.btn-primary{background:#8b5cf6;color:#fff}.btn-primary:hover{background:#7c3aed}
+.btn-ghost{background:rgba(255,255,255,0.06);color:#94a3b8;border:1px solid rgba(255,255,255,0.1)}.btn-ghost:hover{color:#fff;background:rgba(255,255,255,0.1)}
+textarea{background:#0a0a0f;border:1px solid rgba(255,255,255,0.1);color:#f1f5f9;border-radius:10px;padding:14px;font-size:13px;outline:none;resize:vertical;width:100%;line-height:1.7;font-family:monospace}
+textarea:focus{border-color:#8b5cf6}
+.result-pill{display:inline-block;padding:8px 16px;background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.3);color:#8b5cf6;border-radius:8px;font-size:16px;font-weight:700;margin:4px}
+.conf-pill{display:inline-block;padding:6px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;font-size:12px;font-weight:600;color:#cbd5e1;margin:4px}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <h1>MailGuard<span>AI</span></h1>
+    <div style="font-size:11px;color:#64748b;margin-top:2px">Spam Intelligence</div>
+  </div>
+  <nav style="padding:12px 0">
+    <div class="nav-item active" onclick="showSection('analyze')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      Message Filter
+    </div>
+    <div class="nav-item" onclick="showSection('logs')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      Pipeline Logs
+    </div>
+    <div class="nav-item" onclick="showSection('about')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Naive Bayes Model
+    </div>
+  </nav>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <div style="font-size:15px;font-weight:600">📥 Automated Email Spam Classification</div>
+  </div>
+
+  <div class="content">
+    <!-- ANALYZE -->
+    <div id="section-analyze">
+      <div style="display:grid;grid-template-columns:1fr 340px;gap:20px">
+        <div class="card">
+          <div class="section-title">Email Payload</div>
+          <p style="font-size:13px;color:#94a3b8;margin-bottom:16px">Paste the contents of an email message. The Naive Bayes classifier will extract term frequencies and assign a posterior probability of spam.</p>
+          
+          <form id="analyzeForm" class="flex flex-col gap-4">
+            <textarea id="emailText" rows="10" placeholder="Subject: URGENT: Your account has been suspended!&#10;&#10;Dear user, please click the link below to verify your banking details immediately..."></textarea>
+            
+            <div style="display:flex;gap:12px">
+              <button type="button" class="btn btn-ghost" onclick="loadSample('ham')" style="font-size:12px;padding:6px 12px">Load Clean (Ham)</button>
+              <button type="button" class="btn btn-ghost" onclick="loadSample('spam')" style="font-size:12px;padding:6px 12px">Load Spam Sample</button>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" id="analyzeBtn" style="justify-content:center;margin-top:10px">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+              Filter Message
+            </button>
+          </form>
+        </div>
+        
+        <div>
+          <div class="card" style="margin-bottom:14px;min-height:200px">
+            <div class="section-title">Classification Verdict</div>
+            <div id="resultState" style="text-align:center;padding:20px 0">
+              <div style="color:#64748b;font-size:13px">Awaiting message payload...</div>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="section-title">Pipeline Architecture</div>
+            <div style="display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:#94a3b8">
+                <div style="width:24px;height:24px;border-radius:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center">1</div>
+                <div>Stopword Removal & Stemming</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:#94a3b8">
+                <div style="width:24px;height:24px;border-radius:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center">2</div>
+                <div>TF-IDF Feature Extraction</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:#94a3b8">
+                <div style="width:24px;height:24px;border-radius:6px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center">3</div>
+                <div>Multinomial Naive Bayes</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOGS -->
+    <div id="section-logs" style="display:none">
+      <div class="card">
+        <div class="section-title">FastAPI Server Logs</div>
+        <pre id="logOutput" style="background:#000;padding:16px;border-radius:8px;font-family:monospace;font-size:12px;color:#8b5cf6;border:1px solid rgba(255,255,255,0.05);min-height:300px;overflow-y:auto">Initializing Naive Bayes filter...</pre>
+      </div>
+    </div>
+
+    <!-- ABOUT -->
+    <div id="section-about" style="display:none">
+      <div class="card" style="max-width:720px">
+        <div class="section-title">About the Filtering Algorithm</div>
+        <p style="font-size:13px;color:#94a3b8;line-height:1.9;margin-bottom:14px">This system uses a Multinomial Naive Bayes classifier trained on thousands of labeled spam and ham (legitimate) emails. It applies Bayes' Theorem with strong (naive) independence assumptions between the features (words).</p>
+        <p style="font-size:13px;color:#94a3b8;line-height:1.9;margin-bottom:14px">By converting the email text into a TF-IDF matrix, the model can weigh the importance of certain vocabulary (like "urgent", "lottery", or "verify") and calculate the mathematical probability that an email belongs to the SPAM class.</p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px">
+          <div style="background:#0a0a0f;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:14px;text-align:center">
+            <div style="font-size:20px;font-weight:800;color:#8b5cf6">98.2%</div><div style="font-size:11px;color:#64748b;margin-top:2px">Test Accuracy</div>
+          </div>
+          <div style="background:#0a0a0f;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:14px;text-align:center">
+            <div style="font-size:20px;font-weight:800;color:#38bdf8">Naive Bayes</div><div style="font-size:11px;color:#64748b;margin-top:2px">Probabilistic Model</div>
+          </div>
+          <div style="background:#0a0a0f;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:14px;text-align:center">
+            <div style="font-size:20px;font-weight:800;color:#facc15">NLTK</div><div style="font-size:11px;color:#64748b;margin-top:2px">Preprocessing</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+const emailText = document.getElementById('emailText');
+const analyzeBtn = document.getElementById('analyzeBtn');
+const resultState = document.getElementById('resultState');
+const logOutput = document.getElementById('logOutput');
+
+const samples = {
+  'ham': 'Hey team,\n\nJust wanted to follow up on our meeting yesterday. Are we still on track for the Friday deployment? Let me know if you need any help with the CI/CD pipeline.\n\nBest,\nDavid',
+  'spam': 'CONGRATULATIONS!!! You have been selected as the winner of our $1,000,000 lottery drawing! To claim your prize, please reply to this email immediately with your full name, address, and banking details so we can wire the funds. Act fast, offer expires in 24 hours!'
+};
+
+function loadSample(type) {
+  emailText.value = samples[type];
+}
+
+function appendLog(msg) {
+  const time = new Date().toISOString().split('T')[1].split('.')[0];
+  logOutput.innerHTML += `\n[${time}] ${msg}`;
+  logOutput.scrollTop = logOutput.scrollHeight;
+}
+
+function showSection(name){
+  ['analyze','logs','about'].forEach(s=>{
+    document.getElementById('section-'+s).style.display=s===name?'block':'none';
+  });
+  document.querySelectorAll('.nav-item').forEach(el=>{
+    el.classList.toggle('active',el.textContent.trim().toLowerCase().startsWith(name));
+  });
+}
+
+document.getElementById('analyzeForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const text = emailText.value.trim();
+  if(!text) return alert("Please enter an email to classify.");
+
+  analyzeBtn.disabled = true;
+  analyzeBtn.innerHTML = 'Filtering...';
+  resultState.innerHTML = `
+    <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:20px 0">
+      <div style="width:30px;height:30px;border:3px solid rgba(139,92,246,0.2);border-top-color:#8b5cf6;border-radius:50%;animation:spin 1s linear infinite"></div>
+      <div style="font-size:13px;color:#8b5cf6;font-weight:600">Calculating posterior probabilities...</div>
+    </div>
+    <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>
+  `;
+  appendLog("POST /api/predict executing with payload length: " + text.length);
+
+  try {
+    const response = await fetch('/api/predict', { 
+      method: 'POST', 
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: text })
+    });
+    const data = await response.json();
+    appendLog("API Response: " + JSON.stringify(data));
+    
+    if (data.status === 'success') {
+      const isSpam = data.prediction === 'SPAM';
+      const statusColor = isSpam ? '#f43f5e' : '#4ade80';
+      const label = isSpam ? '🚨 SPAM (MALICIOUS)' : '✅ HAM (CLEAN)';
+      
+      let html = `<div style="font-size:12px;color:#64748b;margin-bottom:8px">Bayesian Verdict</div>`;
+      html += `<div class="result-pill" style="color:${statusColor};background:${statusColor}15;border-color:${statusColor}30">${label}</div>`;
+      html += `<div style="margin-top:12px"><span class="conf-pill">Confidence: ${data.confidence}</span></div>`;
+      
+      if (data.is_simulation) {
+        html += `<div style="margin-top:16px;font-size:11px;color:#f59e0b;background:rgba(245,158,11,0.1);padding:6px;border-radius:4px">⚠️ Running in Simulation Mode (Models not loaded)</div>`;
+      }
+      
+      resultState.innerHTML = html;
+    } else {
+      resultState.innerHTML = `<div style="color:#ef4444;font-size:13px">${data.message || 'Analysis failed'}</div>`;
+    }
+  } catch (err) {
+    appendLog("Exception caught: " + err.message);
+    resultState.innerHTML = `<div style="color:#ef4444;font-size:13px">Server connection failed.</div>`;
+  }
+  
+  analyzeBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg> Filter Message`;
+  analyzeBtn.disabled = false;
+});
+</script>
+</body>
+</html>

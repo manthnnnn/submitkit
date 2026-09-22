@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>PropVal AI — House Price Intelligence</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0a0f;color:#f1f5f9;font-family:Inter,sans-serif;display:flex;min-height:100vh}
+.sidebar{width:220px;min-width:220px;background:#0f0f1a;border-right:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column}
+.sidebar-logo{padding:20px 16px 16px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.sidebar-logo h1{font-size:18px;font-weight:800;letter-spacing:-0.5px}
+.sidebar-logo span{color:#34d399}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;font-size:13px;font-weight:500;color:#94a3b8;cursor:pointer;border-left:3px solid transparent;transition:.2s}
+.nav-item:hover,.nav-item.active{color:#fff;background:rgba(52,211,153,0.08);border-left-color:#34d399}
+.nav-item svg{width:16px;height:16px}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{height:56px;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+.content{flex:1;overflow-y:auto;padding:24px}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-thumb{background:#1e1e2e;border-radius:4px}
+.card{background:#111120;border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:20px}
+.stat-card{background:linear-gradient(135deg,#111120,#0d0d1a);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:18px}
+.section-title{font-size:14px;font-weight:700;color:#e2e8f0;margin-bottom:16px}
+.label{font-size:11px;color:#64748b;margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px}
+.metric-val{font-size:30px;font-weight:800}
+input[type=range]{accent-color:#34d399;width:100%}
+.feature-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:12px}
+.feature-label{color:#64748b}
+.feature-val{color:#f1f5f9;font-family:monospace;font-weight:600}
+.conf-track{height:8px;background:#1e2535;border-radius:4px;overflow:hidden;margin-top:8px}
+.conf-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#34d399,#059669);transition:width .6s}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <h1>Prop<span>Val</span></h1>
+    <div style="font-size:11px;color:#64748b;margin-top:2px">House Price Intelligence</div>
+  </div>
+  <nav style="padding:12px 0">
+    <div class="nav-item active" onclick="showSection('predict')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Predict Price
+    </div>
+    <div class="nav-item" onclick="showSection('shap')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      SHAP Analysis
+    </div>
+    <div class="nav-item" onclick="showSection('compare')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Comparables
+    </div>
+    <div class="nav-item" onclick="showSection('about')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      About Model
+    </div>
+  </nav>
+</aside>
+
+<div class="main">
+  <div class="topbar">
+    <div style="font-size:15px;font-weight:600">🏠 XGBoost + SHAP House Price Prediction</div>
+    <div style="font-size:12px;color:#64748b">Adjust any feature — price updates instantly</div>
+  </div>
+  <div class="content">
+
+    <!-- PREDICT -->
+    <div id="section-predict">
+      <div style="display:grid;grid-template-columns:380px 1fr;gap:20px">
+        <!-- Sliders -->
+        <div class="card">
+          <div class="section-title">Property Features</div>
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+                <span class="label">Overall Quality</span>
+                <span style="font-size:12px;font-weight:700;color:#34d399" id="lbl-qual">7</span>
+              </div>
+              <input type="range" id="overall_qual" min="1" max="10" value="7" oninput="liveUpdate('qual',this.value)"/>
+              <div style="display:flex;justify-content:space-between;font-size:10px;color:#475569;margin-top:2px"><span>Poor</span><span>Excellent</span></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+                <span class="label">Living Area</span>
+                <span style="font-size:12px;font-weight:700;color:#34d399" id="lbl-area">1500 sq ft</span>
+              </div>
+              <input type="range" id="gr_liv_area" min="500" max="5000" step="50" value="1500" oninput="liveUpdate('area',this.value+' sq ft')"/>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+                <span class="label">Garage Capacity</span>
+                <span style="font-size:12px;font-weight:700;color:#34d399" id="lbl-garage">2 cars</span>
+              </div>
+              <input type="range" id="garage_cars" min="0" max="4" value="2" oninput="liveUpdate('garage',this.value+' cars')"/>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+                <span class="label">Basement Area</span>
+                <span style="font-size:12px;font-weight:700;color:#34d399" id="lbl-bsmt">800 sq ft</span>
+              </div>
+              <input type="range" id="total_bsmt_sf" min="0" max="3000" step="50" value="800" oninput="liveUpdate('bsmt',this.value+' sq ft')"/>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+                <span class="label">Full Bathrooms</span>
+                <span style="font-size:12px;font-weight:700;color:#34d399" id="lbl-bath">2</span>
+              </div>
+              <input type="range" id="full_bath" min="1" max="4" value="2" oninput="liveUpdate('bath',this.value)"/>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+                <span class="label">Year Built</span>
+                <span style="font-size:12px;font-weight:700;color:#34d399" id="lbl-year">2005</span>
+              </div>
+              <input type="range" id="year_built" min="1900" max="2023" value="2005" oninput="liveUpdate('year',this.value)"/>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+                <span class="label">Neighborhood Score</span>
+                <span style="font-size:12px;font-weight:700;color:#34d399" id="lbl-nbhd">6 / 10</span>
+              </div>
+              <input type="range" id="neighborhood_score" min="1" max="10" value="6" oninput="liveUpdate('nbhd',this.value+' / 10')"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- Result Panel -->
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <div class="stat-card">
+              <div class="label">Estimated Value</div>
+              <div class="metric-val" id="price-display" style="color:#34d399">$—</div>
+              <div style="font-size:11px;color:#64748b;margin-top:4px" id="price-range">Range: —</div>
+            </div>
+            <div class="stat-card">
+              <div class="label">Model Confidence</div>
+              <div class="metric-val" id="conf-pct" style="color:#f1f5f9">—%</div>
+              <div class="conf-track"><div class="conf-fill" id="conf-bar" style="width:0%"></div></div>
+              <div style="font-size:11px;color:#64748b;margin-top:6px" id="model-used">Model: —</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="section-title">Feature Values</div>
+            <div id="featureTable"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHAP -->
+    <div id="section-shap" style="display:none">
+      <div class="card">
+        <div class="section-title">SHAP Feature Contributions — How each feature affected the predicted price</div>
+        <canvas id="shapChart" height="120"></canvas>
+        <p style="font-size:12px;color:#64748b;margin-top:14px">Green bars = positive contribution to price. Red bars = negative. The longer the bar, the more impact.</p>
+      </div>
+    </div>
+
+    <!-- COMPARE -->
+    <div id="section-compare" style="display:none">
+      <div class="card">
+        <div class="section-title">Comparable Market Scenarios</div>
+        <div style="overflow-x:auto">
+          <table style="width:100%;font-size:12px;border-collapse:collapse">
+            <thead><tr style="color:#64748b;border-bottom:1px solid rgba(255,255,255,0.08)">
+              <th style="text-align:left;padding:10px 12px">Scenario</th>
+              <th style="padding:10px 12px">Quality</th>
+              <th style="padding:10px 12px">Sq Ft</th>
+              <th style="padding:10px 12px">Year</th>
+              <th style="text-align:right;padding:10px 12px">Est. Price</th>
+            </tr></thead>
+            <tbody id="compareTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABOUT -->
+    <div id="section-about" style="display:none">
+      <div class="card" style="max-width:720px">
+        <div class="section-title">About the XGBoost + SHAP Model</div>
+        <p style="font-size:13px;color:#94a3b8;line-height:1.9;margin-bottom:14px">This model is trained on the <strong style="color:#e2e8f0">Ames Housing Dataset</strong> — a benchmark dataset with 2,930 house records and 79 features collected from Ames, Iowa. XGBoost achieves an R² score of 89% on the test set.</p>
+        <p style="font-size:13px;color:#94a3b8;line-height:1.9;margin-bottom:14px"><strong style="color:#e2e8f0">SHAP (SHapley Additive exPlanations)</strong> is used to explain each prediction — it assigns each feature an importance value for a particular prediction, telling you exactly why the model priced the house the way it did.</p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px">
+          <div style="background:#0a0a0f;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:14px;text-align:center">
+            <div style="font-size:20px;font-weight:800;color:#34d399">89%</div><div style="font-size:11px;color:#64748b;margin-top:2px">R² Score</div>
+          </div>
+          <div style="background:#0a0a0f;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:14px;text-align:center">
+            <div style="font-size:20px;font-weight:800;color:#818cf8">XGBoost</div><div style="font-size:11px;color:#64748b;margin-top:2px">Algorithm</div>
+          </div>
+          <div style="background:#0a0a0f;border:1px solid rgba(255,255,255,0.07);border-radius:8px;padding:14px;text-align:center">
+            <div style="font-size:20px;font-weight:800;color:#f59e0b">SHAP</div><div style="font-size:11px;color:#64748b;margin-top:2px">Explainability</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let shapChart=null, lastData=null;
+let debounce=null;
+
+function liveUpdate(key,val){
+  document.getElementById('lbl-'+key).textContent=val;
+  clearTimeout(debounce);
+  debounce=setTimeout(predict,350);
+}
+
+function showSection(name){
+  ['predict','shap','compare','about'].forEach(s=>{
+    document.getElementById('section-'+s).style.display=s===name?'block':'none';
+  });
+  document.querySelectorAll('.nav-item').forEach(el=>{
+    el.classList.toggle('active',el.textContent.trim().toLowerCase().startsWith(name));
+  });
+  if(name==='shap'&&lastData)renderShap(lastData);
+  if(name==='compare')renderCompare();
+}
+
+async function predict(){
+  const payload={
+    overall_qual:+document.getElementById('overall_qual').value,
+    gr_liv_area:+document.getElementById('gr_liv_area').value,
+    garage_cars:+document.getElementById('garage_cars').value,
+    total_bsmt_sf:+document.getElementById('total_bsmt_sf').value,
+    full_bath:+document.getElementById('full_bath').value,
+    year_built:+document.getElementById('year_built').value,
+    lot_area:8000,bedroom_abvgr:3,kitchen_qual:7,
+    neighborhood_score:+document.getElementById('neighborhood_score').value
+  };
+  try{
+    const res=await fetch('/api/predict',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const data=await res.json();
+    if(data.status!=='success')return;
+    lastData=data;
+    const fmt=v=>'$'+Math.round(v).toLocaleString();
+    document.getElementById('price-display').textContent=fmt(data.predicted_price);
+    document.getElementById('price-range').textContent=`Range: ${fmt(data.market_low)} – ${fmt(data.market_high)}`;
+    document.getElementById('conf-pct').textContent=data.confidence_pct+'%';
+    document.getElementById('conf-bar').style.width=data.confidence_pct+'%';
+    document.getElementById('model-used').textContent='Model: '+data.model_used;
+    document.getElementById('featureTable').innerHTML=Object.entries(payload).map(([k,v])=>`
+      <div class="feature-row"><span class="feature-label">${k.replace(/_/g,' ')}</span><span class="feature-val">${v}</span></div>`).join('');
+  }catch(e){console.error(e);}
+}
+
+function renderShap(data){
+  const labels=Object.keys(data.contributions);
+  const values=Object.values(data.contributions);
+  const colors=values.map(v=>v>=0?'rgba(52,211,153,0.75)':'rgba(248,113,113,0.75)');
+  if(shapChart)shapChart.destroy();
+  shapChart=new Chart(document.getElementById('shapChart'),{
+    type:'bar',
+    data:{labels,datasets:[{data:values,backgroundColor:colors,borderRadius:4}]},
+    options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{
+      x:{ticks:{color:'#475569',callback:v=>'$'+Math.abs(v).toLocaleString()},grid:{color:'rgba(255,255,255,0.03)'}},
+      y:{ticks:{color:'#94a3b8',font:{size:11}},grid:{display:false}}
+    }}
+  });
+}
+
+async function renderCompare(){
+  const scenarios=[
+    {label:'Starter Home',q:4,a:900,y:1985,n:4},
+    {label:'Mid-Market',q:6,a:1400,y:2000,n:6},
+    {label:'Current Config',q:+document.getElementById('overall_qual').value,a:+document.getElementById('gr_liv_area').value,y:+document.getElementById('year_built').value,n:+document.getElementById('neighborhood_score').value},
+    {label:'Premium Build',q:8,a:2200,y:2015,n:8},
+    {label:'Luxury Estate',q:10,a:4000,y:2022,n:10},
+  ];
+  const results=await Promise.all(scenarios.map(s=>fetch('/api/predict',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({overall_qual:s.q,gr_liv_area:s.a,garage_cars:2,total_bsmt_sf:800,full_bath:2,year_built:s.y,lot_area:8000,bedroom_abvgr:3,kitchen_qual:7,neighborhood_score:s.n})}).then(r=>r.json()).catch(()=>null)));
+  document.getElementById('compareTable').innerHTML=scenarios.map((s,i)=>{
+    const price=results[i]?.predicted_price||0;
+    return `<tr style="border-bottom:1px solid rgba(255,255,255,0.04)">
+      <td style="padding:10px 12px;font-weight:600;color:#e2e8f0">${s.label}</td>
+      <td style="text-align:center;padding:10px 12px;color:#94a3b8">${s.q}/10</td>
+      <td style="text-align:center;padding:10px 12px;color:#94a3b8">${s.a.toLocaleString()}</td>
+      <td style="text-align:center;padding:10px 12px;color:#94a3b8">${s.y}</td>
+      <td style="text-align:right;padding:10px 12px;font-weight:700;color:#34d399">$${Math.round(price).toLocaleString()}</td>
+    </tr>`;
+  }).join('');
+}
+
+document.querySelectorAll('input[type=range]').forEach(el=>el.addEventListener('input',()=>predict()));
+window.addEventListener('DOMContentLoaded',predict);
+</script>
+</body>
+</html>

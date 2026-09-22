@@ -389,12 +389,71 @@ const CONTENT_MAP: Record<string, ProjectContent> = {
 
 // Add remaining projects using the default template with customized titles
 const ADDITIONAL_PROJECTS = [
+  // Original 5 using default template
   'blood-bank-management',
   'online-code-compiler',
   'restaurant-qr-ordering',
   'aerofuel-predictor',
   'smart-expense-tracker',
+  // New AI/ML (15)
+  'face-recognition-attendance',
+  'plant-disease-detection',
+  'sentiment-analysis-dashboard',
+  'object-detection-security',
+  'handwriting-recognition',
+  'movie-recommendation-engine',
+  'fake-news-detector',
+  'image-caption-generator',
+  'chatbot-intent-classifier',
+  'spam-email-classifier',
+  'emotion-detection-text',
+  'house-price-predictor',
+  'customer-churn-predictor',
+  'medical-image-classifier',
+  'ai-resume-scorer',
+  // New Full Stack (10)
+  'ecommerce-platform',
+  'task-management-board',
+  'realtime-chat-app',
+  'learning-management-system',
+  'job-portal',
+  'event-management-system',
+  'hotel-booking-system',
+  'inventory-management',
+  'blog-cms-platform',
+  'social-media-dashboard',
+  // New Cybersecurity (8)
+  'network-packet-analyzer',
+  'password-strength-analyzer',
+  'vulnerability-scanner',
+  'intrusion-detection-system',
+  'secure-file-sharing',
+  'dns-lookup-tool',
+  'ssl-certificate-checker',
+  'keylogger-detector',
+  // New Healthcare (5)
+  'patient-appointment-scheduler',
+  'medicine-inventory-tracker',
+  'mental-health-chatbot',
+  'disease-prediction-symptoms',
+  'diet-nutrition-planner',
+  // New FinTech (5)
+  'stock-market-dashboard',
+  'personal-finance-manager',
+  'loan-eligibility-predictor',
+  'invoice-generator',
+  'crypto-portfolio-tracker',
+  // IoT + Data Science (4)
+  'weather-monitoring-dashboard',
+  'smart-home-dashboard',
+  'server-health-monitor',
+  'air-quality-tracker',
+  // Trending (3)
+  'url-shortener',
+  'student-result-management',
+  'food-delivery-tracker',
 ];
+
 
 for (const slug of ADDITIONAL_PROJECTS) {
   if (!CONTENT_MAP[slug]) {

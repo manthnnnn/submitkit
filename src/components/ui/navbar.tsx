@@ -6,9 +6,9 @@ import { useState } from 'react';
 import { Logo } from '@/components/ui/logo';
 
 const NAV_LINKS: { href: string; label: string; badge?: string }[] = [
-  { href: '/blueprint', label: 'Choose Your Topic' },
-  { href: '/projects',  label: 'Full Projects' },
-  { href: '/projects#custom', label: 'Custom Project', badge: '1-on-1' },
+  { href: '/blueprint', label: 'Free Blueprints', badge: '1,078 Free' },
+  { href: '/projects',  label: 'Project Kits' },
+  { href: '/custom',    label: 'Custom Project', badge: 'From ₹1,999' },
   { href: '/#pricing',  label: 'Pricing' },
   { href: '/order/lookup', label: 'Track Order' },
 ];
@@ -27,7 +27,7 @@ export function Navbar() {
   };
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-white/5 bg-[#09090b]/85 backdrop-blur-2xl">
+    <nav className="sticky top-0 z-50 w-full border-b border-white/5 bg-[#09090b]/90 backdrop-blur-md">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
 

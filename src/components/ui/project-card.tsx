@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Project } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 import { TechBadge } from "./tech-badge";
-import { ArrowRight, Flame, CheckCircle2, Clock } from "lucide-react";
+import { ArrowRight, Flame, CheckCircle2, Clock, Lock, Bell } from "lucide-react";
 import { isProjectAvailable, getProjectMeta } from "@/lib/available-projects";
 
 const TRENDING_SLUGS = ['spam-classifier-nlp', 'face-attendance-system', 'crypto-portfolio-tracker', 'spaceshield-ai', 'crop-disease-detector'];
@@ -104,33 +104,35 @@ export function ProjectCard({ project, onReserve }: { project: Project; onReserv
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-between pt-3 border-t border-white/5">
-            <div>
-              <span className="font-bold text-white text-sm">{formatCurrency(project.price_inr)}</span>
-              <span className="text-[10px] text-zinc-500 ml-1">one-time</span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <Link href={href} className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all group/btn ${
-                isAvailable
-                  ? 'text-zinc-950 bg-white hover:bg-emerald-400 shadow-md shadow-white/10'
-                  : 'text-zinc-300 bg-white/5 hover:bg-white/10 border border-white/10'
-              }`}>
-                <span>{isAvailable ? 'View & Buy' : 'View Details'}</span>
-                <ArrowRight className={`h-3 w-3 group-hover/btn:translate-x-0.5 transition-transform ${
-                  isAvailable ? 'text-zinc-950' : 'text-zinc-500 group-hover/btn:text-white'
-                }`} />
-              </Link>
-              
-              {!isAvailable && (
+          <div className="pt-3 border-t border-white/5">
+            {isAvailable ? (
+              /* UNLOCKED: show price + buy button */
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="font-bold text-white text-sm">{formatCurrency(project.price_inr)}</span>
+                  <span className="text-[10px] text-zinc-500 ml-1">one-time</span>
+                </div>
+                <Link href={href} className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all group/btn text-zinc-950 bg-white hover:bg-emerald-400 shadow-md shadow-white/10">
+                  <span>View &amp; Buy</span>
+                  <ArrowRight className="h-3 w-3 group-hover/btn:translate-x-0.5 transition-transform text-zinc-950" />
+                </Link>
+              </div>
+            ) : (
+              /* LOCKED: no price, no buy — clear coming soon state */
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-[11px] text-amber-400 font-semibold">
+                  <Lock className="w-3 h-3" />
+                  <span>In Development — Coming Soon</span>
+                </div>
                 <button
-                  onClick={() => onReserve ? onReserve(project.title) : (window.location.href = href)}
-                  className="flex items-center gap-1.5 text-xs font-bold text-purple-200 hover:text-white bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/30 px-3 py-1.5 rounded-lg transition-all"
+                  onClick={() => onReserve ? onReserve(project.title) : null}
+                  className="w-full flex items-center justify-center gap-1.5 text-xs font-bold text-zinc-200 bg-white/5 hover:bg-amber-500/20 hover:text-amber-300 border border-white/10 hover:border-amber-500/40 px-3 py-2 rounded-lg transition-all"
                 >
-                  Pre-Book
+                  <Bell className="w-3 h-3" />
+                  Notify Me When Ready
                 </button>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
