@@ -4,8 +4,9 @@ import React, { useState, useEffect } from 'react';
 import {
   Users, Shield, UserCheck, Eye, Loader2, Copy,
   CheckCircle2, GitBranch, Terminal, ShieldAlert, Package,
-  Info,
+  Info, Pencil, KeyRound, Mail, User, X, Save, RefreshCw,
 } from 'lucide-react';
+
 
 const cardStyle: React.CSSProperties = {
   background: 'linear-gradient(135deg, rgba(24,24,27,0.8), rgba(9,9,11,0.9))',
@@ -87,6 +88,56 @@ export default function AdminTeamPage() {
     setClearing(false);
     setClearConfirm(false);
   };
+
+  // ── Credential Editor state ──────────────────────────────────────────
+  type AdminUserMasked = { email: string; role: string; name: string; passwordHint: string };
+  const [teamUsers, setTeamUsers] = useState<AdminUserMasked[]>([]);
+  const [editingUser, setEditingUser] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState({ newEmail: '', newPassword: '', newName: '' });
+  const [editSaving, setEditSaving] = useState(false);
+  const [editResult, setEditResult] = useState<{ ok: boolean; msg: string; json?: string } | null>(null);
+
+  useEffect(() => {
+    fetch('/api/admin/team')
+      .then(r => r.json())
+      .then(d => { if (d.users) setTeamUsers(d.users); })
+      .catch(() => {});
+  }, []);
+
+  const handleEditSave = async (targetEmail: string) => {
+    if (!editForm.newEmail && !editForm.newPassword && !editForm.newName) {
+      setEditResult({ ok: false, msg: 'No changes to save' });
+      return;
+    }
+    if (editForm.newPassword && editForm.newPassword.length < 8) {
+      setEditResult({ ok: false, msg: 'Password must be at least 8 characters' });
+      return;
+    }
+    setEditSaving(true);
+    setEditResult(null);
+    try {
+      const res = await fetch('/api/admin/team', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ targetEmail, ...editForm }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setEditResult({ ok: true, msg: data.message, json: data.newAdminUsers });
+        // Refresh masked list
+        const r2 = await fetch('/api/admin/team');
+        const d2 = await r2.json();
+        if (d2.users) setTeamUsers(d2.users);
+        setEditForm({ newEmail: '', newPassword: '', newName: '' });
+      } else {
+        setEditResult({ ok: false, msg: data.error || 'Failed to update' });
+      }
+    } catch {
+      setEditResult({ ok: false, msg: 'Network error — try again' });
+    }
+    setEditSaving(false);
+  };
+
 
   const envSnippet = `ADMIN_USERS=[
   {"email":"you@submitkit.in","password":"yourStrongPass","role":"SUPER_ADMIN","name":"Manthan"},
@@ -325,6 +376,151 @@ NEXT_PUBLIC_GA_ID=G-4GDSEV10E1
           </div>
         </div>
       </div>
+
+      {/* ── Credential Editor ── */}
+      <div className="rounded-2xl p-5 space-y-4" style={cardStyle}>
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-xl flex items-center justify-center"
+            style={{ background: 'rgba(99,102,241,0.12)', border: '1px solid rgba(99,102,241,0.25)' }}>
+            <KeyRound className="w-4 h-4 text-indigo-400" />
+          </div>
+          <div>
+            <h2 className="text-sm font-bold text-white">Edit Admin Credentials</h2>
+            <p className="text-xs text-zinc-500">Change email, password or name for any admin user</p>
+          </div>
+        </div>
+
+        {teamUsers.length === 0 && (
+          <p className="text-xs text-zinc-500 text-center py-4">Loading team members…</p>
+        )}
+
+        <div className="space-y-2">
+          {teamUsers.map(u => {
+            const isEditing = editingUser === u.email;
+            const roleCfg = u.role === 'SUPER_ADMIN'
+              ? { color: '#f87171', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.2)' }
+              : u.role === 'CONTENT_ADMIN'
+              ? { color: '#818cf8', bg: 'rgba(99,102,241,0.1)', border: 'rgba(99,102,241,0.2)' }
+              : { color: '#fbbf24', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.2)' };
+
+            return (
+              <div key={u.email} className="rounded-xl overflow-hidden"
+                style={{ background: 'rgba(0,0,0,0.25)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                {/* User row */}
+                <div className="flex items-center justify-between px-4 py-3">
+                  <div className="flex items-center gap-3 min-w-0">
+                    <div className="w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold text-white shrink-0"
+                      style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)' }}>
+                      {u.name[0]}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-xs font-semibold text-white truncate">{u.name}</p>
+                      <p className="text-[10px] text-zinc-500 truncate font-mono">{u.email}</p>
+                      <p className="text-[10px] text-zinc-700 font-mono">Pass: {u.passwordHint}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-[9px] font-bold px-2 py-0.5 rounded-md uppercase"
+                      style={{ background: roleCfg.bg, color: roleCfg.color, border: `1px solid ${roleCfg.border}` }}>
+                      {u.role.replace('_', ' ')}
+                    </span>
+                    <button
+                      onClick={() => {
+                        if (isEditing) { setEditingUser(null); setEditResult(null); }
+                        else { setEditingUser(u.email); setEditForm({ newEmail: '', newPassword: '', newName: '' }); setEditResult(null); }
+                      }}
+                      className="p-1.5 rounded-lg transition-all"
+                      style={isEditing
+                        ? { background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', color: '#f87171' }
+                        : { background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', color: '#71717a' }}
+                    >
+                      {isEditing ? <X className="w-3.5 h-3.5" /> : <Pencil className="w-3.5 h-3.5" />}
+                    </button>
+                  </div>
+                </div>
+
+                {/* Edit form */}
+                {isEditing && (
+                  <div className="px-4 pb-4 space-y-3 border-t border-white/5 pt-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                      <div className="relative">
+                        <User className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-500" />
+                        <input
+                          type="text"
+                          placeholder={`Name (current: ${u.name})`}
+                          value={editForm.newName}
+                          onChange={e => setEditForm(f => ({ ...f, newName: e.target.value }))}
+                          className="w-full bg-black/30 border border-white/8 rounded-xl pl-9 pr-3 py-2.5 text-xs text-white placeholder-zinc-600 focus:outline-none focus:border-indigo-500/50"
+                        />
+                      </div>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-500" />
+                        <input
+                          type="email"
+                          placeholder={`Email (current: ${u.email})`}
+                          value={editForm.newEmail}
+                          onChange={e => setEditForm(f => ({ ...f, newEmail: e.target.value }))}
+                          className="w-full bg-black/30 border border-white/8 rounded-xl pl-9 pr-3 py-2.5 text-xs text-white placeholder-zinc-600 focus:outline-none focus:border-indigo-500/50"
+                        />
+                      </div>
+                      <div className="relative">
+                        <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-500" />
+                        <input
+                          type="password"
+                          placeholder="New password (min 8 chars)"
+                          value={editForm.newPassword}
+                          onChange={e => setEditForm(f => ({ ...f, newPassword: e.target.value }))}
+                          className="w-full bg-black/30 border border-white/8 rounded-xl pl-9 pr-3 py-2.5 text-xs text-white placeholder-zinc-600 focus:outline-none focus:border-indigo-500/50 font-mono tracking-widest"
+                        />
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => handleEditSave(u.email)}
+                      disabled={editSaving}
+                      className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all disabled:opacity-50"
+                      style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)', color: '#fff', boxShadow: '0 0 16px rgba(99,102,241,0.25)' }}
+                    >
+                      {editSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+                      Save & Generate Vercel Snippet
+                    </button>
+
+                    {editResult && (
+                      <div className={`rounded-xl p-3 space-y-2 ${editResult.ok ? 'border-emerald-500/25' : 'border-red-500/25'}`}
+                        style={{ background: editResult.ok ? 'rgba(16,185,129,0.05)' : 'rgba(239,68,68,0.05)', border: `1px solid ${editResult.ok ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)'}` }}>
+                        <p className={`text-xs font-medium ${editResult.ok ? 'text-emerald-400' : 'text-red-400'}`}>
+                          {editResult.msg}
+                        </p>
+                        {editResult.json && (
+                          <div className="relative">
+                            <pre className="text-[10px] text-zinc-400 font-mono p-3 rounded-lg overflow-x-auto"
+                              style={{ background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                              {`ADMIN_USERS=${editResult.json}`}
+                            </pre>
+                            <button
+                              onClick={() => copyText(`ADMIN_USERS=${editResult.json}`, 'cred')}
+                              className="absolute top-2 right-2 p-1.5 rounded-lg"
+                              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
+                            >
+                              {copied === 'cred' ? <CheckCircle2 className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3 text-zinc-500" />}
+                            </button>
+                          </div>
+                        )}
+                        {editResult.ok && (
+                          <p className="text-[10px] text-zinc-500">
+                            ⚠️ Copy the snippet above → Vercel → Environment Variables → update ADMIN_USERS → Redeploy
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
+
 }

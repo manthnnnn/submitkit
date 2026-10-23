@@ -1213,7 +1213,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
 
                   <div className="text-center pt-2">
                     <p className="text-xs text-zinc-400">
-                      🔒 All 8+ steps with {buildInfo.canBuild ? "Antigravity Master Prompt" : "verified implementation code"}, architecture flow, and evaluator Q&A — unlock for ₹19
+                      🔓 All 8+ steps with {buildInfo.canBuild ? "Antigravity Master Prompt" : "verified implementation code"}, architecture flow, and evaluator Q&A — free to access
                     </p>
                   </div>
                 </section>
@@ -1230,7 +1230,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                     <div className="flex items-center gap-2 pt-1">
                       <Lock className="w-3.5 h-3.5 text-zinc-500" />
                       <p className="text-zinc-500 text-xs">
-                        Direct download link, backup dataset, and 80/20 train-test split script — unlock for ₹19
+                        Direct download link, backup dataset, and 80/20 train-test split script — free with every blueprint
                       </p>
                     </div>
                   </div>

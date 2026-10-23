@@ -60,7 +60,7 @@ export default async function AdminBlueprintsPage() {
       <div className="space-y-5">
         <div>
           <h1 className="text-2xl font-display font-bold text-white tracking-tight">Blueprint Sales</h1>
-          <p className="text-zinc-500 text-sm mt-0.5">Choose Your Topic — ₹19 purchases</p>
+          <p className="text-zinc-500 text-sm mt-0.5">Choose Your Topic — Free blueprint accesses</p>
         </div>
         <div className="rounded-2xl p-5 flex items-start gap-4" style={{ ...cardStyle, borderColor: 'rgba(239,68,68,0.25)' }}>
           <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
@@ -82,7 +82,7 @@ export default async function AdminBlueprintsPage() {
   const downloads = paid.reduce((s, r) => s + r.pdf_downloads, 0);
 
   const stats = [
-    { label: 'Revenue (₹19 × paid)',  value: `₹${revenue}`,        accent: '#34d399' },
+    { label: 'Blueprint Accesses',     value: `${paid.length}`,      accent: '#34d399' },
     { label: 'Paid Blueprints',        value: String(paid.length),   accent: '#34d399' },
     { label: 'Pending / Other',        value: String(rows.length - paid.length), accent: '#fbbf24' },
     { label: 'Total .docx Downloads',  value: String(downloads),     accent: '#a78bfa' },
@@ -95,7 +95,7 @@ export default async function AdminBlueprintsPage() {
         <div>
           <h1 className="text-2xl font-display font-bold text-white tracking-tight">Blueprint Sales</h1>
           <p className="text-zinc-500 text-sm mt-0.5">
-            All "Choose Your Topic" purchases — ₹19 each
+            All "Choose Your Topic" free blueprint accesses
           </p>
         </div>
         <div className="w-9 h-9 rounded-xl flex items-center justify-center"

@@ -74,7 +74,7 @@ export function BlueprintPurchasesTable({ rows }: { rows: BlueprintRow[] }) {
     return (
       <div className="rounded-2xl p-12 text-center" style={cardStyle}>
         <p className="text-zinc-500 text-sm">No blueprint purchases yet.</p>
-        <p className="text-zinc-700 text-xs mt-1">Purchases will appear here once users buy a ₹19 blueprint.</p>
+        <p className="text-zinc-700 text-xs mt-1">Blueprint accesses will appear here once users unlock a free blueprint.</p>
       </div>
     );
   }

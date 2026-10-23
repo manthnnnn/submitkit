@@ -336,7 +336,7 @@ export default function BlueprintBrowserPage() {
           </h1>
 
           <p className="text-base md:text-lg text-zinc-400 max-w-2xl mx-auto leading-relaxed">
-            Pick from 1,000+ verified engineering topics. Filter by AI, ML, Mini vs. Major, or No-Code. Download the complete step-by-step roadmap, mock dataset generator, and 1-prompt AI build guide for just <span className="text-white font-semibold">₹19</span>.
+            Pick from 1,000+ verified engineering topics. Filter by AI, ML, Mini vs. Major, or No-Code. Get the complete step-by-step roadmap, mock dataset generator, and 1-prompt AI build guide — <span className="text-emerald-400 font-semibold">completely free</span>.
           </p>
         </div>
 
@@ -387,23 +387,23 @@ export default function BlueprintBrowserPage() {
 
           {/* ₹19 Blueprint Starter Callout Banner (Dismissable) */}
           {!bannerDismissed && (
-            <div className="relative overflow-hidden rounded-2xl border border-amber-500/30 bg-gradient-to-r from-amber-950/40 via-zinc-900/90 to-amber-950/30 p-4 sm:p-5 shadow-xl shadow-amber-500/5 backdrop-blur-md">
+            <div className="relative overflow-hidden rounded-2xl border border-emerald-500/30 bg-gradient-to-r from-emerald-950/40 via-zinc-900/90 to-emerald-950/30 p-4 sm:p-5 shadow-xl shadow-emerald-500/5 backdrop-blur-md">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="flex items-start gap-3.5">
-                  <div className="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0 mt-0.5 shadow-sm">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5 shadow-sm">
                     <FileText className="w-5 h-5" />
                   </div>
                   <div className="space-y-1">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="text-sm font-bold text-white">
-                        Every Topic Includes a ₹19 Blueprint Starter Pack
+                        Every Topic Includes a Free Blueprint Starter Pack
                       </span>
-                      <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-extrabold uppercase tracking-wider">
-                        ₹19 Only
+                      <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-extrabold uppercase tracking-wider">
+                        100% Free
                       </span>
                     </div>
                     <p className="text-xs text-zinc-300 max-w-2xl leading-relaxed">
-                      Need topic approval first? Get the complete step-by-step IEEE roadmap (.docx &amp; .pdf), system architecture, mock dataset, and top 10 examiner viva Q&amp;A for any topic below before buying code.
+                      Get the complete step-by-step IEEE roadmap (.docx &amp; .pdf), system architecture, mock dataset, and top 10 examiner Q&amp;A for any topic — no purchase needed.
                     </p>
                   </div>
                 </div>
@@ -416,7 +416,7 @@ export default function BlueprintBrowserPage() {
                         sampleCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
                       }
                     }}
-                    className="px-3.5 py-1.5 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-xs font-bold transition-all flex items-center gap-1"
+                    className="px-3.5 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-xs font-bold transition-all flex items-center gap-1"
                   >
                     <span>Pick a Topic</span>
                     <ArrowRight className="w-3.5 h-3.5" />

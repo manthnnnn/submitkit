@@ -183,10 +183,10 @@ export function HomeSchema() {
           },
           {
             '@type': 'Question',
-            name: 'What is the difference between Blueprint (₹19), Mini (₹299), and Major (₹499)?',
+            name: 'What is the difference between Blueprint (Free), Mini (₹299), and Major (₹499)?',
             acceptedAnswer: {
               '@type': 'Answer',
-              text: 'Blueprint (₹19) is a topic roadmap — full system architecture, 1-prompt AI build guide, dataset link, and top 10 Viva Q&A (no source code). Mini Project (₹299) is for Sem 5/Sem 6 submissions: full runnable code + 30-page IEEE report + PPT + 15 Viva Q&A. Major Project (₹499) is for Sem 7/Sem 8 final year: full production-level source code + 60-page IEEE Black Book + defense PPT + 25 Viva Q&A + video setup guide.',
+              text: 'Blueprint (Free) is a topic roadmap — full system architecture, 1-prompt AI build guide, dataset link, and top 10 Examiner Q&A (no source code). Mini Project (₹299) is for Sem 5/Sem 6 submissions: full runnable code + 30-page IEEE report + PPT + 15 Q&A. Major Project (₹499) is for Sem 7/Sem 8 final year: full production-level source code + 60-page IEEE Black Book + defense PPT + 25 Q&A + video setup guide.',
             },
           },
           {
@@ -402,7 +402,7 @@ export function BlueprintSchema({
       },
       {
         '@type': 'Product',
-        name: `${title} — Topic Blueprint (₹19)`,
+        name: `${title} — Topic Blueprint (Free)`,
         description: `Full roadmap, system architecture, 1-prompt AI build guide, dataset reference, and Viva Q&A for the project "${title}".`,
         brand: { '@type': 'Brand', name: CONSTANTS.APP_NAME },
         image: `${baseUrl}/og-image.jpg`,

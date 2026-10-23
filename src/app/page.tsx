@@ -653,41 +653,40 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto text-left">
 
-            {/* Blueprint Starter - ₹19 */}
+            {/* Blueprint Starter - FREE */}
             <motion.div
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.05 }}
-              className="glass-card rounded-2xl p-6 md:p-7 flex flex-col hover-glow transition-all duration-500 hover:-translate-y-1 border-t-2 border-t-amber-400 bg-amber-950/10 relative overflow-hidden"
+              className="glass-card rounded-2xl p-6 md:p-7 flex flex-col hover-glow transition-all duration-500 hover:-translate-y-1 border-t-2 border-t-emerald-400 bg-emerald-950/10 relative overflow-hidden"
             >
               <div className="flex justify-between items-start mb-1">
                 <h3 className="text-xl font-medium text-white">Blueprint Starter</h3>
-                <span className="bg-amber-500/20 border border-amber-500/30 text-amber-400 text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
-                  <Flame className="w-2.5 h-2.5 text-amber-400" /> Best Entry
+                <span className="bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                  <Flame className="w-2.5 h-2.5 text-emerald-400" /> Free
                 </span>
               </div>
               <p className="text-xs text-zinc-400 mb-5">Topic roadmap &amp; evaluator defense before writing code.</p>
               <div className="flex items-baseline gap-2 mb-6 pb-6 border-b border-white/5">
-                <span className="text-4xl font-bold text-white">₹19</span>
-                <span className="text-zinc-600 text-sm line-through">₹149</span>
-                <span className="text-xs text-amber-400 font-semibold ml-1">Save ₹130</span>
+                <span className="text-4xl font-bold text-emerald-400">FREE</span>
+                <span className="text-xs text-emerald-500 font-semibold ml-1">Always free</span>
               </div>
               <ul className="space-y-3 mb-8 flex-grow">
                 {[
                   'Topic Roadmap (.docx & .pdf)',
                   '1-Prompt AI Master Build Guide',
                   'Mock Dataset & Architecture Schema',
-                  'Top 10 Viva Q&A with Answers',
+                  'Top 10 Examiner Q&A with Answers',
                   'Instant WhatsApp & Email Access',
                 ].map(item => (
                   <li key={item} className="flex items-center gap-2.5">
-                    <CheckCircle2 className="h-4 w-4 text-amber-400 shrink-0" />
+                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
                     <span className="text-zinc-300 text-sm">{item}</span>
                   </li>
                 ))}
               </ul>
-              <Link href="/blueprint" className="block w-full py-3 px-4 bg-amber-500/10 hover:bg-amber-500/20 text-center rounded-xl text-amber-300 font-medium transition-all text-sm border border-amber-500/30 hover:border-amber-500/50">
+              <Link href="/blueprint" className="block w-full py-3 px-4 bg-emerald-500/10 hover:bg-emerald-500/20 text-center rounded-xl text-emerald-300 font-medium transition-all text-sm border border-emerald-500/30 hover:border-emerald-500/50">
                 Browse 1,000+ Topics
               </Link>
             </motion.div>
