@@ -56,8 +56,10 @@ export default function AdminLogin() {
       });
 
       if (res.ok) {
+        const data = await res.json().catch(() => ({}));
+        const target = data?.role === 'CONTENT_ADMIN' ? '/admin/projects' : '/admin';
         setUnlocked(true);
-        setTimeout(() => { window.location.href = '/admin'; }, 350);
+        setTimeout(() => { window.location.href = target; }, 350);
       } else {
         const data = await res.json();
         setError(data.error || 'Incorrect credentials');

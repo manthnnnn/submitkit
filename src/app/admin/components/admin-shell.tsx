@@ -97,7 +97,7 @@ export function AdminShell({
           backdropFilter: 'blur(20px)',
         }}
       >
-        <Logo size="sm" href="/admin" badge="Admin" />
+        <Logo size="sm" href={session?.role === 'CONTENT_ADMIN' ? "/admin/projects" : "/admin"} badge="Admin" />
 
         <div className="flex items-center gap-2">
           <button

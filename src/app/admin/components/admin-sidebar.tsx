@@ -42,7 +42,7 @@ export function AdminSidebar({
   const NAV_SECTIONS = [
     {
       label: 'Overview',
-      show: true,
+      show: vis.dashboard || vis.analytics || vis.acquisitions,
       items: [
         { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true, show: vis.dashboard },
         { href: '/admin/analytics', label: 'Analytics', icon: BarChart3, exact: false, show: vis.analytics },
@@ -86,7 +86,7 @@ export function AdminSidebar({
     >
       {/* Brand Header */}
       <div className="px-5 py-5 flex items-center justify-between" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-        <Link href="/admin" className="flex items-center gap-3 group">
+        <Link href={vis.dashboard ? "/admin" : "/admin/projects"} className="flex items-center gap-3 group">
           <BrandIcon size="sm" />
           <div>
             <p className="font-display font-bold text-sm text-white leading-none">

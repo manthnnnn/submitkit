@@ -2,9 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-  Users, Shield, UserCheck, Eye, Loader2, Copy,
+  Users, Shield, UserCheck, Eye, EyeOff, Loader2, Copy,
   CheckCircle2, GitBranch, Terminal, ShieldAlert, Package,
   Info, Pencil, KeyRound, Mail, User, X, Save, RefreshCw,
+  Sparkles, ExternalLink,
 } from 'lucide-react';
 
 
@@ -94,8 +95,19 @@ export default function AdminTeamPage() {
   const [teamUsers, setTeamUsers] = useState<AdminUserMasked[]>([]);
   const [editingUser, setEditingUser] = useState<string | null>(null);
   const [editForm, setEditForm] = useState({ newEmail: '', newPassword: '', newName: '' });
+  const [showEditPassword, setShowEditPassword] = useState(false);
   const [editSaving, setEditSaving] = useState(false);
   const [editResult, setEditResult] = useState<{ ok: boolean; msg: string; json?: string } | null>(null);
+
+  const generateRandomPassword = () => {
+    const chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789!@#$%&*';
+    let pass = '';
+    for (let i = 0; i < 14; i++) {
+      pass += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    setEditForm(f => ({ ...f, newPassword: pass }));
+    setShowEditPassword(true);
+  };
 
   useEffect(() => {
     fetch('/api/admin/team')
@@ -466,50 +478,97 @@ NEXT_PUBLIC_GA_ID=G-4GDSEV10E1
                       <div className="relative">
                         <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-500" />
                         <input
-                          type="password"
+                          type={showEditPassword ? "text" : "password"}
                           placeholder="New password (min 8 chars)"
                           value={editForm.newPassword}
                           onChange={e => setEditForm(f => ({ ...f, newPassword: e.target.value }))}
-                          className="w-full bg-black/30 border border-white/8 rounded-xl pl-9 pr-3 py-2.5 text-xs text-white placeholder-zinc-600 focus:outline-none focus:border-indigo-500/50 font-mono tracking-widest"
+                          className="w-full bg-black/30 border border-white/8 rounded-xl pl-9 pr-16 py-2.5 text-xs text-white placeholder-zinc-600 focus:outline-none focus:border-indigo-500/50 font-mono"
                         />
+                        <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                          <button
+                            type="button"
+                            onClick={() => setShowEditPassword(!showEditPassword)}
+                            className="p-1 rounded text-zinc-500 hover:text-zinc-200 transition-colors"
+                            title={showEditPassword ? "Hide password" : "Show password"}
+                          >
+                            {showEditPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={generateRandomPassword}
+                            className="p-1 rounded text-indigo-400 hover:text-indigo-200 transition-colors"
+                            title="Auto-generate secure password"
+                          >
+                            <Sparkles className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </div>
                     </div>
 
-                    <button
-                      onClick={() => handleEditSave(u.email)}
-                      disabled={editSaving}
-                      className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all disabled:opacity-50"
-                      style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)', color: '#fff', boxShadow: '0 0 16px rgba(99,102,241,0.25)' }}
-                    >
-                      {editSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
-                      Save & Generate Vercel Snippet
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleEditSave(u.email)}
+                        disabled={editSaving}
+                        className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all disabled:opacity-50"
+                        style={{ background: 'linear-gradient(135deg,#6366f1,#4f46e5)', color: '#fff', boxShadow: '0 0 16px rgba(99,102,241,0.25)' }}
+                      >
+                        {editSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+                        Save & Generate Vercel Snippet
+                      </button>
+                      <button
+                        type="button"
+                        onClick={generateRandomPassword}
+                        className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium text-indigo-300 hover:text-white transition-all"
+                        style={{ background: 'rgba(99,102,241,0.1)', border: '1px solid rgba(99,102,241,0.2)' }}
+                      >
+                        <Sparkles className="w-3.5 h-3.5 text-indigo-400" /> Generate Password
+                      </button>
+                    </div>
 
                     {editResult && (
-                      <div className={`rounded-xl p-3 space-y-2 ${editResult.ok ? 'border-emerald-500/25' : 'border-red-500/25'}`}
+                      <div className={`rounded-xl p-4 space-y-3 ${editResult.ok ? 'border-emerald-500/25' : 'border-red-500/25'}`}
                         style={{ background: editResult.ok ? 'rgba(16,185,129,0.05)' : 'rgba(239,68,68,0.05)', border: `1px solid ${editResult.ok ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)'}` }}>
-                        <p className={`text-xs font-medium ${editResult.ok ? 'text-emerald-400' : 'text-red-400'}`}>
-                          {editResult.msg}
-                        </p>
+                        <div className="flex items-center justify-between">
+                          <p className={`text-xs font-semibold ${editResult.ok ? 'text-emerald-400' : 'text-red-400'}`}>
+                            {editResult.msg}
+                          </p>
+                          {editResult.ok && (
+                            <a
+                              href="https://vercel.com/dashboard"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 text-[11px] font-bold text-indigo-300 hover:text-indigo-200 underline"
+                            >
+                              Open Vercel Settings <ExternalLink className="w-3 h-3" />
+                            </a>
+                          )}
+                        </div>
+
                         {editResult.json && (
                           <div className="relative">
-                            <pre className="text-[10px] text-zinc-400 font-mono p-3 rounded-lg overflow-x-auto"
-                              style={{ background: 'rgba(0,0,0,0.4)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                            <pre className="text-[10px] text-zinc-300 font-mono p-3 rounded-lg overflow-x-auto"
+                              style={{ background: 'rgba(0,0,0,0.5)', border: '1px solid rgba(255,255,255,0.08)' }}>
                               {`ADMIN_USERS=${editResult.json}`}
                             </pre>
                             <button
                               onClick={() => copyText(`ADMIN_USERS=${editResult.json}`, 'cred')}
-                              className="absolute top-2 right-2 p-1.5 rounded-lg"
-                              style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)' }}
+                              className="absolute top-2 right-2 px-2.5 py-1 rounded-md text-[10px] font-bold flex items-center gap-1 transition-all"
+                              style={{ background: 'rgba(99,102,241,0.2)', border: '1px solid rgba(99,102,241,0.3)', color: '#a5b4fc' }}
                             >
-                              {copied === 'cred' ? <CheckCircle2 className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3 text-zinc-500" />}
+                              {copied === 'cred' ? <CheckCircle2 className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                              {copied === 'cred' ? 'Copied!' : 'Copy'}
                             </button>
                           </div>
                         )}
+
                         {editResult.ok && (
-                          <p className="text-[10px] text-zinc-500">
-                            ⚠️ Copy the snippet above → Vercel → Environment Variables → update ADMIN_USERS → Redeploy
-                          </p>
+                          <div className="rounded-lg p-3 text-[11px] text-zinc-400 space-y-1"
+                            style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}>
+                            <p className="font-semibold text-white">How to Deploy Changes in 30 Seconds:</p>
+                            <p>1. Click <strong className="text-indigo-300">Copy</strong> on the snippet above.</p>
+                            <p>2. Open <strong className="text-white">Vercel Dashboard → Your Project → Settings → Environment Variables</strong>.</p>
+                            <p>3. Edit <code className="text-emerald-400 font-mono">ADMIN_USERS</code>, paste the new value, save, and hit <strong className="text-white">Redeploy</strong>.</p>
+                          </div>
                         )}
                       </div>
                     )}

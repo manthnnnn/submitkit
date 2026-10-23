@@ -87,7 +87,7 @@ export function hasPermission(role: AdminRole, permission: AdminPermission): boo
 /** Returns which sidebar sections/items are visible for a given role */
 export function getSidebarVisibility(role: AdminRole) {
   return {
-    dashboard: true,
+    dashboard: role !== 'CONTENT_ADMIN',
     analytics: hasPermission(role, 'analytics:view'),
     acquisitions: hasPermission(role, 'orders:view'),
     projects: hasPermission(role, 'projects:view'),
