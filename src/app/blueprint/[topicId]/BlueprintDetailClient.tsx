@@ -376,11 +376,11 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
             </div>
 
             <div className="shrink-0 w-full lg:w-auto flex flex-col sm:flex-row lg:flex-col gap-3">
-              {buildInfo.projectSlug && buildInfo.isAvailable ? (
+              {topic.id && isProjectAvailable(topic.id) ? (
                 /* Project exists & is ready — link directly to it */
                 <>
                   <Link
-                    href={`/projects/${buildInfo.projectSlug}`}
+                    href={`/projects/${topic.id}`}
                     className="w-full inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-gradient-to-r from-emerald-500 via-brand-600 to-indigo-600 hover:brightness-110 text-white font-black text-sm rounded-2xl shadow-2xl shadow-emerald-500/25 transition-all hover:scale-[1.02] uppercase tracking-wider"
                   >
                     <Zap className="w-5 h-5" /> Get Full Project Kit
@@ -393,7 +393,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                 /* Project not ready yet — show coming soon, link to waitlist on project page */
                 <>
                   <Link
-                    href={buildInfo.projectSlug ? `/projects/${buildInfo.projectSlug}` : '/projects'}
+                    href={topic.id ? `/projects/${topic.id}` : '/projects'}
                     className="w-full inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-amber-500/20 hover:bg-amber-500/30 border-2 border-amber-500/50 text-amber-300 font-black text-sm rounded-2xl transition-all hover:scale-[1.02] uppercase tracking-wider"
                   >
                     🚧 Coming Soon — Join Waitlist

@@ -228,8 +228,8 @@ export default function Home() {
 
               {/* Star rating social proof */}
               <motion.div
-                initial={{ opacity: 0, opacity: 0 }}
-                animate={{ opacity: 1, opacity: 1 }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.4 }}
                 className="flex items-center gap-3 mt-8 pt-8 border-t border-white/10"
               >

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -15,41 +15,10 @@ import {
   TrendingUp,
   Search,
   ChevronRight,
-  ShieldCheck,
+  Users,
 } from 'lucide-react';
 import { BrandIcon } from '@/components/ui/logo';
-import { AdminSession, getRoleBadgeConfig } from '@/lib/rbac';
-
-export const ADMIN_NAV_SECTIONS = [
-  {
-    label: 'Overview',
-    items: [
-      { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
-      { href: '/admin/analytics', label: 'Analytics', icon: BarChart3, exact: false },
-      { href: '/admin/acquisitions', label: 'Acquisitions', icon: TrendingUp, exact: false },
-    ],
-  },
-  {
-    label: 'Catalog',
-    items: [
-      { href: '/admin/projects', label: 'Projects', icon: Package, exact: false },
-      { href: '/admin/blueprints', label: 'Blueprints', icon: Map, exact: false },
-    ],
-  },
-  {
-    label: 'Operations',
-    items: [
-      { href: '/admin/orders', label: 'Orders', icon: ShoppingCart, exact: false },
-      { href: '/admin/preorders', label: 'Pre-orders', icon: Clock, exact: false, badge: true },
-    ],
-  },
-  {
-    label: 'Governance',
-    items: [
-      { href: '/admin/audit-log', label: 'Audit Logs', icon: ShieldAlert, exact: false },
-    ],
-  },
-];
+import { AdminSession, getRoleBadgeConfig, getSidebarVisibility } from '@/lib/rbac';
 
 export function AdminSidebar({
   session,
@@ -61,7 +30,50 @@ export function AdminSidebar({
   onOpenCommandPalette?: () => void;
 }) {
   const pathname = usePathname();
-  const roleBadge = getRoleBadgeConfig(session?.role || 'SUPER_ADMIN');
+  const role = session?.role || 'SUPER_ADMIN';
+  const roleBadge = getRoleBadgeConfig(role);
+  const vis = getSidebarVisibility(role);
+
+  // Token age for session display
+  const expiresInHrs = session?.issuedAt
+    ? Math.max(0, Math.round((session.issuedAt + 86400000 - Date.now()) / 3600000))
+    : null;
+
+  const NAV_SECTIONS = [
+    {
+      label: 'Overview',
+      show: true,
+      items: [
+        { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true, show: vis.dashboard },
+        { href: '/admin/analytics', label: 'Analytics', icon: BarChart3, exact: false, show: vis.analytics },
+        { href: '/admin/acquisitions', label: 'Acquisitions', icon: TrendingUp, exact: false, show: vis.acquisitions },
+      ],
+    },
+    {
+      label: 'Catalog',
+      show: vis.projects || vis.blueprints,
+      items: [
+        { href: '/admin/projects', label: 'Projects', icon: Package, exact: false, show: vis.projects },
+        { href: '/admin/blueprints', label: 'Blueprints', icon: Map, exact: false, show: vis.blueprints },
+      ],
+    },
+    {
+      label: 'Operations',
+      show: vis.orders || vis.preorders,
+      items: [
+        { href: '/admin/orders', label: 'Orders', icon: ShoppingCart, exact: false, show: vis.orders },
+        { href: '/admin/preorders', label: 'Pre-orders', icon: Clock, exact: false, badge: true, show: vis.preorders },
+      ],
+    },
+    {
+      label: 'Governance',
+      show: vis.auditLog || vis.team,
+      items: [
+        { href: '/admin/audit-log', label: 'Audit Logs', icon: ShieldAlert, exact: false, show: vis.auditLog },
+        { href: '/admin/team', label: 'Team Access', icon: Users, exact: false, show: vis.team },
+      ],
+    },
+  ];
 
   return (
     <aside
@@ -110,64 +122,68 @@ export function AdminSidebar({
 
       {/* Navigation Sections */}
       <nav className="flex-1 px-3 py-3 space-y-5 overflow-y-auto">
-        {ADMIN_NAV_SECTIONS.map(section => (
-          <div key={section.label}>
-            <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider px-3 mb-1.5">
-              {section.label}
-            </p>
-            <div className="space-y-0.5">
-              {section.items.map(({ href, label, icon: Icon, exact, badge }) => {
-                const isActive = exact ? pathname === href : pathname.startsWith(href);
-                const showBadge = badge && hasNewPreorders;
+        {NAV_SECTIONS.filter(s => s.show).map(section => {
+          const visibleItems = section.items.filter(i => i.show);
+          if (visibleItems.length === 0) return null;
+          return (
+            <div key={section.label}>
+              <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider px-3 mb-1.5">
+                {section.label}
+              </p>
+              <div className="space-y-0.5">
+                {visibleItems.map(({ href, label, icon: Icon, exact, badge }) => {
+                  const isActive = exact ? pathname === href : pathname.startsWith(href);
+                  const showBadge = badge && hasNewPreorders;
 
-                return (
-                  <Link
-                    key={href}
-                    href={href}
-                    prefetch={true}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 relative group"
-                    style={
-                      isActive
-                        ? {
-                            background: 'linear-gradient(135deg, rgba(99,102,241,0.22), rgba(99,102,241,0.09))',
-                            border: '1px solid rgba(99,102,241,0.3)',
-                            color: '#ffffff',
-                            boxShadow: '0 0 20px rgba(99,102,241,0.12)',
-                          }
-                        : {
-                            border: '1px solid transparent',
-                            color: '#82828e',
-                          }
-                    }
-                  >
-                    {isActive && (
-                      <span
-                        className="absolute left-0 top-1/2 -translate-y-1/2 rounded-r-full"
-                        style={{ width: '3px', height: '18px', background: 'linear-gradient(180deg,#818cf8,#6366f1)' }}
+                  return (
+                    <Link
+                      key={href}
+                      href={href}
+                      prefetch={true}
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 relative group"
+                      style={
+                        isActive
+                          ? {
+                              background: 'linear-gradient(135deg, rgba(99,102,241,0.22), rgba(99,102,241,0.09))',
+                              border: '1px solid rgba(99,102,241,0.3)',
+                              color: '#ffffff',
+                              boxShadow: '0 0 20px rgba(99,102,241,0.12)',
+                            }
+                          : {
+                              border: '1px solid transparent',
+                              color: '#82828e',
+                            }
+                      }
+                    >
+                      {isActive && (
+                        <span
+                          className="absolute left-0 top-1/2 -translate-y-1/2 rounded-r-full"
+                          style={{ width: '3px', height: '18px', background: 'linear-gradient(180deg,#818cf8,#6366f1)' }}
+                        />
+                      )}
+                      <Icon
+                        className="h-4 w-4 shrink-0 transition-transform group-hover:scale-110"
+                        style={{ color: isActive ? '#818cf8' : undefined }}
                       />
-                    )}
-                    <Icon
-                      className="h-4 w-4 shrink-0 transition-transform group-hover:scale-110"
-                      style={{ color: isActive ? '#818cf8' : undefined }}
-                    />
-                    <span className="flex-1 truncate">{label}</span>
+                      <span className="flex-1 truncate">{label}</span>
 
-                    {showBadge && (
-                      <span className="flex h-2 w-2 relative">
-                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
-                        <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
-                      </span>
-                    )}
+                      {showBadge && (
+                        <span className="flex h-2 w-2 relative">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
+                        </span>
+                      )}
 
-                    {isActive && !showBadge && (
-                      <ChevronRight className="h-3 w-3 text-indigo-400 opacity-70" />
-                    )}
-                  </Link>
-                );
-              })}
+                      {isActive && !showBadge && (
+                        <ChevronRight className="h-3 w-3 text-indigo-400 opacity-70" />
+                      )}
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </nav>
 
       {/* Admin Profile & Role Footer */}
@@ -204,6 +220,13 @@ export function AdminSidebar({
             {roleBadge.label}
           </span>
         </div>
+
+        {/* Session expiry hint */}
+        {expiresInHrs !== null && (
+          <p className="text-[10px] text-zinc-700 text-center px-1">
+            Session expires in <span className="text-zinc-500 font-medium">{expiresInHrs}h</span>
+          </p>
+        )}
 
         <a
           href="/api/admin/logout"

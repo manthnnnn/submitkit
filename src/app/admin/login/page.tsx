@@ -1,20 +1,28 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Lock, Unlock, ArrowRight, Eye, EyeOff, ShieldCheck, Sparkles, KeyRound } from 'lucide-react';
+import { Lock, Unlock, ArrowRight, Eye, EyeOff, ShieldCheck, Sparkles, KeyRound, Mail } from 'lucide-react';
 import { BrandIcon } from '@/components/ui/logo';
 
 export default function AdminLogin() {
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [unlocked, setUnlocked] = useState(false);
+  const [email, setEmail]           = useState('');
+  const [password, setPassword]     = useState('');
+  const [error, setError]           = useState('');
+  const [loading, setLoading]       = useState(false);
+  const [unlocked, setUnlocked]     = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [shake, setShake] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [shake, setShake]           = useState(false);
+  const [multiUser, setMultiUser]   = useState(false); // detect if ADMIN_USERS is set
+  const emailRef    = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    inputRef.current?.focus();
+    // Check if multi-user mode (ADMIN_USERS env) is active via a lightweight endpoint
+    fetch('/api/admin/login-mode')
+      .then(r => r.json())
+      .then(d => { if (d.multiUser) setMultiUser(true); })
+      .catch(() => {});
+    emailRef.current?.focus();
   }, []);
 
   const triggerShake = () => {
@@ -24,10 +32,16 @@ export default function AdminLogin() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!password.trim()) {
-      setError('Enter your admin key');
+    if (multiUser && !email.trim()) {
+      setError('Enter your email address');
       triggerShake();
-      inputRef.current?.focus();
+      emailRef.current?.focus();
+      return;
+    }
+    if (!password.trim()) {
+      setError('Enter your password');
+      triggerShake();
+      passwordRef.current?.focus();
       return;
     }
 
@@ -38,22 +52,18 @@ export default function AdminLogin() {
       const res = await fetch('/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ email: email.trim(), password }),
       });
 
       if (res.ok) {
-        // iOS unlock celebration state
         setUnlocked(true);
-        // Instant top-level navigation with fresh cookie
-        setTimeout(() => {
-          window.location.href = '/admin';
-        }, 350);
+        setTimeout(() => { window.location.href = '/admin'; }, 350);
       } else {
         const data = await res.json();
-        setError(data.error || 'Incorrect passcode');
+        setError(data.error || 'Incorrect credentials');
         triggerShake();
         setPassword('');
-        inputRef.current?.focus();
+        passwordRef.current?.focus();
       }
     } catch {
       setError('Connection failed. Please retry.');
@@ -65,7 +75,7 @@ export default function AdminLogin() {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center p-4 select-none overflow-hidden bg-[#070709]">
-      {/* iOS Dynamic Ambient Gradients */}
+      {/* Ambient Gradients */}
       <div className="fixed inset-0 pointer-events-none -z-10">
         <div
           className="absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[550px] rounded-full blur-[140px] opacity-25"
@@ -77,10 +87,7 @@ export default function AdminLogin() {
         />
       </div>
 
-      {/* Main iOS Glass Container */}
-      <div
-        className={`w-full max-w-[420px] transition-all duration-300 ${shake ? 'animate-shake' : ''}`}
-      >
+      <div className={`w-full max-w-[420px] transition-all duration-300 ${shake ? 'animate-shake' : ''}`}>
         <div
           className="relative rounded-[32px] p-8 border shadow-2xl backdrop-blur-3xl overflow-hidden"
           style={{
@@ -91,7 +98,7 @@ export default function AdminLogin() {
               : '0 30px 60px -12px rgba(0, 0, 0, 0.7), inset 0 1px 1px 0 rgba(255, 255, 255, 0.2)',
           }}
         >
-          {/* iOS Status Pill */}
+          {/* Status Pill */}
           <div className="flex justify-center mb-6">
             <div
               className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium transition-all"
@@ -106,7 +113,7 @@ export default function AdminLogin() {
             </div>
           </div>
 
-          {/* Animated Lock Icon */}
+          {/* Lock Icon */}
           <div className="flex flex-col items-center text-center mb-8">
             <div
               className="w-16 h-16 rounded-[22px] flex items-center justify-center mb-4 transition-all duration-300 relative shadow-inner"
@@ -126,25 +133,52 @@ export default function AdminLogin() {
             </div>
 
             <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-1.5 font-display">
-              {unlocked ? 'Unlocked' : 'Administrator Passcode'}
+              {unlocked ? 'Access Granted' : 'Administrator Login'}
             </h1>
             <p className="text-xs text-zinc-400 mt-1 max-w-[260px] leading-relaxed">
               {unlocked
                 ? 'Launching console...'
-                : 'Enter your master security key to decrypt and open the management dashboard.'}
+                : multiUser
+                ? 'Sign in with your team credentials to access the dashboard.'
+                : 'Enter your master security key to open the management dashboard.'}
             </p>
           </div>
 
-          {/* Passcode Form */}
-          <form onSubmit={handleLogin} className="space-y-4">
-            <div className="relative">
+          {/* Login Form */}
+          <form onSubmit={handleLogin} className="space-y-3">
+            {/* Email field — shown when multi-user mode */}
+            {multiUser && (
               <div
-                className="flex items-center rounded-2xl transition-all duration-200 overflow-hidden"
+                className="flex items-center rounded-2xl overflow-hidden"
                 style={{
                   background: 'rgba(0, 0, 0, 0.35)',
-                  border: error
-                    ? '1px solid rgba(239, 68, 68, 0.5)'
-                    : '1px solid rgba(255, 255, 255, 0.1)',
+                  border: error && !email ? '1px solid rgba(239, 68, 68, 0.5)' : '1px solid rgba(255, 255, 255, 0.1)',
+                  boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.4)',
+                }}
+              >
+                <div className="pl-4 text-zinc-500">
+                  <Mail className="w-4 h-4" />
+                </div>
+                <input
+                  ref={emailRef}
+                  type="email"
+                  value={email}
+                  onChange={e => { setEmail(e.target.value); if (error) setError(''); }}
+                  disabled={loading || unlocked}
+                  placeholder="your@email.com"
+                  className="w-full bg-transparent px-3 py-3.5 text-sm text-white placeholder-zinc-500 focus:outline-none"
+                  autoComplete="email"
+                />
+              </div>
+            )}
+
+            {/* Password field */}
+            <div>
+              <div
+                className="flex items-center rounded-2xl overflow-hidden transition-all duration-200"
+                style={{
+                  background: 'rgba(0, 0, 0, 0.35)',
+                  border: error ? '1px solid rgba(239, 68, 68, 0.5)' : '1px solid rgba(255, 255, 255, 0.1)',
                   boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.4)',
                 }}
               >
@@ -153,15 +187,12 @@ export default function AdminLogin() {
                 </div>
 
                 <input
-                  ref={inputRef}
+                  ref={passwordRef}
                   type={showPassword ? 'text' : 'password'}
                   value={password}
-                  onChange={e => {
-                    setPassword(e.target.value);
-                    if (error) setError('');
-                  }}
+                  onChange={e => { setPassword(e.target.value); if (error) setError(''); }}
                   disabled={loading || unlocked}
-                  placeholder="Master Passcode"
+                  placeholder={multiUser ? 'Password' : 'Master Passcode'}
                   className="w-full bg-transparent px-3 py-3.5 text-sm text-white placeholder-zinc-500 focus:outline-none font-mono tracking-wider"
                   autoComplete="current-password"
                 />
@@ -178,7 +209,7 @@ export default function AdminLogin() {
                 <button
                   type="submit"
                   disabled={loading || unlocked || !password}
-                  className="mr-2 w-9 h-9 rounded-xl flex items-center justify-center transition-all disabled:opacity-30 disabled:hover:scale-100 active:scale-95 shrink-0"
+                  className="mr-2 w-9 h-9 rounded-xl flex items-center justify-center transition-all disabled:opacity-30 active:scale-95 shrink-0"
                   style={{
                     background: unlocked
                       ? '#10b981'
@@ -202,7 +233,7 @@ export default function AdminLogin() {
               )}
             </div>
 
-            {/* iOS style unlock button */}
+            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading || unlocked}
@@ -223,15 +254,15 @@ export default function AdminLogin() {
               ) : loading ? (
                 <>
                   <div className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  <span>Decrypting Session...</span>
+                  <span>Authenticating...</span>
                 </>
               ) : (
-                <span>Unlock Console</span>
+                <span>Sign In to Console</span>
               )}
             </button>
           </form>
 
-          {/* Footer note */}
+          {/* Footer */}
           <div className="mt-6 pt-5 border-t border-white/5 flex items-center justify-between text-[11px] text-zinc-500">
             <span className="flex items-center gap-1.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />

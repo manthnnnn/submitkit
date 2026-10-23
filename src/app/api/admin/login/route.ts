@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import crypto from 'crypto';
 import { checkRateLimit, getClientIP } from '@/lib/rate-limit';
+import { createAdminSessionToken, getAdminUsers } from '@/lib/rbac';
+import { logAuditAction } from '@/lib/audit';
 
 export async function POST(req: NextRequest) {
   try {
-    // Rate limit: 5 login attempts per minute per IP to prevent brute force
     const ip = getClientIP(req);
     const rl = checkRateLimit(`admin-login:${ip}`, { maxRequests: 5, windowSeconds: 60 });
     if (!rl.allowed) {
@@ -17,9 +17,64 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Password required' }, { status: 400 });
     }
 
-    const { password } = body;
+    const { email, password } = body;
 
-    // Constant-time comparison to prevent timing attacks
+    // ── Multi-user login via ADMIN_USERS env var ──────────────────────────
+    const adminUsers = getAdminUsers();
+
+    if (adminUsers.length > 0) {
+      // Email+password login
+      if (!email) {
+        return NextResponse.json({ error: 'Email required' }, { status: 400 });
+      }
+
+      const user = adminUsers.find(
+        u => u.email.toLowerCase() === email.toLowerCase().trim()
+      );
+
+      if (!user) {
+        return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+      }
+
+      // Constant-time comparison
+      const pwdBuf = Buffer.from(password);
+      const expBuf = Buffer.from(user.password);
+      let match = false;
+      try {
+        match = pwdBuf.length === expBuf.length && require('crypto').timingSafeEqual(pwdBuf, expBuf);
+      } catch { match = false; }
+
+      if (!match) {
+        return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+      }
+
+      const cookieValue = await createAdminSessionToken({
+        email: user.email,
+        role: user.role,
+        displayName: user.name,
+      });
+
+      logAuditAction({
+        admin_email: user.email,
+        action: 'ADMIN_LOGIN',
+        entity_type: 'AUTH',
+        entity_id: 'session',
+        ip_address: ip,
+        metadata: { role: user.role, timestamp: new Date().toISOString() },
+      }).catch(() => {});
+
+      const response = NextResponse.json({ success: true, role: user.role });
+      response.cookies.set('admin_token', cookieValue, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+        maxAge: 86400,
+      });
+      return response;
+    }
+
+    // ── Legacy single-password fallback (SUPER_ADMIN) ────────────────────
     const secret = process.env.ADMIN_SECRET_KEY || '';
     const passwordBuf = Buffer.from(password.padEnd(secret.length, '\0'));
     const secretBuf   = Buffer.from(secret.padEnd(password.length, '\0'));
@@ -36,17 +91,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
     }
 
-    // Issue signed RBAC token
-    const { createAdminSessionToken } = await import('@/lib/rbac');
-    const { logAuditAction } = await import('@/lib/audit');
-
     const cookieValue = await createAdminSessionToken({
       email: 'admin@submitkit.in',
       role: 'SUPER_ADMIN',
       displayName: 'Super Admin',
     });
 
-    // Fire audit log asynchronously (never block authentication)
     logAuditAction({
       admin_email: 'admin@submitkit.in',
       action: 'ADMIN_LOGIN',
@@ -57,16 +107,15 @@ export async function POST(req: NextRequest) {
     }).catch(() => {});
 
     const response = NextResponse.json({ success: true });
-
     response.cookies.set('admin_token', cookieValue, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/',
-      maxAge: 86400, // 24 hours
+      maxAge: 86400,
     });
-
     return response;
+
   } catch (error) {
     console.error('Admin login error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

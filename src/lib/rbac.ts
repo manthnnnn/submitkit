@@ -7,19 +7,28 @@ export type AdminPermission =
   | 'projects:create'
   | 'projects:edit'
   | 'projects:delete'
+  | 'projects:upload'
   | 'blueprints:view'
   | 'blueprints:edit'
   | 'preorders:view'
   | 'preorders:broadcast'
   | 'analytics:view'
   | 'audit:view'
-  | 'settings:manage';
+  | 'settings:manage'
+  | 'team:manage';
 
 export interface AdminSession {
   email: string;
   role: AdminRole;
   displayName?: string;
   issuedAt: number;
+}
+
+export interface AdminUser {
+  email: string;
+  password: string;
+  role: AdminRole;
+  name: string;
 }
 
 const ROLE_PERMISSIONS: Record<AdminRole, AdminPermission[]> = {
@@ -30,6 +39,7 @@ const ROLE_PERMISSIONS: Record<AdminRole, AdminPermission[]> = {
     'projects:create',
     'projects:edit',
     'projects:delete',
+    'projects:upload',
     'blueprints:view',
     'blueprints:edit',
     'preorders:view',
@@ -37,14 +47,15 @@ const ROLE_PERMISSIONS: Record<AdminRole, AdminPermission[]> = {
     'analytics:view',
     'audit:view',
     'settings:manage',
+    'team:manage',
   ],
   OPS_ADMIN: [
     'orders:view',
     'orders:modify',
-    'preorders:view',
-    'preorders:broadcast',
     'projects:view',
     'blueprints:view',
+    'preorders:view',
+    'preorders:broadcast',
     'analytics:view',
     'audit:view',
   ],
@@ -52,6 +63,7 @@ const ROLE_PERMISSIONS: Record<AdminRole, AdminPermission[]> = {
     'projects:view',
     'projects:create',
     'projects:edit',
+    'projects:upload',
     'blueprints:view',
     'blueprints:edit',
     'preorders:view',
@@ -72,6 +84,21 @@ export function hasPermission(role: AdminRole, permission: AdminPermission): boo
   return permissions.includes(permission);
 }
 
+/** Returns which sidebar sections/items are visible for a given role */
+export function getSidebarVisibility(role: AdminRole) {
+  return {
+    dashboard: true,
+    analytics: hasPermission(role, 'analytics:view'),
+    acquisitions: hasPermission(role, 'orders:view'),
+    projects: hasPermission(role, 'projects:view'),
+    blueprints: hasPermission(role, 'blueprints:view'),
+    orders: hasPermission(role, 'orders:view'),
+    preorders: hasPermission(role, 'preorders:view'),
+    auditLog: hasPermission(role, 'audit:view'),
+    team: hasPermission(role, 'team:manage'),
+  };
+}
+
 export function getRoleBadgeConfig(role: AdminRole): { label: string; bg: string; text: string; border: string } {
   switch (role) {
     case 'SUPER_ADMIN':
@@ -86,6 +113,17 @@ export function getRoleBadgeConfig(role: AdminRole): { label: string; bg: string
   }
 }
 
+/** Load admin users from ADMIN_USERS env var (JSON array) */
+export function getAdminUsers(): AdminUser[] {
+  try {
+    const raw = process.env.ADMIN_USERS;
+    if (!raw) return [];
+    return JSON.parse(raw) as AdminUser[];
+  } catch {
+    return [];
+  }
+}
+
 // Edge-compatible HMAC token parsing / verification
 export async function parseAdminSession(cookieValue?: string | null): Promise<AdminSession | null> {
   if (!cookieValue) return null;
@@ -93,7 +131,7 @@ export async function parseAdminSession(cookieValue?: string | null): Promise<Ad
   if (!secret) return null;
 
   try {
-    // Check if token has JSON payload prefix: v2.<base64payload>.<hmac>
+    // v2 format: v2.<base64payload>.<hmac>
     if (cookieValue.startsWith('v2.')) {
       const parts = cookieValue.split('.');
       if (parts.length !== 3) return null;
@@ -117,10 +155,14 @@ export async function parseAdminSession(cookieValue?: string | null): Promise<Ad
 
       const jsonStr = atob(base64Payload.replace(/-/g, '+').replace(/_/g, '/'));
       const parsed = JSON.parse(jsonStr) as AdminSession;
+
+      // Check token age — 24 hours max
+      if (Date.now() - parsed.issuedAt > 86400000) return null;
+
       return parsed;
     }
 
-    // Legacy HMAC token format fallback (grants SUPER_ADMIN by default)
+    // Legacy single-password fallback (grants SUPER_ADMIN)
     const dotIndex = cookieValue.lastIndexOf('.');
     if (dotIndex !== -1) {
       const sessionToken = cookieValue.substring(0, dotIndex);
@@ -143,7 +185,7 @@ export async function parseAdminSession(cookieValue?: string | null): Promise<Ad
         return {
           email: 'admin@submitkit.in',
           role: 'SUPER_ADMIN',
-          displayName: 'Admin',
+          displayName: 'Super Admin',
           issuedAt: Date.now(),
         };
       }
@@ -151,7 +193,7 @@ export async function parseAdminSession(cookieValue?: string | null): Promise<Ad
       return {
         email: 'admin@submitkit.in',
         role: 'SUPER_ADMIN',
-        displayName: 'Admin',
+        displayName: 'Super Admin',
         issuedAt: Date.now(),
       };
     }
