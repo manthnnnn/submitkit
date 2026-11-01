@@ -176,8 +176,8 @@ export default function HomePage() {
                 style={{ display: 'flex', flexWrap: 'wrap', gap: '.625rem .875rem', marginBottom: '2rem' }}
               >
                 {['Source code', 'IEEE Black Book', 'Defense PPT', 'Viva Q&A'].map(t => (
-                  <span key={t} style={{ display: 'inline-flex', alignItems: 'center', gap: '.3125rem', fontSize: '.875rem', fontWeight: 600, color: 'var(--teal-dark)' }}>
-                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--teal)', flexShrink: 0 }} />
+                  <span key={t} className="pill-check">
+                    <span className="dot" />
                     {t}
                   </span>
                 ))}
@@ -264,17 +264,17 @@ export default function HomePage() {
       <section style={{ ...S.section(), borderTop: '1px solid var(--line)', borderBottom: '1px solid var(--line)', padding: '2.75rem 0' }}>
         <div className="shell">
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(13rem, 1fr))', gap: '1.25rem', maxWidth: '64rem', margin: '0 auto' }}>
-            <div className="card" style={{ padding: '1.25rem', textAlign: 'center', background: 'rgba(255, 255, 255, 0.75)', backdropFilter: 'blur(10px)', border: '1px solid var(--line)', borderRadius: '16px', boxShadow: 'var(--sh-xs)' }}>
+            <div className="stat-card">
               <StatNum val={59} suffix="" label="Ready Project Kits" />
             </div>
-            <div className="card" style={{ padding: '1.25rem', textAlign: 'center', background: 'rgba(255, 255, 255, 0.75)', backdropFilter: 'blur(10px)', border: '1px solid var(--line)', borderRadius: '16px', boxShadow: 'var(--sh-xs)' }}>
+            <div className="stat-card">
               <StatNum val={CONSTANTS.TOTAL_TOPICS} suffix="+" label="Free Blueprints" />
             </div>
-            <div className="card" style={{ padding: '1.25rem', textAlign: 'center', background: 'rgba(255, 255, 255, 0.75)', backdropFilter: 'blur(10px)', border: '1px solid var(--line)', borderRadius: '16px', boxShadow: 'var(--sh-xs)' }}>
-              <div style={{ fontSize: 'clamp(1.875rem,4vw,2.5rem)', fontWeight: 900, letterSpacing: '-.05em', color: 'var(--teal)', lineHeight: 1 }}>₹1,20,000+</div>
+            <div className="stat-card">
+              <div style={{ fontSize: 'clamp(1.875rem,4vw,2.5rem)', fontWeight: 900, letterSpacing: '-.05em', color: 'var(--teal)', lineHeight: 1, whiteSpace: 'nowrap' }}>₹1,20,000+</div>
               <div style={{ fontSize: '.75rem', color: 'var(--ink-4)', marginTop: '.375rem', fontWeight: 600 }}>Saved vs Local Vendors</div>
             </div>
-            <div className="card" style={{ padding: '1.25rem', textAlign: 'center', background: 'rgba(255, 255, 255, 0.75)', backdropFilter: 'blur(10px)', border: '1px solid var(--line)', borderRadius: '16px', boxShadow: 'var(--sh-xs)' }}>
+            <div className="stat-card">
               <StatNum val={512} suffix="+" label="Final Years Passed" color="var(--navy)" />
             </div>
           </div>
