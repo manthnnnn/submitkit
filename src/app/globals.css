@@ -615,3 +615,66 @@
   color: var(--teal-dark) !important;
   border-color: var(--line-teal) !important;
 }
+
+/* ═══════════════════════════════════════════════════
+   POLISH PASS — motion & responsive refinements
+═══════════════════════════════════════════════════ */
+@layer base {
+  /* Balanced headline line-breaks (progressive enhancement) */
+  h1, h2 { text-wrap: balance; }
+  p { text-wrap: pretty; }
+}
+
+@layer utilities {
+  /* Frosted stat card (shared by stats strip) */
+  .stat-card {
+    background: rgba(255, 255, 255, 0.78);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: var(--sh-xs);
+    padding: 1.25rem;
+    text-align: center;
+    transition: transform 200ms cubic-bezier(.16,1,.3,1), box-shadow 200ms ease, border-color 200ms ease;
+  }
+  @media (pointer: fine) {
+    .stat-card:hover { transform: translateY(-3px); box-shadow: var(--sh-md); border-color: var(--line-teal); }
+  }
+
+  /* Deliverable / trust pill */
+  .pill-check {
+    display: inline-flex;
+    align-items: center;
+    gap: .375rem;
+    padding: .4rem .8rem;
+    border-radius: var(--r-full);
+    background: var(--surface);
+    border: 1px solid var(--line);
+    font-size: .8125rem;
+    font-weight: 600;
+    color: var(--teal-dark);
+    box-shadow: var(--sh-xs);
+    transition: background 150ms ease, border-color 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+  }
+  .pill-check .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+  @media (pointer: fine) {
+    .pill-check:hover { background: var(--teal-50); border-color: var(--line-teal); transform: translateY(-1px); box-shadow: var(--sh-sm); }
+  }
+
+  /* Compact WhatsApp navbar button (icon-only on phones) */
+  .wa-nav-btn { min-height: 2.5rem; min-width: 2.5rem; padding: 0 .875rem; border-radius: 12px; }
+  @media (max-width: 639px) { .wa-nav-btn { padding: 0; gap: 0; } }
+  @media (min-width: 640px) { .wa-nav-btn { gap: .5rem; } }
+}
+
+/* ── Reduced motion — respect user preference ── */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+  .aorb, .apulse, .aribbon, .afloat, .agrad, .apulse2 { animation: none !important; }
+}

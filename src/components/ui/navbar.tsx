@@ -102,13 +102,11 @@ export function Navbar() {
 
           {/* Mobile */}
           <div className="flex lg:hidden" style={{ alignItems: 'center', gap: '.625rem' }}>
-            <a href={`https://wa.me/918799814256`} target="_blank" rel="noopener noreferrer"
-              className="btn btn-wa btn-sm"
-              style={{ gap: '.25rem' }}
+            <a href={`https://wa.me/918799814256`} target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp"
+              className="btn btn-wa wa-nav-btn"
             >
               <WhatsAppIcon />
               <span className="hidden sm:inline">WhatsApp Us</span>
-              <span className="sm:hidden">WA</span>
             </a>
             <button onClick={() => setOpen(true)} className="tt rounded-xl" aria-label="Open menu"
               style={{ background: 'var(--surface-2)', border: '1px solid var(--line)', color: 'var(--ink-2)' }}
