@@ -35,6 +35,12 @@ interface KdsTicket {
   time: string;
 }
 
+const spiceBadgeClass: Record<"Mild" | "Medium" | "Fiery", string> = {
+  Mild:   "bg-green-50 text-green-700 border border-green-200",
+  Medium: "bg-amber-50 text-amber-700 border border-amber-200",
+  Fiery:  "bg-rose-50 text-rose-700 border border-rose-200",
+};
+
 export default function QuickBiteDemo() {
   const [selectedTable, setSelectedTable] = useState("1");
   const [activeModal, setActiveModal]   = useState<"none" | "guest" | "kds">("none");
@@ -107,10 +113,10 @@ export default function QuickBiteDemo() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B0F19] text-white font-sans overflow-hidden">
-      {/* Ambient glows */}
-      <div className="fixed top-[-20%] left-[-10%] w-[50%] h-[50%] bg-violet-600/20 rounded-full mix-blend-screen filter blur-[120px] pointer-events-none" />
-      <div className="fixed bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-amber-500/10 rounded-full mix-blend-screen filter blur-[120px] pointer-events-none" />
+    <div className="min-h-screen bg-[#FFFBF5] text-slate-900 font-sans overflow-hidden">
+      {/* Ambient glows — light warm tones */}
+      <div className="fixed top-[-20%] left-[-10%] w-[50%] h-[50%] bg-amber-200/20 rounded-full blur-[120px] pointer-events-none" />
+      <div className="fixed bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-rose-200/10 rounded-full blur-[120px] pointer-events-none" />
 
       {/* Nav */}
       <nav className="relative z-20 flex items-center justify-between px-6 py-5 max-w-7xl mx-auto">
@@ -118,13 +124,13 @@ export default function QuickBiteDemo() {
           <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-rose-600 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/20">
             <QrCode size={20} className="text-white" />
           </div>
-          <span className="font-black tracking-tight text-xl">QuickBite<span className="text-amber-500">.io</span></span>
+          <span className="font-black tracking-tight text-xl text-slate-900">QuickBite<span className="text-amber-500">.io</span></span>
         </div>
         <div className="flex items-center gap-3">
           <button onClick={() => setActiveModal("guest")} className="bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold px-5 py-2.5 rounded-full text-sm transition-all shadow-[0_0_20px_rgba(245,158,11,0.3)]">
             Guest Menu
           </button>
-          <button onClick={() => setActiveModal("kds")} className="bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 font-bold px-4 py-2.5 rounded-full text-sm transition-all">
+          <button onClick={() => setActiveModal("kds")} className="bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 font-bold px-4 py-2.5 rounded-full text-sm transition-all">
             Kitchen KDS
           </button>
         </div>
@@ -133,12 +139,12 @@ export default function QuickBiteDemo() {
       {/* Hero */}
       <main className="relative z-10 max-w-7xl mx-auto px-6 pt-12 pb-24 flex flex-col items-center text-center">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-xs font-bold uppercase tracking-widest mb-8">
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-xs font-bold uppercase tracking-widest mb-8">
           <Sparkles size={14} /> Full-Stack Engineering Capstone Project
         </motion.div>
 
         <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tighter leading-[1.15] mb-6 max-w-4xl">
+          className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tighter leading-[1.15] mb-6 max-w-4xl text-slate-900">
           Smart Contactless Dining &amp; <br />
           <span className="bg-gradient-to-r from-amber-500 via-rose-500 to-violet-500 bg-clip-text text-transparent">
             Kitchen Intelligence System
@@ -146,39 +152,39 @@ export default function QuickBiteDemo() {
         </motion.h1>
 
         <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-base sm:text-lg text-slate-400 max-w-3xl mb-10 leading-relaxed">
+          className="text-base sm:text-lg text-slate-600 max-w-3xl mb-10 leading-relaxed">
           End-to-end dining platform with real-time Kitchen Display syncing, QR dispatching, and live order tracking.
         </motion.p>
 
         {/* QR Card */}
         <motion.div initial={{ opacity: 0, scale: 0.95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }}
-          className="bg-gradient-to-b from-[#182032] to-[#101624] p-6 sm:p-8 rounded-3xl border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.5)] max-w-xl w-full mb-16 flex flex-col items-center relative overflow-hidden">
+          className="bg-white p-6 sm:p-8 rounded-3xl border border-slate-200 shadow-[0_20px_50px_rgba(0,0,0,0.08)] max-w-xl w-full mb-16 flex flex-col items-center relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
           <div className="flex items-center gap-2 mb-3">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
-            <span className="text-xs font-mono font-bold tracking-widest text-emerald-400 uppercase">LIVE DYNAMIC TABLE QR</span>
+            <span className="text-xs font-mono font-bold tracking-widest text-emerald-600 uppercase">LIVE DYNAMIC TABLE QR</span>
           </div>
 
           {/* Table selector */}
-          <div className="flex items-center gap-2 mb-5 bg-[#0B0F19] p-1.5 rounded-2xl border border-white/5">
+          <div className="flex items-center gap-2 mb-5 bg-slate-100 p-1.5 rounded-2xl border border-slate-200">
             {["1","2","4","7"].map(t => (
               <button key={t} onClick={() => setSelectedTable(t)}
-                className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all ${selectedTable === t ? "bg-amber-500 text-slate-900 shadow-md shadow-amber-500/30 scale-105" : "text-slate-400 hover:text-white"}`}>
+                className={`px-4 py-1.5 rounded-xl text-xs font-bold transition-all ${selectedTable === t ? "bg-amber-500 text-white shadow-md shadow-amber-500/30 scale-105" : "text-slate-700 border border-slate-200 bg-white hover:text-slate-900"}`}>
                 Table {t}
               </button>
             ))}
           </div>
 
-          <div className="p-4 bg-white rounded-2xl shadow-2xl border-4 border-slate-800 mb-3 hover:scale-105 transition-transform flex flex-col items-center">
+          <div className="p-4 bg-white rounded-2xl shadow-md border-2 border-slate-200 mb-3 hover:scale-105 transition-transform flex flex-col items-center">
             <TableQRCode url={qrTargetUrl} size={190} />
           </div>
-          <p className="text-[11px] font-mono text-slate-400 bg-black/40 px-3 py-1 rounded-lg border border-white/5 break-all max-w-sm text-center mb-5">{qrTargetUrl}</p>
+          <p className="text-[11px] font-mono text-slate-500 bg-slate-50 px-3 py-1 rounded-lg border border-slate-200 break-all max-w-sm text-center mb-5">{qrTargetUrl}</p>
 
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full">
-            <button onClick={() => setActiveModal("guest")} className="w-full sm:flex-1 py-3.5 bg-gradient-to-r from-amber-500 to-rose-600 rounded-xl font-bold text-slate-950 text-sm shadow-[0_0_25px_rgba(245,158,11,0.3)] flex items-center justify-center gap-2">
+            <button onClick={() => setActiveModal("guest")} className="w-full sm:flex-1 py-3.5 bg-gradient-to-r from-amber-500 to-rose-600 rounded-xl font-bold text-white text-sm shadow-[0_0_25px_rgba(245,158,11,0.3)] flex items-center justify-center gap-2">
               Simulate Scanning Table {selectedTable} <ArrowRight size={16} />
             </button>
-            <button onClick={() => setActiveModal("kds")} className="w-full sm:w-auto px-5 py-3.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl font-bold text-xs text-slate-300 flex items-center justify-center gap-2">
+            <button onClick={() => setActiveModal("kds")} className="w-full sm:w-auto px-5 py-3.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl font-bold text-xs text-slate-700 flex items-center justify-center gap-2">
               <ChefHat size={16} /> Kitchen KDS
             </button>
           </div>
@@ -190,14 +196,14 @@ export default function QuickBiteDemo() {
             { icon: <Smartphone size={24} />, color: "amber", label: "Customer Portal", title: "Digital Guest Menu", desc: "Mobile-first contactless ordering with categorised dishes, spice filters, cart calculation, and instant kitchen dispatch.", action: () => setActiveModal("guest"), btn: `Launch Guest Menu (Table ${selectedTable})` },
             { icon: <ChefHat size={24} />,    color: "rose",  label: "Kitchen Staff Portal", title: "Kitchen Display System", desc: "Real-time ticket display with automatic state pipelines (Received → Preparing → Ready → Completed) and chef station timers.", action: () => setActiveModal("kds"), btn: "Launch Kitchen KDS" },
           ].map(p => (
-            <motion.div key={p.title} whileHover={{ y: -4 }} className={`bg-[#131824] p-8 rounded-3xl border border-white/10 hover:border-${p.color}-500/50 transition-all flex flex-col justify-between group`}>
+            <motion.div key={p.title} whileHover={{ y: -4 }} className="bg-white p-8 rounded-3xl border border-slate-200 hover:border-amber-200 transition-all flex flex-col justify-between group">
               <div>
-                <div className={`w-12 h-12 bg-${p.color}-500/20 text-${p.color}-400 rounded-2xl flex items-center justify-center mb-6`}>{p.icon}</div>
-                <span className={`text-[10px] font-black uppercase tracking-widest text-${p.color}-500 bg-${p.color}-500/10 px-2.5 py-1 rounded-md`}>{p.label}</span>
-                <h3 className={`text-xl font-bold mb-3 mt-2 group-hover:text-${p.color}-400 transition-colors`}>{p.title}</h3>
-                <p className="text-slate-400 text-sm leading-relaxed mb-6">{p.desc}</p>
+                <div className={`w-12 h-12 ${p.color === 'amber' ? 'bg-amber-50 text-amber-500' : 'bg-rose-50 text-rose-500'} rounded-2xl flex items-center justify-center mb-6`}>{p.icon}</div>
+                <span className={`text-[10px] font-black uppercase tracking-widest ${p.color === 'amber' ? 'text-amber-600 bg-amber-50' : 'text-rose-600 bg-rose-50'} px-2.5 py-1 rounded-md`}>{p.label}</span>
+                <h3 className={`text-xl font-bold mb-3 mt-2 text-slate-900 ${p.color === 'amber' ? 'group-hover:text-amber-500' : 'group-hover:text-rose-500'} transition-colors`}>{p.title}</h3>
+                <p className="text-slate-600 text-sm leading-relaxed mb-6">{p.desc}</p>
               </div>
-              <button onClick={p.action} className={`w-full py-3.5 bg-white/5 hover:bg-${p.color}-500 hover:text-slate-900 border border-white/10 font-bold rounded-xl text-sm transition-all flex items-center justify-center gap-2`}>
+              <button onClick={p.action} className={`w-full py-3.5 bg-slate-50 ${p.color === 'amber' ? 'hover:bg-amber-500' : 'hover:bg-rose-500'} hover:text-white border border-slate-200 font-bold rounded-xl text-sm transition-all flex items-center justify-center gap-2 text-slate-700`}>
                 {p.btn} <ArrowRight size={16} />
               </button>
             </motion.div>
@@ -205,10 +211,10 @@ export default function QuickBiteDemo() {
         </div>
 
         {/* Features */}
-        <div id="features" className="w-full max-w-7xl border-t border-white/5 pt-16">
+        <div id="features" className="w-full max-w-7xl border-t border-slate-200 pt-16">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-black mb-2">Core Architectural Features</h2>
-            <p className="text-slate-400 text-sm">High fault-tolerance, relational schema, sub-second order dispatching.</p>
+            <h2 className="text-3xl font-black mb-2 text-slate-900">Core Architectural Features</h2>
+            <p className="text-slate-600 text-sm">High fault-tolerance, relational schema, sub-second order dispatching.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
             {[
@@ -217,10 +223,10 @@ export default function QuickBiteDemo() {
               { icon: <Database size={20} />, color: "emerald",title: "Prisma & Relational DB",    body: "Relational schema handling tables, orders, nested items, and restaurant records with ACID transactions." },
               { icon: <ShieldCheck size={20}/>,color: "blue",  title: "Zero Dependency QR",       body: "Dynamic vector QR generation ensuring high readability from phone cameras even under dim dining light." },
             ].map(f => (
-              <div key={f.title} className="bg-[#131824] p-6 rounded-2xl border border-white/5">
-                <div className={`w-10 h-10 bg-${f.color}-500/20 text-${f.color}-400 rounded-xl flex items-center justify-center mb-4`}>{f.icon}</div>
-                <h3 className="font-bold text-lg mb-2">{f.title}</h3>
-                <p className="text-slate-400 text-xs leading-relaxed">{f.body}</p>
+              <div key={f.title} className="bg-white p-6 rounded-2xl border border-slate-200">
+                <div className={`w-10 h-10 ${f.color === 'violet' ? 'bg-violet-50 text-violet-500' : f.color === 'amber' ? 'bg-amber-50 text-amber-500' : f.color === 'emerald' ? 'bg-emerald-50 text-emerald-500' : 'bg-blue-50 text-blue-500'} rounded-xl flex items-center justify-center mb-4`}>{f.icon}</div>
+                <h3 className="font-bold text-lg mb-2 text-slate-900">{f.title}</h3>
+                <p className="text-slate-600 text-xs leading-relaxed">{f.body}</p>
               </div>
             ))}
           </div>
@@ -230,54 +236,54 @@ export default function QuickBiteDemo() {
       {/* ── GUEST MENU MODAL ── */}
       <AnimatePresence>
         {activeModal === "guest" && (
-          <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4">
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-[#101624] border border-white/15 rounded-3xl max-w-lg w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+              className="bg-white border border-slate-200 rounded-3xl max-w-lg w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
 
               {/* Header */}
-              <div className="p-4 bg-slate-900 border-b border-white/10 flex items-center justify-between">
+              <div className="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="font-bold text-sm text-white">Spice Lounge • Table #{selectedTable}</span>
+                  <span className="font-bold text-sm text-slate-900">Spice Lounge • Table #{selectedTable}</span>
                 </div>
-                <button onClick={() => setActiveModal("none")} className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-slate-300"><X size={16} /></button>
+                <button onClick={() => setActiveModal("none")} className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500"><X size={16} /></button>
               </div>
 
               {/* Status banner */}
               {orderStatus !== "cart" && (
-                <div className="p-3 bg-emerald-500/20 border-b border-emerald-500/30 flex items-center gap-3">
-                  <div className="w-7 h-7 rounded-full bg-emerald-500/30 text-emerald-300 flex items-center justify-center"><Check size={16} /></div>
+                <div className="p-3 bg-emerald-50 border-b border-emerald-200 flex items-center gap-3">
+                  <div className="w-7 h-7 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center"><Check size={16} /></div>
                   <div>
-                    <div className="text-xs font-bold text-emerald-300">{statusLabel[orderStatus]}</div>
-                    <div className="text-[10px] text-emerald-400/80">Est. delivery to Table #{selectedTable}: 12 mins</div>
+                    <div className="text-xs font-bold text-emerald-700">{statusLabel[orderStatus]}</div>
+                    <div className="text-[10px] text-emerald-600/80">Est. delivery to Table #{selectedTable}: 12 mins</div>
                   </div>
                 </div>
               )}
 
               {/* Menu list */}
               <div className="p-5 overflow-y-auto space-y-3 flex-1">
-                <div className="text-xs font-bold uppercase tracking-wider text-amber-400 mb-2">Chef Specials &amp; Starters</div>
+                <div className="text-xs font-bold uppercase tracking-wider text-amber-600 mb-2">Chef Specials &amp; Starters</div>
                 {MENU_ITEMS.map(item => {
                   const qty = cart[item.id] || 0;
                   return (
-                    <div key={item.id} className="p-3.5 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-between gap-3">
+                    <div key={item.id} className="p-3.5 rounded-2xl bg-white border border-slate-100 hover:border-amber-200 flex items-center justify-between gap-3 transition-colors">
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-sm text-white">{item.name}</span>
-                          <span className="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-semibold">{item.spice}</span>
+                          <span className="font-bold text-sm text-slate-900">{item.name}</span>
+                          <span className={`text-[10px] px-2 py-0.5 rounded font-semibold ${spiceBadgeClass[item.spice]}`}>{item.spice}</span>
                         </div>
-                        <p className="text-[11px] text-slate-400 mt-1 line-clamp-1">{item.desc}</p>
-                        <div className="text-xs font-bold text-emerald-400 mt-1">₹{item.price}</div>
+                        <p className="text-[11px] text-slate-500 mt-1 line-clamp-1">{item.desc}</p>
+                        <div className="text-xs font-bold text-emerald-600 mt-1">₹{item.price}</div>
                       </div>
                       <div className="flex items-center gap-2">
                         {qty > 0 ? (
-                          <div className="flex items-center gap-2 bg-amber-500/20 border border-amber-500/40 rounded-xl px-2 py-1">
-                            <button onClick={() => removeFromCart(item.id)} className="w-5 h-5 flex items-center justify-center text-amber-300 font-bold">-</button>
-                            <span className="text-xs font-bold text-white min-w-[14px] text-center">{qty}</span>
-                            <button onClick={() => addToCart(item.id)} className="w-5 h-5 flex items-center justify-center text-amber-300 font-bold">+</button>
+                          <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-xl px-2 py-1">
+                            <button onClick={() => removeFromCart(item.id)} className="w-5 h-5 flex items-center justify-center text-amber-600 font-bold">-</button>
+                            <span className="text-xs font-bold text-slate-900 min-w-[14px] text-center">{qty}</span>
+                            <button onClick={() => addToCart(item.id)} className="w-5 h-5 flex items-center justify-center text-amber-600 font-bold">+</button>
                           </div>
                         ) : (
-                          <button onClick={() => addToCart(item.id)} className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-amber-500 hover:text-slate-900 text-xs font-bold transition-colors">+ Add</button>
+                          <button onClick={() => addToCart(item.id)} className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-amber-500 hover:text-white text-xs font-bold transition-colors text-slate-700">+ Add</button>
                         )}
                       </div>
                     </div>
@@ -286,18 +292,18 @@ export default function QuickBiteDemo() {
               </div>
 
               {/* Footer */}
-              <div className="p-4 bg-slate-900/90 border-t border-white/10 flex items-center justify-between gap-4">
+              <div className="p-4 bg-amber-50 border-t border-amber-100 flex items-center justify-between gap-4">
                 <div>
-                  <div className="text-xs text-slate-400">Total Bill</div>
-                  <div className="text-lg font-black text-white font-mono">₹{totalAmount}</div>
+                  <div className="text-xs text-slate-600">Total Bill</div>
+                  <div className="text-lg font-black text-slate-900 font-mono">₹{totalAmount}</div>
                 </div>
                 {orderStatus === "cart" ? (
                   <button onClick={placeOrder} disabled={totalAmount === 0}
-                    className="px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-rose-600 font-bold text-slate-950 text-sm flex items-center gap-2 shadow-lg disabled:opacity-50">
+                    className="px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-rose-600 font-bold text-white text-sm flex items-center gap-2 shadow-lg disabled:opacity-50">
                     <ShoppingBag size={16} /><span>Confirm Order (Table {selectedTable})</span>
                   </button>
                 ) : (
-                  <button onClick={resetOrder} className="px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 font-bold text-white text-sm flex items-center gap-2">
+                  <button onClick={resetOrder} className="px-6 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 font-bold text-slate-700 text-sm flex items-center gap-2">
                     New Order
                   </button>
                 )}
@@ -310,19 +316,19 @@ export default function QuickBiteDemo() {
       {/* ── KDS MODAL ── */}
       <AnimatePresence>
         {activeModal === "kds" && (
-          <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4">
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-[#0c101d] border border-rose-500/30 rounded-3xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
+              className="bg-white border border-rose-200 rounded-3xl max-w-3xl w-full max-h-[85vh] flex flex-col shadow-2xl overflow-hidden">
 
-              <div className="p-4 bg-slate-900 border-b border-rose-500/20 flex items-center justify-between">
+              <div className="p-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center"><ChefHat size={18} /></div>
+                  <div className="w-8 h-8 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center"><ChefHat size={18} /></div>
                   <div>
-                    <span className="font-bold text-sm text-white">Live Kitchen Display System (KDS)</span>
-                    <div className="text-[10px] text-rose-400 font-mono">STATION #1 • HOT PREP &amp; TANDOOR</div>
+                    <span className="font-bold text-sm text-slate-900">Live Kitchen Display System (KDS)</span>
+                    <div className="text-[10px] text-rose-500 font-mono">STATION #1 • HOT PREP &amp; TANDOOR</div>
                   </div>
                 </div>
-                <button onClick={() => setActiveModal("none")} className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-slate-300"><X size={16} /></button>
+                <button onClick={() => setActiveModal("none")} className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500"><X size={16} /></button>
               </div>
 
               <div className="p-5 overflow-y-auto grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
@@ -332,18 +338,18 @@ export default function QuickBiteDemo() {
                   </div>
                 )}
                 {kdsTickets.map(ticket => (
-                  <div key={ticket.id} className="p-4 rounded-2xl bg-slate-900/90 flex flex-col justify-between"
+                  <div key={ticket.id} className="p-4 rounded-2xl bg-slate-50 border flex flex-col justify-between"
                     style={{ border: `1px solid ${kdsColor[ticket.status]}40` }}>
                     <div>
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-xs font-mono font-bold" style={{ color: kdsColor[ticket.status] }}>
                           TICKET #{ticket.id} • TABLE #{ticket.table}
                         </span>
-                        <span className="text-[10px] px-2 py-0.5 rounded font-mono flex items-center gap-1 text-slate-400 bg-slate-800">
+                        <span className="text-[10px] px-2 py-0.5 rounded font-mono flex items-center gap-1 text-slate-500 bg-slate-100">
                           <Clock size={10} /> {ticket.time}
                         </span>
                       </div>
-                      <div className="space-y-1.5 text-xs text-slate-200 mt-3">
+                      <div className="space-y-1.5 text-xs text-slate-900 mt-3">
                         {ticket.items.map((it, i) => (
                           <div key={i} className="flex justify-between font-medium">
                             <span>{it.qty}x {it.name}</span>
@@ -351,7 +357,7 @@ export default function QuickBiteDemo() {
                         ))}
                       </div>
                     </div>
-                    <div className="mt-4 pt-3 border-t border-white/5 flex items-center justify-between">
+                    <div className="mt-4 pt-3 border-t border-slate-200 flex items-center justify-between">
                       <span className="text-[11px] font-bold uppercase tracking-wider" style={{ color: kdsColor[ticket.status] }}>
                         {ticket.status === "preparing" ? "🔥 In Preparation" : "✅ Ready for Pickup"}
                       </span>

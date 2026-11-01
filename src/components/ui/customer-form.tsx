@@ -1,215 +1,186 @@
 'use client';
 import { useState } from 'react';
 import { CONSTANTS } from '@/lib/constants';
-import { ShieldCheck, AlertCircle, Phone, Zap } from 'lucide-react';
+import { ShieldCheck, AlertCircle, Phone, Zap, Check } from 'lucide-react';
 
-interface CheckoutFormProps {
-  projectId: string;
-  price: number;
-}
+interface Props { projectId: string; price: number; }
 
-export function CustomerForm({ projectId, price }: CheckoutFormProps) {
+export function CustomerForm({ projectId, price }: Props) {
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [formData, setFormData] = useState({
-    customerName: '',
-    customerEmail: '',
-    customerPhone: '',
-    collegeName: '',
-    addPersonalization: false,
-    addPlagiarismCert: false,
-    addVivaCall: false,
+  const [error, setError]     = useState<string | null>(null);
+  const [form, setForm] = useState({
+    customerName: '', customerEmail: '', customerPhone: '', collegeName: '',
+    addPersonalization: false, addPlagiarismCert: false, addVivaCall: false,
   });
 
-  const totalAmount = price
-    + (formData.addPersonalization ? CONSTANTS.PRICING.ADDONS.PERSONALIZATION : 0)
-    + (formData.addPlagiarismCert ? CONSTANTS.PRICING.ADDONS.PLAGIARISM_CERT : 0)
-    + (formData.addVivaCall ? CONSTANTS.PRICING.ADDONS.VIVA_CALL : 0);
+  const total = price
+    + (form.addPersonalization ? CONSTANTS.PRICING.ADDONS.PERSONALIZATION : 0)
+    + (form.addPlagiarismCert  ? CONSTANTS.PRICING.ADDONS.PLAGIARISM_CERT  : 0)
+    + (form.addVivaCall        ? CONSTANTS.PRICING.ADDONS.VIVA_CALL        : 0);
+
+  const set = (k: string, v: string | boolean) => setForm(p => ({ ...p, [k]: v }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
-
+    setLoading(true); setError(null);
     try {
-      // 1. Create order on our backend
-      const res = await fetch('/api/orders/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ projectId, ...formData })
-      });
-
+      const res  = await fetch('/api/orders/create', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ projectId, ...form }) });
       const data = await res.json();
+      if (!res.ok) { setError(data.error || 'Failed to initialise payment.'); setLoading(false); return; }
 
-      if (!res.ok) {
-        setError(data.error || 'Failed to initialize payment. Please try again.');
-        setLoading(false);
-        return;
-      }
-
-      // 2. Open Razorpay Checkout
-      const options = {
-        key: data.key,
-        amount: data.amount,
-        currency: data.currency,
-        name: CONSTANTS.APP_NAME,
-        description: `Project Bundle Purchase`,
-        order_id: data.razorpayOrderId,
-        handler: async function (response: any) {
+      const opts = {
+        key: data.key, amount: data.amount, currency: data.currency,
+        name: CONSTANTS.APP_NAME, description: 'Project Bundle Purchase', order_id: data.razorpayOrderId,
+        handler: async (r: any) => {
           try {
-            // 3. CRITICAL: Verify payment signature on our server BEFORE redirecting
-            const verifyRes = await fetch('/api/orders/verify', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                razorpay_order_id: response.razorpay_order_id,
-                razorpay_payment_id: response.razorpay_payment_id,
-                razorpay_signature: response.razorpay_signature,
-              })
-            });
-
-            const verifyData = await verifyRes.json();
-
-            if (!verifyRes.ok || !verifyData.success) {
-              setError('Payment verification failed. Please contact support with your payment ID: ' + response.razorpay_payment_id);
-              setLoading(false);
-              return;
-            }
-
-            // 4. Redirect to success page with the verified internal order ID
-            const params = new URLSearchParams({
-              order_id: verifyData.orderId,
-              title: verifyData.projectTitle || 'Your Project Bundle',
-            });
-            // Pass add-on flags so success page shows correct UI
-            if (verifyData.hasPersonalization) params.set('personalize', '1');
-            if (verifyData.hasPlagiarismCert)  params.set('plagiarism',  '1');
-            if (verifyData.hasVivaCall)         params.set('viva',        '1');
-            window.location.href = `/order/success?${params.toString()}`;
-          } catch (err) {
-            setError('An error occurred after payment. Please contact support immediately.');
-            setLoading(false);
-          }
+            const vr = await fetch('/api/orders/verify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ razorpay_order_id: r.razorpay_order_id, razorpay_payment_id: r.razorpay_payment_id, razorpay_signature: r.razorpay_signature }) });
+            const vd = await vr.json();
+            if (!vr.ok || !vd.success) { setError('Payment verification failed. Contact support with ID: ' + r.razorpay_payment_id); setLoading(false); return; }
+            const p = new URLSearchParams({ order_id: vd.orderId, title: vd.projectTitle || 'Your Project Bundle' });
+            if (vd.hasPersonalization) p.set('personalize', '1');
+            if (vd.hasPlagiarismCert) p.set('plagiarism', '1');
+            if (vd.hasVivaCall)       p.set('viva', '1');
+            window.location.href = `/order/success?${p.toString()}`;
+          } catch { setError('Error after payment. Please contact support.'); setLoading(false); }
         },
-        prefill: {
-          name: formData.customerName,
-          email: formData.customerEmail,
-          contact: formData.customerPhone
-        },
-        theme: { color: '#6366f1' }
+        prefill: { name: form.customerName, email: form.customerEmail, contact: form.customerPhone },
+        theme: { color: '#4F46E5' },
       };
-
-      const rzp = new (window as any).Razorpay(options);
-      rzp.on('payment.failed', function (response: any) {
-        setError('Payment failed or was cancelled. Please try again.');
-        setLoading(false);
-      });
+      const rzp = new (window as any).Razorpay(opts);
+      rzp.on('payment.failed', () => { setError('Payment failed or cancelled. Please try again.'); setLoading(false); });
       rzp.open();
-    } catch (err) {
-      console.error(err);
-      setError('An unexpected error occurred. Please refresh the page and try again.');
-      setLoading(false);
-    }
+    } catch { setError('Unexpected error. Please refresh and try again.'); setLoading(false); }
   };
 
-  return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+  const inputSty: React.CSSProperties = {
+    width: '100%', background: 'var(--surface)', border: '1.5px solid var(--line)',
+    borderRadius: '11px', padding: '.6875rem 1rem', fontSize: '.9375rem',
+    color: 'var(--ink)', outline: 'none', fontFamily: 'var(--font-sans)', transition: 'border-color 150ms, box-shadow 150ms',
+  };
 
-      {/* Inline Error Banner */}
+  const focus = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
+    e.target.style.borderColor = 'var(--teal)';
+    e.target.style.boxShadow   = '0 0 0 3px rgba(13,148,136,.15)';
+  };
+  const blur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
+    e.target.style.borderColor = 'var(--line)';
+    e.target.style.boxShadow   = 'none';
+  };
+
+  const ADDONS = [
+    { key: 'addPersonalization', label: 'Add My Name on Front Page',         sub: "We'll add your name & roll no on the cover",              price: CONSTANTS.PRICING.ADDONS.PERSONALIZATION, popular: false },
+    { key: 'addPlagiarismCert',  label: 'SubmitKit Plagiarism Certificate',   sub: 'Certificate showing <10% similarity score',              price: CONSTANTS.PRICING.ADDONS.PLAGIARISM_CERT,  popular: false },
+    { key: 'addVivaCall',        label: 'Custom Changes Request',             sub: 'Need tweaks? Our devs assist you on WhatsApp',           price: CONSTANTS.PRICING.ADDONS.VIVA_CALL,        popular: true  },
+  ];
+
+  return (
+    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+
       {error && (
-        <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-3 rounded-xl flex items-start gap-2.5 text-sm">
-          <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-          <p>{error}</p>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '.625rem', padding: '.875rem 1rem', borderRadius: '12px', background: 'var(--rose-50)', border: '1px solid var(--rose-100)', fontSize: '.875rem', color: '#9F1239' }}>
+          <AlertCircle style={{ width: '1.125rem', height: '1.125rem', flexShrink: 0, marginTop: '.125rem' }} />
+          {error}
         </div>
       )}
 
-      <div className="space-y-3">
-        <input
-          required type="text" placeholder="Your Full Name"
-          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-zinc-500 focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/20 transition-all text-sm"
-          value={formData.customerName} onChange={e => setFormData({ ...formData, customerName: e.target.value })}
-        />
-        <input
-          required type="email" placeholder="Email Address (Download link sent here)"
-          pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$"
-          title="Please enter a valid email address"
-          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-zinc-500 focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/20 transition-all text-sm"
-          value={formData.customerEmail} onChange={e => setFormData({ ...formData, customerEmail: e.target.value })}
-        />
-        <div className="relative">
-          <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
-          <input
-            required type="tel" placeholder="10-digit Phone Number"
-            pattern="[0-9]{10}"
-            title="Please enter a valid 10-digit phone number"
-            className="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3 text-white placeholder:text-zinc-500 focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/20 transition-all text-sm"
-            value={formData.customerPhone} onChange={e => setFormData({ ...formData, customerPhone: e.target.value.replace(/\D/g, '').slice(0, 10) })}
+      {/* Fields */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
+        <input required type="text"  placeholder="Your Full Name" style={inputSty}
+          value={form.customerName}  onChange={e => set('customerName', e.target.value)} onFocus={focus} onBlur={blur} />
+        <input required type="email" placeholder="Email (Download link sent here)" style={inputSty}
+          value={form.customerEmail} onChange={e => set('customerEmail', e.target.value)} onFocus={focus} onBlur={blur} />
+        <div style={{ position: 'relative' }}>
+          <Phone style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', width: '1.0625rem', height: '1.0625rem', color: 'var(--ink-4)', pointerEvents: 'none' }} />
+          <input required type="tel" placeholder="10-digit Phone Number" pattern="[0-9]{10}"
+            style={{ ...inputSty, paddingLeft: '2.875rem' }}
+            value={form.customerPhone}
+            onChange={e => set('customerPhone', e.target.value.replace(/\D/g, '').slice(0, 10))}
+            onFocus={focus} onBlur={blur}
           />
         </div>
-        <input
-          type="text" placeholder="College Name (Optional)"
-          className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-zinc-500 focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/20 transition-all text-sm"
-          value={formData.collegeName} onChange={e => setFormData({ ...formData, collegeName: e.target.value })}
-        />
+        <input type="text" placeholder="College Name (Optional)" style={inputSty}
+          value={form.collegeName} onChange={e => set('collegeName', e.target.value)} onFocus={focus} onBlur={blur} />
       </div>
 
-      {/* Upsell Addons */}
-      <div className="space-y-2 pt-2">
-        <p className="text-[11px] text-zinc-600 font-medium uppercase tracking-wider px-1">Optional Add-ons</p>
-
-        <label className="flex items-center gap-3 p-3 rounded-xl border border-white/5 bg-white/[0.03] cursor-pointer hover:bg-white/[0.06] transition-all group">
-          <input
-            type="checkbox" className="w-4 h-4 accent-indigo-500 rounded"
-            checked={formData.addPersonalization} onChange={e => setFormData({ ...formData, addPersonalization: e.target.checked })}
-          />
-          <div className="flex-grow min-w-0">
-            <span className="text-white text-xs font-medium block">Add My Name on Front Page</span>
-            <span className="text-zinc-500 text-[11px]">We'll type your name & roll no on the cover</span>
-          </div>
-          <span className="text-emerald-400 text-xs font-bold shrink-0">+₹{CONSTANTS.PRICING.ADDONS.PERSONALIZATION}</span>
-        </label>
-
-        <label className="flex items-center gap-3 p-3 rounded-xl border border-white/5 bg-white/[0.03] cursor-pointer hover:bg-white/[0.06] transition-all group">
-          <input
-            type="checkbox" className="w-4 h-4 accent-indigo-500 rounded"
-            checked={formData.addPlagiarismCert} onChange={e => setFormData({ ...formData, addPlagiarismCert: e.target.checked })}
-          />
-          <div className="flex-grow min-w-0">
-            <span className="text-white text-xs font-medium block">SubmitKit Official Plagiarism Certificate</span>
-            <span className="text-zinc-500 text-[11px]">Instantly generated certificate showing &lt;10% similarity</span>
-          </div>
-          <span className="text-emerald-400 text-xs font-bold shrink-0">+₹{CONSTANTS.PRICING.ADDONS.PLAGIARISM_CERT}</span>
-        </label>
-
-        <label className="flex items-center gap-3 p-3 rounded-xl border border-brand-500/20 bg-brand-500/5 cursor-pointer hover:bg-brand-500/10 transition-all group relative overflow-hidden">
-          <div className="absolute top-1.5 right-2">
-            <span className="text-[10px] bg-brand-500/20 text-brand-400 px-1.5 py-0.5 rounded font-bold border border-brand-500/30">POPULAR</span>
-          </div>
-          <input
-            type="checkbox" className="w-4 h-4 accent-indigo-500 rounded"
-            checked={formData.addVivaCall} onChange={e => setFormData({ ...formData, addVivaCall: e.target.checked })}
-          />
-          <div className="flex-grow min-w-0 pr-16">
-            <span className="text-white text-xs font-medium flex items-center gap-1.5"><Zap className="w-3 h-3 text-brand-400" />Custom Changes Request</span>
-            <span className="text-zinc-500 text-[11px]">Need custom tweaks? Our devs will assist you on WhatsApp</span>
-          </div>
-          <span className="text-brand-400 text-xs font-bold shrink-0">+₹{CONSTANTS.PRICING.ADDONS.VIVA_CALL}</span>
-        </label>
+      {/* Add-ons */}
+      <div>
+        <p style={{ fontSize: '.6875rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.07em', color: 'var(--ink-4)', marginBottom: '.625rem' }}>
+          Optional Add-ons
+        </p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '.5rem' }}>
+          {ADDONS.map(a => {
+            const checked = (form as any)[a.key] as boolean;
+            return (
+              <label key={a.key}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '.875rem', padding: '.875rem 1rem',
+                  borderRadius: '12px', cursor: 'pointer', transition: 'all 150ms',
+                  border: `1.5px solid ${checked ? 'var(--teal)' : 'var(--line)'}`,
+                  background: checked ? 'var(--teal-50)' : 'var(--surface)',
+                }}
+              >
+                {/* Visual checkbox */}
+                <div style={{ width: '1.125rem', height: '1.125rem', borderRadius: '5px', flexShrink: 0, border: `2px solid ${checked ? 'var(--teal)' : 'var(--line-2)'}`, background: checked ? 'var(--teal)' : 'var(--surface)', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 150ms' }}>
+                  {checked && <Check style={{ width: '.75rem', height: '.75rem', color: '#fff', strokeWidth: 3 }} />}
+                </div>
+                <input type="checkbox" className="sr-only" checked={checked} onChange={e => set(a.key, e.target.checked)} />
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem', flexWrap: 'wrap' }}>
+                    <span style={{ fontSize: '.9375rem', fontWeight: 600, color: 'var(--ink)' }}>{a.label}</span>
+                    {a.popular && (
+                      <span style={{
+                        fontSize: '.5625rem',
+                        fontWeight: 800,
+                        padding: '.125rem .5rem',
+                        borderRadius: '9999px',
+                        background: 'var(--teal-100)',
+                        color: 'var(--teal-dark)',
+                        border: '1px solid var(--teal-200)',
+                        letterSpacing: '.06em',
+                        textTransform: 'uppercase',
+                        lineHeight: 1.3
+                      }}>
+                        Popular
+                      </span>
+                    )}
+                  </div>
+                  <span style={{ fontSize: '.8125rem', color: 'var(--ink-3)', display: 'block', marginTop: '.125rem' }}>{a.sub}</span>
+                </div>
+                <div style={{ flexShrink: 0, textAlign: 'right', marginLeft: '.75rem' }}>
+                  <span style={{ fontSize: '.9375rem', fontWeight: 800, color: 'var(--green)' }}>+₹{a.price}</span>
+                </div>
+              </label>
+            );
+          })}
+        </div>
       </div>
 
-
-
+      {/* Pay CTA */}
       <button
         type="submit"
         disabled={loading}
-        className="w-full py-3.5 mt-2 bg-white hover:bg-zinc-100 text-zinc-950 font-bold text-base rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(255,255,255,0.2)]"
+        className="btn btn-teal"
+        style={{ width: '100%', marginTop: '.25rem', padding: '1rem', fontSize: '1.0625rem', borderRadius: '13px', opacity: loading ? .65 : 1, cursor: loading ? 'not-allowed' : 'pointer', transform: 'none' }}
       >
-        {loading ? 'Processing...' : `Pay ₹${totalAmount} →`}
+        {loading ? (
+          <>
+            <span style={{ width: '1.125rem', height: '1.125rem', border: '2.5px solid rgba(255,255,255,.3)', borderTopColor: '#fff', borderRadius: '50%', animation: 'spin 0.7s linear infinite', flexShrink: 0 }} />
+            Processing…
+          </>
+        ) : (
+          <>
+            <Zap style={{ width: '1.125rem', height: '1.125rem', fill: 'white' }} />
+            Pay ₹{total} — Get Instant Download
+          </>
+        )}
       </button>
 
-      <p className="text-center text-[11px] text-zinc-600 flex items-center justify-center gap-1.5">
-        <ShieldCheck className="w-3 h-3" /> 100% Secure · Powered by Razorpay
+      <p style={{ textAlign: 'center', fontSize: '.8125rem', color: 'var(--ink-4)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '.375rem', fontWeight: 500 }}>
+        <ShieldCheck style={{ width: '.9375rem', height: '.9375rem', color: 'var(--green)' }} />
+        100% Secure · Powered by Razorpay
       </p>
+
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </form>
   );
 }

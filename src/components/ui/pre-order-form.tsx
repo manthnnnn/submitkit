@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { Lock, Bell, CheckCircle2, Loader2, Clock, Wrench, Zap } from 'lucide-react';
+import { Lock, Bell, CheckCircle2, Loader2, Clock, Zap } from 'lucide-react';
 
 interface PreOrderFormProps {
   projectSlug: string;
@@ -10,135 +10,106 @@ interface PreOrderFormProps {
 }
 
 export function PreOrderForm({ projectSlug, projectTitle, priceInr, isMajor }: PreOrderFormProps) {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
+  const [name,    setName]    = useState('');
+  const [email,   setEmail]   = useState('');
+  const [phone,   setPhone]   = useState('');
   const [college, setCollege] = useState('');
   const [loading, setLoading] = useState(false);
-  const [done, setDone] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [done,    setDone]    = useState(false);
+  const [error,   setError]   = useState<string | null>(null);
 
-  const formatCurrency = (n: number) =>
-    new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(n);
+  const fmt = (n: number) => new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(n);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
+    setLoading(true); setError(null);
     try {
-      const res = await fetch('/api/preorder', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ projectSlug, projectTitle, name, email, phone, college }),
-      });
+      const res  = await fetch('/api/preorder', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ projectSlug, projectTitle, name, email, phone, college }) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Something went wrong');
       setDone(true);
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Something went wrong');
-    } finally {
-      setLoading(false);
-    }
+    } catch (err) { setError(err instanceof Error ? err.message : 'Something went wrong'); }
+    finally { setLoading(false); }
   };
 
-  return (
-    <div className="glass-card rounded-2xl border border-amber-500/30 overflow-hidden shadow-2xl">
+  const inputSty: React.CSSProperties = { width: '100%', background: 'var(--surface-2)', border: '1.5px solid var(--line)', borderRadius: '10px', padding: '.6875rem .875rem', fontSize: '.9375rem', color: 'var(--ink)', outline: 'none', fontFamily: 'var(--font-sans)', transition: 'border-color 150ms' };
 
-      {/* TOP BANNER — crystal clear "not available yet" */}
-      <div className="bg-amber-500/10 border-b border-amber-500/25 px-5 py-3 flex items-center gap-2">
-        <Lock className="w-4 h-4 text-amber-400 shrink-0" />
-        <p className="text-amber-300 text-xs font-bold">
-          🚧 This project is currently under development — not available for purchase yet.
+  return (
+    <div className="card" style={{ overflow: 'hidden', borderTop: '4px solid var(--amber)' }}>
+
+      {/* Status banner */}
+      <div style={{ background: 'var(--amber-50)', borderBottom: '1px solid var(--amber-100)', padding: '.875rem 1.25rem', display: 'flex', alignItems: 'center', gap: '.625rem' }}>
+        <Lock style={{ width: '1rem', height: '1rem', color: 'var(--amber)', flexShrink: 0 }} />
+        <p style={{ fontSize: '.8125rem', fontWeight: 700, color: '#92400E' }}>
+          🚧 Under development — not available for purchase yet.
         </p>
       </div>
 
-      {/* Status card */}
-      <div className="p-5 border-b border-white/5">
-        <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0">
-            <Wrench className="w-5 h-5 text-amber-400" />
+      {/* Info */}
+      <div style={{ padding: '1.25rem', borderBottom: '1px solid var(--line)' }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '.875rem', marginBottom: '1rem' }}>
+          <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: '10px', background: 'var(--amber-50)', border: '1px solid var(--amber-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <Clock style={{ width: '1.125rem', height: '1.125rem', color: 'var(--amber)' }} />
           </div>
           <div>
-            <p className="text-white font-bold text-sm">We&apos;re Building This</p>
-            <p className="text-zinc-400 text-xs leading-relaxed mt-0.5">
-              Our engineering team is actively working on this project kit. Drop your email below and we&apos;ll notify you the moment it&apos;s ready — at the current price.
+            <p style={{ fontSize: '.9375rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '.25rem' }}>We&apos;re Building This</p>
+            <p style={{ fontSize: '.8125rem', color: 'var(--ink-3)', lineHeight: 1.65 }}>
+              Our engineering team is actively working on this project kit. Drop your email below and we&apos;ll notify you the moment it&apos;s ready.
             </p>
           </div>
         </div>
 
-        <div className="mt-4 space-y-2">
-          <div className="flex items-center gap-2.5 text-xs text-zinc-400">
-            <Clock className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-            <span>Estimated delivery: <strong className="text-white">7–14 days</strong></span>
-          </div>
-          <div className="flex items-center gap-2.5 text-xs text-zinc-400">
-            <Zap className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-            <span>Price when ready: <strong className="text-white">{formatCurrency(priceInr)}</strong> (locked for you)</span>
-          </div>
-          <div className="flex items-center gap-2.5 text-xs text-zinc-400">
-            <Bell className="w-3.5 h-3.5 text-brand-400 shrink-0" />
-            <span><strong className="text-white">No payment now.</strong> Notification only — pay when it&apos;s ready.</span>
-          </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '.5rem' }}>
+          {[
+            { Icon: Clock, text: `Estimated delivery: 7–14 days`, accent: 'var(--amber)' },
+            { Icon: Zap,   text: `Price when ready: ${fmt(priceInr)} (locked for you)`, accent: 'var(--teal)' },
+            { Icon: Bell,  text: 'No payment now. Notification only — pay when it\'s ready.', accent: 'var(--violet)' },
+          ].map(({ Icon, text, accent }) => (
+            <div key={text} style={{ display: 'flex', alignItems: 'flex-start', gap: '.5rem', fontSize: '.8125rem', color: 'var(--ink-3)' }}>
+              <Icon style={{ width: '.9375rem', height: '.9375rem', color: accent, flexShrink: 0, marginTop: '.0625rem' }} />
+              <span>{text}</span>
+            </div>
+          ))}
         </div>
       </div>
 
       {/* Form */}
-      <div className="p-5">
+      <div style={{ padding: '1.25rem' }}>
         {done ? (
-          <div className="text-center py-6">
-            <div className="w-14 h-14 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center mx-auto mb-4">
-              <CheckCircle2 className="w-7 h-7 text-emerald-400" />
+          <div style={{ textAlign: 'center', padding: '1.5rem 1rem' }}>
+            <div style={{ width: '3.5rem', height: '3.5rem', borderRadius: '50%', background: 'var(--emerald-50)', border: '1px solid var(--emerald-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem' }}>
+              <CheckCircle2 style={{ width: '1.625rem', height: '1.625rem', color: 'var(--emerald)' }} />
             </div>
-            <h3 className="text-white font-bold text-base mb-2">You&apos;re on the list! ✅</h3>
-            <p className="text-zinc-400 text-sm leading-relaxed max-w-xs mx-auto">
-              We&apos;ll send the download link directly to your inbox the moment this project is ready. No payment needed until then.
+            <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '.5rem' }}>You&apos;re on the list! ✅</h3>
+            <p style={{ fontSize: '.875rem', color: 'var(--ink-3)', lineHeight: 1.65, maxWidth: '18rem', margin: '0 auto' }}>
+              We&apos;ll send the download link to your inbox the moment this project is ready. No payment until then.
             </p>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-3">
-            <p className="text-zinc-400 text-xs font-medium mb-3">Enter your details to join the waitlist:</p>
-
-            <input
-              required type="text" placeholder="Full Name"
-              value={name} onChange={e => setName(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder:text-zinc-500 text-sm focus:outline-none focus:border-amber-500/50 transition-colors"
-            />
-            <input
-              required type="email" placeholder="Email Address"
-              value={email} onChange={e => setEmail(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder:text-zinc-500 text-sm focus:outline-none focus:border-amber-500/50 transition-colors"
-            />
-            <input
-              type="tel" placeholder="WhatsApp Number (optional)"
-              value={phone} onChange={e => setPhone(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder:text-zinc-500 text-sm focus:outline-none focus:border-amber-500/50 transition-colors"
-            />
-            <input
-              type="text" placeholder="College Name (optional)"
-              value={college} onChange={e => setCollege(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-white placeholder:text-zinc-500 text-sm focus:outline-none focus:border-amber-500/50 transition-colors"
-            />
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '.625rem' }}>
+            <p style={{ fontSize: '.8125rem', fontWeight: 600, color: 'var(--ink-3)', marginBottom: '.25rem' }}>Enter your details to join the waitlist:</p>
+            <input required type="text"  placeholder="Full Name"                value={name}    onChange={e => setName(e.target.value)}    style={inputSty} />
+            <input required type="email" placeholder="Email Address"            value={email}   onChange={e => setEmail(e.target.value)}   style={inputSty} />
+            <input type="tel"            placeholder="WhatsApp Number (optional)" value={phone}   onChange={e => setPhone(e.target.value)}   style={inputSty} />
+            <input type="text"           placeholder="College Name (optional)"   value={college} onChange={e => setCollege(e.target.value)} style={inputSty} />
 
             {error && (
-              <p className="text-red-400 text-xs bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-2.5">{error}</p>
+              <div style={{ padding: '.625rem .875rem', borderRadius: '10px', background: 'var(--rose-50)', border: '1px solid var(--rose-100)', fontSize: '.8125rem', color: 'var(--rose)', fontWeight: 500 }}>{error}</div>
             )}
 
-            <button
-              type="submit" disabled={loading}
-              className="w-full flex items-center justify-center gap-2.5 bg-amber-500 hover:bg-amber-400 disabled:opacity-50 text-zinc-950 font-bold py-3.5 rounded-xl transition-all shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:shadow-[0_0_30px_rgba(245,158,11,0.45)] text-sm"
+            <button type="submit" disabled={loading}
+              style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '.5rem', padding: '.875rem', borderRadius: '12px', background: 'var(--amber)', color: '#fff', fontWeight: 700, fontSize: '.9375rem', border: 'none', cursor: loading ? 'not-allowed' : 'pointer', opacity: loading ? .7 : 1, fontFamily: 'var(--font-sans)', transition: 'all 150ms' }}
             >
-              {loading
-                ? <><Loader2 className="w-4 h-4 animate-spin" /> Saving...</>
-                : <><Bell className="w-4 h-4" /> Notify Me When It&apos;s Ready</>
-              }
+              {loading ? <><Loader2 style={{ width: '1rem', height: '1rem', animation: 'spin .7s linear infinite' }} /> Saving…</> : <><Bell style={{ width: '1rem', height: '1rem' }} /> Notify Me When It&apos;s Ready</>}
             </button>
 
-            <p className="text-center text-[10px] text-zinc-600">
-              🔒 No payment charged now. You&apos;ll only pay when the project is delivered to your inbox.
+            <p style={{ textAlign: 'center', fontSize: '.75rem', color: 'var(--ink-4)', fontWeight: 500 }}>
+              🔒 No payment charged now. You&apos;ll only pay when the project is delivered.
             </p>
           </form>
         )}
       </div>
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }

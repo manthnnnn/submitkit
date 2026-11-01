@@ -105,7 +105,7 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      // ── Safety net for ₹19 Blueprint Purchases ──
+      // ── Safety net for legacy Blueprint Purchases ──
       const { data: bpUpdated } = await supabase
         .from('blueprint_purchases')
         .update({ status: 'PAID', razorpay_payment_id: paymentId })

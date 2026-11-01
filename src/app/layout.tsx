@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/ui/navbar";
@@ -8,6 +8,14 @@ import { AnalyticsTracker } from "@/components/analytics/analytics-tracker";
 import { CONSTANTS } from "@/lib/constants";
 import Script from "next/script";
 import { HomeSchema } from "@/components/seo/SeoSchema";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#0D9488",
+  viewportFit: "cover",
+};
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-display" });
@@ -99,6 +107,14 @@ export default function RootLayout({
   return (
     <html lang="en-IN">
       <head>
+        {/* Google Fonts — loaded via link to avoid Tailwind v4 @import conflict */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
+        {/* Teal brand theme */}
         {/* Razorpay checkout */}
         <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
 
@@ -127,7 +143,7 @@ export default function RootLayout({
         <HomeSchema />
         <AnalyticsTracker />
         <Navbar />
-        <main className="flex-grow">
+        <main className="flex-grow pt-16">
           {children}
         </main>
         <Footer />

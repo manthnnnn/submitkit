@@ -1,830 +1,477 @@
 'use client';
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
-import { CONSTANTS } from "@/lib/constants";
-import { ArrowRight, CheckCircle2, Zap, Download, ShieldCheck, Star, Sparkles, MonitorPlay, Search, BookOpen, ChevronRight, MessageCircle, Compass, Code2, FileText, Presentation, Flame } from "lucide-react";
-import { PricingHook } from "@/components/ui/pricing-hook";
-import { CompareSlider } from "@/components/ui/compare-slider";
-import { FleetSection } from "@/components/ui/fleet-section";
-import { Testimonials } from "@/components/ui/testimonials";
-import { LiveTicker } from "@/components/ui/live-ticker";
-import { useEffect, useState, useRef } from "react";
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
+import { CONSTANTS } from '@/lib/constants';
+import {
+  ArrowRight, CheckCircle2, Zap, ShieldCheck,
+  Search, ChevronRight, MessageCircle,
+  FileText, Presentation, Star, Eye
+} from 'lucide-react';
+import { PricingHook } from '@/components/ui/pricing-hook';
+import { FleetSection } from '@/components/ui/fleet-section';
+import { Testimonials } from '@/components/ui/testimonials';
+import { LiveTicker } from '@/components/ui/live-ticker';
+import { AiTopicExplorer } from '@/components/ui/ai-topic-explorer';
+import { useEffect, useState, useRef } from 'react';
 
-interface SearchTopicResult {
-  id: string;
-  title: string;
-  category: string;
-  tagline: string;
-}
+/* ─── types ─── */
+interface SR { id: string; title: string; category: string; tagline: string; }
 
-// Animated counter hook
-function useCounter(target: number, duration: number = 1500) {
-  const [count, setCount] = useState(0);
+const MINI  = CONSTANTS.PRICING.MINI_PROJECT;
+const MAJOR = CONSTANTS.PRICING.MAJOR_PROJECT;
+
+/* ─── animated counter ─── */
+function useCounter(target: number, dur = 1600) {
+  const [n, setN] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
-  const started = useRef(false);
-
+  const done = useRef(false);
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting && !started.current) {
-          started.current = true;
-          const startTime = performance.now();
-          const animate = (currentTime: number) => {
-            const elapsed = currentTime - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-            const eased = 1 - Math.pow(1 - progress, 3);
-            setCount(Math.floor(eased * target));
-            if (progress < 1) requestAnimationFrame(animate);
-          };
-          requestAnimationFrame(animate);
-        }
-      },
-      { threshold: 0.1 }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, [target, duration]);
-
-  return { count, ref };
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !done.current) {
+        done.current = true;
+        const t0 = performance.now();
+        const frame = (now: number) => {
+          const p = Math.min((now - t0) / dur, 1);
+          setN(Math.floor((1 - (1 - p) ** 3) * target));
+          if (p < 1) requestAnimationFrame(frame);
+        };
+        requestAnimationFrame(frame);
+      }
+    }, { threshold: 0.15 });
+    if (ref.current) io.observe(ref.current);
+    return () => io.disconnect();
+  }, [target, dur]);
+  return { n, ref };
 }
 
-function StatCounter({ target, suffix = '', label }: { target: number; suffix?: string; label: string }) {
-  const { count, ref } = useCounter(target);
+function StatNum({ val, suffix = '', label, color }: { val: number; suffix?: string; label: string; color?: string }) {
+  const { n, ref } = useCounter(val);
   return (
     <div ref={ref} className="text-center">
-      <div className="text-2xl md:text-3xl font-display font-bold text-white">
-        {count.toLocaleString('en-IN')}{suffix}
+      <div style={{ fontSize: 'clamp(1.875rem,4vw,2.5rem)', fontWeight: 900, letterSpacing: '-.05em', color: color || 'var(--navy)', lineHeight: 1 }}>
+        {n.toLocaleString('en-IN')}{suffix}
       </div>
-      <div className="text-xs text-zinc-500 mt-1">{label}</div>
+      <div style={{ fontSize: '.75rem', color: 'var(--ink-4)', marginTop: '.375rem', fontWeight: 500 }}>{label}</div>
     </div>
   );
 }
 
-const ROTATING_HERO_TITLES = [
-  {
-    line1: "100% Working AI Projects.",
-    line2: "Ready to run in 2 minutes.",
-  },
-  {
-    line1: "Stop fixing broken code.",
-    line2: "Get verified project kits today.",
-  },
-  {
-    line1: "Complete College Projects.",
-    line2: "Code, Reports, and PPTs included.",
-  },
-  {
-    line1: "Stuck on your final year project?",
-    line2: "We have exactly what you need.",
-  },
-  {
-    line1: "1,078 Free AI Blueprints.",
-    line2: "Find your perfect project topic.",
-  },
+const SLIDES = [
+  { h: 'Build a project you can actually', accent: 'explain.' },
+  { h: 'Stop fixing broken GitHub code.', accent: 'Get verified kits today.' },
+  { h: 'IEEE Report. Defense PPT.', accent: 'Running code included.' },
+  { h: 'Final year done right —', accent: 'download, run, submit.' },
 ];
 
-export default function Home() {
+const HOW = [
+  { n: '01', t: 'Pick a kit and preview it free',  s: 'See the demo and sample pages before paying' },
+  { n: '02', t: 'Download and set up',              s: 'Step-by-step guide included with every kit' },
+  { n: '03', t: 'Understand your project',          s: 'Docs and viva Q&A so you can defend your work' },
+];
+
+const READY = [
+  { n: '01', name: 'PhishGuard AI Threat Radar',    cat: 'AI / ML',     price: MINI,  slug: 'phishing-detector-ai' },
+  { n: '02', name: 'QuickBite QR Ordering & KDS',   cat: 'Full Stack',  price: MINI,  slug: 'restaurant-qr-ordering' },
+  { n: '03', name: 'SentinelPay AI Fraud Radar',     cat: 'FinTech',     price: MINI,  slug: 'credit-card-fraud' },
+  { n: '04', name: 'HealthSync EHR Portal',          cat: 'Healthcare',  price: MAJOR, slug: 'healthcare-ehr-portal' },
+];
+
+/* ─── Main page ─── */
+export default function HomePage() {
   const router = useRouter();
-  const [heroIndex, setHeroIndex] = useState(0);
+  const [si, setSi] = useState(0);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setHeroIndex((prev) => (prev + 1) % ROTATING_HERO_TITLES.length);
-    }, 5000);
-    return () => clearInterval(timer);
+    const id = setInterval(() => setSi(p => (p + 1) % SLIDES.length), 5200);
+    return () => clearInterval(id);
   }, []);
 
-  const [stats] = useState({
-    totalScans: 1250,
-    totalOrders: 512,
-    moneySaved: 120000,
-    moneySavedFormatted: '₹1,20,000+',
-  });
-
-  const [topicQuery, setTopicQuery] = useState("");
-  const [topicResults, setTopicResults] = useState<SearchTopicResult[]>([]);
-  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  const handleTopicSearchChange = (val: string) => {
-    setTopicQuery(val);
-    if (searchTimeoutRef.current) clearTimeout(searchTimeoutRef.current);
-
-    const trimmed = val.trim();
-    if (trimmed.length >= 1) {
-      searchTimeoutRef.current = setTimeout(async () => {
-        try {
-          const res = await fetch(`/api/blueprint/search?q=${encodeURIComponent(trimmed)}&limit=4`);
-          if (res.ok) {
-            const data = await res.json();
-            setTopicResults(data.results || []);
-          }
-        } catch {
-          // silently handle network error
-        }
-      }, 100);
-    } else {
-      setTopicResults([]);
-    }
-  };
-
-  const handleTopicSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (topicQuery.trim()) {
-      router.push(`/blueprint?q=${encodeURIComponent(topicQuery.trim())}`);
-    } else {
-      router.push('/blueprint');
-    }
+  /* ─ inline style helpers ─ */
+  const S = {
+    section: (bg?: string): React.CSSProperties => ({
+      position: 'relative',
+      zIndex: 1,
+      background: bg || 'transparent',
+      padding: '3rem 0',
+    }),
+    row: (gap?: string): React.CSSProperties => ({
+      display: 'flex',
+      flexWrap: 'wrap' as const,
+      gap: gap || '1rem',
+    }),
   };
 
   return (
-    <div className="flex flex-col min-h-screen relative overflow-hidden bg-[#09090b]">
+    <div style={{ background: 'var(--canvas)', overflowX: 'hidden', minHeight: '100vh' }}>
 
-      {/* Premium Background Orbs */}
-      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden" aria-hidden>
-        <div className="absolute top-0 left-1/4 w-[1000px] h-[600px] bg-brand-500/20 rounded-full blur-[120px] -translate-y-1/2 mix-blend-screen animate-pulse-slow" />
-        <div className="absolute bottom-0 right-1/4 w-[800px] h-[600px] bg-emerald-500/15 rounded-full blur-[100px] translate-y-1/3 mix-blend-screen animate-pulse-slow" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[800px] bg-purple-500/10 rounded-full blur-[150px] mix-blend-screen pointer-events-none" />
-        {/* Subtle grid overlay for tech feel */}
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay" />
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
+      {/* ── background decoration ── */}
+      <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }} aria-hidden>
+        <div className="aorb" style={{ position: 'absolute', width: '700px', height: '700px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(13,148,136,.07) 0%,transparent 70%)', top: '-18%', right: '-12%', filter: 'blur(80px)' }} />
+        <div className="aorb" style={{ position: 'absolute', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(217,119,6,.05) 0%,transparent 70%)', bottom: '20%', left: '-10%', filter: 'blur(70px)', animationDelay: '4s' }} />
+        <div className="aorb" style={{ position: 'absolute', width: '350px', height: '350px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(13,148,136,.05) 0%,transparent 70%)', bottom: '-5%', right: '25%', filter: 'blur(60px)', animationDelay: '7s' }} />
       </div>
 
-      {/* ═══════════════════════════════════════
-          HERO SECTION
-      ═══════════════════════════════════════ */}
-      <section className="relative pt-12 md:pt-24 pb-16">
+      {/* ════════════════════════════════════════════
+          HERO
+      ════════════════════════════════════════════ */}
+      <section style={{ ...S.section(), paddingTop: '5.25rem', paddingBottom: '0' }}>
+        <div className="shell">
 
+          {/* Two-column on lg+, stacked on mobile */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 28rem), 1fr))', gap: '2.5rem 3rem', alignItems: 'center' }}>
 
-        <div className="container mx-auto px-4 z-10 relative">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start lg:pt-8">
+            {/* ── LEFT ── */}
+            <div style={{ maxWidth: '36rem' }}>
 
-            {/* Left: Pitch */}
-            <div className="text-left max-w-2xl relative z-10">
-              
-              {/* Premium Branding Hook for Stories */}
-              <div className="mb-8 flex items-center gap-3 flex-wrap">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-bold tracking-wide text-xs backdrop-blur-md shadow-[0_0_15px_rgba(16,185,129,0.15)]">
-                  <Zap className="w-3.5 h-3.5 fill-emerald-400" /> India's #1 Project Platform
-                </div>
+              {/* Label + ticker */}
+              <motion.div
+                initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .4 }}
+                style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '.625rem', marginBottom: '1.5rem' }}
+              >
+                <span className="label-chip">Ready-to-run Project Kits</span>
                 <LiveTicker />
-              </div>
+              </motion.div>
 
-              {/* Rotating Title */}
-              <div className="min-h-[160px] md:min-h-[180px] lg:min-h-[220px] flex flex-col justify-end mb-6">
+              {/* Rotating headline */}
+              <div style={{ minHeight: 'clamp(5.5rem,12vw,8rem)', display: 'flex', alignItems: 'flex-end', marginBottom: '1.25rem' }}>
                 <AnimatePresence mode="wait">
                   <motion.h1
-                    key={heroIndex % ROTATING_HERO_TITLES.length}
-                    initial={{ opacity: 0, y: 20, filter: 'blur(10px)' }}
-                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                    exit={{ opacity: 0, y: -20, filter: 'blur(10px)' }}
-                    transition={{ duration: 0.5, ease: [0.25, 1, 0.5, 1] }}
-                    className="text-5xl md:text-6xl lg:text-6xl xl:text-[64px] font-display font-black tracking-tighter text-white leading-[1.1] md:leading-tight"
+                    key={si}
+                    initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -14 }}
+                    transition={{ duration: .42, ease: [.25, 1, .5, 1] }}
+                    style={{ fontSize: 'clamp(2.5rem,6vw,4.25rem)', fontWeight: 900, letterSpacing: '-.045em', lineHeight: 1.08, color: 'var(--navy)' }}
                   >
-                    {ROTATING_HERO_TITLES[heroIndex % ROTATING_HERO_TITLES.length]?.line1}<br />
-                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-emerald-400 via-brand-400 to-purple-500 font-black inline-block pb-2 pr-4 max-w-full">
-                      {ROTATING_HERO_TITLES[heroIndex % ROTATING_HERO_TITLES.length]?.line2}
-                    </span>
+                    {SLIDES[si].h}{' '}
+                    <em className="text-teal-grad" style={{ fontStyle: 'italic' }}>{SLIDES[si].accent}</em>
                   </motion.h1>
                 </AnimatePresence>
               </div>
 
+              {/* Sub */}
               <motion.p
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="text-lg md:text-xl text-zinc-400 mb-8 leading-relaxed max-w-[90%]"
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .4, delay: .18 }}
+                style={{ fontSize: 'clamp(.9375rem,2vw,1.0625rem)', color: 'var(--ink-3)', lineHeight: 1.75, marginBottom: '1.875rem', maxWidth: '30rem' }}
               >
-                Skip the stress of broken GitHub code. Get a <strong className="text-white font-semibold">ready-to-submit project</strong> with the IEEE Black Book report, PPT slides, and code. Just download, run, and submit.
+                Complete final-year kits with source code, documentation and viva prep.{' '}
+                <strong style={{ color: 'var(--navy)', fontWeight: 700 }}>Preview every kit</strong> before you spend a rupee.
               </motion.p>
 
-              {/* Deliverable Highlights */}
-              <div className="flex flex-wrap gap-2.5 mb-8">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-semibold text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.1)]">
-                  <CheckCircle2 className="w-3.5 h-3.5" /> Zero Code Errors
-                </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-xs font-medium text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.1)]">
-                  <FileText className="w-3.5 h-3.5" /> 60-Page Report (.docx)
-                </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-xs font-medium text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.1)]">
-                  <Presentation className="w-3.5 h-3.5" /> Defense PPT
-                </span>
-              </div>
-
+              {/* CTA buttons */}
               <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                className="flex flex-col sm:flex-row items-start sm:items-center gap-4"
+                initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .4, delay: .24 }}
+                style={{ display: 'flex', flexWrap: 'wrap', gap: '.75rem', marginBottom: '2rem' }}
               >
-                <Link href="/projects" className="relative group overflow-hidden flex items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-white text-zinc-950 font-bold text-sm transition-all hover:scale-[1.02] shadow-[0_0_40px_rgba(255,255,255,0.3)]">
-                  <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/50 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
-                  Browse Ready Projects <ArrowRight className="h-4 w-4" />
+                <Link href="/projects" className="btn btn-navy btn-lg">
+                  Browse Projects
                 </Link>
-                <Link href="#pricing" className="flex items-center justify-center gap-2 px-8 py-4 rounded-2xl bg-white/5 hover:bg-white/10 text-white font-bold text-sm transition-all border border-white/10 hover:border-white/20 backdrop-blur-md">
-                  View Pricing
+                <Link href="/blueprint" className="btn btn-outline btn-lg">
+                  Free Previews
                 </Link>
               </motion.div>
 
-              {/* Star rating social proof */}
+              {/* Deliverable pills */}
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-                className="flex items-center gap-3 mt-8 pt-8 border-t border-white/10"
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .4, delay: .32 }}
+                style={{ display: 'flex', flexWrap: 'wrap', gap: '.625rem .875rem', marginBottom: '2rem' }}
               >
-                <div className="flex -space-x-2">
-                  {[1, 2, 3, 4].map(i => (
-                    <div key={i} className={`w-8 h-8 rounded-full border-2 border-[#09090b] bg-gradient-to-br from-zinc-700 to-zinc-900 flex items-center justify-center`}>
-                      <Star className="w-3 h-3 text-zinc-400" />
-                    </div>
+                {['Source code', 'IEEE Black Book', 'Defense PPT', 'Viva Q&A'].map(t => (
+                  <span key={t} style={{ display: 'inline-flex', alignItems: 'center', gap: '.3125rem', fontSize: '.875rem', fontWeight: 600, color: 'var(--teal-dark)' }}>
+                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--teal)', flexShrink: 0 }} />
+                    {t}
+                  </span>
+                ))}
+              </motion.div>
+
+              {/* Social proof */}
+              <motion.div
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .4, delay: .38 }}
+                style={{ display: 'flex', alignItems: 'center', gap: '.875rem', paddingTop: '1.375rem', borderTop: '1px solid var(--line)' }}
+              >
+                <div style={{ display: 'flex' }}>
+                  {['VK', 'RS', 'PN', 'AP'].map((init, i) => (
+                    <div key={i} style={{
+                      width: '2.125rem', height: '2.125rem', borderRadius: '50%',
+                      border: '2.5px solid var(--surface)',
+                      background: ['#E6F7F5', '#ECFDF5', '#F5F3FF', '#FFFBEB'][i],
+                      color: ['#0A7C72', '#059669', '#7C3AED', '#D97706'][i],
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: '.6rem', fontWeight: 800, marginLeft: i > 0 ? '-8px' : 0,
+                      boxShadow: 'var(--sh-xs)',
+                    }}>{init}</div>
                   ))}
                 </div>
-                <div className="flex flex-col">
-                  <div className="flex items-center gap-1">
-                    {[1, 2, 3, 4, 5].map(s => <Star key={s} className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />)}
+                <div>
+                  <div style={{ display: 'flex', gap: '1px', marginBottom: '.125rem' }}>
+                    {[1, 2, 3, 4, 5].map(s => <Star key={s} style={{ width: '13px', height: '13px', fill: '#F59E0B', color: '#F59E0B' }} />)}
                   </div>
-                  <span className="text-zinc-400 text-xs mt-0.5">Trusted by <strong className="text-white">500+</strong> students</span>
-                </div>
-              </motion.div>
-
-              {/* Divider / Clean Visual Portal Entrance */}
-              <div className="mt-12 mb-6 w-full max-w-lg flex items-center gap-3">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400/90 flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-                  Topic Intelligence & 1-Prompt Roadmaps
-                </span>
-                <div className="h-px bg-gradient-to-r from-emerald-500/25 via-white/10 to-transparent flex-1" />
-              </div>
-
-              {/* Ultra-Professional Topic Explorer Portal */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-                className="w-full max-w-lg relative rounded-[2rem] border border-white/10 bg-black/40 p-8 shadow-[0_0_50px_rgba(0,0,0,0.5)] backdrop-blur-3xl overflow-hidden group mt-12"
-              >
-                {/* Internal glow */}
-                <div className="absolute inset-0 bg-gradient-to-b from-white/[0.04] to-transparent pointer-events-none" />
-                <div className="absolute -top-20 -right-20 w-60 h-60 bg-brand-500/20 rounded-full blur-[60px] pointer-events-none group-hover:bg-emerald-500/20 transition-colors duration-700" />
-
-                {/* Top header */}
-                <div className="flex items-start gap-4 mb-6 relative z-10">
-                  <div className="w-12 h-12 shrink-0 rounded-2xl bg-gradient-to-br from-zinc-800 to-black border border-white/10 flex items-center justify-center shadow-lg group-hover:border-emerald-500/50 transition-colors duration-500">
-                    <Compass className="w-6 h-6 text-emerald-400" />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2.5">
-                      <h3 className="text-white font-bold tracking-tight text-xl">
-                        AI Topic Explorer
-                      </h3>
-                      <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase tracking-widest shadow-[0_0_10px_rgba(16,185,129,0.2)]">
-                        Free AI Tool
-                      </span>
-                    </div>
-                    <p className="text-zinc-400 text-sm mt-1.5 leading-relaxed">
-                      Search 1,000+ topics to generate instant roadmaps, code architecture, and AI build prompts.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Frosted Modern Search Bar */}
-                <form 
-                  onSubmit={handleTopicSubmit}
-                  className="relative flex items-center bg-zinc-900/50 border border-white/10 focus-within:border-emerald-500/50 focus-within:ring-4 focus-within:ring-emerald-500/10 rounded-2xl p-2 transition-all shadow-inner z-10"
-                >
-                  <Search className="w-5 h-5 text-zinc-500 ml-3 shrink-0" />
-                  <input
-                    type="text"
-                    placeholder="Search e.g. Face Recognition, RAG..."
-                    value={topicQuery}
-                    onChange={(e) => handleTopicSearchChange(e.target.value)}
-                    className="w-full bg-transparent border-none text-white px-4 py-3 outline-none text-sm placeholder:text-zinc-500 font-medium"
-                  />
-                  <button
-                    type="submit"
-                    className="shrink-0 bg-white hover:bg-zinc-200 text-zinc-950 px-5 py-3 rounded-xl font-bold text-sm flex items-center gap-2 transition-all shadow-lg"
-                  >
-                    Explore <ArrowRight className="w-4 h-4" />
-                  </button>
-                </form>
-
-                {/* Instant Topic Autocomplete Results */}
-                {topicResults.length > 0 && (
-                  <div className="mt-3 bg-zinc-950/95 border border-white/10 rounded-2xl divide-y divide-white/5 overflow-hidden shadow-2xl backdrop-blur-xl">
-                    {topicResults.map((t) => (
-                      <Link
-                        key={t.id}
-                        href={`/blueprint/${t.id}`}
-                        className="flex items-center justify-between p-3 hover:bg-emerald-500/10 transition-colors group"
-                      >
-                        <div className="min-w-0 pr-2">
-                          <div className="flex items-center gap-2">
-                            <span className="text-xs font-bold text-white group-hover:text-emerald-400 transition-colors truncate">
-                              {t.title}
-                            </span>
-                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/5 text-zinc-400 border border-white/10 font-mono shrink-0">
-                              {t.category}
-                            </span>
-                          </div>
-                          <p className="text-[11px] text-zinc-500 truncate mt-0.5">{t.tagline}</p>
-                        </div>
-                        <span className="text-xs text-emerald-400 font-semibold shrink-0 flex items-center gap-1">
-                          View Roadmap <ChevronRight className="w-3.5 h-3.5" />
-                        </span>
-                      </Link>
-                    ))}
-                  </div>
-                )}
-
-                {/* Popular Quick Chips */}
-                <div className="mt-6 z-10 relative">
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="text-[11px] text-zinc-500 font-bold uppercase tracking-wider">Trending Right Now:</span>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {[
-                      { name: "Face Attendance", domain: "AI", id: "face-recognition-attendance", color: "from-blue-500/20 to-indigo-500/20" },
-                      { name: "Crypto Portfolio", domain: "Web3", id: "crypto-portfolio-tracker", color: "from-amber-500/20 to-orange-500/20" },
-                      { name: "Fraud Detection", domain: "Fintech", id: "credit-card-fraud-detection", color: "from-emerald-500/20 to-teal-500/20" },
-                    ].map((chip) => (
-                      <Link
-                        key={chip.id}
-                        href={`/blueprint/${chip.id}`}
-                        className={`text-xs px-3 py-1.5 rounded-xl bg-gradient-to-r ${chip.color} hover:brightness-125 text-white border border-white/5 transition-all flex items-center gap-2`}
-                      >
-                        <span className="font-medium">{chip.name}</span>
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-
-                {/* High-Impact Direct Catalog Link */}
-                <div className="mt-6 pt-5 border-t border-white/10 flex items-center justify-between z-10 relative">
-                  <div className="flex items-center gap-2.5">
-                    <div className="relative flex h-3 w-3">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
-                    </div>
-                    <span className="text-xs text-zinc-400 font-medium">
-                      Over 1,078 blueprints available
-                    </span>
-                  </div>
-                  <Link
-                    href="/blueprint"
-                    className="text-xs text-white hover:text-emerald-400 font-bold flex items-center gap-1.5 transition-colors group/link"
-                  >
-                    View All Topics
-                    <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-0.5 transition-transform" />
-                  </Link>
+                  <span style={{ fontSize: '.875rem', color: 'var(--ink-3)' }}>
+                    Trusted by <strong style={{ color: 'var(--navy)', fontWeight: 700 }}>500+</strong> students across India
+                  </span>
                 </div>
               </motion.div>
             </div>
 
-            {/* Right: Pricing Hook Card */}
+            {/* ── RIGHT: Pricing card ── */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="w-full"
+              initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .52, delay: .2 }}
             >
               <PricingHook />
             </motion.div>
           </div>
 
-
-
-          {/* College Trust Row */}
+          {/* ── Focused AI Topic Explorer Hub ── */}
           <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
-            className="mt-14 pt-8 border-t border-white/5"
+            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .48, delay: .32 }}
+            className="mt-6 sm:mt-10 lg:mt-12 max-w-2xl sm:max-w-3xl mx-auto w-full"
           >
-            <p className="text-center text-xs text-zinc-600 mb-4 uppercase tracking-wider">Trusted by students from</p>
-            <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-sm text-zinc-600 font-medium">
-              {['VTU', 'Mumbai University', 'Pune University', 'Anna University', 'JNTU', 'GTU', 'RGPV', 'MDU'].map(uni => (
-                <span key={uni} className="hover:text-zinc-400 transition-colors cursor-default">{uni}</span>
+            <AiTopicExplorer />
+          </motion.div>
+
+          {/* University trust row */}
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .5, delay: .55 }}
+            className="mt-8 sm:mt-12 pt-6 sm:pt-8 text-center pb-8 sm:pb-12"
+            style={{ borderTop: '1px solid var(--line)' }}
+          >
+            <p style={{ fontSize: '.6875rem', fontWeight: 800, color: 'var(--ink-4)', textTransform: 'uppercase', letterSpacing: '.14em', marginBottom: '1.125rem' }}>
+              Trusted by 500+ students from top universities
+            </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '.625rem 1rem' }}>
+              {CONSTANTS.UNIVERSITIES.map(u => (
+                <span key={u}
+                  style={{
+                    fontSize: '.875rem', fontWeight: 600, color: 'var(--ink-2)',
+                    background: 'var(--canvas-warm)', border: '1px solid var(--line)',
+                    borderRadius: '9999px', padding: '.375rem .875rem',
+                    boxShadow: 'var(--sh-xs)',
+                    display: 'inline-flex', alignItems: 'center', gap: '.375rem',
+                    transition: 'all 150ms ease'
+                  }}
+                >
+                  <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'var(--teal)', opacity: .7 }} />
+                  {u}
+                </span>
               ))}
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════
-          STATS ROW (Global Counter)
-      ═══════════════════════════════════════ */}
-      <section className="py-10 border-t border-b border-white/5 bg-zinc-950/50 backdrop-blur-md">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-            <StatCounter target={59} suffix="" label="Ready Project Kits" />
-            <StatCounter target={CONSTANTS.TOTAL_TOPICS} suffix="+" label="Free Topic Blueprints" />
-            <div className="text-center">
-              <div className="text-2xl md:text-3xl font-display font-bold text-emerald-400">
-                {stats.moneySavedFormatted}
-              </div>
-              <div className="text-xs text-zinc-500 mt-1">Saved from Local Shops</div>
+      {/* ════════════════════════════════════════════
+          STATS STRIP — Frosted Glass Cards
+      ════════════════════════════════════════════ */}
+      <section style={{ ...S.section(), borderTop: '1px solid var(--line)', borderBottom: '1px solid var(--line)', padding: '2.75rem 0' }}>
+        <div className="shell">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(13rem, 1fr))', gap: '1.25rem', maxWidth: '64rem', margin: '0 auto' }}>
+            <div className="card" style={{ padding: '1.25rem', textAlign: 'center', background: 'rgba(255, 255, 255, 0.75)', backdropFilter: 'blur(10px)', border: '1px solid var(--line)', borderRadius: '16px', boxShadow: 'var(--sh-xs)' }}>
+              <StatNum val={59} suffix="" label="Ready Project Kits" />
             </div>
-            <StatCounter target={stats.totalOrders} suffix="+" label="Students Passed" />
+            <div className="card" style={{ padding: '1.25rem', textAlign: 'center', background: 'rgba(255, 255, 255, 0.75)', backdropFilter: 'blur(10px)', border: '1px solid var(--line)', borderRadius: '16px', boxShadow: 'var(--sh-xs)' }}>
+              <StatNum val={CONSTANTS.TOTAL_TOPICS} suffix="+" label="Free Blueprints" />
+            </div>
+            <div className="card" style={{ padding: '1.25rem', textAlign: 'center', background: 'rgba(255, 255, 255, 0.75)', backdropFilter: 'blur(10px)', border: '1px solid var(--line)', borderRadius: '16px', boxShadow: 'var(--sh-xs)' }}>
+              <div style={{ fontSize: 'clamp(1.875rem,4vw,2.5rem)', fontWeight: 900, letterSpacing: '-.05em', color: 'var(--teal)', lineHeight: 1 }}>₹1,20,000+</div>
+              <div style={{ fontSize: '.75rem', color: 'var(--ink-4)', marginTop: '.375rem', fontWeight: 600 }}>Saved vs Local Vendors</div>
+            </div>
+            <div className="card" style={{ padding: '1.25rem', textAlign: 'center', background: 'rgba(255, 255, 255, 0.75)', backdropFilter: 'blur(10px)', border: '1px solid var(--line)', borderRadius: '16px', boxShadow: 'var(--sh-xs)' }}>
+              <StatNum val={512} suffix="+" label="Final Years Passed" color="var(--navy)" />
+            </div>
           </div>
         </div>
       </section>
 
+      {/* ════════════════════════════════════════════
+          READY KITS LIST
+      ════════════════════════════════════════════ */}
+      <section className="defer" style={{ ...S.section(), padding: '3.5rem 0' }}>
+        <div className="shell">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%,30rem), 1fr))', gap: '2.5rem 3rem', alignItems: 'start' }}>
 
-      {/* ═══════════════════════════════════════
-          BROWSE BY CATEGORY
-      ═══════════════════════════════════════ */}
-      <section className="py-16 relative section-deferred">
-        <div className="container mx-auto px-4 z-10 relative">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="text-center mb-10"
-          >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-400 text-xs font-bold mb-4 border border-indigo-500/20 uppercase tracking-wider">
-              <Compass className="w-3.5 h-3.5" /> Domain Specific
-            </div>
-            <h2 className="text-3xl md:text-4xl font-display font-medium mb-3 text-white">Browse by Category</h2>
-            <p className="text-zinc-500 max-w-lg mx-auto">Find the exact project stack mandated by your college professors.</p>
-          </motion.div>
+            {/* Left: list */}
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '.625rem', marginBottom: '1rem' }}>
+                <span className="tag tag-teal" style={{ fontSize: '.6rem' }}>
+                  <span className="dot-live apulse" style={{ width: '5px', height: '5px' }} /> Ready to Ship
+                </span>
+                <p style={{ fontSize: '.6875rem', fontWeight: 800, color: 'var(--ink-4)', textTransform: 'uppercase', letterSpacing: '.1em', margin: 0 }}>Instant Download</p>
+              </div>
+              <h2 style={{ fontSize: 'clamp(1.75rem,4vw,2.5rem)', fontWeight: 900, letterSpacing: '-.04em', color: 'var(--navy)', marginBottom: '1.5rem' }}>Ready to Ship Kits</h2>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 max-w-6xl mx-auto">
-            {CONSTANTS.CATEGORIES.map((cat, i) => (
-              <motion.div
-                key={cat.value}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '.625rem', marginBottom: '1.375rem' }}>
+                {READY.map((item, i) => (
+                  <motion.div key={item.n}
+                    initial={{ opacity: 0, x: -10 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
+                    transition={{ duration: .32, delay: i * .07 }}
+                  >
+                    <Link href={`/projects/${item.slug}`}
+                      style={{ display: 'flex', alignItems: 'center', gap: '.875rem', padding: '1rem 1.25rem', borderRadius: '14px', background: 'var(--surface)', border: '1px solid var(--line)', textDecoration: 'none', transition: 'all 150ms' }}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--line-teal)'; e.currentTarget.style.background = 'var(--surface-teal)'; }}
+                      onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--line)'; e.currentTarget.style.background = 'var(--surface)'; }}
+                    >
+                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '.75rem', fontWeight: 700, color: 'var(--teal)', width: '1.75rem', flexShrink: 0 }}>{item.n}</span>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: '.9375rem', fontWeight: 700, color: 'var(--navy)', lineHeight: 1.3 }}>{item.name}</div>
+                        <div style={{ fontSize: '.75rem', color: 'var(--ink-4)', marginTop: '.125rem' }}>{item.cat}</div>
+                      </div>
+                      <span style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--navy)', flexShrink: 0 }}>₹{item.price}</span>
+                      <ArrowRight style={{ width: '.9375rem', height: '.9375rem', color: 'var(--teal)', flexShrink: 0 }} />
+                    </Link>
+                  </motion.div>
+                ))}
+              </div>
+
+              <Link href="/projects" className="btn btn-outline"
+                style={{ width: '100%', maxWidth: '24rem', justifyContent: 'center', borderRadius: '12px' }}
               >
-                <Link
-                  href={`/blueprint?q=${encodeURIComponent(cat.value)}`}
-                  className="block p-5 text-center rounded-2xl border border-white/5 bg-zinc-900/40 hover:bg-zinc-800/80 hover:border-indigo-500/30 transition-all hover:-translate-y-1 group"
-                >
-                  <div className="w-10 h-10 mx-auto rounded-full bg-white/5 flex items-center justify-center mb-3 group-hover:bg-indigo-500/20 group-hover:text-indigo-300 transition-colors">
-                    {cat.value === 'AIML' ? <Zap className="w-5 h-5" /> : 
-                     cat.value === 'FullStack' ? <Code2 className="w-5 h-5" /> :
-                     cat.value === 'Cybersecurity' ? <ShieldCheck className="w-5 h-5" /> :
-                     cat.value === 'Healthcare' ? <CheckCircle2 className="w-5 h-5" /> :
-                     cat.value === 'FinTech' ? <Star className="w-5 h-5" /> :
-                     <Sparkles className="w-5 h-5" />}
-                  </div>
-                  <div className="text-xs font-semibold text-zinc-300 group-hover:text-white transition-colors">{cat.label}</div>
+                View all project kits <ArrowRight style={{ width: '.9375rem', height: '.9375rem' }} />
+              </Link>
+            </div>
+
+            {/* Right: blueprint + custom cards */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+
+              {/* Blueprint card */}
+              <motion.div
+                initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: .42 }}
+                className="card-teal"
+                style={{ padding: '2rem 1.75rem', overflow: 'hidden', position: 'relative' }}
+              >
+                <div style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', fontSize: '7rem', fontWeight: 900, color: 'rgba(13,148,136,.07)', lineHeight: 1, userSelect: 'none', pointerEvents: 'none', fontFamily: 'var(--font-display)' }}>1K</div>
+                <span className="label-chip" style={{ marginBottom: '1rem', display: 'inline-flex', position: 'relative', zIndex: 1 }}>Topic Blueprints</span>
+                <div style={{ fontSize: 'clamp(2.5rem,5vw,3.5rem)', fontWeight: 900, letterSpacing: '-.055em', color: 'var(--navy)', lineHeight: 1, marginBottom: '.5rem', position: 'relative', zIndex: 1 }}>1,078</div>
+                <p style={{ fontSize: '.9375rem', color: 'var(--ink-2)', fontWeight: 600, marginBottom: '.375rem', position: 'relative', zIndex: 1 }}>Topic Blueprints — 100% Free</p>
+                <p style={{ fontSize: '.875rem', color: 'var(--ink-3)', lineHeight: 1.7, marginBottom: '1.375rem', maxWidth: '20rem', position: 'relative', zIndex: 1 }}>
+                  Abstract, base paper, architecture and module breakdown. Completely free for all engineering students.
+                </p>
+                <Link href="/blueprint" className="btn btn-teal" style={{ minHeight: '44px', fontSize: '.9375rem', position: 'relative', zIndex: 1 }}>
+                  Browse Blueprints <ArrowRight style={{ width: '.9375rem', height: '.9375rem' }} />
                 </Link>
+              </motion.div>
+
+              {/* Custom build card */}
+              <motion.div
+                initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: .42, delay: .1 }}
+                className="card"
+                style={{ padding: '1.5rem 1.75rem' }}
+              >
+                <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--navy)', letterSpacing: '-.025em', marginBottom: '.5rem' }}>Have your own idea?</h3>
+                <p style={{ fontSize: '.9rem', color: 'var(--ink-3)', lineHeight: 1.65, marginBottom: '1.25rem' }}>
+                  We build custom projects with you, from topic selection to final documentation.
+                </p>
+                <a
+                  href={`https://wa.me/918799814256?text=${encodeURIComponent('Hi SubmitKit! I need a custom project. My idea:')}`}
+                  target="_blank" rel="noopener noreferrer"
+                  className="btn btn-navy"
+                  style={{ minHeight: '48px', fontSize: '.9375rem', gap: '.5rem' }}
+                >
+                  <WaIcon size={16} />
+                  Chat on WhatsApp
+                </a>
+              </motion.div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════════════
+          HOW IT WORKS
+      ════════════════════════════════════════════ */}
+      <section className="defer" style={{ ...S.section(), borderTop: '1px solid var(--line)', padding: '3.5rem 0' }}>
+        <div className="shell">
+          <p style={{ fontSize: '.6875rem', fontWeight: 800, color: 'var(--ink-4)', textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: '1rem' }}>How It Works</p>
+          <h2 style={{ fontSize: 'clamp(1.75rem,4vw,2.5rem)', fontWeight: 900, letterSpacing: '-.04em', color: 'var(--navy)', marginBottom: '2.25rem' }}>
+            Preview first. Always.
+          </h2>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%,16rem), 1fr))', gap: '1.5rem' }}>
+            {HOW.map((s, i) => (
+              <motion.div key={s.n}
+                initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+                transition={{ duration: .38, delay: i * .1 }}
+                style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}
+              >
+                <div style={{ width: '2.75rem', height: '2.75rem', borderRadius: '12px', flexShrink: 0, background: 'var(--surface-teal)', border: '1px solid var(--teal-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-mono)', fontSize: '.875rem', fontWeight: 800, color: 'var(--teal)' }}>
+                  {s.n}
+                </div>
+                <div>
+                  <div style={{ fontSize: '1.0625rem', fontWeight: 700, color: 'var(--navy)', lineHeight: 1.35, marginBottom: '.3125rem' }}>{s.t}</div>
+                  <div style={{ fontSize: '.9rem', color: 'var(--ink-3)' }}>{s.s}</div>
+                </div>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════
-          DEMO VIDEO (How it works)
-      ═══════════════════════════════════════ */}
-      <section className="py-16 border-b border-white/5 relative bg-zinc-950/50 section-deferred">
-        <div className="container mx-auto px-4 z-10 relative">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="text-center mb-10"
-          >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-xs font-bold mb-4 border border-blue-500/20 uppercase tracking-wider">
-              <MonitorPlay className="w-3.5 h-3.5" /> 2-Minute Setup
-            </div>
-            <h2 className="text-3xl md:text-4xl font-display font-medium mb-3 text-white">See it in action</h2>
-            <p className="text-zinc-500 max-w-lg mx-auto">From instant download to a fully working localhost project in under 2 minutes.</p>
-          </motion.div>
-          
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="max-w-4xl mx-auto rounded-2xl overflow-hidden border border-white/10 shadow-[0_0_50px_rgba(59,130,246,0.1)] bg-black relative ring-1 ring-white/5"
-          >
-            <video 
-              controls
-              playsInline
-              preload="metadata"
-              poster="/video-poster.jpg"
-              className="w-full aspect-video object-contain"
-            >
-              <source src="/demo.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════
-          BENTO GRID (What & Why)
-      ═══════════════════════════════════════ */}
-      <section className="py-16 relative section-deferred">
-        <div className="container mx-auto px-4 z-10 relative">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="text-center mb-10"
-          >
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 text-brand-400 text-xs font-bold mb-4 border border-brand-500/20 uppercase tracking-wider">
-              Why Students Choose SubmitKit
-            </div>
-            <h2 className="text-3xl md:text-4xl font-display font-medium mb-3 text-white">Stop Wasting Weeks Fixing Broken Code</h2>
-            <p className="text-zinc-400 max-w-lg mx-auto text-sm">One download. Zero headaches. Running on your screen in under 5 minutes.</p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
-
-            {/* Compare Slider - spans 2 cols */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.97 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="lg:col-span-2 glass-card rounded-3xl overflow-hidden"
-            >
-              <div className="p-5 pb-0">
-                <h3 className="text-sm font-semibold text-zinc-300 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-brand-400 inline-block" />
-                  Compare: Building Alone from Random GitHub Code vs. SubmitKit Complete Bundle
-                </h3>
-              </div>
-              <div className="p-3 w-full flex items-center justify-center min-h-[380px]">
-                <CompareSlider />
-              </div>
-            </motion.div>
-
-            {/* Right column */}
-            <div className="flex flex-col gap-5">
-
-              {/* Why SubmitKit */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className="glass-card rounded-3xl p-6 flex-grow"
-              >
-                <h3 className="text-sm font-semibold text-emerald-400 mb-4 flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4" /> The SubmitKit Way
-                </h3>
-                <ul className="space-y-3">
-                  {[
-                    'Starts from just ₹299 (Save ₹10,000)',
-                    '1-Click Runnable Code (Zero Errors)',
-                    'Pre-formatted 60-Page IEEE Black Book',
-                    'Defense PPT Slides with Speaker Notes',
-                    'Top 25 Viva Q&A with Full Answers',
-                    'Instant WhatsApp & Email Download',
-                  ].map(item => (
-                    <li key={item} className="flex items-center gap-2.5 text-zinc-300 text-xs">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-
-              {/* 3 Steps */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.3 }}
-                className="glass-card rounded-3xl p-6 bg-brand-500/5 border-brand-500/20"
-              >
-                <h3 className="text-sm font-semibold text-white mb-4 flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-brand-400" /> 3 Steps to Submit
-                </h3>
-                <div className="flex flex-col gap-3">
-                  {[
-                    { num: '1', text: 'Pick Your Kit & Pay via UPI', sub: 'Instant QR / Google Pay / PhonePe' },
-                    { num: '2', text: 'Download & Double-Click to Run', sub: 'Runs on any laptop in 2 mins' },
-                    { num: '3', text: 'Print Black Book & Ace Your Viva', sub: 'Full report & top 25 answers' },
-                  ].map((step, i) => (
-                    <div key={step.num}>
-                      {i > 0 && <div className="w-px h-3 bg-white/10 ml-3.5 mb-3" />}
-                      <div className="flex items-start gap-2.5">
-                        <div className="w-7 h-7 rounded-full bg-brand-500/20 text-brand-400 font-bold flex items-center justify-center text-xs shrink-0 mt-0.5">{step.num}</div>
-                        <div>
-                          <span className="text-xs text-white font-medium block">{step.text}</span>
-                          <span className="text-[11px] text-zinc-500">{step.sub}</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
-
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════
-          FLEET SECTION: AVAILABLE VS UPCOMING
-      ═══════════════════════════════════════ */}
+      {/* Fleet section + Testimonials */}
       <FleetSection />
-
-      {/* ═══════════════════════════════════════
-          TESTIMONIALS
-      ═══════════════════════════════════════ */}
       <Testimonials />
 
-      {/* ═══════════════════════════════════════
-          PRICING SECTION
-      ═══════════════════════════════════════ */}
-      <section id="pricing" className="py-16 relative border-t border-white/5 section-deferred">
-        <div className="container mx-auto px-4 text-center z-10 relative">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-          >
-            <h2 className="text-3xl md:text-4xl font-display font-medium mb-3 text-white">Simple Pricing. No Hidden Charges.</h2>
-            <p className="text-zinc-500 max-w-lg mx-auto mb-12">Pay once, download instantly. No subscriptions. No nonsense.</p>
-          </motion.div>
+      {/* ════════════════════════════════════════════
+          FINAL CTA
+      ════════════════════════════════════════════ */}
+      <section className="defer" style={{ ...S.section(), padding: '4rem 1rem 5rem' }}>
+        <div className="shell" style={{ maxWidth: '52rem' }}>
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(240,253,250,0.85) 55%, rgba(250,247,242,0.9) 100%)',
+            backdropFilter: 'blur(16px)',
+            border: '1px solid var(--line)',
+            borderRadius: '28px',
+            boxShadow: 'var(--sh-xl)',
+            padding: ' clamp(2.5rem, 6vw, 4.5rem) clamp(1.5rem, 4vw, 3rem)',
+            textAlign: 'center',
+            position: 'relative',
+            overflow: 'hidden',
+          }}>
+            {/* Ambient decorative glow */}
+            <div style={{ position: 'absolute', top: '-40%', right: '-20%', width: '350px', height: '350px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(13,148,136,.12) 0%, transparent 70%)', pointerEvents: 'none' }} />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto text-left">
+            <h2 style={{ fontSize: 'clamp(2rem,5vw,3rem)', fontWeight: 900, letterSpacing: '-.04em', color: 'var(--navy)', marginBottom: '.875rem', lineHeight: 1.15, position: 'relative', zIndex: 1 }}>
+              Your project kit is waiting.
+            </h2>
+            <p style={{ fontSize: 'clamp(.9375rem,2vw,1.0625rem)', color: 'var(--ink-3)', lineHeight: 1.8, marginBottom: '2.25rem', position: 'relative', zIndex: 1 }}>
+              Mini kits from ₹{MINI} · Major kits from ₹{MAJOR}.<br />
+              Preview free. Download instantly. Submit with confidence.
+            </p>
 
-            {/* Blueprint Starter - FREE */}
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.05 }}
-              className="glass-card rounded-2xl p-6 md:p-7 flex flex-col hover-glow transition-all duration-500 hover:-translate-y-1 border-t-2 border-t-emerald-400 bg-emerald-950/10 relative overflow-hidden"
-            >
-              <div className="flex justify-between items-start mb-1">
-                <h3 className="text-xl font-medium text-white">Blueprint Starter</h3>
-                <span className="bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
-                  <Flame className="w-2.5 h-2.5 text-emerald-400" /> Free
-                </span>
-              </div>
-              <p className="text-xs text-zinc-400 mb-5">Topic roadmap &amp; evaluator defense before writing code.</p>
-              <div className="flex items-baseline gap-2 mb-6 pb-6 border-b border-white/5">
-                <span className="text-4xl font-bold text-emerald-400">FREE</span>
-                <span className="text-xs text-emerald-500 font-semibold ml-1">Always free</span>
-              </div>
-              <ul className="space-y-3 mb-8 flex-grow">
-                {[
-                  'Topic Roadmap (.docx & .pdf)',
-                  '1-Prompt AI Master Build Guide',
-                  'Mock Dataset & Architecture Schema',
-                  'Top 10 Examiner Q&A with Answers',
-                  'Instant WhatsApp & Email Access',
-                ].map(item => (
-                  <li key={item} className="flex items-center gap-2.5">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                    <span className="text-zinc-300 text-sm">{item}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link href="/blueprint" className="block w-full py-3 px-4 bg-emerald-500/10 hover:bg-emerald-500/20 text-center rounded-xl text-emerald-300 font-medium transition-all text-sm border border-emerald-500/30 hover:border-emerald-500/50">
-                Browse 1,000+ Topics
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '.875rem', marginBottom: '2.5rem', position: 'relative', zIndex: 1 }}>
+              <Link href="/projects" className="btn btn-teal btn-lg">
+                Browse All Kits <ArrowRight style={{ width: '1.125rem', height: '1.125rem' }} />
               </Link>
-            </motion.div>
-
-            {/* Mini */}
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="glass-card rounded-2xl p-6 md:p-7 flex flex-col hover-glow transition-all duration-500 hover:-translate-y-1 border-t-2 border-t-white/20"
-            >
-              <h3 className="text-xl font-medium text-white mb-1">Mini Project Kit</h3>
-              <p className="text-xs text-zinc-400 mb-5">Perfect for 5th or 6th semester college submissions.</p>
-              <div className="flex items-baseline gap-2 mb-6 pb-6 border-b border-white/5">
-                <span className="text-4xl font-bold text-white">₹{CONSTANTS.PRICING.MINI_PROJECT}</span>
-                <span className="text-zinc-600 text-sm line-through">₹1,699</span>
-                <span className="text-xs text-emerald-400 font-semibold ml-1">Save ₹1,200</span>
-              </div>
-              <ul className="space-y-3 mb-8 flex-grow">
-                {[
-                  '1-Click Runnable Code (Zero Errors)',
-                  '30-Page IEEE Black Book (.docx)',
-                  'Viva Defense PPT with Speaker Notes',
-                  'Top 15 Viva Q&A with Answers',
-                  'Instant Download to WhatsApp & Email',
-                ].map(item => (
-                  <li key={item} className="flex items-center gap-2.5">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                    <span className="text-zinc-300 text-sm">{item}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link href="/projects?tier=MINI" className="block w-full py-3 px-4 bg-white/5 hover:bg-white/10 text-center rounded-xl text-white font-medium transition-all text-sm border border-white/10 hover:border-white/20">
-                Browse Mini Projects
-              </Link>
-            </motion.div>
-
-            {/* Major - Featured */}
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="glass-card rounded-2xl p-6 md:p-7 flex flex-col relative hover-glow transition-all duration-500 hover:-translate-y-2 border-t-2 border-t-brand-500 md:-translate-y-3 shadow-2xl shadow-brand-500/10"
-            >
-              <div className="absolute top-4 right-4 bg-brand-500/20 border border-brand-500/30 text-brand-400 text-[10px] uppercase tracking-wider font-bold px-2.5 py-1 rounded-full flex items-center gap-1">
-                <Zap className="w-2.5 h-2.5 fill-brand-400" /> Most Popular
-              </div>
-              <h3 className="text-xl font-medium text-white mb-1">Major Project Kit</h3>
-              <p className="text-xs text-zinc-400 mb-5">Built for 7th &amp; 8th Sem Final Year BE / BTech / MCA.</p>
-              <div className="flex items-baseline gap-2 mb-6 pb-6 border-b border-white/5">
-                <span className="text-4xl font-bold text-white">₹{CONSTANTS.PRICING.MAJOR_PROJECT}</span>
-                <span className="text-zinc-600 text-sm line-through">₹4,999</span>
-                <span className="text-xs text-emerald-400 font-semibold ml-1">Save ₹3,500</span>
-              </div>
-              <ul className="space-y-3 mb-8 flex-grow">
-                {[
-                  'Complete Full-Stack / ML Source Code',
-                  '60-Page IEEE Black Book (.docx)',
-                  'Viva Defense PPT with Talking Points',
-                  'Top 25 External Examiner Viva Q&A',
-                  'Step-by-Step Video Setup Guide',
-                  'Instant WhatsApp & Email Delivery',
-                ].map(item => (
-                  <li key={item} className="flex items-center gap-2.5">
-                    <CheckCircle2 className="h-4 w-4 text-brand-400 shrink-0" />
-                    <span className="text-zinc-200 text-sm">{item}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link href="/projects?tier=MAJOR" className="block w-full py-3 px-4 bg-white hover:bg-zinc-100 text-center rounded-xl text-zinc-950 font-bold transition-all text-sm shadow-[0_0_20px_rgba(255,255,255,0.1)]">
-                Browse Major Projects
-              </Link>
-            </motion.div>
-
-            {/* Custom Project - Tailored Build */}
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="glass-card rounded-2xl p-6 md:p-7 flex flex-col hover-glow transition-all duration-500 hover:-translate-y-1 border-t-2 border-t-emerald-500/80 bg-emerald-950/10 relative overflow-hidden"
-            >
-              <div className="flex justify-between items-start mb-1">
-                <h3 className="text-xl font-medium text-white">Custom Project</h3>
-                <span className="bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 text-[10px] uppercase tracking-wider font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">
-                  <Sparkles className="w-2.5 h-2.5 text-emerald-400" /> 48-Hr Delivery
-                </span>
-              </div>
-              <p className="text-xs text-zinc-400 mb-5">Custom-built to your exact college syllabus &amp; problem statement.</p>
-              <div className="flex items-baseline gap-2 mb-6 pb-6 border-b border-white/5">
-                <span className="text-4xl font-bold text-white">₹1,999</span>
-                <span className="text-zinc-600 text-sm line-through">₹5,999</span>
-                <span className="text-xs text-emerald-400 font-semibold ml-1">Starting from</span>
-              </div>
-              <ul className="space-y-3 mb-8 flex-grow">
-                {[
-                  '100% Unique Code Written to Your Topic',
-                  'Full IEEE Black Book Report (.docx)',
-                  'Defense Presentation PPT Deck',
-                  '1-on-1 Code Walkthrough on Google Meet',
-                  '48-Hour Delivery Guarantee',
-                  'Direct WhatsApp Engineer Support',
-                ].map(item => (
-                  <li key={item} className="flex items-center gap-2.5">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                    <span className="text-zinc-200 text-sm">{item}</span>
-                  </li>
-                ))}
-              </ul>
-              <a
-                href={`https://wa.me/918799814256?text=${encodeURIComponent("Hi SubmitKit team! I want to build a custom project. Here are my requirements:\n\n• Project Title / Idea:\n• Preferred Tech Stack:\n• Core Features Needed:\n• Target Timeline / Deadline:")}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full py-3 px-4 bg-[#25D366] hover:bg-[#20bd5a] text-center rounded-xl text-black font-bold transition-all text-sm shadow-[0_0_20px_rgba(37,211,102,0.25)] flex items-center justify-center gap-2"
+              <a href="https://wa.me/918799814256" target="_blank" rel="noopener noreferrer"
+                className="btn btn-wa btn-lg"
               >
-                <MessageCircle className="w-4 h-4 fill-black" /> Order Custom Build on WhatsApp
+                <WaIcon size={18} />
+                WhatsApp Support
               </a>
-            </motion.div>
+            </div>
 
+            {/* Trust badges */}
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '.75rem 2rem', paddingTop: '2rem', borderTop: '1px solid var(--line)', fontSize: '.875rem', color: 'var(--ink-4)', fontWeight: 600, position: 'relative', zIndex: 1 }}>
+              {[
+                { Icon: ShieldCheck, t: 'Razorpay Secured' },
+                { Icon: Zap,         t: 'Instant Download' },
+                { Icon: CheckCircle2,t: 'Bug-Free Guarantee' },
+              ].map(({ Icon, t }) => (
+                <div key={t} style={{ display: 'flex', alignItems: 'center', gap: '.375rem' }}>
+                  <Icon style={{ width: '.9375rem', height: '.9375rem', color: 'var(--teal)' }} />{t}
+                </div>
+              ))}
+            </div>
           </div>
-
-          {/* Trust strip below pricing */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex flex-wrap justify-center gap-6 mt-10 text-xs text-zinc-600"
-          >
-            <div className="flex items-center gap-1.5"><ShieldCheck className="w-4 h-4 text-zinc-500" /> Razorpay Secured</div>
-            <div className="flex items-center gap-1.5"><Download className="w-4 h-4 text-zinc-500" /> Instant Delivery</div>
-            <div className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-zinc-500" /> Bug-Free Code Guarantee</div>
-          </motion.div>
         </div>
       </section>
 
     </div>
+  );
+}
+
+/* ─── inline WhatsApp icon ─── */
+function WaIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
   );
 }

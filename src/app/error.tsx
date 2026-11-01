@@ -1,6 +1,6 @@
 'use client';
 import { useEffect } from 'react';
-import { AlertTriangle, Home, RefreshCcw } from 'lucide-react';
+import { AlertTriangle, RefreshCcw, Home } from 'lucide-react';
 import Link from 'next/link';
 
 export default function GlobalError({
@@ -15,36 +15,74 @@ export default function GlobalError({
   }, [error]);
 
   return (
-    <div className="min-h-screen bg-[#09090b] flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background glow */}
-      <div className="absolute inset-0 pointer-events-none -z-10">
-        <div className="glow-orb w-[600px] h-[600px] bg-red-500/10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:24px_24px]" />
-      </div>
-
-      <div className="max-w-md w-full glass-card p-8 rounded-3xl text-center border-t-2 border-t-red-500 shadow-2xl">
-        <div className="w-16 h-16 bg-red-500/10 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-red-500/20">
-          <AlertTriangle className="h-8 w-8 text-red-500" />
+    <div style={{
+      minHeight: '100vh',
+      background: 'var(--canvas)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '1.5rem',
+    }}>
+      <div style={{
+        maxWidth: '28rem',
+        width: '100%',
+        padding: '2.5rem',
+        textAlign: 'center',
+        borderRadius: '22px',
+        background: 'var(--surface)',
+        border: '1px solid var(--line)',
+        boxShadow: 'var(--sh-xl)',
+      }}>
+        {/* Icon */}
+        <div style={{
+          width: '4rem', height: '4rem', borderRadius: '16px',
+          background: 'var(--rose-50)', border: '1px solid var(--rose-100)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          margin: '0 auto 1.5rem',
+        }}>
+          <AlertTriangle style={{ width: '1.75rem', height: '1.75rem', color: 'var(--rose)' }} />
         </div>
-        
-        <h1 className="text-2xl font-display font-bold text-white mb-2">Something went wrong</h1>
-        <p className="text-zinc-500 text-sm mb-8 leading-relaxed">
-          We encountered an unexpected issue while loading this page. Our team has been notified.
+
+        <h1 style={{
+          fontSize: '1.5rem', fontWeight: 800, color: 'var(--navy)',
+          marginBottom: '.75rem', letterSpacing: '-.03em',
+          fontFamily: 'var(--font-display)',
+        }}>
+          Something went wrong
+        </h1>
+        <p style={{
+          fontSize: '.9375rem', color: 'var(--ink-3)',
+          lineHeight: 1.7, marginBottom: '2rem',
+        }}>
+          We encountered an unexpected issue loading this page.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-3">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
           <button
             onClick={() => reset()}
-            className="flex-1 flex items-center justify-center gap-2 bg-white text-zinc-950 font-semibold py-3 rounded-xl hover:bg-zinc-200 transition-colors"
+            style={{
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              gap: '.5rem', width: '100%', padding: '.875rem', borderRadius: '12px',
+              background: 'var(--teal)', color: '#fff', fontWeight: 700,
+              fontSize: '1rem', border: 'none', cursor: 'pointer',
+              boxShadow: 'var(--sh-teal)', fontFamily: 'var(--font-sans)',
+            }}
           >
-            <RefreshCcw className="w-4 h-4" />
+            <RefreshCcw style={{ width: '1rem', height: '1rem' }} />
             Try Again
           </button>
+          {/* No event handlers on Link — only static styles */}
           <Link
             href="/"
-            className="flex-1 flex items-center justify-center gap-2 bg-white/5 text-white font-medium py-3 rounded-xl border border-white/10 hover:bg-white/10 transition-colors"
+            style={{
+              display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+              gap: '.5rem', width: '100%', padding: '.875rem', borderRadius: '12px',
+              background: 'var(--surface-2)', color: 'var(--ink-2)',
+              border: '1.5px solid var(--line)', fontWeight: 600,
+              fontSize: '1rem', textDecoration: 'none',
+            }}
           >
-            <Home className="w-4 h-4" />
+            <Home style={{ width: '1rem', height: '1rem' }} />
             Go Home
           </Link>
         </div>

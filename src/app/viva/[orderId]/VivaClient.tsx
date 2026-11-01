@@ -91,19 +91,19 @@ export default function VivaClient({
 
   if (!mounted) {
     return (
-      <div className="min-h-screen bg-[#09090b] flex flex-col items-center justify-center p-4">
-        <div className="w-10 h-10 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mb-4" />
-        <p className="text-zinc-500 text-sm font-medium">Loading Viva Defense Portal...</p>
+      <div style={{ minHeight: '100vh', background: 'var(--canvas)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1rem', padding: '2rem' }}>
+        <div style={{ width: '2.5rem', height: '2.5rem', border: '3px solid var(--teal-100)', borderTopColor: 'var(--teal)', borderRadius: '50%', animation: 'spin .7s linear infinite' }} />
+        <p style={{ fontSize: '.9rem', color: 'var(--ink-4)', fontWeight: 500 }}>Loading Viva Defense Portal…</p>
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#09090b] text-slate-200 font-sans pb-32">
+    <div style={{ minHeight: '100vh', background: 'var(--canvas)', color: 'var(--ink)', paddingBottom: '6rem' }}>
 
       {/* Sticky header */}
-      <div className="sticky top-0 z-50 bg-[#09090b]/90 backdrop-blur-xl"
-        style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+      <div style={{ position: 'sticky', top: '60px', zIndex: 40, background: 'rgba(255,255,255,.95)', backdropFilter: 'blur(20px)', borderBottom: '1px solid var(--line)' }}>
         <div className="container mx-auto px-4 max-w-3xl py-3 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3 min-w-0">
             <div className="w-9 h-9 rounded-xl flex items-center justify-center border shrink-0"
@@ -111,21 +111,21 @@ export default function VivaClient({
               <GraduationCap className="w-4 h-4" style={{ color: categoryColor }} />
             </div>
             <div className="min-w-0">
-              <p className="text-white text-sm font-bold leading-tight truncate">Viva Q&amp;A Portal</p>
-              <p className="text-zinc-500 text-[11px] truncate">{projectTitle || 'Your Project'}</p>
+            <p className="text-sm font-bold leading-tight truncate" style={{ color: 'var(--navy)' }}>Viva Q&amp;A Portal</p>
+              <p className="text-xs truncate" style={{ color: 'var(--ink-4)' }}>{projectTitle || 'Your Project'}</p>
             </div>
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            <span className="text-xs font-bold text-zinc-400 hidden sm:block">
+            <span className="text-xs font-bold hidden sm:block" style={{ color: 'var(--ink-4)' }}>
               {reviewedCount}/{TOTAL_QUESTIONS}
             </span>
-            <div className="w-24 h-2 rounded-full bg-zinc-800 overflow-hidden hidden sm:block">
+            <div className="w-24 h-2 rounded-full overflow-hidden hidden sm:block" style={{ background: 'var(--line)' }}>
               <div className="h-full rounded-full transition-all duration-500"
                 style={{ width: `${progressPct}%`, background: `linear-gradient(to right, ${categoryColor}, ${categoryColor}cc)` }} />
             </div>
           </div>
         </div>
-        <div className="h-0.5 bg-zinc-900">
+        <div style={{ height: '2px', background: 'var(--line)' }}>
           <div className="h-full transition-all duration-500"
             style={{ width: `${progressPct}%`, background: `linear-gradient(to right, ${categoryColor}80, ${categoryColor})` }} />
         </div>
@@ -136,25 +136,25 @@ export default function VivaClient({
         {/* Hero */}
         <div className="mb-8">
           <p className="text-sm font-medium mb-1" style={{ color: categoryColor }}>{categoryLabel}</p>
-          <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight mb-1">
+          <h2 className="font-display" style={{ fontSize: 'clamp(1.5rem, 4vw, 2rem)', fontWeight: 900, color: 'var(--navy)', letterSpacing: '-.04em', marginBottom: '.375rem' }}>
             Hello, {displayName}. Let&apos;s ace your viva.
           </h2>
           <p className="text-zinc-500 text-sm">{projectTitle || 'Your Project'} · Purchased on {purchaseDate}</p>
 
-          <div className="mt-4 flex items-center gap-3 p-3 rounded-xl bg-zinc-900/60 border border-zinc-800">
+          <div className="mt-4 flex items-center gap-3 p-4 rounded-2xl bg-white border border-slate-200/90 shadow-xs">
             <div className="flex-1">
               <div className="flex items-center justify-between mb-1.5">
-                <span className="text-xs font-semibold text-zinc-400">Your Progress</span>
-                <span className="text-xs font-bold" style={{ color: reviewedCount > 0 ? categoryColor : '#52525b' }}>
+                <span className="text-xs font-semibold text-slate-500">Your Progress</span>
+                <span className="text-xs font-bold" style={{ color: reviewedCount > 0 ? categoryColor : '#64748b' }}>
                   {reviewedCount} / {TOTAL_QUESTIONS} reviewed
                 </span>
               </div>
-              <div className="h-2 rounded-full bg-zinc-800 overflow-hidden">
+              <div className="h-2 rounded-full bg-slate-100 overflow-hidden">
                 <div className="h-full rounded-full transition-all duration-700"
                   style={{ width: `${progressPct}%`, background: `linear-gradient(to right, ${categoryColor}80, ${categoryColor})` }} />
               </div>
             </div>
-            <div className="text-xl font-black" style={{ color: reviewedCount > 0 ? categoryColor : '#3f3f46' }}>
+            <div className="text-xl font-black" style={{ color: reviewedCount > 0 ? categoryColor : '#94a3b8' }}>
               {progressPct}%
             </div>
           </div>
@@ -162,11 +162,10 @@ export default function VivaClient({
 
         {/* All done */}
         {allDone && (
-          <div className="mb-8 p-5 rounded-2xl border text-center"
-            style={{ background: `${categoryColor}10`, borderColor: `${categoryColor}40` }}>
-            <Trophy className="w-10 h-10 mx-auto mb-3" style={{ color: categoryColor }} />
-            <p className="text-lg font-black text-white mb-1">All 25 reviewed!</p>
-            <p className="text-sm text-zinc-400">You are ready. Go ace that viva.</p>
+          <div className="mb-8 p-5 rounded-2xl border text-center bg-emerald-50 border-emerald-200 shadow-xs">
+            <Trophy className="w-10 h-10 mx-auto mb-3 text-emerald-600" />
+            <p className="text-lg font-black text-slate-900 mb-1">All 25 reviewed!</p>
+            <p className="text-sm text-slate-600">You are ready. Go ace that viva.</p>
           </div>
         )}
 
@@ -179,21 +178,21 @@ export default function VivaClient({
             const sectionReviewedCount = questionsList.filter((_, qIdx) => reviewed.has(`${sIdx}-${qIdx}`)).length;
 
             return (
-              <div key={sIdx} className="rounded-2xl overflow-hidden border border-zinc-800/60 bg-zinc-900/30">
+              <div key={sIdx} className="rounded-2xl overflow-hidden border border-slate-200/90 bg-white shadow-xs">
                 <button onClick={() => toggleSection(sIdx)}
-                  className="w-full flex items-center justify-between p-4 text-left hover:bg-zinc-800/30 transition-colors">
+                  className="w-full flex items-center justify-between p-4 text-left hover:bg-slate-50 transition-colors">
                   <div className="flex items-center gap-3">
                     <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-black"
                       style={{ background: `${section.color}20`, color: section.color }}>
                       {sIdx + 1}
                     </div>
                     <div>
-                      <span className="text-sm font-bold text-white">{section.title}</span>
-                      <span className="ml-2 text-xs text-zinc-500">{sectionReviewedCount}/{questionsList.length}</span>
+                      <span className="text-sm font-bold text-slate-900">{section.title}</span>
+                      <span className="ml-2 text-xs text-slate-500 font-medium">{sectionReviewedCount}/{questionsList.length}</span>
                     </div>
-                    {sectionDone && <CheckCircle2 className="w-4 h-4" style={{ color: section.color }} />}
+                    {sectionDone && <CheckCircle2 className="w-4 h-4 text-emerald-600" />}
                   </div>
-                  <ChevronDown className="w-4 h-4 text-zinc-500 transition-transform shrink-0"
+                  <ChevronDown className="w-4 h-4 text-slate-400 transition-transform shrink-0"
                     style={{ transform: sectionOpen ? 'rotate(180deg)' : 'rotate(0deg)' }} />
                 </button>
 
@@ -208,16 +207,16 @@ export default function VivaClient({
                       return (
                         <div key={qIdx} className="rounded-xl border transition-all duration-200"
                           style={{
-                            background:      isReviewed ? `${section.color}08` : 'rgba(255,255,255,0.02)',
-                            borderColor:     isReviewed ? `${section.color}40` : 'rgba(255,255,255,0.06)',
+                            background:      isReviewed ? `${section.color}08` : '#f8fafc',
+                            borderColor:     isReviewed ? `${section.color}40` : '#e2e8f0',
                             borderLeftWidth: isReviewed ? '3px' : '1px',
-                            borderLeftColor: isReviewed ? section.color : 'rgba(255,255,255,0.06)',
+                            borderLeftColor: isReviewed ? section.color : '#e2e8f0',
                           }}>
                           <div className="flex items-start gap-3 p-4">
                             {/* Checkbox */}
                             <button onClick={() => toggleReviewed(cardKey)}
                               className="shrink-0 mt-0.5 w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all"
-                              style={{ background: isReviewed ? section.color : 'transparent', borderColor: isReviewed ? section.color : '#52525b' }}
+                              style={{ background: isReviewed ? section.color : 'transparent', borderColor: isReviewed ? section.color : '#94a3b8' }}
                               aria-label={isReviewed ? 'Unmark' : 'Mark reviewed'}>
                               {isReviewed && (
                                 <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
@@ -230,12 +229,12 @@ export default function VivaClient({
                               <span className="text-xs font-bold font-mono mt-0.5 shrink-0" style={{ color: section.color }}>
                                 Q{globalIdx}.
                               </span>
-                              <span className={`text-sm leading-snug font-medium ${isReviewed ? 'text-zinc-400' : 'text-white'}`}>
+                              <span className={`text-sm leading-snug font-medium ${isReviewed ? 'text-slate-400' : 'text-slate-900'}`}>
                                 {item.q}
                               </span>
                             </button>
                             <button onClick={() => toggleCard(cardKey)} className="shrink-0">
-                              <ChevronDown className="w-4 h-4 text-zinc-600 transition-transform"
+                              <ChevronDown className="w-4 h-4 text-slate-400 transition-transform"
                                 style={{ transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)' }} />
                             </button>
                           </div>
@@ -245,7 +244,7 @@ export default function VivaClient({
                               <div className="p-4 rounded-xl text-sm leading-relaxed"
                                 style={{ background: `${section.color}10`, borderLeft: `3px solid ${section.color}60` }}>
                                 <span className="font-bold mr-2" style={{ color: section.color }}>A:</span>
-                                <span className="text-zinc-200">{item.a}</span>
+                                <span className="text-slate-700">{item.a}</span>
                               </div>
                             </div>
                           )}
@@ -261,12 +260,12 @@ export default function VivaClient({
 
         {/* Footer */}
         <div className="mt-12 text-center space-y-4">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold">
-            <CheckCircle2 className="w-4 h-4" /> All 25 Questions Unlocked
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold shadow-xs">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600" /> All 25 Questions Unlocked
           </div>
-          <p className="text-zinc-600 text-xs">Best of luck with your viva defense!</p>
+          <p className="text-slate-500 text-xs">Best of luck with your viva defense!</p>
           <button onClick={() => window.print()}
-            className="flex items-center gap-2 mx-auto px-5 py-2.5 rounded-xl text-sm font-semibold hover:opacity-80 print:hidden"
+            className="flex items-center gap-2 mx-auto px-5 py-2.5 rounded-xl text-sm font-semibold hover:opacity-80 print:hidden shadow-xs"
             style={{ background: `${categoryColor}15`, border: `1px solid ${categoryColor}40`, color: categoryColor }}>
             <Printer className="w-4 h-4" /> Print All Q&amp;As
           </button>

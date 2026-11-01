@@ -3,49 +3,43 @@ import { ArrowRight, Home, Package } from 'lucide-react';
 
 export default function NotFound() {
   return (
-    <div className="min-h-[70vh] bg-[#09090b] flex items-center justify-center px-4">
-      <div className="max-w-md w-full text-center">
-        {/* Glowing 404 */}
-        <div className="relative mb-8">
-          <div className="text-[9rem] font-display font-black text-white/5 leading-none select-none">
+    <div style={{ minHeight: '80vh', background: 'var(--canvas)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem 1.5rem' }}>
+      <div style={{ maxWidth: '28rem', width: '100%', textAlign: 'center' }}>
+
+        {/* 404 display */}
+        <div style={{ position: 'relative', marginBottom: '2rem' }}>
+          <div style={{ fontSize: '9rem', fontWeight: 900, color: 'var(--surface-3)', lineHeight: 1, userSelect: 'none', fontFamily: 'var(--font-display)', letterSpacing: '-.08em' }}>
             404
           </div>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-6xl font-display font-black text-white leading-none">
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ fontSize: '5rem', fontWeight: 900, color: 'var(--navy)', lineHeight: 1, fontFamily: 'var(--font-display)', letterSpacing: '-.08em' }}>
               404
             </div>
           </div>
         </div>
 
-        <h1 className="text-2xl font-display font-bold text-white mb-3">
+        <h1 className="font-display" style={{ fontSize: '1.625rem', fontWeight: 800, color: 'var(--navy)', marginBottom: '.75rem', letterSpacing: '-.03em' }}>
           Page not found
         </h1>
-        <p className="text-zinc-400 text-sm leading-relaxed mb-8">
-          The page you are looking for does not exist or may have been moved.
-          Check the URL or navigate back to the homepage.
+        <p style={{ fontSize: '.9375rem', color: 'var(--ink-3)', lineHeight: 1.75, marginBottom: '2rem' }}>
+          The page you&apos;re looking for doesn&apos;t exist or may have been moved.
         </p>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-          <Link
-            href="/"
-            className="flex items-center gap-2 px-6 py-3 rounded-full bg-white hover:bg-zinc-100 text-zinc-950 font-bold text-sm transition-all shadow-[0_0_20px_rgba(255,255,255,0.15)]"
-          >
-            <Home className="w-4 h-4" />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', maxWidth: '18rem', margin: '0 auto' }}>
+          <Link href="/" className="btn btn-teal" style={{ justifyContent: 'center', borderRadius: '12px', minHeight: '50px' }}>
+            <Home style={{ width: '1rem', height: '1rem' }} />
             Back to Home
           </Link>
-          <Link
-            href="/projects"
-            className="flex items-center gap-2 px-6 py-3 rounded-full bg-white/5 hover:bg-white/10 text-white font-medium text-sm transition-all border border-white/10 group"
-          >
-            <Package className="w-4 h-4" />
+          <Link href="/projects" className="btn btn-outline" style={{ justifyContent: 'center', borderRadius: '12px', minHeight: '50px' }}>
+            <Package style={{ width: '1rem', height: '1rem' }} />
             Browse Projects
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+            <ArrowRight style={{ width: '.9375rem', height: '.9375rem' }} />
           </Link>
         </div>
 
-        <p className="text-zinc-600 text-xs mt-8">
+        <p style={{ fontSize: '.8125rem', color: 'var(--ink-4)', marginTop: '2rem' }}>
           Need help?{' '}
-          <a href="mailto:team@submitkit.in" className="text-zinc-500 hover:text-white transition-colors">
+          <a href="mailto:team@submitkit.in" style={{ color: 'var(--teal)', fontWeight: 600, textDecoration: 'none' }}>
             team@submitkit.in
           </a>
         </p>

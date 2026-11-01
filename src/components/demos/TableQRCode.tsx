@@ -31,9 +31,9 @@ export default function TableQRCode({ url, size = 180, className = "" }: TableQR
       {!loaded && (
         <div
           style={{ width: size, height: size }}
-          className="bg-slate-800 animate-pulse rounded-xl flex items-center justify-center absolute inset-0"
+          className="bg-slate-100 border border-slate-200 animate-pulse rounded-xl flex items-center justify-center absolute inset-0"
         >
-          <span className="text-xs text-slate-400 font-mono">Generating QR…</span>
+          <span className="text-xs text-slate-500 font-mono">Generating QR…</span>
         </div>
       )}
       {/* eslint-disable-next-line @next/next/no-img-element */}

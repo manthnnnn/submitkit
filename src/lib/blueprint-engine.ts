@@ -14,6 +14,8 @@ import { TOPICS_EXTRA3 } from "./blueprint-catalog-extra3";
 import { TOPICS_EXTRA4 } from "./blueprint-catalog-extra4";
 import { TOPICS_MODERN_2025 } from "./blueprint-catalog-modern2025";
 import { synthesizeFullBlueprint } from "./blueprint-synthesizer";
+import { getProjectMeta } from "./available-projects";
+import { getStaticProjectBySlug } from "./static-catalog";
 
 export type BlueprintCategory =
   | 'AIML'
@@ -1873,15 +1875,173 @@ for (const item of rawTopicList) {
 
 const GENERATED_BLUEPRINT_CACHE = new Map<string, FullBlueprint>();
 
-export function getTopicById(id: string): FullBlueprint | undefined {
-  if (TOPIC_MAP[id]) return TOPIC_MAP[id];
-  if (GENERATED_BLUEPRINT_CACHE.has(id)) return GENERATED_BLUEPRINT_CACHE.get(id);
+export function getTopicById(rawId: string): FullBlueprint {
+  if (!rawId) {
+    return TOPIC_MAP['face-recognition-attendance'];
+  }
 
-  const card = ALL_TOPICS.find((t) => t.id === id);
-  if (!card) return undefined;
+  // 1. Clean & normalize slug (handles URL spaces, special chars, pluses)
+  let clean = decodeURIComponent(rawId).trim().toLowerCase();
+  clean = clean.replace(/[\s_+]+/g, '-').replace(/[^\w-]/g, '');
+
+  if (TOPIC_MAP[clean]) return TOPIC_MAP[clean];
+  if (GENERATED_BLUEPRINT_CACHE.has(clean)) return GENERATED_BLUEPRINT_CACHE.get(clean)!;
+
+  // 2. Check alias without trailing suffixes
+  const stripped = clean.replace(/-(system|app|project|portal|kit|platform|framework)$/g, '');
+  if (TOPIC_MAP[stripped]) return TOPIC_MAP[stripped];
+
+  // 3. Check exact match in ALL_TOPICS
+  let card = ALL_TOPICS.find((t) => t.id === clean || t.id.toLowerCase() === clean);
+
+  // 4. Check stripped match in ALL_TOPICS
+  if (!card) {
+    card = ALL_TOPICS.find((t) => t.id === stripped || t.id.startsWith(stripped) || stripped.startsWith(t.id));
+  }
+
+  // 5. Check in READY_PROJECTS (e.g. autonomous-llm-researcher)
+  if (!card) {
+    const meta = getProjectMeta(clean) || getProjectMeta(stripped);
+    if (meta) {
+      card = {
+        id: meta.slug,
+        letter: meta.name.charAt(0).toUpperCase(),
+        title: meta.name,
+        category: (meta.category as BlueprintCategory) || 'AIML',
+        difficulty: 3,
+        buildTimeDays: '3-4 days',
+        trending: true,
+        tagline: meta.oneLiner,
+        whatItDoes: meta.tenthGradeExplainer || meta.oneLiner,
+        realWorldUse: `Commercial enterprises and tech teams use ${meta.name} architectures in production environments.`,
+        examinerExpects: [
+          'Demonstrate the end-to-end working pipeline from input to verified output',
+          'Explain the system architecture and component interactions',
+          'Show handling of failure modes and edge cases',
+          'Defend design choices and explain alternative approaches',
+        ],
+        freeVivaQuestions: [
+          `What is the core architectural innovation in your ${meta.name} implementation?`,
+          `How does your system handle scaling and edge-case exceptions?`,
+        ],
+        freeStep1Title: 'Set up development environment and clone core repository',
+        datasetName: `${meta.name} Dataset`,
+      };
+    }
+  }
+
+  // 6. Check STATIC_CATALOG
+  if (!card) {
+    const staticProj = getStaticProjectBySlug(clean) || getStaticProjectBySlug(stripped);
+    if (staticProj) {
+      card = {
+        id: staticProj.slug,
+        letter: staticProj.title.charAt(0).toUpperCase(),
+        title: staticProj.title,
+        category: (staticProj.category as BlueprintCategory) || 'AIML',
+        difficulty: staticProj.tier === 'MAJOR' ? 4 : 2,
+        buildTimeDays: staticProj.tier === 'MAJOR' ? '5-7 days' : '2-3 days',
+        trending: true,
+        tagline: (staticProj as any).tagline || staticProj.description,
+        whatItDoes: staticProj.description,
+        realWorldUse: `Used by engineering teams globally for enterprise deployments.`,
+        examinerExpects: [
+          'Demonstrate live working system with sample inputs',
+          'Explain the database and API architecture',
+          'Defend key algorithmic decisions and benchmarks',
+        ],
+        freeVivaQuestions: [
+          `Explain the key architectural components of this ${staticProj.title}.`,
+          `How do you ensure data consistency and error recovery?`,
+        ],
+        freeStep1Title: 'Initialize workspace and configure dependencies',
+        datasetName: `${staticProj.title} Benchmark Dataset`,
+      };
+    }
+  }
+
+  // 7. Token-based fuzzy matching against ALL_TOPICS
+  if (!card) {
+    const tokens = clean.split('-').filter(t => t.length > 2);
+    if (tokens.length > 0) {
+      let bestScore = 0;
+      let bestCard: TopicCard | null = null;
+      for (const t of ALL_TOPICS) {
+        const idTokens = t.id.split('-');
+        const titleTokens = t.title.toLowerCase().split(/\s+/);
+        let score = 0;
+        for (const token of tokens) {
+          if (idTokens.includes(token)) score += 3;
+          if (titleTokens.includes(token)) score += 2;
+          if (t.id.includes(token)) score += 1;
+        }
+        if (score > bestScore) {
+          bestScore = score;
+          bestCard = t;
+        }
+      }
+      if (bestScore >= 3 && bestCard) {
+        card = bestCard;
+      }
+    }
+  }
+
+  // 8. If STILL not found (dynamic custom synthesis — guaranteed 0 404s!)
+  if (!card) {
+    const humanTitle = clean
+      .split('-')
+      .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(' ')
+      .replace(/\bLlm\b/g, 'LLM')
+      .replace(/\bAi\b/g, 'AI')
+      .replace(/\bMl\b/g, 'ML')
+      .replace(/\bIot\b/g, 'IoT')
+      .replace(/\bAts\b/g, 'ATS')
+      .replace(/\bEhr\b/g, 'EHR')
+      .replace(/\bApi\b/g, 'API')
+      .replace(/\bQr\b/g, 'QR')
+      .replace(/\bCv\b/g, 'CV')
+      .replace(/\bNlp\b/g, 'NLP');
+
+    let cat: BlueprintCategory = 'AIML';
+    const text = clean.toLowerCase();
+    if (text.includes('chat') || text.includes('nlp') || text.includes('text') || text.includes('summar') || text.includes('llm') || text.includes('lang')) cat = 'NLP';
+    else if (text.includes('cyber') || text.includes('fraud') || text.includes('phish') || text.includes('threat') || text.includes('security') || text.includes('auth')) cat = 'Cybersecurity';
+    else if (text.includes('iot') || text.includes('drone') || text.includes('sensor') || text.includes('smart') || text.includes('robot')) cat = 'IoT';
+    else if (text.includes('block') || text.includes('crypto') || text.includes('vote') || text.includes('chain')) cat = 'Blockchain';
+    else if (text.includes('predict') || text.includes('stock') || text.includes('data') || text.includes('analy') || text.includes('churn')) cat = 'DataScience';
+    else if (text.includes('mobile') || text.includes('app') || text.includes('android')) cat = 'Mobile';
+    else if (text.includes('bank') || text.includes('pay') || text.includes('finance') || text.includes('expense') || text.includes('tax')) cat = 'Fintech';
+    else if (text.includes('portal') || text.includes('system') || text.includes('manage') || text.includes('store') || text.includes('order')) cat = 'FullStack';
+
+    card = {
+      id: clean,
+      letter: humanTitle.charAt(0).toUpperCase(),
+      title: humanTitle,
+      category: cat,
+      difficulty: 3,
+      buildTimeDays: '3–4 days',
+      trending: true,
+      tagline: `Complete engineering implementation guide for ${humanTitle} with IEEE black-book outline, system architecture, dataset, and viva Q&A.`,
+      whatItDoes: `This project implements ${humanTitle}. It features an end-to-end working pipeline from data ingestion to model inference and user presentation, optimized for final-year engineering evaluations.`,
+      realWorldUse: `Leading tech organizations and startups use ${humanTitle} techniques to automate high-value workflows.`,
+      examinerExpects: [
+        'Demonstrate end-to-end working system with live test data',
+        'Explain the architectural layers and component design',
+        'Show accuracy metrics, confusion matrices, or latency benchmarks',
+        'Answer viva questions on algorithm selection and failure handling',
+      ],
+      freeVivaQuestions: [
+        `What problem does your ${humanTitle} solve and why did you choose this architecture?`,
+        `How do you handle edge cases and data validation in this system?`,
+      ],
+      freeStep1Title: `Download ${humanTitle} benchmark dataset and configure dependencies`,
+      datasetName: `${humanTitle} Benchmark Dataset`,
+    };
+  }
 
   const full = synthesizeFullBlueprint(card);
-  GENERATED_BLUEPRINT_CACHE.set(id, full);
+  GENERATED_BLUEPRINT_CACHE.set(clean, full);
   return full;
 }
 

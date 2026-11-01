@@ -1,6 +1,5 @@
 import React from "react";
 import { createClient } from "@/lib/supabase/server";
-import { notFound } from "next/navigation";
 import { Project } from "@/lib/types";
 import { TechBadge } from "@/components/ui/tech-badge";
 import { formatCurrency } from "@/lib/utils";
@@ -12,8 +11,7 @@ import { PreOrderForm } from "@/components/ui/pre-order-form";
 import {
   CheckCircle2, ChevronRight, FileText, MonitorPlay,
   Presentation, TerminalSquare, Lock, Star, Zap,
-  ShieldCheck, Download, BookOpen, Play, ImageIcon, Sparkles,
-  Clock
+  ShieldCheck, Download, BookOpen, ImageIcon, Sparkles, Clock, Home, ArrowRight, ArrowLeft
 } from "lucide-react";
 import Link from "next/link";
 import { Metadata } from 'next';
@@ -21,342 +19,240 @@ import { isProjectAvailable } from "@/lib/available-projects";
 import { SHOWCASE_DATA } from "@/lib/project-showcase";
 import { CONSTANTS } from "@/lib/constants";
 import { BreadcrumbsSchema, ProductSchema } from "@/components/seo/SeoSchema";
-import { Home } from "lucide-react";
+import {
+  getStaticProjectBySlug,
+  getAllStaticProjects,
+  generateSyntheticPipelineProject,
+  getAvailableProjects,
+} from "@/lib/static-catalog";
 
 const BASE_URL = CONSTANTS.APP_URL.replace(/\/$/, '');
 
-// ─── Metadata ──────────────────────────────────────────────
-export async function generateMetadata(
-  { params }: { params: Promise<{ slug: string }> }
-): Promise<Metadata> {
-  const { slug } = await params;
-  let project: Project | null = null;
+async function getProjectData(slug: string): Promise<Project> {
+  const staticProj = getStaticProjectBySlug(slug);
 
   try {
-    const supabase = await createClient();
-    const { data } = await supabase.from('projects').select('*').eq('slug', slug).single();
-    project = data as Project;
-  } catch { /* ignore — notFound handled below */ }
+    const fetchPromise = (async () => {
+      const supabase = await createClient();
+      const { data, error } = await supabase.from('projects').select('*').eq('slug', slug).single();
+      if (error) throw error;
+      return data as Project;
+    })();
 
-  if (!project) return { title: 'Project Not Found', robots: { index: false, follow: false } };
-  const p = project;
+    // 500ms timeout prevents DNS or network hangs from stalling page load
+    const timeoutPromise = new Promise<Project | null>((_, reject) =>
+      setTimeout(() => reject(new Error('Timeout')), 500)
+    );
 
-  const tierLabel = p.tier === 'MAJOR'
-    ? `Major Final Year Project Kit (₹${p.price_inr})`
-    : `Mini Project Kit (₹${p.price_inr})`;
+    const remote = await Promise.race([fetchPromise, timeoutPromise]);
+    if (remote) return remote;
+  } catch {
+    // Network or timeout failure — fall back to static catalog
+  }
 
-  const title = `${p.title} — ${tierLabel} with IEEE Report & Viva | ${CONSTANTS.APP_NAME}`;
+  if (staticProj) return staticProj;
+  return generateSyntheticPipelineProject(slug);
+}
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const p = await getProjectData(slug);
+
+  const title = `${p.title} — ${p.tier === 'MAJOR' ? `Major Final Year Project Kit (₹${p.price_inr})` : `Mini Project Kit (₹${p.price_inr})`} with IEEE Report & Viva | ${CONSTANTS.APP_NAME}`;
   const shortDesc = (p.problem_statement || p.description || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 180);
-  const description = `${shortDesc} Full 1-click runnable source code, IEEE format Black Book report (.docx), Viva defense PPT, and top 25 examiner Q&A with answers. ${p.tier} project for CSE BE BTech MCA VTU SPPU Mumbai Anna JNTU GTU. Instant WhatsApp download.`;
+  const description = `${shortDesc} 1-click runnable source code, IEEE Black Book, Viva defense PPT, and top 25 Viva Q&A. ${p.tier} project. Instant download.`;
 
   return {
     title: { absolute: title },
     description,
-    keywords: [
-      p.title,
-      `${p.title} project`,
-      `${p.title} project report`,
-      `${p.title} source code`,
-      `${p.title} project ppt`,
-      `${p.title} viva questions`,
-      `${p.title.toLowerCase()} for final year`,
-      `${p.category} final year project`,
-      `ieee format project report`,
-      `black book report ${p.title.toLowerCase()}`,
-      `vtu ${p.title.toLowerCase()} project`,
-      `sppu ${p.title.toLowerCase()} project`,
-      `mumbai university final year project`,
-      `anna university ${p.category.toLowerCase()} project`,
-      `cse final year projects with source code`,
-      `btech major project kit`,
-      `sem 7 sem 8 project kit`,
-      ...CONSTANTS.SEO_KEYWORDS,
-    ],
-    alternates: {
-      canonical: `/projects/${slug}`,
-    },
-    robots: {
-      index: true,
-      follow: true,
-    },
-    openGraph: {
-      type: 'website',
-      locale: 'en_IN',
-      url: `${BASE_URL}/projects/${slug}`,
-      siteName: CONSTANTS.APP_NAME,
-      title,
-      description,
-      images: [{ url: '/og-image.jpg', width: 1200, height: 630, alt: `${p.title} project kit preview` }],
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title,
-      description,
-      images: ['/og-image.jpg'],
-    },
+    keywords: [p.title, `${p.title} project`, `${p.title} source code`, `${p.title} viva questions`, `${p.category} final year project`, 'ieee format report', 'black book report', 'viva preparation', ...CONSTANTS.SEO_KEYWORDS],
+    alternates: { canonical: `/projects/${slug}` },
+    robots: { index: true, follow: true },
+    openGraph: { type: 'website', locale: 'en_IN', url: `${BASE_URL}/projects/${slug}`, siteName: CONSTANTS.APP_NAME, title, description, images: [{ url: '/og-image.jpg', width: 1200, height: 630 }] },
+    twitter: { card: 'summary_large_image', title, description, images: ['/og-image.jpg'] },
   };
 }
 
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
-  try {
-    const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/projects?select=slug&is_active=eq.true`;
-    const res = await fetch(url, {
-      headers: {
-        apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`,
-      },
-    });
-    const projects = await res.json();
-    if (!Array.isArray(projects)) return [];
-    return projects.map((p: { slug: string }) => ({ slug: p.slug }));
-  } catch {
-    return [];
-  }
+  return getAllStaticProjects().map((p: Project) => ({ slug: p.slug }));
 }
 
-// Sample Viva Q&As — blurred teaser
 const VIVA_QS = [
-  { q: "What is the main purpose of this project?",       a: "This project is designed to solve the problem of managing large-scale data in real time..." },
-  { q: "Which algorithm / model did you use and why?",    a: "We used a supervised learning approach specifically chosen for its efficiency..." },
-  { q: "How does the data flow through the system?",      a: "The user inputs data through the frontend which sends it to the Node.js API layer..." },
+  { q: "What is the main purpose of this project?", a: "This project is designed to solve the problem of managing large-scale data in real time..." },
+  { q: "Which algorithm / model did you use and why?", a: "We used a supervised learning approach specifically chosen for its efficiency..." },
+  { q: "How does the data flow through the system?", a: "The user inputs data through the frontend which sends it to the API layer..." },
 ];
 
-// ─── Page ──────────────────────────────────────────────────
-export default async function ProjectDetailPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+/* ─── Shared section title style ─── */
+function SectionTitle({ children }: { children: React.ReactNode }) {
+  return (
+    <h2 style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '1rem', letterSpacing: '-.025em', display: 'flex', alignItems: 'center', gap: '.5rem' }}>
+      {children}
+    </h2>
+  );
+}
+
+export default async function ProjectDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  let project: Project | null = null;
+  const p = await getProjectData(slug);
 
-  const fetch = async () => {
-    const supabase = await createClient();
-    const { data, error } = await supabase.from('projects').select('*').eq('slug', slug).single();
-    if (error) throw error;
-    return data as Project;
-  };
-
-  try {
-    project = await fetch();
-  } catch {
-    try { project = await fetch(); } catch { project = null; }
-  }
-
-  if (!project) notFound();
-
-  const p          = project!;
-  const isMajor    = p.tier === 'MAJOR';
-  const available  = isProjectAvailable(p.slug);
-  const hasVideo   = !!p.demo_video_id;
-  const hasShots   = p.demo_screenshots && p.demo_screenshots.length > 0;
-
+  const isMajor = p.tier === 'MAJOR';
+  const available = isProjectAvailable(p.slug);
+  const hasVideo = !!p.demo_video_id;
+  const shots = SHOWCASE_DATA[p.slug] || [];
   const cleanDesc = (p.problem_statement || p.description || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 220);
+  const availableAlternatives = getAvailableProjects().filter(alt => alt.slug !== p.slug).slice(0, 3);
 
   return (
-    <div className="min-h-screen pb-32 bg-[#09090b] relative overflow-hidden">
-      <BreadcrumbsSchema items={[
-        { name: 'Home', url: '/' },
-        { name: 'Projects', url: '/projects' },
-        { name: p.category, url: `/projects?category=${p.category}` },
-        { name: p.title },
-      ]} />
-      <ProductSchema
-        name={`${p.title} — ${p.tier} Project Kit (₹${p.price_inr})`}
-        description={`${cleanDesc} 1-click runnable source code, IEEE format 60-page Black Book report .docx, defense PPT, and ${isMajor ? 'top 25 Viva Q&A' : 'top 15 Viva Q&A'} with examiner answers.`}
-        price={p.price_inr}
-        category={`${p.tier} ${p.category} Engineering Project Bundle`}
-        slug={slug}
-      />
-
-      {/* Ambient background */}
-      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
-        <div className="glow-orb w-[700px] h-[700px] bg-brand-500/8 top-0 right-0 -translate-y-1/3 translate-x-1/3" />
-        <div className="glow-orb w-[500px] h-[500px] bg-emerald-500/6 bottom-0 left-0 translate-y-1/3 -translate-x-1/3" />
-      </div>
+    <div style={{ background: 'var(--canvas)', minHeight: '100vh', paddingBottom: '5rem' }}>
+      <BreadcrumbsSchema items={[{ name: 'Home', url: '/' }, { name: 'Projects', url: '/projects' }, { name: p.category, url: `/projects?category=${p.category}` }, { name: p.title }]} />
+      <ProductSchema name={`${p.title} — ${p.tier} Project Kit (₹${p.price_inr})`} description={`${cleanDesc} 1-click runnable source code, IEEE Black Book, defense PPT, and top 25 Viva Q&A.`} price={p.price_inr} category={`${p.tier} ${p.category} Engineering Project Bundle`} slug={slug} />
 
       {/* Mobile sticky buy bar */}
-      <StickyBuyBar price={p.price_inr} title={p.title} available={available} />
+      <StickyBuyBar price={available ? p.price_inr : (isMajor ? 499 : 299)} title={p.title} available={available} />
 
-      {/* ── BREADCRUMB + HERO HEADER ── */}
-      <div className="border-b border-white/5 pt-8 pb-10 relative z-10 bg-[#09090b]/70 backdrop-blur-2xl">
-        <div className="container mx-auto px-4">
+      {/* ── Hero header ── */}
+      <div style={{ borderBottom: '1px solid var(--line)' }}>
+        <div className="shell" style={{ paddingTop: '1.5rem', paddingBottom: '2rem' }}>
 
           {/* Breadcrumb */}
-          <nav aria-label="Breadcrumb" className="flex items-center text-xs text-zinc-600 mb-6 gap-1 flex-wrap">
-            <Link href="/" className="hover:text-white transition-colors inline-flex items-center gap-1">
-              <Home className="w-3 h-3" /> Home
+          <nav aria-label="Breadcrumb" style={{ display: 'flex', alignItems: 'center', gap: '.375rem', fontSize: '.8125rem', color: 'var(--ink-4)', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
+            <Link href="/" className="breadcrumb-link" style={{ display: 'inline-flex', alignItems: 'center', gap: '.25rem', color: 'var(--ink-4)', textDecoration: 'none', fontWeight: 500 }}>
+              <Home style={{ width: '.8125rem', height: '.8125rem' }} /> Home
             </Link>
-            <ChevronRight className="h-3 w-3 shrink-0" />
-            <Link href="/projects" className="hover:text-white transition-colors">Projects</Link>
-            <ChevronRight className="h-3 w-3 shrink-0" />
-            <Link href={`/projects?category=${p.category}`} className="hover:text-white transition-colors">{p.category}</Link>
-            <ChevronRight className="h-3 w-3 shrink-0" />
-            <span className="text-zinc-400 truncate max-w-[200px]">{p.title}</span>
+            <ChevronRight style={{ width: '.75rem', height: '.75rem', flexShrink: 0 }} />
+            <Link href="/projects" className="breadcrumb-link" style={{ color: 'var(--ink-4)', textDecoration: 'none', fontWeight: 500 }}>Projects</Link>
+            <ChevronRight style={{ width: '.75rem', height: '.75rem', flexShrink: 0 }} />
+            <Link href={`/projects?category=${p.category}`} className="breadcrumb-link" style={{ color: 'var(--ink-4)', textDecoration: 'none', fontWeight: 500 }}>{p.category}</Link>
+            <ChevronRight style={{ width: '.75rem', height: '.75rem', flexShrink: 0 }} />
+            <span style={{ color: 'var(--navy)', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '14rem' }}>{p.title}</span>
           </nav>
 
-          <div className="flex flex-col gap-5 max-w-3xl">
-            {/* Badges */}
-            <div className="flex flex-wrap items-center gap-2">
-              <span className={`text-[11px] font-bold px-3 py-1 rounded-full border ${
-                isMajor
-                  ? 'bg-brand-500/20 text-brand-400 border-brand-500/30'
-                  : 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
-              }`}>
-                {p.tier} BUNDLE
+          {/* Badges */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '.5rem', marginBottom: '1rem' }}>
+            <span className={`tag ${isMajor ? 'tag-violet' : 'tag-teal'}`}>{p.tier} BUNDLE</span>
+            <span className="tag tag-navy">{p.category}</span>
+            {available ? (
+              <span className="tag tag-emerald">
+                <span className="dot-live apulse" style={{ width: '5px', height: '5px' }} />
+                Ready to Ship — Instant Download
               </span>
-              <span className="text-[11px] font-medium px-3 py-1 rounded-full bg-white/5 text-zinc-400 border border-white/10">
-                {p.category}
+            ) : (
+              <span className="tag tag-amber">
+                <Clock style={{ width: '.75rem', height: '.75rem' }} />
+                In QA Pipeline — Pre-Book Open (50% Launch Discount)
               </span>
-              {available ? (
-                <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  Ready to Ship — Instant Download
-                </span>
-              ) : (
-                <span className="text-[11px] font-bold px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/25 flex items-center gap-1.5">
-                  <Clock className="w-3 h-3" />
-                  Coming Soon — Pre-order Available
-                </span>
-              )}
+            )}
+          </div>
+
+          {/* Title */}
+          <h1 className="font-display" style={{ fontSize: 'clamp(1.875rem, 4vw, 2.875rem)', fontWeight: 900, letterSpacing: '-.04em', color: 'var(--navy)', lineHeight: 1.15, marginBottom: '.875rem', maxWidth: '48rem' }}>
+            {p.title}
+          </h1>
+
+          <p style={{ fontSize: 'clamp(.9375rem, 2vw, 1.0625rem)', color: 'var(--ink-3)', lineHeight: 1.7, maxWidth: '42rem', marginBottom: '1.25rem' }}>{p.description}</p>
+
+          {/* Trust row */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '.75rem 1.5rem', fontSize: '.8125rem', color: 'var(--ink-3)', fontWeight: 500 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '.375rem' }}>
+              <div style={{ display: 'flex', gap: '1px' }}>{[1,2,3,4,5].map(s => <Star key={s} style={{ width: '12px', height: '12px', fill: '#F59E0B', color: '#F59E0B' }} />)}</div>
+              <strong style={{ color: 'var(--navy)' }}>4.9</strong> · 500+ students
             </div>
-
-            {/* Title */}
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-white tracking-tight leading-tight">
-              {p.title}
-            </h1>
-
-            {/* Description */}
-            <p className="text-zinc-400 text-base leading-relaxed">{p.description}</p>
-
-            {/* Trust row */}
-            <div className="flex flex-wrap items-center gap-4 text-xs text-zinc-500">
-              <div className="flex items-center gap-1.5">
-                <div className="flex">{[1,2,3,4,5].map(s => <Star key={s} className="w-3 h-3 fill-amber-400 text-amber-400" />)}</div>
-                <span className="text-zinc-300 font-medium">4.9</span>
-                <span>from 500+ students</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <Download className="w-3 h-3 text-emerald-500" />
-                <span>Instant secure download</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <ShieldCheck className="w-3 h-3 text-emerald-500" />
-                <span>Bug-free guarantee</span>
-              </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '.375rem' }}>
+              <Download style={{ width: '.875rem', height: '.875rem', color: 'var(--teal)' }} />
+              {available ? 'Instant secure download' : 'Priority launch delivery'}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '.375rem' }}>
+              <ShieldCheck style={{ width: '.875rem', height: '.875rem', color: 'var(--teal)' }} />
+              Bug-free execution guarantee
             </div>
           </div>
         </div>
       </div>
 
-      {/* ── MAIN BODY ── */}
-      <div className="container mx-auto px-4 py-10 relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+      {/* ── Main body ── */}
+      <div className="shell" style={{ paddingTop: '2rem' }}>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
 
-          {/* ═══ LEFT — MAIN CONTENT ═══ */}
-          <div className="lg:col-span-2 space-y-12">
+          {/* ── LEFT: Content ── */}
+          <div className="lg:col-span-2 flex flex-col gap-8 w-full max-w-full min-w-0">
 
-            {/* 1. Video + Screenshots */}
+            {/* Context Notice for Pipeline / Coming Soon projects */}
+            {!available && (
+              <div style={{ padding: '1.25rem 1.5rem', borderRadius: '16px', background: 'var(--amber-50)', border: '1.5px solid var(--amber-100)', display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
+                <Clock style={{ width: '1.5rem', height: '1.5rem', color: '#D97706', flexShrink: 0, marginTop: '.125rem' }} />
+                <div>
+                  <h3 style={{ fontSize: '1rem', fontWeight: 700, color: '#92400E', margin: '0 0 .375rem' }}>
+                    Project in QA Verification Pipeline · Pre-Book Open
+                  </h3>
+                  <p style={{ fontSize: '.875rem', color: '#B45309', margin: 0, lineHeight: 1.65 }}>
+                    Our engineering team is completing final IEEE Black Book documentation and 1-click test runs.
+                    Pre-book now to lock in 50% early bird pricing ({formatCurrency(isMajor ? 499 : 299)}) and receive immediate download access via WhatsApp &amp; Email when ready.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Demo video / screenshot */}
             <section>
-              <h2 className="text-xl font-display font-semibold text-white mb-4 flex items-center gap-2.5">
-                <div className="p-1.5 bg-brand-500/10 rounded-lg"><MonitorPlay className="h-4 w-4 text-brand-400" /></div>
+              <SectionTitle>
+                <MonitorPlay style={{ width: '1.125rem', height: '1.125rem', color: 'var(--teal)' }} />
                 Project Demo
-              </h2>
-
-              {/* Video or Hero Screenshot */}
-              <div className="aspect-video w-full rounded-2xl border border-white/10 overflow-hidden bg-zinc-950 shadow-2xl mb-4 relative group cursor-default">
+              </SectionTitle>
+              <div style={{ borderRadius: '14px', overflow: 'hidden', border: '1px solid var(--line)', background: 'var(--surface-2)', boxShadow: 'var(--sh-md)', aspectRatio: '16/9', position: 'relative' }}>
                 {hasVideo ? (
-                  <iframe
-                    src={`https://www.youtube.com/embed/${p.demo_video_id}?rel=0&modestbranding=1`}
-                    className="w-full h-full"
-                    title={`${p.title} Demo Video`}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  />
-                ) : (SHOWCASE_DATA[p.slug] && SHOWCASE_DATA[p.slug].length > 0) ? (
-                  <>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img 
-                      src={SHOWCASE_DATA[p.slug][0].img} 
-                      alt={`${p.title} Screenshot`} 
-                      decoding="async"
-                      className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
-                    />
-                    <div className="absolute inset-0 shadow-[inset_0_0_100px_rgba(0,0,0,0.8)] pointer-events-none" />
-                  </>
+                  <iframe src={`https://www.youtube.com/embed/${p.demo_video_id}?rel=0&modestbranding=1`} className="w-full h-full" title={`${p.title} Demo`} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ width: '100%', height: '100%', border: 'none' }} />
+                ) : shots.length > 0 ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={shots[0].img} alt={`${p.title} Screenshot`} decoding="async" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center bg-zinc-900/60 text-center p-8 relative">
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:24px_24px]" />
-                    <div className="w-16 h-16 rounded-2xl bg-brand-500/10 border border-brand-500/20 flex items-center justify-center mb-4">
-                      <ImageIcon className="h-7 w-7 text-brand-400" />
+                  <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--surface-2)', padding: '2rem', textAlign: 'center' }}>
+                    <div style={{ width: '3.5rem', height: '3.5rem', borderRadius: '14px', background: 'var(--surface-teal)', border: '1px solid var(--teal-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem' }}>
+                      <ImageIcon style={{ width: '1.5rem', height: '1.5rem', color: 'var(--teal)' }} />
                     </div>
-                    <p className="text-white font-semibold mb-1">Screenshots Coming Soon</p>
-                    <p className="text-zinc-500 text-xs max-w-sm leading-relaxed">
-                      We are preparing a high-quality gallery. The project code is fully functional and ready to download today.
+                    <p style={{ fontWeight: 700, color: 'var(--navy)', marginBottom: '.25rem' }}>
+                      {available ? 'Screenshots Included in Kit' : 'Demo Recording in QA Pipeline'}
+                    </p>
+                    <p style={{ fontSize: '.8125rem', color: 'var(--ink-3)', maxWidth: '24rem', lineHeight: 1.6 }}>
+                      {available
+                        ? 'Download the full kit to view live execution and output screens.'
+                        : 'Preview screenshots and live demo will be published with the official drop.'}
                     </p>
                   </div>
                 )}
               </div>
 
-              {/* Premium Horizontal Screenshot Showcase */}
-              {SHOWCASE_DATA[p.slug] && SHOWCASE_DATA[p.slug].length > (hasVideo ? 0 : 1) && (
-                <div className="mt-8">
-                  <h3 className="text-lg font-display font-semibold text-white mb-4 flex items-center gap-2.5">
-                    <div className="p-1.5 bg-zinc-800/50 rounded-lg"><ImageIcon className="h-4 w-4 text-zinc-400" /></div>
-                    More Screenshots
-                  </h3>
-                  <div className="flex gap-4 overflow-x-auto pb-6 snap-x snap-mandatory scrollbar-hide">
-                    {(hasVideo ? SHOWCASE_DATA[p.slug] : SHOWCASE_DATA[p.slug].slice(1)).map((item, idx) => {
-                      const displayNum = hasVideo ? idx + 1 : idx + 2;
-                      return (
-                      <div key={idx} className="shrink-0 w-[85%] md:w-[70%] flex flex-col gap-3 snap-start group cursor-pointer">
-                        <div className="aspect-video w-full rounded-2xl border border-white/10 overflow-hidden bg-zinc-950 shadow-xl relative">
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={item.img}
-                            alt={item.title}
-                            loading="lazy"
-                            decoding="async"
-                            className="w-full h-full object-cover group-hover:scale-105 group-hover:opacity-80 transition-all duration-500"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-[#09090b]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-5">
-                            <span className="text-white font-medium flex items-center gap-2">
-                              <Sparkles className="w-4 h-4 text-brand-400" /> View Fullscreen
-                            </span>
-                          </div>
-                        </div>
-                        <div className="px-1">
-                          <h4 className="text-sm font-semibold text-white mb-1 flex items-center gap-2">
-                            <span className="text-[10px] bg-brand-500/20 text-brand-400 px-1.5 py-0.5 rounded font-mono">0{displayNum}</span>
-                            {item.title}
-                          </h4>
-                          <p className="text-xs text-zinc-400 leading-relaxed">
-                            {item.desc}
-                          </p>
-                        </div>
+              {/* Screenshot strip */}
+              {shots.length > (hasVideo ? 0 : 1) && (
+                <div className="scroll-x" style={{ display: 'flex', gap: '1rem', paddingTop: '1rem', paddingBottom: '.5rem' }}>
+                  {(hasVideo ? shots : shots.slice(1)).map((item, idx) => (
+                    <div key={idx} className="snap-s" style={{ flexShrink: 0, width: '280px' }}>
+                      <div style={{ borderRadius: '10px', overflow: 'hidden', border: '1px solid var(--line)', background: 'var(--surface-2)', aspectRatio: '16/9' }}>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={item.img} alt={item.title} loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                       </div>
-                    )})}
-                  </div>
+                      <p style={{ fontSize: '.75rem', color: 'var(--ink-3)', marginTop: '.375rem', fontWeight: 500 }}>{item.title}</p>
+                    </div>
+                  ))}
                 </div>
               )}
             </section>
 
-            {/* 2. About this project */}
-            <section id="about">
-              <h2 className="text-xl font-display font-semibold text-white mb-4 flex items-center gap-2.5">
-                <div className="p-1.5 bg-blue-500/10 rounded-lg"><FileText className="h-4 w-4 text-blue-400" /></div>
+            {/* About */}
+            <section>
+              <SectionTitle>
+                <FileText style={{ width: '1.125rem', height: '1.125rem', color: 'var(--teal)' }} />
                 About This Project
-              </h2>
-              <div className="glass-card p-6 rounded-2xl border-l-2 border-l-brand-500">
-                <div className="text-zinc-300 leading-relaxed space-y-4 text-sm md:text-base">
+              </SectionTitle>
+              <div className="card" style={{ padding: '1.375rem', borderLeft: '4px solid var(--teal)' }}>
+                <div style={{ color: 'var(--ink-2)', lineHeight: 1.8, fontSize: '.9375rem', display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
                   {p.problem_statement
-                    ? p.problem_statement.split('\\n').map((line, i) => {
-                        if (!line.trim()) return null;
+                    ? p.problem_statement.split('\\n').filter(l => l.trim()).map((line, i) => {
                         const parts = line.split(/(\*\*.*?\*\*)/g).map((part, j) =>
                           part.startsWith('**') && part.endsWith('**')
-                            ? <strong key={j} className="text-white font-bold">{part.slice(2, -2)}</strong>
+                            ? <strong key={j} style={{ color: 'var(--navy)' }}>{part.slice(2, -2)}</strong>
                             : part
                         );
                         return <p key={i}>{parts}</p>;
@@ -367,126 +263,92 @@ export default async function ProjectDetailPage({
               </div>
             </section>
 
-            {/* 3. Tech Stack */}
-            {p.tech_stack && p.tech_stack.length > 0 && (
+            {/* Tech Stack */}
+            {p.tech_stack?.length > 0 && (
               <section>
-                <h2 className="text-xl font-display font-semibold text-white mb-4 flex items-center gap-2.5">
-                  <div className="p-1.5 bg-zinc-800 rounded-lg"><TerminalSquare className="h-4 w-4 text-zinc-400" /></div>
+                <SectionTitle>
+                  <TerminalSquare style={{ width: '1.125rem', height: '1.125rem', color: 'var(--teal)' }} />
                   Tech Stack
-                </h2>
-                <div className="flex flex-wrap gap-2">
-                  {p.tech_stack.map(tech => (
-                    <TechBadge key={tech} tech={tech} />
-                  ))}
+                </SectionTitle>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.5rem' }}>
+                  {p.tech_stack.map(tech => <TechBadge key={tech} tech={tech} />)}
                 </div>
               </section>
             )}
 
-            {/* 4. Key Features */}
+            {/* Key Features */}
             <section>
-              <h2 className="text-xl font-display font-semibold text-white mb-4 flex items-center gap-2.5">
-                <div className="p-1.5 bg-emerald-500/10 rounded-lg"><CheckCircle2 className="h-4 w-4 text-emerald-400" /></div>
+              <SectionTitle>
+                <CheckCircle2 style={{ width: '1.125rem', height: '1.125rem', color: 'var(--teal)' }} />
                 Key Features
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {p.features.map((feature, idx) => (
-                  <div key={idx} className="glass-card p-4 rounded-xl flex items-start gap-3 hover:border-white/20 transition-all">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0 mt-0.5" />
-                    <span className="text-zinc-300 text-sm">{feature}</span>
+              </SectionTitle>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 18rem), 1fr))', gap: '.625rem' }}>
+                {p.features?.map((feature, idx) => (
+                  <div key={idx} className="card" style={{ padding: '.875rem 1rem', display: 'flex', alignItems: 'flex-start', gap: '.625rem' }}>
+                    <CheckCircle2 style={{ width: '.9375rem', height: '.9375rem', color: 'var(--teal)', flexShrink: 0, marginTop: '.125rem' }} />
+                    <span style={{ fontSize: '.875rem', color: 'var(--ink-2)', fontWeight: 500, lineHeight: 1.5 }}>{feature}</span>
                   </div>
                 ))}
               </div>
             </section>
 
-            {/* 5. What's in the box */}
+            {/* What's in the box */}
             <section>
-              <h2 className="text-xl font-display font-semibold text-white mb-4 flex items-center gap-2.5">
-                <div className="p-1.5 bg-amber-500/10 rounded-lg"><Download className="h-4 w-4 text-amber-400" /></div>
+              <SectionTitle>
+                <Download style={{ width: '1.125rem', height: '1.125rem', color: 'var(--teal)' }} />
                 What&apos;s in the Box?
-              </h2>
-              <div className="space-y-3">
-                <div className="glass-card p-5 rounded-2xl flex gap-4 items-start border-l-2 border-l-blue-500">
-                  <div className="bg-blue-500/10 p-3 rounded-xl shrink-0"><TerminalSquare className="h-5 w-5 text-blue-400" /></div>
-                  <div>
-                    <h3 className="text-base font-semibold text-white mb-1">Source Code + 1-Click Launcher</h3>
-                    <p className="text-zinc-400 text-sm leading-relaxed">
-                      Complete, tested project code with{' '}
-                      <code className="bg-white/10 text-blue-300 px-1.5 py-0.5 rounded text-xs font-mono">run.bat</code> (Windows) and{' '}
-                      <code className="bg-white/10 text-blue-300 px-1.5 py-0.5 rounded text-xs font-mono">run.sh</code> (Mac/Linux).
-                      Double-click to launch — no manual setup required.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="glass-card p-5 rounded-2xl flex gap-4 items-start border-l-2 border-l-purple-500">
-                  <div className="bg-purple-500/10 p-3 rounded-xl shrink-0"><FileText className="h-5 w-5 text-purple-400" /></div>
-                  <div>
-                    <h3 className="text-base font-semibold text-white mb-1 flex items-center gap-2">
-                      IEEE Black Book Report
-                      <span className="text-[10px] bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded border border-purple-500/30 font-bold">.DOCX</span>
-                    </h3>
-                    <p className="text-zinc-400 text-sm leading-relaxed mb-3">
-                      {isMajor ? '60+' : '30+'}-page Word document fully formatted to university standards. Print, bind, and submit — your name goes on the cover.
-                    </p>
-                    <div className="grid grid-cols-2 gap-y-1.5 gap-x-3 text-xs text-zinc-500">
-                      {['Literature Survey & Base Papers','System Architecture & Algorithms','UML, DFD & ER Diagrams','Hardware & Software Specs','Real Output Screenshots','Future Scope & Conclusion'].map(item => (
-                        <div key={item} className="flex items-center gap-1.5">
-                          <CheckCircle2 className="w-3 h-3 text-purple-500 shrink-0" />{item}
-                        </div>
-                      ))}
+              </SectionTitle>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
+                {[
+                  { color: 'var(--teal)', icon: TerminalSquare, title: 'Source Code + 1-Click Launcher', body: <>Complete, tested project code with <code style={{ background: 'var(--surface-2)', border: '1px solid var(--line)', color: 'var(--teal-dark)', padding: '.125rem .375rem', borderRadius: '4px', fontFamily: 'var(--font-mono)', fontSize: '.8125rem' }}>run.bat</code> (Windows) and <code style={{ background: 'var(--surface-2)', border: '1px solid var(--line)', color: 'var(--teal-dark)', padding: '.125rem .375rem', borderRadius: '4px', fontFamily: 'var(--font-mono)', fontSize: '.8125rem' }}>run.sh</code> (Mac/Linux). Double-click to launch — no manual setup required.</> },
+                  { color: 'var(--violet)', icon: FileText, title: `IEEE Black Book Report (.docx)`, body: `${isMajor ? '60+' : '30+'}-page Word document formatted to university standards. Print, bind, and submit — includes Literature Survey, System Architecture, UML Diagrams, Output Screenshots, Future Scope.` },
+                  { color: 'var(--amber)', icon: Presentation, title: 'Viva Defense Presentation (.pptx)', body: '15–20 professionally designed slides with exact speaker notes — we tell you word-for-word what to say to the examiner.' },
+                ].map(({ color, icon: Icon, title, body }) => (
+                  <div key={title} className="card" style={{ padding: '1.25rem', display: 'flex', alignItems: 'flex-start', gap: '.875rem', borderLeft: `4px solid ${color}` }}>
+                    <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: '10px', flexShrink: 0, background: `color-mix(in srgb, ${color} 10%, white)`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Icon style={{ width: '1.125rem', height: '1.125rem', color }} />
+                    </div>
+                    <div>
+                      <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '.375rem', letterSpacing: '-.02em' }}>{title}</h3>
+                      <p style={{ fontSize: '.875rem', color: 'var(--ink-3)', lineHeight: 1.65 }}>{body}</p>
                     </div>
                   </div>
-                </div>
-
-                <div className="glass-card p-5 rounded-2xl flex gap-4 items-start border-l-2 border-l-amber-500">
-                  <div className="bg-amber-500/10 p-3 rounded-xl shrink-0"><Presentation className="h-5 w-5 text-amber-400" /></div>
-                  <div>
-                    <h3 className="text-base font-semibold text-white mb-1 flex items-center gap-2">
-                      Viva Defense Presentation
-                      <span className="text-[10px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded border border-amber-500/30 font-bold">.PPTX</span>
-                    </h3>
-                    <p className="text-zinc-400 text-sm leading-relaxed">
-                      15–20 professionally designed slides with <strong className="text-white">exact speaker notes</strong> — we tell you word-for-word what to say to the examiner.
-                    </p>
-                  </div>
-                </div>
+                ))}
               </div>
             </section>
 
-            {/* 6. How to Run */}
+            {/* How to Run */}
             <section>
-              <h2 className="text-xl font-display font-semibold text-white mb-4 flex items-center gap-2.5">
-                <div className="p-1.5 bg-emerald-500/10 rounded-lg"><Zap className="h-4 w-4 text-emerald-400" /></div>
+              <SectionTitle>
+                <Zap style={{ width: '1.125rem', height: '1.125rem', color: 'var(--teal)' }} />
                 How to Run This Project
-              </h2>
-              <div className="glass-card p-6 rounded-2xl">
-                <p className="text-zinc-400 text-sm mb-5 leading-relaxed">
-                  After downloading, follow these steps to get the project running in under 5 minutes on any computer.
-                </p>
+              </SectionTitle>
+              <div className="card" style={{ padding: '1.375rem' }}>
+                <p style={{ fontSize: '.9rem', color: 'var(--ink-3)', marginBottom: '1.125rem', lineHeight: 1.65 }}>After downloading, follow these steps to get running in under 5 minutes on any computer.</p>
                 <HowToRun />
               </div>
             </section>
 
-            {/* 7. Viva Q&A teaser */}
+            {/* Viva Q&A teaser */}
             <section>
-              <h2 className="text-xl font-display font-semibold text-white mb-4 flex items-center gap-2.5">
-                <div className="p-1.5 bg-emerald-500/10 rounded-lg"><BookOpen className="h-4 w-4 text-emerald-400" /></div>
+              <SectionTitle>
+                <BookOpen style={{ width: '1.125rem', height: '1.125rem', color: 'var(--teal)' }} />
                 Top Viva Questions Included
-              </h2>
-              <div className="glass-card rounded-2xl overflow-hidden border border-white/10">
-                <div className="p-4 border-b border-white/5 flex items-center justify-between">
-                  <p className="text-sm text-zinc-400">Preview <span className="text-white font-medium">3 of 25</span> included Q&amp;As</p>
-                  <span className="text-xs bg-brand-500/20 text-brand-400 px-2 py-0.5 rounded font-medium border border-brand-500/30">25 Total Q&amp;As</span>
+              </SectionTitle>
+              <div className="card" style={{ overflow: 'hidden' }}>
+                <div style={{ padding: '.875rem 1.125rem', borderBottom: '1px solid var(--line)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'var(--surface-2)' }}>
+                  <p style={{ fontSize: '.875rem', color: 'var(--ink-2)', fontWeight: 500 }}>Preview <strong style={{ color: 'var(--navy)' }}>3 of 25</strong> included Q&amp;As</p>
+                  <span className="tag tag-teal" style={{ fontSize: '.6rem' }}>25 Total Q&amp;As</span>
                 </div>
-                <div className="divide-y divide-white/5">
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
                   {VIVA_QS.map((qa, idx) => (
-                    <div key={idx} className="p-4 relative">
-                      <p className="text-sm font-semibold text-white mb-1.5">Q{idx + 1}: {qa.q}</p>
-                      <p className={`text-sm text-zinc-400 ${idx > 0 ? 'blur-sm select-none' : ''}`}>{qa.a}</p>
+                    <div key={idx} style={{ padding: '1rem 1.125rem', borderBottom: idx < VIVA_QS.length - 1 ? '1px solid var(--line)' : 'none', position: 'relative' }}>
+                      <p style={{ fontSize: '.9rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '.375rem' }}>Q{idx + 1}: {qa.q}</p>
+                      <p style={{ fontSize: '.875rem', color: 'var(--ink-3)', lineHeight: 1.65, filter: idx > 0 ? 'blur(4px)' : 'none', userSelect: idx > 0 ? 'none' : 'auto', opacity: idx > 0 ? .4 : 1 }}>{qa.a}</p>
                       {idx > 0 && (
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="bg-[#09090b]/80 backdrop-blur-sm px-4 py-1.5 rounded-full border border-white/10 flex items-center gap-2 text-xs text-zinc-400">
-                            <Lock className="w-3 h-3" /> Unlock with purchase
+                        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem', background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: '9999px', padding: '.3125rem .875rem', fontSize: '.75rem', fontWeight: 600, color: 'var(--ink-2)', boxShadow: 'var(--sh-sm)' }}>
+                            <Lock style={{ width: '.8125rem', height: '.8125rem', color: 'var(--teal)' }} /> Unlock with purchase
                           </div>
                         </div>
                       )}
@@ -496,81 +358,122 @@ export default async function ProjectDetailPage({
               </div>
             </section>
 
+            {/* Alternatives section for pipeline/pre-order visitors needing immediate submission */}
+            {!available && availableAlternatives.length > 0 && (
+              <section style={{ marginTop: '1rem', paddingTop: '2rem', borderTop: '1px solid var(--line)' }}>
+                <SectionTitle>
+                  <Zap style={{ width: '1.125rem', height: '1.125rem', color: 'var(--teal)' }} />
+                  Need a Verified Project Today for Immediate Submission?
+                </SectionTitle>
+                <p style={{ fontSize: '.875rem', color: 'var(--ink-3)', marginBottom: '1.25rem', lineHeight: 1.65 }}>
+                  Can&apos;t wait for this upcoming drop? These 9 core kits are 100% verified, execution-tested, and ready for instant download right now:
+                </p>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 14rem), 1fr))', gap: '1rem' }}>
+                  {availableAlternatives.map(alt => (
+                    <Link
+                      key={alt.slug}
+                      href={`/projects/${alt.slug}`}
+                      className="card card-lift"
+                      style={{ padding: '1.125rem', textDecoration: 'none', display: 'flex', flexDirection: 'column', borderRadius: '16px' }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '.625rem' }}>
+                        <span className="tag tag-teal" style={{ fontSize: '.6rem' }}>
+                          <span className="dot-live apulse" style={{ width: '4px', height: '4px' }} />
+                          Ready to Ship
+                        </span>
+                        <span style={{ fontSize: '.8125rem', fontWeight: 800, color: 'var(--navy)' }}>
+                          ₹{alt.price_inr}
+                        </span>
+                      </div>
+                      <h4 style={{ fontSize: '.9375rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '.375rem', lineHeight: 1.35 }}>
+                        {alt.title}
+                      </h4>
+                      <p style={{ fontSize: '.8125rem', color: 'var(--ink-3)', lineHeight: 1.5, marginBottom: '.875rem' }} className="line-clamp-2">
+                        {alt.description}
+                      </p>
+                      <span style={{ marginTop: 'auto', fontSize: '.8125rem', fontWeight: 700, color: 'var(--teal)', display: 'inline-flex', alignItems: 'center', gap: '.25rem' }}>
+                        View Kit <ArrowRight style={{ width: '.8125rem', height: '.8125rem' }} />
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            )}
+
           </div>
 
-          {/* ═══ RIGHT — STICKY SIDEBAR ═══ */}
-          <div className="w-full space-y-4 lg:sticky lg:top-24 self-start" id="checkout-form">
+          {/* ── RIGHT: Purchase sidebar ── */}
+          <div className="lg:col-span-1 flex flex-col gap-4 lg:sticky lg:top-20 w-full min-w-0" id="checkout-form">
 
-            {/* Urgency timer — only for available projects */}
             {available && <UrgencyTimer />}
 
-            {/* Pricing + checkout */}
+            {/* Pricing + form */}
             {available ? (
-              <div
-                className="glass-card p-6 rounded-2xl border-t-2 relative overflow-hidden shadow-2xl"
-                style={{ borderTopColor: isMajor ? 'var(--color-brand-500)' : 'var(--color-success-500)' }}
-              >
-                <div className="absolute top-0 right-0 w-40 h-40 bg-brand-500/5 blur-3xl rounded-full pointer-events-none" />
-                <div className="relative z-10 mb-5">
-                  <p className="text-zinc-500 text-xs font-medium mb-1">Complete Bundle — One-time Payment</p>
-                  <div className="flex items-end gap-2">
-                    <p className="text-4xl font-display font-bold text-white">{formatCurrency(p.price_inr)}</p>
-                    <p className="text-zinc-600 text-sm line-through mb-1">
-                      {formatCurrency(isMajor ? 3999 : 1499)}
-                    </p>
+              <div className="card" style={{ overflow: 'hidden', borderTop: `4px solid ${isMajor ? 'var(--violet)' : 'var(--teal)'}` }}>
+                <div style={{ padding: '1.375rem 1.375rem 1rem' }}>
+                  <p style={{ fontSize: '.6875rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.06em', color: 'var(--ink-4)', marginBottom: '.5rem' }}>Complete Bundle — One-time Payment</p>
+                  <div style={{ display: 'flex', alignItems: 'flex-end', gap: '.875rem', marginBottom: '.375rem' }}>
+                    <span className="font-display" style={{ fontSize: '2.75rem', fontWeight: 900, letterSpacing: '-.055em', color: 'var(--navy)', lineHeight: 1 }}>{formatCurrency(p.price_inr)}</span>
+                    <span style={{ fontSize: '.9375rem', color: 'var(--ink-4)', textDecoration: 'line-through', fontWeight: 500, marginBottom: '.25rem' }}>{formatCurrency(isMajor ? 3999 : 1499)}</span>
                   </div>
-                  <p className="text-emerald-400 text-xs font-semibold mt-0.5">
+                  <p style={{ fontSize: '.8125rem', color: 'var(--teal-dark)', fontWeight: 700, marginBottom: '1.25rem' }}>
                     Save {isMajor ? '₹3,500' : '₹1,200'} vs local project shops
                   </p>
                 </div>
-                <CustomerForm projectId={p.id} price={p.price_inr} />
+                <div style={{ padding: '0 1.375rem 1.375rem' }}>
+                  <CustomerForm projectId={p.id} price={p.price_inr} />
+                </div>
               </div>
             ) : (
               <PreOrderForm
                 projectSlug={p.slug}
                 projectTitle={p.title}
-                priceInr={p.price_inr}
+                priceInr={isMajor ? 499 : 299}
                 isMajor={isMajor}
               />
             )}
 
             {/* What you get */}
-            <div className="glass-card p-5 rounded-2xl space-y-3">
-              <h3 className="text-white font-semibold text-sm border-b border-white/5 pb-3">Everything You Receive</h3>
-              {[
-                { icon: <TerminalSquare className="w-3.5 h-3.5 text-blue-400" />, title: 'Working Source Code',       sub: '1-click launcher included' },
-                { icon: <FileText className="w-3.5 h-3.5 text-purple-400" />,     title: `${isMajor ? '60+' : '30+'}-Page IEEE Black Book`, sub: 'Print-ready .docx format' },
-                { icon: <Presentation className="w-3.5 h-3.5 text-amber-400" />,  title: 'Viva Defense PPT',          sub: 'Speaker notes included' },
-                { icon: <BookOpen className="w-3.5 h-3.5 text-emerald-400" />,    title: '25 Viva Q&A Answers',       sub: 'Examiner-tested questions' },
-                { icon: <Download className="w-3.5 h-3.5 text-zinc-400" />,       title: 'Instant ZIP Download',      sub: 'Available immediately after payment' },
-              ].map(item => (
-                <div key={item.title} className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-lg bg-white/5 flex items-center justify-center shrink-0 mt-0.5">{item.icon}</div>
-                  <div>
-                    <p className="text-zinc-200 text-xs font-semibold">{item.title}</p>
-                    <p className="text-zinc-500 text-[11px]">{item.sub}</p>
+            <div className="card" style={{ padding: '1.25rem' }}>
+              <h3 style={{ fontSize: '.875rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '.875rem', paddingBottom: '.75rem', borderBottom: '1px solid var(--line)' }}>Everything You Receive</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '.625rem' }}>
+                {[
+                  { icon: TerminalSquare, color: 'var(--teal)',   title: 'Working Source Code',          sub: '1-click launcher included' },
+                  { icon: FileText,       color: 'var(--violet)', title: `${isMajor ? '60+' : '30+'}-Page IEEE Black Book`, sub: 'Print-ready .docx format' },
+                  { icon: Presentation,   color: 'var(--amber)',  title: 'Viva Defense PPT',             sub: 'Speaker notes included' },
+                  { icon: BookOpen,       color: 'var(--teal)',   title: '25 Viva Q&A Answers',          sub: 'Examiner-tested questions' },
+                  { icon: Download,       color: 'var(--ink-3)', title: available ? 'Instant ZIP Download' : 'Priority Drop Delivery', sub: available ? 'Delivered immediately' : 'Emailed on launch' },
+                ].map(({ icon: Icon, color, title, sub }) => (
+                  <div key={title} style={{ display: 'flex', alignItems: 'flex-start', gap: '.625rem' }}>
+                    <div style={{ width: '2rem', height: '2rem', borderRadius: '8px', flexShrink: 0, background: `color-mix(in srgb, ${color} 10%, white)`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '.0625rem' }}>
+                      <Icon style={{ width: '.875rem', height: '.875rem', color }} />
+                    </div>
+                    <div>
+                      <p style={{ fontSize: '.8125rem', fontWeight: 700, color: 'var(--navy)', lineHeight: 1.3 }}>{title}</p>
+                      <p style={{ fontSize: '.75rem', color: 'var(--ink-4)', marginTop: '.0625rem' }}>{sub}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
 
             {/* Quick run guide */}
-            <div className="glass-card p-5 rounded-2xl">
-              <h3 className="text-white font-semibold text-sm mb-4 border-b border-white/5 pb-3 flex items-center gap-2">
-                <Zap className="w-4 h-4 text-emerald-400" /> How to Run (Quick Steps)
+            <div className="card" style={{ padding: '1.25rem' }}>
+              <h3 style={{ fontSize: '.875rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '.875rem', paddingBottom: '.75rem', borderBottom: '1px solid var(--line)', display: 'flex', alignItems: 'center', gap: '.375rem' }}>
+                <Zap style={{ width: '.9375rem', height: '.9375rem', color: 'var(--teal)' }} /> Quick Setup Guide
               </h3>
               <HowToRun compact />
             </div>
 
-            {/* Trust badge */}
-            <div className="glass-card p-4 rounded-xl flex items-center gap-3">
-              <ShieldCheck className="w-5 h-5 text-emerald-500 shrink-0" />
-              <p className="text-zinc-400 text-xs leading-relaxed">
-                100% Secure payment powered by Razorpay. Files delivered instantly after payment confirmation.
+            {/* Trust */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '.625rem', padding: '.875rem 1rem', borderRadius: '12px', background: 'var(--surface-teal)', border: '1px solid var(--teal-100)' }}>
+              <ShieldCheck style={{ width: '1.125rem', height: '1.125rem', color: 'var(--teal)', flexShrink: 0 }} />
+              <p style={{ fontSize: '.8125rem', color: 'var(--teal-dark)', fontWeight: 500, lineHeight: 1.5 }}>
+                100% Secure payment powered by Razorpay. {available ? 'Instant download after successful payment.' : 'Zero risk: pay only if you proceed.'}
               </p>
             </div>
-
           </div>
+
         </div>
       </div>
     </div>

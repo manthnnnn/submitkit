@@ -52,7 +52,7 @@ export default async function CertificatePage({ params }: { params: Promise<{ or
 
       <div
         className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-8 print:p-0 print:min-h-0"
-        style={{ background: '#0a0c12', fontFamily: "'Space Grotesk', system-ui, sans-serif" }}
+        style={{ background: '#F8FAFC', fontFamily: "'Space Grotesk', system-ui, sans-serif" }}
       >
         {/* Certificate Card */}
         <div

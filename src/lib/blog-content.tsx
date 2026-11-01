@@ -7,23 +7,23 @@ interface BlogContentEntry {
 }
 
 const CTA_INTERNAL_LINK = (
-  <section className="my-10 p-6 md:p-8 rounded-3xl border border-brand-500/30 bg-gradient-to-br from-brand-950/60 via-zinc-900 to-emerald-950/40 shadow-2xl">
-    <h3 className="text-xl md:text-2xl font-display font-bold text-white mb-3">
+  <section className="my-10 p-6 md:p-8 rounded-2xl border border-indigo-200/90 bg-gradient-to-r from-indigo-50/80 via-white to-emerald-50/80 shadow-sm">
+    <h3 className="text-xl md:text-2xl font-display font-bold text-slate-900 mb-3">
       ⚡ Get the Full Working Project Instantly
     </h3>
-    <p className="text-sm md:text-base text-zinc-300 leading-relaxed mb-5">
-      Tired of broken GitHub code, missing datasets, and last-minute bugs? Get the <strong>SubmitKit All-in-One Bundle</strong> — full 1-click runnable source code, 60-page editable IEEE Black Book (.docx), Viva defense PPT, and top 25 examiner Q&A with full answers. Pay once via UPI. Download in 30 seconds on WhatsApp & Email.
+    <p className="text-sm md:text-base text-slate-600 leading-relaxed mb-5">
+      Tired of broken GitHub code, missing datasets, and last-minute bugs? Get the <strong>SubmitKit All-in-One Bundle</strong> — full 1-click runnable source code, 60-page editable IEEE Black Book (.docx), Viva defense PPT, and top 25 examiner Q&amp;A with full answers. Instant download.
     </p>
     <div className="flex flex-wrap gap-3">
       <a
         href={`${CONSTANTS.APP_URL.replace(/\/$/, '')}/projects`}
-        className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-zinc-950 font-bold text-sm shadow-[0_0_20px_rgba(255,255,255,0.15)] hover:shadow-[0_0_30px_rgba(255,255,255,0.25)] transition-all"
+        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs sm:text-sm shadow-sm transition-all"
       >
         Browse All Project Kits →
       </a>
       <a
         href={`${CONSTANTS.APP_URL.replace(/\/$/, '')}/blueprint`}
-        className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-transparent border border-white/15 text-white font-medium text-sm hover:bg-white/5 transition-all"
+        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 font-semibold text-xs sm:text-sm hover:bg-slate-50 transition-all shadow-xs"
       >
         Free Blueprint Starter (Topic Approval)
       </a>
@@ -34,27 +34,27 @@ const CTA_INTERNAL_LINK = (
 export const BLOG_CONTENT: Record<string, BlogContentEntry> = {
   '500-final-year-project-ideas-2026-cse-aiml-iot': {
     content: (
-      <article className="prose prose-invert max-w-none text-zinc-300 text-sm md:text-base leading-[1.8]">
-        <h1 className="text-3xl md:text-5xl font-display font-bold text-white tracking-tight leading-[1.1] mb-4">
+      <article className="prose max-w-none text-slate-700 text-sm md:text-base leading-[1.8]">
+        <h1 className="text-3xl md:text-5xl font-display font-black text-slate-900 tracking-tight leading-[1.1] mb-4">
           500+ Final Year Project Ideas for 2026 (CSE / AIML / IoT / FullStack / MCA)
         </h1>
-        <p className="text-lg md:text-xl text-zinc-400 leading-relaxed mb-8">
+        <p className="text-lg md:text-xl text-slate-600 leading-relaxed mb-8">
           The biggest, most up-to-date, and university-aligned final year project idea list for 2026. Covers Mini, Mid, and Major difficulty levels across all branches — CSE, IT, MCA, AIML, IoT, FullStack, Cybersecurity, DataScience, FinTech.
         </p>
         {CTA_INTERNAL_LINK}
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-white mt-12 mb-4">
+        <h2 className="text-2xl md:text-3xl font-display font-bold text-slate-900 mt-12 mb-4">
           📋 How to Pick the RIGHT Project in 5 Minutes
         </h2>
         <ul className="space-y-2 mb-10 list-disc pl-6">
-          <li><strong>Step 1 — Match Your University Syllabus:</strong> VTU & RGPV like hardware/software hybrid projects. SPPU & Mumbai University prefer database-driven systems. Anna & JNTU love IEEE paper-based implementations.</li>
-          <li><strong>Step 2 — Match Your Strengths:</strong> If you&apos;re strong in Python → AIML/DataScience. If you know React & Node → FullStack Web. If you have Arduino & sensors → IoT & Embedded.</li>
+          <li><strong>Step 1 — Match Your University Syllabus:</strong> VTU &amp; RGPV like hardware/software hybrid projects. SPPU &amp; Mumbai University prefer database-driven systems. Anna &amp; JNTU love IEEE paper-based implementations.</li>
+          <li><strong>Step 2 — Match Your Strengths:</strong> If you&apos;re strong in Python → AIML/DataScience. If you know React &amp; Node → FullStack Web. If you have Arduino &amp; sensors → IoT &amp; Embedded.</li>
           <li><strong>Step 3 — Innovation Quotient (IQ) Test:</strong> External examiners award marks for <em>novelty + real-world use case + live demo</em>. A working SaaS demo beats a 100-page boring management system every time.</li>
           <li><strong>Step 4 — Dataset Availability:</strong> Before locking a topic, confirm that a public dataset exists or you can realistically collect data.</li>
           <li><strong>Step 5 — Project Timeline Buffer:</strong> Budget 4× the estimated time. Report writing &amp; PPT &amp; corrections always take 2× longer than coding.</li>
         </ul>
 
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-white mt-12 mb-4">
-          🧠 100 AIML & Deep Learning Project Ideas (2026 Trending)
+        <h2 className="text-2xl md:text-3xl font-display font-bold text-slate-900 mt-12 mb-4">
+          🧠 100 AIML &amp; Deep Learning Project Ideas (2026 Trending)
         </h2>
         <p className="mb-4">
           AIML &amp; Deep Learning projects guarantee an A+ grade in 2026 because examiners know these are industry-aligned. Below are the top 30 (out of 100 total curated):
@@ -79,7 +79,7 @@ export const BLOG_CONTENT: Record<string, BlogContentEntry> = {
             'Brain Tumour Segmentation (BraTS Challenge + U-Net)',
             'LLM-Powered Autonomous Coding Agent with Tool-Calling & Self-Correction',
             'Sign Language Recognition (WLASL dataset + MediaPipe + LSTM)',
-            'Autonomous Indoor Drone Navigation with SLAM &amp; A* Pathfinding',
+            'Autonomous Indoor Drone Navigation with SLAM & A* Pathfinding',
             'Crop Yield Prediction from Sentinel-2 NDVI Satellite Images (LSTM)',
             'OCR + NLP based Automatic Resume Parsing & Candidate Ranking (LayoutLMv3)',
             'Music Genre Classification (GTZAN + CNN Spectrogram)',
@@ -89,21 +89,21 @@ export const BLOG_CONTENT: Record<string, BlogContentEntry> = {
             'Image Captioning (Flickr30k + ViT + GPT2 Decoder)',
             'Malware Detection using PE Headers + XGBoost (EMBER dataset)',
             'Industrial Quality Inspection (Defect Segmentation) using Anomaly Detection',
-            'Aerial Wildlife Detection &amp; Counting (Drone Imagery + YOLOv8)',
+            'Aerial Wildlife Detection & Counting (Drone Imagery + YOLOv8)',
             'Vernacular Legal Contract Generation in Hindi + Marathi + Tamil (Indic LLM)',
           ].map((idea, i) => (
-            <div key={i} className="p-3 rounded-xl bg-zinc-900/60 border border-white/5 hover:border-brand-500/30 transition-all">
-              <span className="inline-block w-7 h-7 mr-2 rounded-lg bg-brand-500/15 text-brand-400 font-bold text-xs text-center leading-7 border border-brand-500/25">{i + 1}</span>
-              <span className="text-sm text-zinc-200">{idea}</span>
+            <div key={i} className="p-3 rounded-xl bg-white border border-slate-200/90 hover:border-indigo-300 transition-all shadow-xs flex items-center">
+              <span className="inline-block w-7 h-7 mr-2 rounded-lg bg-indigo-50 text-indigo-700 font-bold text-xs text-center leading-7 border border-indigo-200 shrink-0">{i + 1}</span>
+              <span className="text-sm text-slate-800">{idea}</span>
             </div>
           ))}
         </div>
-        <p className="mb-4 text-zinc-400">
-          👉 <strong>Get all 100 AIML topics with roadmaps, dataset links & Viva Q&amp;A</strong> → Browse our <a href={`${CONSTANTS.APP_URL.replace(/\/$/, '')}/blueprint?category=AIML`} className="text-brand-400 font-bold underline underline-offset-4">1,078 Free Blueprint Topic Library</a>
+        <p className="mb-4 text-slate-600">
+          👉 <strong>Get all 100 AIML topics with roadmaps, dataset links &amp; Viva Q&amp;A</strong> → Browse our <a href={`${CONSTANTS.APP_URL.replace(/\/$/, '')}/blueprint?category=AIML`} className="text-indigo-600 font-bold underline underline-offset-4">1,078 Free Blueprint Topic Library</a>
         </p>
 
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-white mt-12 mb-4">
-          📡 100 IoT & Edge Computing Project Ideas
+        <h2 className="text-2xl md:text-3xl font-display font-bold text-slate-900 mt-12 mb-4">
+          📡 100 IoT &amp; Edge Computing Project Ideas
         </h2>
         <ol className="space-y-2 pl-6 list-decimal mb-10">
           <li>IoT based Smart Energy Meter with Real Time Theft Detection (ESP32 + PZEM-004T)</li>
@@ -113,150 +113,6 @@ export const BLOG_CONTENT: Record<string, BlogContentEntry> = {
           <li>Smart Street Lighting System using LDR + PIR + Arduino Nano</li>
           <li>RFID-based Student Attendance &amp; Hostel In-Out Tracking</li>
           <li>IoT-based Gas Leakage &amp; Fire Detection with SMS/Call Alert (MQ2 + ESP8266)</li>
-          <li>ESP32-CAM based Smart Doorbell with Face Recognition &amp; Telegram Alert</li>
-          <li>IoT based Smart Parking System using Ultrasonic Sensors + Node-RED dashboard</li>
-          <li>Automated Weather Station with Rain &amp; Lightning Prediction (BME280 + ML forecast)</li>
-          <li>Vehicle Accident Detection &amp; Automatic SOS using GPS + GSM + Vibration Sensor</li>
-          <li>TinyML on ESP32 for Voice Command Home Automation (Wake-word + Speech-2-Intent)</li>
-          <li>LoRaWAN-based Smart City Waste Bin Level Monitor (TTN + Helium + RAK3172)</li>
-          <li>IoT Precision Greenhouse Monitor — pH, EC, Humidity, CO2, Light + PID control</li>
-          <li>RFID + Fingerprint Access Controlled Door Lock with Admin Dashboard</li>
-          <li>Underground Cable Fault Detection using Voltage Divider + ESP32 + GPS Location</li>
-          <li>Smart Water Quality Monitoring (TDS + Turbidity + pH + Dissolved Oxygen) with ThingSpeak</li>
-          <li>Drone (Tello) + AI Wildlife Poacher Detection (YOLOv8 + Alert to Forest Dept)</li>
-          <li>IoT + AI Industrial Vibration Predictive Maintenance (ADXL345 + Anomaly Detection)</li>
-          <li>Smart Toll Collection using RFID Tag + OTP Verification + Automatic Boom Barrier</li>
-          <li>Baby Monitoring System — Cry Detection Audio AI + Live Video Stream (Pi Zero 2W)</li>
-          <li>Zigbee-based Smart Home Lighting Energy Optimizer + Theft Alert (XCTU + R-Pi)</li>
-          <li>IoT Solar Panel Performance Monitoring (Current + Voltage + Irradiance + Clean Alert)</li>
-          <li>Intelligent Bus Tracking + Arrival Prediction using GPS + Kalman Filter + ML</li>
-          <li>Automatic Plant Watering + Nutrient Mix Hydroponic Controller (pH, EC, TDS sensors)</li>
-        </ol>
-
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-white mt-12 mb-4">
-          🌐 100 Full-Stack Web Development & SaaS Project Ideas
-        </h2>
-        <ol className="space-y-2 pl-6 list-decimal mb-10">
-          <li>Hospital Management System — Appointments, EMR, Insurance Claims (Next.js + PostgreSQL)</li>
-          <li>Blood Bank Inventory + Emergency Donor Match Network (Razorpay + WhatsApp + Maps)</li>
-          <li>Restaurant QR Code Ordering with Live Kitchen Display (KDS) + Digital Bill</li>
-          <li>AI Resume Parser &amp; ATS Candidate Ranks + Matcher (NLP + PDF.js + FastAPI)</li>
-          <li>Online Code Execution Sandbox (Judge0 CE) + AI Performance Doctor (Big-O)</li>
-          <li>Blockchain Verified Voting System (Solidity + Hardhat + Metamask + Merkle Proofs)</li>
-          <li>Multi-Vendor E-Commerce Marketplace with Recommendation Engine (TensorFlow.js)</li>
-          <li>Decentralised Freelance Marketplace + Escrow Smart Contract (Polygon + IPFS)</li>
-          <li>AI-Powered Legal Document Summariser &amp; Clause Risk Spotter (RAG + Legal-BERT)</li>
-          <li>Ride-Hailing Clone with Driver Tracking + Dynamic Pricing (Next.js + Maps + Socket.io)</li>
-          <li>Learning Management System (LMS) + AI Quiz Generator (PDF → MCQ BERT)</li>
-          <li>Fintech Personal Finance + Budgeting + AI Expense Categoriser with OCR (Tesseract)</li>
-          <li>Hotel Booking Platform — Multi-property, Channel Manager, Review Sentiment (BERT)</li>
-          <li>Telehealth Video Consultation App + E-Prescription + Home Sample Pickup Scheduler</li>
-          <li>Social Media Influencer Marketplace with AI Audience Fake-Follower Audit</li>
-          <li>Online Code Collaboration Editor with Real Time Multi-cursor (Yjs + WebRTC)</li>
-          <li>Restaurant Franchise Inventory Management with AI Waste & Theft Analytics</li>
-          <li>Mutual Fund Portfolio Tracker — Live NAV + Goal-based SIP calculator + Tax Harvesting</li>
-          <li>AI Based YouTube Thumbnail CTR Optimizer + Title Generator (Vision LLM)</li>
-          <li>E-District Service Portal — Documents Application, Status Tracking, Digital Sign</li>
-          <li>Remote Employee Productivity Tracker with AI Focus Score + Privacy-first Screenshots</li>
-          <li>PG / Hostel Management — Meals, Rent Collection, Complaints, Gate Pass OTP</li>
-          <li>Farmers Mandi — Direct Crop Sell Platform with Mandi Price Forecasting (ML)</li>
-          <li>Co-Working Space Management — Desk Booking, Meeting Rooms, Access Cards</li>
-          <li>Courier / Parcel Last-Mile Tracking with Real-Time ETA Prediction</li>
-        </ol>
-
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-white mt-12 mb-4">
-          🔐 50 Cybersecurity & Ethical Hacking Project Ideas
-        </h2>
-        <ol className="space-y-2 pl-6 list-decimal mb-10">
-          <li>AI Phishing URL &amp; Look-alike Domain Scanner + Browser Extension (BERT + WHOIS)</li>
-          <li>Real-Time Network Intrusion Detection System (CSE-CIC-IDS2018 + Bi-LSTM)</li>
-          <li>Malware PE File Classifier (EMBER 2018 + XGBoost + EmberNN)</li>
-          <li>SQL Injection &amp; XSS Vulnerability Scanner with OWASP ZAP Headless API</li>
-          <li>Zero-Knowledge Password Manager — Client Side Encrypted (AES-256-GCM)</li>
-          <li>Blockchain Digital Evidence Chain of Custody for Cyber Crime Cases</li>
-          <li>AI Powered Insider Threat Detection (UEBA + Isolation Forest on LDAP Logs)</li>
-          <li>Secure Federated Learning for Credit Card Fraud (Horizontal FL + Flower)</li>
-          <li>Bug Bounty Recon Automation Framework (Subdomain + Port + Nuclei Scan)</li>
-          <li>Post-Quantum Cryptography File Transfer (CRYSTALS-Kyber + Streamlit)</li>
-          <li>SIEM Dashboard with Live Threat Map + MITRE ATT&amp;CK Heatmap</li>
-          <li>Automated OSINT Footprinting Tool for Ethical Hacking Coursework</li>
-          <li>Dark Web Monitor + Credential Leak Alert (Breach-Parse + HaveIBeenPwned API)</li>
-          <li>Ransomware Behaviour Detection using API Hooking + Random Forest</li>
-          <li>Blockchain-based Decentralised Identity (DID + VC) for University Certificates</li>
-        </ol>
-
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-white mt-12 mb-4">
-          📊 50 Data Science & Data Engineering Project Ideas
-        </h2>
-        <ol className="space-y-2 pl-6 list-decimal mb-10">
-          <li>Delhi House Price Prediction — Geographic + Amenity + Proximity Features</li>
-          <li>Flipkart / Amazon Product Review Sentiment + Fake Review Detector</li>
-          <li>Uber / Ola Dynamic Surge Pricing ML Model (NYC Taxi Dataset)</li>
-          <li>Bangalore Traffic Congestion Forecasting — Hourly + Weather + Events</li>
-          <li>Air Quality Index (AQI) Predictor for 10 Indian Megacities (OpenAQ + Prophet)</li>
-          <li>Food Delivery Time ETA Prediction (Zomato Dataset + CatBoost)</li>
-          <li>Employee Attrition Classification + Counterfactual Recommendation Engine</li>
-          <li>Zomato Restaurant Success Predictor (Cuisine + Price + Location + Sentiment)</li>
-          <li>Mumbai Rainfall Prediction (100 Year Data + XGBoost + LSTM)</li>
-          <li>Customer Churn Prediction for Telecom (Telco Dataset + SHAP Explainability)</li>
-          <li>Crime Rate Hotspot Forecasting by City Ward (Chicago + Spatial ML)</li>
-          <li>E-Commerce Sales Demand Forecasting with Promotional Uplift Model</li>
-          <li>YouTube Channel Growth Analytics Dashboard + Virality Predictor (Streamlit)</li>
-          <li>India Election Results Data Visualisation — Ward-Level Interactive Choropleth</li>
-          <li>Nifty / BankNifty Stock Movement Classifier Using News + Technical Indicators</li>
-        </ol>
-
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-white mt-12 mb-4">
-          💰 50 Startup & SaaS-Flavour Project Ideas (Placement Impressive)
-        </h2>
-        <ol className="space-y-2 pl-6 list-decimal mb-10">
-          <li>HireVerify AI — Background Check Platform for Gig Workers (Face + Aadhaar OCR)</li>
-          <li>FarmLedger — Blockchain PMFBY Crop Insurance + Satellite Claims (Sentinel-2)</li>
-          <li>DocuDraft India — Vernacular Legal Contract Generator (Hindi + Marathi + Tamil)</li>
-          <li>ClassX AI — Personalised Adaptive Learning + NCERT Doubt Solver Tutor</li>
-          <li>LocalKirana SaaS — Neighbourhood Kirana Digital Billing + UPI + Inventory + WhatsApp</li>
-          <li>MediSaver — Generic Medicine Alternative Finder (1mg API + Price Comparison)</li>
-          <li>UrbanClap Clone + AI Task Matching with Freelancer Skill Validation</li>
-          <li>CampusPlace AI — Resume Shortlist + Automated Interview Scheduler + ATS</li>
-          <li>AutoRTO — Driving Licence Test Booking + Learning MCQ App (RTO Approved)</li>
-          <li>AutoChhalaang — School Bus Live Tracker + Parent App + RFID Tap In/Out</li>
-          <li>EVezy — EV Charging Station Finder + Slot Booking + Dynamic Tariff Optimiser</li>
-          <li>SmartSahay — Vernacular Government Scheme Eligibility Screener (Jan Dhan, PM)</li>
-          <li>DoctorDial — Online Clinic Booking + Prescription Vault + Pharmacy Home Delivery</li>
-          <li>FoodDonor — Connect Restaurants Surplus Food with Orphanages (Route Optimiser)</li>
-          <li>ShareBajar — P2P Tool / Equipment Rental Marketplace with Insurance Addon</li>
-        </ol>
-
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-white mt-12 mb-4">
-          📚 50 Mini Project Ideas (Sem 5 / Sem 6 — Low Complexity, High Marks)
-        </h2>
-        <ol className="space-y-2 pl-6 list-decimal mb-10">
-          <li>Personal Expense Tracker with CSV Export &amp; Pie-Chart Dashboard</li>
-          <li>Library Management System with Barcode Issue / Return + Fine Calculator</li>
-          <li>Gym Membership Management — Plan, Workout Routine, Diet Chart Generator</li>
-          <li>Online Quiz Contest Platform — Admin MCQ Bank + Timer + Leaderboard</li>
-          <li>Student Result Portal with Semester-wise CGPA / SGPA Calculator (VTU formula)</li>
-          <li>Recipe Website with Ingredient-based Search + Nutritional Info from API</li>
-          <li>Smart To-Do App — Eisenhower Matrix + Pomodoro Timer + Voice Input</li>
-          <li>Password Manager (Local Storage Encrypted) with Master Password</li>
-          <li>Weather App — 7 Day Forecast + Air Pollution Index (OpenWeather + Maps)</li>
-          <li>Tour & Travel Booking Website — Package Search + UPI Payment Demo</li>
-          <li>Online Notary Document E-Sign Demo Workflow</li>
-          <li>Employee Leave Management System — Balance, Apply, Approve/Reject</li>
-          <li>E-Magazine CMS with Markdown Articles + Comment Section</li>
-          <li>Bus / Train Ticket Reservation Demo — Seat Matrix + Printable Ticket</li>
-          <li>COVID-19 Vaccination Slot Finder — Cowin API clone + Pincode search</li>
-        </ol>
-
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-white mt-12 mb-4">
-          🚀 50 RAG, LLM, GenAI & Agent Project Ideas (2026 HOT DEMAND)
-        </h2>
-        <ol className="space-y-2 pl-6 list-decimal mb-10">
-          <li>Multimodal RAG for Complex PDFs (Tables + Charts + Flowcharts + Equations)</li>
-          <li>GraphRAG Medical Assistant — Disease-Drug-Symptom Knowledge Graph (Neo4j)</li>
-          <li>Research Paper Reading Assistant — PDF Chat + Citation Verified Answers</li>
-          <li>Custom GPT for University Syllabus — Semester-wise Topic Tutor</li>
-          <li>AI Technical Documentation Generator — GitHub Repo → 60 Page IEEE Report</li>
           <li>AI Product Manager — User Research → PRD → Tech Specs → JIRA Tickets</li>
           <li>Legal Contract Clause Risk Analyser — Highlight Dangerous Clauses + Red Flags</li>
           <li>Multi-Agent Software Dev Crew — PM + Developer + Tester (CrewAI / LangGraph)</li>
@@ -269,7 +125,7 @@ export const BLOG_CONTENT: Record<string, BlogContentEntry> = {
           <li>Vernacular AI Doubt Solver — Class 10-12 NCERT PDF Q&amp;A in 8 Languages</li>
         </ol>
 
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-white mt-12 mb-4">
+        <h2 className="text-2xl md:text-3xl font-display font-bold text-slate-900 mt-12 mb-4">
           ❓ FAQ — Project Selection Questions Every Student Asks
         </h2>
         <div className="space-y-4 mb-10">
@@ -280,12 +136,12 @@ export const BLOG_CONTENT: Record<string, BlogContentEntry> = {
             { q: 'Which branch projects are the EASIEST to get marks?', a: 'Full-Stack Web Dev + small AIML addon (e.g., "Hospital Management + AI Disease Prediction Module"). This is easy to demo on a laptop, no hardware required, and examiners can see everything on screen.' },
             { q: 'How to decide between self-build vs ready-made kit?', a: 'If your submission is in < 30 days: Buy a verified SubmitKit kit — save time, guarantee running code, and focus exclusively on report & PPT & viva. If you have 3+ months AND you want to strengthen coding skills: build from scratch, but use our Free Blueprint roadmap first so you have a step-by-step plan.' },
           ].map((f, i) => (
-            <details key={i} className="p-5 rounded-2xl bg-zinc-900/70 border border-white/10 group open:border-brand-500/30 transition-all">
-              <summary className="cursor-pointer font-bold text-white text-base md:text-lg flex items-start gap-3">
-                <span className="text-brand-400 font-black shrink-0">Q{i + 1}.</span>
+            <details key={i} className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs group open:border-indigo-300 transition-all">
+              <summary className="cursor-pointer font-bold text-slate-900 text-base md:text-lg flex items-start gap-3 select-none">
+                <span className="text-indigo-600 font-black shrink-0">Q{i + 1}.</span>
                 <span>{f.q}</span>
               </summary>
-              <p className="text-sm md:text-base text-zinc-300 pl-9 mt-3 leading-relaxed">
+              <p className="text-sm md:text-base text-slate-600 pl-8 mt-3 leading-relaxed">
                 {f.a}
               </p>
             </details>
@@ -305,16 +161,16 @@ export const BLOG_CONTENT: Record<string, BlogContentEntry> = {
 
   'face-recognition-attendance-system-project-report': {
     content: (
-      <article className="prose prose-invert max-w-none text-zinc-300 text-sm md:text-base leading-[1.8]">
-        <h1 className="text-3xl md:text-5xl font-display font-bold text-white tracking-tight leading-[1.1] mb-4">
-          Face Recognition Attendance System Project — Complete Report, PPT, Viva & Source Code (2026)
+      <article className="prose max-w-none text-slate-700 text-sm md:text-base leading-[1.8]">
+        <h1 className="text-3xl md:text-5xl font-display font-black text-slate-900 tracking-tight leading-[1.1] mb-4">
+          Face Recognition Attendance System Project — Complete Report, PPT, Viva &amp; Source Code (2026)
         </h1>
-        <p className="text-lg md:text-xl text-zinc-400 leading-relaxed mb-8">
+        <p className="text-lg md:text-xl text-slate-600 leading-relaxed mb-8">
           Everything you need to get an A+ in the Face Recognition Attendance final year project. Abstract, problem statement, system architecture, algorithms, database schema, 60-page IEEE report outline, PPT slides, and the top 25 most asked Viva questions with examiner-approved answers.
         </p>
         {CTA_INTERNAL_LINK}
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-white mt-12 mb-4">
-          📄 Abstract & Problem Statement
+        <h2 className="text-2xl md:text-3xl font-display font-bold text-slate-900 mt-12 mb-4">
+          📄 Abstract &amp; Problem Statement
         </h2>
         <p className="mb-4 leading-relaxed">
           Traditional paper-based and manual biometric attendance systems suffer from proxy attendance, human error, high cost, and long queues. The <strong>Face Recognition Attendance System</strong> solves this by using computer vision &amp; deep learning to recognise registered faces from a live camera feed, automatically mark the student &quot;Present&quot; in a cloud database with timestamp + GPS location, and export attendance reports in Excel / PDF for faculty administration.
@@ -323,24 +179,24 @@ export const BLOG_CONTENT: Record<string, BlogContentEntry> = {
           This project is <strong>the single most chosen final year CSE AIML topic</strong> across VTU, SPPU Pune, Mumbai, Anna, JNTU, GTU universities because: it has a very impressive live demo, the report writes itself (clear architecture + algorithms), and the examiner can instantly understand every module without you struggling to explain it.
         </p>
 
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-white mt-12 mb-4">
+        <h2 className="text-2xl md:text-3xl font-display font-bold text-slate-900 mt-12 mb-4">
           🏗️ Recommended System Architecture (2026 Standard)
         </h2>
         <p className="mb-4">
           The most modern, examiner-preferred tech stack for this project in 2026 is shown below. <strong>Avoid outdated Eigenfaces / Fisherfaces (2008)</strong>. Examiners want to see dlib, FaceNet/ArcFace, MTCNN, and anti-spoofing checks.
         </p>
-        <div className="p-6 rounded-2xl bg-zinc-900/60 border border-white/10 mb-8 space-y-3">
-          <div><span className="inline-block px-2 py-1 rounded-lg bg-brand-500/15 text-brand-400 font-bold text-xs mr-3 border border-brand-500/25 w-24 text-center">Frontend</span>Next.js 14 + TypeScript + Tailwind + Lucide Icons (Admin panel, Student dashboard, Live camera stream)</div>
-          <div><span className="inline-block px-2 py-1 rounded-lg bg-emerald-500/15 text-emerald-400 font-bold text-xs mr-3 border border-emerald-500/25 w-24 text-center">API</span>FastAPI / Flask — Python (heavy OpenCV / DL processing cannot run in Node)</div>
-          <div><span className="inline-block px-2 py-1 rounded-lg bg-amber-500/15 text-amber-400 font-bold text-xs mr-3 border border-amber-500/25 w-24 text-center">Face AI</span>MTCNN detector + dlib 68-landmark alignment + FaceNet (InceptionResNetV1) 128-dim embedding + ArcFace classifier</div>
-          <div><span className="inline-block px-2 py-1 rounded-lg bg-indigo-500/15 text-indigo-400 font-bold text-xs mr-3 border border-indigo-500/25 w-24 text-center">Anti-Spoof</span>MiniFASNet (Silent-Face-Anti-Spoofing) — blocks phone photo attacks</div>
-          <div><span className="inline-block px-2 py-1 rounded-lg bg-sky-500/15 text-sky-400 font-bold text-xs mr-3 border border-sky-500/25 w-24 text-center">Database</span>PostgreSQL (students, class, attendance log, embeddings table BLOB) + Redis daily lock cache</div>
-          <div><span className="inline-block px-2 py-1 rounded-lg bg-purple-500/15 text-purple-400 font-bold text-xs mr-3 border border-purple-500/25 w-24 text-center">Storage</span>AWS S3 / Supabase Storage for student profile JPG + daily attendance CSV export</div>
-          <div><span className="inline-block px-2 py-1 rounded-lg bg-rose-500/15 text-rose-400 font-bold text-xs mr-3 border border-rose-500/25 w-24 text-center">Auth</span>JWT — Faculty vs Student vs Admin RBAC role login</div>
-          <div><span className="inline-block px-2 py-1 rounded-lg bg-teal-500/15 text-teal-400 font-bold text-xs mr-3 border border-teal-500/25 w-24 text-center">Notify</span>Daily class WhatsApp report via Twilio / official email digest via Nodemailer</div>
+        <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs mb-8 space-y-3">
+          <div><span className="inline-block px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 font-bold text-xs mr-3 border border-indigo-200 w-24 text-center">Frontend</span>Next.js 14 + TypeScript + Tailwind + Lucide Icons (Admin panel, Student dashboard, Live camera stream)</div>
+          <div><span className="inline-block px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 font-bold text-xs mr-3 border border-emerald-200 w-24 text-center">API</span>FastAPI / Flask — Python (heavy OpenCV / DL processing cannot run in Node)</div>
+          <div><span className="inline-block px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 font-bold text-xs mr-3 border border-amber-200 w-24 text-center">Face AI</span>MTCNN detector + dlib 68-landmark alignment + FaceNet (InceptionResNetV1) 128-dim embedding + ArcFace classifier</div>
+          <div><span className="inline-block px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 font-bold text-xs mr-3 border border-indigo-200 w-24 text-center">Anti-Spoof</span>MiniFASNet (Silent-Face-Anti-Spoofing) — blocks phone photo attacks</div>
+          <div><span className="inline-block px-2.5 py-1 rounded-lg bg-sky-50 text-sky-800 font-bold text-xs mr-3 border border-sky-200 w-24 text-center">Database</span>PostgreSQL (students, class, attendance log, embeddings table BLOB) + Redis daily lock cache</div>
+          <div><span className="inline-block px-2.5 py-1 rounded-lg bg-purple-50 text-purple-800 font-bold text-xs mr-3 border border-purple-200 w-24 text-center">Storage</span>AWS S3 / Supabase Storage for student profile JPG + daily attendance CSV export</div>
+          <div><span className="inline-block px-2.5 py-1 rounded-lg bg-rose-50 text-rose-800 font-bold text-xs mr-3 border border-rose-200 w-24 text-center">Auth</span>JWT — Faculty vs Student vs Admin RBAC role login</div>
+          <div><span className="inline-block px-2.5 py-1 rounded-lg bg-teal-50 text-teal-800 font-bold text-xs mr-3 border border-teal-200 w-24 text-center">Notify</span>Daily class WhatsApp report via Twilio / official email digest via Nodemailer</div>
         </div>
 
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-white mt-12 mb-4">
+        <h2 className="text-2xl md:text-3xl font-display font-bold text-slate-900 mt-12 mb-4">
           📐 60-Page IEEE Black Book Report Structure
         </h2>
         <p className="mb-6">Copy-paste this EXACT chapter-by-chapter page distribution. It matches all Indian university norms (VTU, SPPU, MU, AU, JNTU, GTU, RGPV, MDU):</p>
@@ -351,21 +207,21 @@ export const BLOG_CONTENT: Record<string, BlogContentEntry> = {
           <li><strong>Table of Contents + List of Figures + Tables (3 pages)</strong></li>
           <li><strong>Chapter 1 — Introduction (5 pages)</strong>: Background, Need, Motivation, Problem Statement, Objectives, Scope, Organisation of the Report</li>
           <li><strong>Chapter 2 — Literature Survey (8 pages)</strong>: 8 past papers 2020-2026 (IEEE Xplore) — Eigenfaces, LBPH, FaceNet, ArcFace, MiniFAS</li>
-          <li><strong>Chapter 3 — System Requirement & Analysis (5 pages)</strong>: Functional / Non-Functional, Hardware/Software, Requirement Table, Feasibility Study</li>
-          <li><strong>Chapter 4 — System Architecture & Design (8 pages)</strong>: Block Diagram, UML Use Case, Class, Sequence, Activity, ER Diagram, UI Wireframes</li>
-          <li><strong>Chapter 5 — Tools, Technologies & Algorithms (9 pages)</strong>: FaceNet paper explanation, MTCNN, dlib, Cosine Similarity Threshold, Anti-Spoof</li>
+          <li><strong>Chapter 3 — System Requirement &amp; Analysis (5 pages)</strong>: Functional / Non-Functional, Hardware/Software, Requirement Table, Feasibility Study</li>
+          <li><strong>Chapter 4 — System Architecture &amp; Design (8 pages)</strong>: Block Diagram, UML Use Case, Class, Sequence, Activity, ER Diagram, UI Wireframes</li>
+          <li><strong>Chapter 5 — Tools, Technologies &amp; Algorithms (9 pages)</strong>: FaceNet paper explanation, MTCNN, dlib, Cosine Similarity Threshold, Anti-Spoof</li>
           <li><strong>Chapter 6 — Implementation / Modules (10 pages)</strong>: Code screenshots for 6 modules: Registration, Embedding Store, Live Stream, Recognition, Report, Admin</li>
-          <li><strong>Chapter 7 — Testing & Evaluation (7 pages)</strong>: Unit, Integration, System Test cases; Accuracy, FAR, FRR, ROC, Confusion Matrix on LFW dataset (Target ≥ 99%)</li>
-          <li><strong>Chapter 8 — Result & Discussion (3 pages)</strong>: Comparison table with baseline methods, Sample output screenshots, Live demo snaps</li>
-          <li><strong>Chapter 9 — Conclusion & Future Scope (2 pages)</strong>: 3-4 lines conclusion + 5 concrete Future lines</li>
+          <li><strong>Chapter 7 — Testing &amp; Evaluation (7 pages)</strong>: Unit, Integration, System Test cases; Accuracy, FAR, FRR, ROC, Confusion Matrix on LFW dataset (Target ≥ 99%)</li>
+          <li><strong>Chapter 8 — Result &amp; Discussion (3 pages)</strong>: Comparison table with baseline methods, Sample output screenshots, Live demo snaps</li>
+          <li><strong>Chapter 9 — Conclusion &amp; Future Scope (2 pages)</strong>: 3-4 lines conclusion + 5 concrete Future lines</li>
           <li><strong>References (40+ references, IEEE format) + Appendix A (ER) + B (Sample Code) + C (CD Content) (3 pages)</strong></li>
         </ol>
-        <p className="mb-6 text-zinc-400">
-          ✅ <strong>Don&apos;t want to type all 60 pages from scratch?</strong> Our <a href={`${CONSTANTS.APP_URL.replace(/\/$/, '')}/projects/healthcare-ehr-portal`} className="text-brand-400 font-bold underline underline-offset-4">SubmitKit Face Recognition project</a> (Major ₹499) includes a <em>ready-to-print 60-page .docx</em> with ALL chapters already filled, including the Literature Survey with real IEEE citations.
+        <p className="mb-6 text-slate-600">
+          ✅ <strong>Don&apos;t want to type all 60 pages from scratch?</strong> Our <a href={`${CONSTANTS.APP_URL.replace(/\/$/, '')}/projects`} className="text-indigo-600 font-bold underline underline-offset-4">SubmitKit Face Recognition project</a> (Major ₹499) includes a <em>ready-to-print 60-page .docx</em> with ALL chapters already filled, including the Literature Survey with real IEEE citations.
         </p>
 
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-white mt-12 mb-4">
-          🧑‍🏫 Top 25 Viva Questions & Examiner-Approved Answers
+        <h2 className="text-2xl md:text-3xl font-display font-bold text-slate-900 mt-12 mb-4">
+          🧑‍🏫 Top 25 Viva Questions &amp; Examiner-Approved Answers
         </h2>
         <div className="space-y-3 mb-10">
           {[
@@ -375,14 +231,14 @@ export const BLOG_CONTENT: Record<string, BlogContentEntry> = {
             { q: 'What is dlib 68-point landmark detector used for?', a: 'Face alignment BEFORE embedding extraction. The 68 landmarks (jaws, eyebrows, eyes, nose, mouth) allow us to geometrically rotate & crop every face into a canonical pose, so the recognition network sees standardised inputs — improves accuracy by 15-20%.' },
             { q: 'Threshold: what value did you choose for cosine similarity & why?', a: '0.55 on LFW benchmark gives best FAR/FRR balance (EER ~0.4%). If threshold is too low (0.25), we accept imposters (high FAR). If threshold too high (0.9), we reject genuine users (high FRR). Tuned on validation subset using DET curve.' },
           ].map((v, i) => (
-            <div key={i} className="p-4 rounded-xl bg-zinc-900/60 border border-white/5 hover:border-brand-500/30 transition-all">
-              <p className="font-bold text-white text-base mb-2"><span className="text-brand-400 mr-2">Q{i+1}.</span>{v.q}</p>
-              <p className="text-sm text-zinc-300 leading-relaxed pl-6">{v.a}</p>
+            <div key={i} className="p-4 rounded-xl bg-white border border-slate-200/90 shadow-xs hover:border-indigo-300 transition-all">
+              <p className="font-bold text-slate-900 text-base mb-2"><span className="text-indigo-600 mr-2">Q{i+1}.</span>{v.q}</p>
+              <p className="text-sm text-slate-600 leading-relaxed pl-6">{v.a}</p>
             </div>
           ))}
         </div>
-        <p className="mb-6 text-zinc-400">
-          👉 Get <strong>the full 25 Viva Q&amp;A PDF with answers</strong> — included in every SubmitKit bundle → <a href={`${CONSTANTS.APP_URL.replace(/\/$/, '')}/projects`} className="text-brand-400 font-bold underline underline-offset-4">Open Project Catalog</a>
+        <p className="mb-6 text-slate-600">
+          👉 Get <strong>the full 25 Viva Q&amp;A PDF with answers</strong> — included in every SubmitKit bundle → <a href={`${CONSTANTS.APP_URL.replace(/\/$/, '')}/projects`} className="text-indigo-600 font-bold underline underline-offset-4">Open Project Catalog</a>
         </p>
         {CTA_INTERNAL_LINK}
       </article>
@@ -398,27 +254,27 @@ export const BLOG_CONTENT: Record<string, BlogContentEntry> = {
 
   'plant-disease-detection-using-cnn-python-tensorflow': {
     content: (
-      <article className="prose prose-invert max-w-none text-zinc-300 text-sm md:text-base leading-[1.8]">
-        <h1 className="text-3xl md:text-5xl font-display font-bold text-white tracking-tight leading-[1.1] mb-4">
-          Plant Disease Detection Using CNN — Python & TensorFlow Project (Report, PPT, Viva, Source)
+      <article className="prose max-w-none text-slate-700 text-sm md:text-base leading-[1.8]">
+        <h1 className="text-3xl md:text-5xl font-display font-black text-slate-900 tracking-tight leading-[1.1] mb-4">
+          Plant Disease Detection Using CNN — Python &amp; TensorFlow Project (Report, PPT, Viva, Source)
         </h1>
-        <p className="text-lg md:text-xl text-zinc-400 leading-relaxed mb-8">
+        <p className="text-lg md:text-xl text-slate-600 leading-relaxed mb-8">
           The #1 AgriTech final year project for 2026. PlantVillage dataset, ResNet50 vs MobileNetV2 vs EfficientNetB3, data augmentation pipeline, complete report outline, PPT, and 25 Viva Q&amp;A.
         </p>
         {CTA_INTERNAL_LINK}
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-white mt-12 mb-4">
-          🌱 Abstract & Problem Statement
+        <h2 className="text-2xl md:text-3xl font-display font-bold text-slate-900 mt-12 mb-4">
+          🌱 Abstract &amp; Problem Statement
         </h2>
         <p className="mb-4 leading-relaxed">
           India is the 2nd largest agricultural producer in the world, yet 20-40% of crop yield is lost annually due to undetected plant diseases. Farmers visit extension offices physically to get leaf diagnosis — 7+ days delay. The <strong>Plant Disease Detection using CNN</strong> project lets any farmer <em>upload a single leaf photo via smartphone</em> and receive an instant disease name, confidence %, severity, and pesticide recommendation in regional language.
         </p>
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-white mt-12 mb-4">
+        <h2 className="text-2xl md:text-3xl font-display font-bold text-slate-900 mt-12 mb-4">
           📊 PlantVillage Dataset — 54,305 Images, 38 Classes
         </h2>
         <p className="mb-6">
           Use the official PlantVillage dataset (Penn State University — CC-BY): 14 crop species (Apple, Blueberry, Cherry, Corn, Grape, Orange, Peach, Pepper, Potato, Raspberry, Soybean, Squash, Strawberry, Tomato) × 38 healthy / diseased classes. Train: 70% (~38,000), Validation: 15% (~8,100), Test: 15% (~8,100). <em>Always report class-wise accuracy, not just overall.</em>
         </p>
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-white mt-12 mb-4">
+        <h2 className="text-2xl md:text-3xl font-display font-bold text-slate-900 mt-12 mb-4">
           🧠 Best Model Architecture 2026
         </h2>
         <ol className="space-y-2 pl-6 list-decimal mb-10">
@@ -431,7 +287,7 @@ export const BLOG_CONTENT: Record<string, BlogContentEntry> = {
           <li><strong>Loss</strong>: Categorical Crossentropy with Class Weights for imbalanced classes</li>
           <li><strong>Expected Test Accuracy</strong>: 98.2-99.1% on PlantVillage held-out (Easy 90+ marks in evaluation chapter)</li>
         </ol>
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-white mt-12 mb-4">
+        <h2 className="text-2xl md:text-3xl font-display font-bold text-slate-900 mt-12 mb-4">
           📐 60-Page IEEE Black Book Chapter Plan
         </h2>
         <ol className="space-y-2 pl-6 list-decimal mb-10">
@@ -442,14 +298,14 @@ export const BLOG_CONTENT: Record<string, BlogContentEntry> = {
           <li>Chapter 2 — Literature Survey: 8 papers 2020-2026 (AlexNet, VGG, Inception, ResNet, MobileNet, EfficientNet, ViT on PlantVillage) — 8 pages</li>
           <li>Chapter 3 — Requirement Analysis: Functional (Upload → Predict → History → Admin), Non-Functional, Hardware/Software Tables — 5 pages</li>
           <li>Chapter 4 — System Design: Block diagram, Use Case, Activity, Sequence, ERD, UI Mockups — 8 pages</li>
-          <li>Chapter 5 — Tools & Algorithms: CNN theory, Transfer Learning, AdamW, EfficientNet paper explanation, CutMix, Grad-CAM — 9 pages</li>
+          <li>Chapter 5 — Tools &amp; Algorithms: CNN theory, Transfer Learning, AdamW, EfficientNet paper explanation, CutMix, Grad-CAM — 9 pages</li>
           <li>Chapter 6 — Implementation: Flask/FastAPI backend, React/Next UI, Model H5 save/load, Prediction function code — 10 pages</li>
-          <li>Chapter 7 — Testing & Evaluation: Confusion matrix (38×38), Per-class F1, ROC-AUC macro, Comparison vs ResNet50 vs MobileNet — 7 pages</li>
-          <li>Chapter 8 — Results & Discussion: Grad-CAM heatmap output screenshots, 3 sample correct + 2 failure mode analysis — 3 pages</li>
+          <li>Chapter 7 — Testing &amp; Evaluation: Confusion matrix (38×38), Per-class F1, ROC-AUC macro, Comparison vs ResNet50 vs MobileNet — 7 pages</li>
+          <li>Chapter 8 — Results &amp; Discussion: Grad-CAM heatmap output screenshots, 3 sample correct + 2 failure mode analysis — 3 pages</li>
           <li>Chapter 9 — Conclusion + Future Scope: Hindi / Kannada / Telugu vernacular output, drone multi-plant disease, soil-NPK advice integration — 2 pages</li>
           <li>References (IEEE, 40+) + Appendix: ER Diagram + Sample Code + Snapshots — 3 pages</li>
         </ol>
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-white mt-12 mb-4">
+        <h2 className="text-2xl md:text-3xl font-display font-bold text-slate-900 mt-12 mb-4">
           🔥 Top 15 Viva Questions (Plant Disease Detection)
         </h2>
         <div className="space-y-3 mb-10">
@@ -460,9 +316,9 @@ export const BLOG_CONTENT: Record<string, BlogContentEntry> = {
             { q: 'What metrics besides accuracy do you report?', a: 'For imbalanced multi-class: per-class precision, recall, F1-score, macro F1, macro ROC-AUC, top-2 error rate, Matthews Correlation Coefficient. Accuracy alone is misleading. A model can get 95% accuracy by just predicting the majority class — the confusion matrix uncovers this.' },
             { q: 'How do you handle a disease class with only 100 training images?', a: '3 techniques together: (1) Class weights in loss function, (2) SMOTE in embedding space after feature extraction, (3) Synthetic image generation using Stable Diffusion fine-tuned on that class. Also oversample that minority class 3:1 during each batch.' },
           ].map((v, i) => (
-            <div key={i} className="p-4 rounded-xl bg-zinc-900/60 border border-white/5 hover:border-brand-500/30 transition-all">
-              <p className="font-bold text-white text-base mb-2"><span className="text-brand-400 mr-2">Q{i+1}.</span>{v.q}</p>
-              <p className="text-sm text-zinc-300 leading-relaxed pl-6">{v.a}</p>
+            <div key={i} className="p-4 rounded-xl bg-white border border-slate-200/90 shadow-xs hover:border-indigo-300 transition-all">
+              <p className="font-bold text-slate-900 text-base mb-2"><span className="text-indigo-600 mr-2">Q{i+1}.</span>{v.q}</p>
+              <p className="text-sm text-slate-600 leading-relaxed pl-6">{v.a}</p>
             </div>
           ))}
         </div>
@@ -480,44 +336,44 @@ export const BLOG_CONTENT: Record<string, BlogContentEntry> = {
 
   'credit-card-fraud-detection-machine-learning-project': {
     content: (
-      <article className="prose prose-invert max-w-none text-zinc-300 text-sm md:text-base leading-[1.8]">
-        <h1 className="text-3xl md:text-5xl font-display font-bold text-white tracking-tight leading-[1.1] mb-4">
-          Credit Card Fraud Detection ML Project — Complete Report, PPT, Viva & Source Code
+      <article className="prose max-w-none text-slate-700 text-sm md:text-base leading-[1.8]">
+        <h1 className="text-3xl md:text-5xl font-display font-black text-slate-900 tracking-tight leading-[1.1] mb-4">
+          Credit Card Fraud Detection ML Project — Complete Report, PPT, Viva &amp; Source Code
         </h1>
-        <p className="text-lg md:text-xl text-zinc-400 leading-relaxed mb-8">
+        <p className="text-lg md:text-xl text-slate-600 leading-relaxed mb-8">
           The most in-demand FinTech + Data Science final year project for 2026. Kaggle IEEE-CIS dataset, SMOTE + ADASYN, Logistic vs Random Forest vs XGBoost vs Autoencoder anomaly detection, 60-page IEEE format report outline and the 25 most-asked Viva questions.
         </p>
         {CTA_INTERNAL_LINK}
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-white mt-12 mb-4">
-          💰 Project Background & Why Examiners Love It
+        <h2 className="text-2xl md:text-3xl font-display font-bold text-slate-900 mt-12 mb-4">
+          💰 Project Background &amp; Why Examiners Love It
         </h2>
         <p className="mb-4 leading-relaxed">
           Indian banks lose ₹20,000+ Crores annually in credit &amp; debit card fraud (RBI 2026 report). The Credit Card Fraud Detection ML model runs in real time on every transaction (under 12 ms), scores it, and blocks high-risk payments automatically. It is perfect for final year because: it includes a <em>classic imbalanced ML problem</em> that forces you to demonstrate proper evaluation beyond simple accuracy, the datasets are public, and the banking use case impresses every examiner and HR recruiter in placements.
         </p>
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-white mt-12 mb-4">
+        <h2 className="text-2xl md:text-3xl font-display font-bold text-slate-900 mt-12 mb-4">
           📦 Datasets — 2 Gold Standards
         </h2>
         <ol className="space-y-2 pl-6 list-decimal mb-10">
-          <li><strong>Kaggle — Credit Card Fraud Detection (Worldline & UL)</strong>: 284,807 European card transactions over 2 days, 492 frauds (0.172% — highly imbalanced). 28 PCA anonymised features + Time + Amount. (Start with this, 150 MB)</li>
+          <li><strong>Kaggle — Credit Card Fraud Detection (Worldline &amp; UL)</strong>: 284,807 European card transactions over 2 days, 492 frauds (0.172% — highly imbalanced). 28 PCA anonymised features + Time + Amount. (Start with this, 150 MB)</li>
           <li><strong>IEEE-CIS Fraud Detection (Vesta Corp.)</strong>: 590,540 transactions, 390+ raw features (card, address, email domain, device info, time delta). Best for Major-level submissions because you can do heavy Feature Engineering + Categorical embedding. (5 GB)</li>
         </ol>
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-white mt-12 mb-4">
+        <h2 className="text-2xl md:text-3xl font-display font-bold text-slate-900 mt-12 mb-4">
           ⚙️ Machine Learning Pipeline Architecture
         </h2>
-        <div className="p-6 rounded-2xl bg-zinc-900/60 border border-white/10 mb-8 space-y-3">
-          <div><span className="inline-block px-2 py-1 rounded-lg bg-brand-500/15 text-brand-400 font-bold text-xs mr-3 border border-brand-500/25 w-28 text-center">Step 1</span>Exploratory Data Analysis: KDE of Amount vs Class, Time-of-day patterns, 0 transaction amounts.</div>
-          <div><span className="inline-block px-2 py-1 rounded-lg bg-amber-500/15 text-amber-400 font-bold text-xs mr-3 border border-amber-500/25 w-28 text-center">Step 2</span>Feature Engg: Hour/Day-of-Week, Relative-Amount-by-Card, Transaction Velocity (n txns in past 24h for the card), Merchant-category risk score.</div>
-          <div><span className="inline-block px-2 py-1 rounded-lg bg-indigo-500/15 text-indigo-400 font-bold text-xs mr-3 border border-indigo-500/25 w-28 text-center">Step 3</span>Train/Validation/Test split — Stratified GroupKFold by card_id (70/15/15) — <em>never random split</em>, causes data leakage.</div>
-          <div><span className="inline-block px-2 py-1 rounded-lg bg-rose-500/15 text-rose-400 font-bold text-xs mr-3 border border-rose-500/25 w-28 text-center">Step 4</span>Imbalance handling: SMOTE (oversample minority) + ENN (edited nearest neighbours clean majority) or class_weight: balanced inside the algo.</div>
-          <div><span className="inline-block px-2 py-1 rounded-lg bg-emerald-500/15 text-emerald-400 font-bold text-xs mr-3 border border-emerald-500/25 w-28 text-center">Step 5</span>Compare 5 models: Logistic Regression (baseline), Random Forest, LightGBM, XGBoost (Winner ~98% PR-AUC), Autoencoder reconstruction-threshold.</div>
-          <div><span className="inline-block px-2 py-1 rounded-lg bg-sky-500/15 text-sky-400 font-bold text-xs mr-3 border border-sky-500/25 w-28 text-center">Step 6</span>Threshold tuning: minimise cost function = C_fn × FN + C_fp × FP (false negatives cost 100× false positives)</div>
-          <div><span className="inline-block px-2 py-1 rounded-lg bg-teal-500/15 text-teal-400 font-bold text-xs mr-3 border border-teal-500/25 w-28 text-center">Step 7</span>Explainability: SHAP beeswarm plot — shows which features (Amount, V14, V17, Merchant_Risk) drove each fraud decision (HUGE Viva + marks favourite)</div>
-          <div><span className="inline-block px-2 py-1 rounded-lg bg-purple-500/15 text-purple-400 font-bold text-xs mr-3 border border-purple-500/25 w-28 text-center">Step 8</span>Deployment: Flask/FastAPI + pickle joblib model + Streamlit dashboard with real-time transaction simulator.</div>
+        <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs mb-8 space-y-3">
+          <div><span className="inline-block px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 font-bold text-xs mr-3 border border-indigo-200 w-28 text-center">Step 1</span>Exploratory Data Analysis: KDE of Amount vs Class, Time-of-day patterns, 0 transaction amounts.</div>
+          <div><span className="inline-block px-2.5 py-1 rounded-lg bg-amber-50 text-amber-800 font-bold text-xs mr-3 border border-amber-200 w-28 text-center">Step 2</span>Feature Engg: Hour/Day-of-Week, Relative-Amount-by-Card, Transaction Velocity (n txns in past 24h for the card), Merchant-category risk score.</div>
+          <div><span className="inline-block px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 font-bold text-xs mr-3 border border-indigo-200 w-28 text-center">Step 3</span>Train/Validation/Test split — Stratified GroupKFold by card_id (70/15/15) — <em>never random split</em>, causes data leakage.</div>
+          <div><span className="inline-block px-2.5 py-1 rounded-lg bg-rose-50 text-rose-800 font-bold text-xs mr-3 border border-rose-200 w-28 text-center">Step 4</span>Imbalance handling: SMOTE (oversample minority) + ENN (edited nearest neighbours clean majority) or class_weight: balanced inside the algo.</div>
+          <div><span className="inline-block px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-800 font-bold text-xs mr-3 border border-emerald-200 w-28 text-center">Step 5</span>Compare 5 models: Logistic Regression (baseline), Random Forest, LightGBM, XGBoost (Winner ~98% PR-AUC), Autoencoder reconstruction-threshold.</div>
+          <div><span className="inline-block px-2.5 py-1 rounded-lg bg-sky-50 text-sky-800 font-bold text-xs mr-3 border border-sky-200 w-28 text-center">Step 6</span>Threshold tuning: minimise cost function = C_fn × FN + C_fp × FP (false negatives cost 100× false positives)</div>
+          <div><span className="inline-block px-2.5 py-1 rounded-lg bg-teal-50 text-teal-800 font-bold text-xs mr-3 border border-teal-200 w-28 text-center">Step 7</span>Explainability: SHAP beeswarm plot — shows which features (Amount, V14, V17, Merchant_Risk) drove each fraud decision (HUGE Viva + marks favourite)</div>
+          <div><span className="inline-block px-2.5 py-1 rounded-lg bg-purple-50 text-purple-800 font-bold text-xs mr-3 border border-purple-200 w-28 text-center">Step 8</span>Deployment: Flask/FastAPI + pickle joblib model + Streamlit dashboard with real-time transaction simulator.</div>
         </div>
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-white mt-12 mb-4">
+        <h2 className="text-2xl md:text-3xl font-display font-bold text-slate-900 mt-12 mb-4">
           📊 Correct Evaluation Metrics (DO NOT report plain accuracy)
         </h2>
-        <p className="mb-6 text-zinc-400">
+        <p className="mb-6 text-slate-600">
           <strong>Accuracy is meaningless in imbalanced fraud</strong>. A dumb "No Fraud" classifier gets 99.827% accuracy on the Kaggle dataset and fails 100% of frauds. You MUST report:
         </p>
         <ol className="space-y-2 pl-6 list-decimal mb-10">
@@ -529,7 +385,7 @@ export const BLOG_CONTENT: Record<string, BlogContentEntry> = {
           <li>Calibration curve — predicted probabilities vs actual event rate (Platt scaling if needed)</li>
           <li>Kolmogorov-Smirnov (KS) statistic — separation between Fraud &amp; Genuine score distributions</li>
         </ol>
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-white mt-12 mb-4">
+        <h2 className="text-2xl md:text-3xl font-display font-bold text-slate-900 mt-12 mb-4">
           ⚡ Top 15 Viva Questions — Fraud Detection ML
         </h2>
         <div className="space-y-3 mb-10">
@@ -540,9 +396,9 @@ export const BLOG_CONTENT: Record<string, BlogContentEntry> = {
             { q: 'What is cost-sensitive learning?', a: 'In fraud, catching a real fraud (TP) saves ₹20,000, but incorrectly blocking a genuine txn (FP) costs customer churn ~₹500. Missing a fraud (FN) costs ₹20,000+. Cost-sensitive learning assigns weights C_fn=100 × C_fp into the loss and threshold optimisation step, so the model makes business-optimal decisions instead of accuracy-optimal ones.' },
             { q: 'Why XGBoost over Random Forest or Neural Net?', a: 'XGBoost uses: (1) Gradient Boosting sequentially, not bagging parallel trees, (2) Regularisation L1 + L2 on both weights AND tree structure to avoid overfitting, (3) Second-order Taylor loss approximation (Newton step) for faster convergence, (4) Sparse-aware split finding for NaN-heavy transaction data. Benchmark: XGB PR-AUC = 0.98 vs RF = 0.91 vs 3-layer NN = 0.94 on Kaggle fraud, in 1/10th training time. It is the de facto industry standard in Indian banks today.' },
           ].map((v, i) => (
-            <div key={i} className="p-4 rounded-xl bg-zinc-900/60 border border-white/5 hover:border-brand-500/30 transition-all">
-              <p className="font-bold text-white text-base mb-2"><span className="text-brand-400 mr-2">Q{i+1}.</span>{v.q}</p>
-              <p className="text-sm text-zinc-300 leading-relaxed pl-6">{v.a}</p>
+            <div key={i} className="p-4 rounded-xl bg-white border border-slate-200/90 shadow-xs hover:border-indigo-300 transition-all">
+              <p className="font-bold text-slate-900 text-base mb-2"><span className="text-indigo-600 mr-2">Q{i+1}.</span>{v.q}</p>
+              <p className="text-sm text-slate-600 leading-relaxed pl-6">{v.a}</p>
             </div>
           ))}
         </div>
@@ -560,79 +416,79 @@ export const BLOG_CONTENT: Record<string, BlogContentEntry> = {
 
   'ieee-black-book-report-format-final-year-template': {
     content: (
-      <article className="prose prose-invert max-w-none text-zinc-300 text-sm md:text-base leading-[1.8]">
-        <h1 className="text-3xl md:text-5xl font-display font-bold text-white tracking-tight leading-[1.1] mb-4">
+      <article className="prose max-w-none text-slate-700 text-sm md:text-base leading-[1.8]">
+        <h1 className="text-3xl md:text-5xl font-display font-black text-slate-900 tracking-tight leading-[1.1] mb-4">
           IEEE Black Book Report Format — 60-Page Final Year Template (All Indian Universities 2026)
         </h1>
-        <p className="text-lg md:text-xl text-zinc-400 leading-relaxed mb-8">
+        <p className="text-lg md:text-xl text-slate-600 leading-relaxed mb-8">
           The only IEEE final year Black Book format guide you need. Chapter-by-chapter page count, content outline, font rules, margins, reference format, and university-specific tweaks (VTU, SPPU, Mumbai, Anna, JNTU, GTU, RGPV, MDU). Includes editable .docx download.
         </p>
         {CTA_INTERNAL_LINK}
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-white mt-12 mb-4">
+        <h2 className="text-2xl md:text-3xl font-display font-bold text-slate-900 mt-12 mb-4">
           ✅ Universal Formatting Rules (Print + Spiral-Bind Ready)
         </h2>
-        <div className="p-6 rounded-2xl bg-zinc-900/60 border border-white/10 mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div><span className="font-bold text-white">Fonts</span>: Body = Times New Roman 12 pt. Chapter Heading = 14 pt Bold. Sub-Heading = 12 pt Bold. Captions = 10 pt.</div>
-          <div><span className="font-bold text-white">Line Spacing</span>: 1.5 lines everywhere. Before/After Paragraph = 6 pt. No extra line breaks between paragraphs.</div>
-          <div><span className="font-bold text-white">Margins (A4)</span>: Left (Binding side) = 1.5 inch. Right, Top, Bottom = 1 inch each.</div>
-          <div><span className="font-bold text-white">Page Numbers</span>: Roman numerals i-xi for pre-content, Arabic 1 onwards from Chapter 1.</div>
-          <div><span className="font-bold text-white">Paragraphs</span>: First line indent 0.5 inch. Fully-justified alignment (Ctrl+J in Word).</div>
-          <div><span className="font-bold text-white">Figures / Tables</span>: Each must have number & caption. Figure captions BELOW, Table captions ABOVE. Referenced as "Fig. 4.3" and "Table 6.2" in text.</div>
-          <div><span className="font-bold text-white">Equations</span>: Numbered right-aligned (4.1), (4.2)... using MathType / Word Equation editor.</div>
-          <div><span className="font-bold text-white">Headings Style</span>: Always use Word Heading 1 / Heading 2 styles — so the auto-generated Table of Contents updates with one click.</div>
+        <div className="p-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs mb-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div><span className="font-bold text-slate-900">Fonts</span>: Body = Times New Roman 12 pt. Chapter Heading = 14 pt Bold. Sub-Heading = 12 pt Bold. Captions = 10 pt.</div>
+          <div><span className="font-bold text-slate-900">Line Spacing</span>: 1.5 lines everywhere. Before/After Paragraph = 6 pt. No extra line breaks between paragraphs.</div>
+          <div><span className="font-bold text-slate-900">Margins (A4)</span>: Left (Binding side) = 1.5 inch. Right, Top, Bottom = 1 inch each.</div>
+          <div><span className="font-bold text-slate-900">Page Numbers</span>: Roman numerals i-xi for pre-content, Arabic 1 onwards from Chapter 1.</div>
+          <div><span className="font-bold text-slate-900">Paragraphs</span>: First line indent 0.5 inch. Fully-justified alignment (Ctrl+J in Word).</div>
+          <div><span className="font-bold text-slate-900">Figures / Tables</span>: Each must have number &amp; caption. Figure captions BELOW, Table captions ABOVE. Referenced as "Fig. 4.3" and "Table 6.2" in text.</div>
+          <div><span className="font-bold text-slate-900">Equations</span>: Numbered right-aligned (4.1), (4.2)... using MathType / Word Equation editor.</div>
+          <div><span className="font-bold text-slate-900">Headings Style</span>: Always use Word Heading 1 / Heading 2 styles — so the auto-generated Table of Contents updates with one click.</div>
         </div>
 
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-white mt-12 mb-4">
+        <h2 className="text-2xl md:text-3xl font-display font-bold text-slate-900 mt-12 mb-4">
           📚 60-Page Major Project Chapter Structure (+ 30 Page Mini Variation)
         </h2>
-        <div className="overflow-x-auto mb-10">
-          <table className="min-w-full text-sm border-collapse">
+        <div className="overflow-x-auto mb-10 rounded-2xl border border-slate-200/90 shadow-xs">
+          <table className="min-w-full text-sm border-collapse bg-white">
             <thead>
-              <tr className="bg-brand-500/20 text-white border border-brand-500/40">
-                <th className="p-3 text-left border border-brand-500/40">#</th>
-                <th className="p-3 text-left border border-brand-500/40">Chapter Name</th>
-                <th className="p-3 text-left border border-brand-500/40">Major (60p)</th>
-                <th className="p-3 text-left border border-brand-500/40">Mini (30p)</th>
-                <th className="p-3 text-left border border-brand-500/40">EXACT Contents Checklist</th>
+              <tr className="bg-indigo-50 text-indigo-900 border-b border-indigo-200">
+                <th className="p-3 text-left font-bold border-r border-indigo-200">#</th>
+                <th className="p-3 text-left font-bold border-r border-indigo-200">Chapter Name</th>
+                <th className="p-3 text-left font-bold border-r border-indigo-200">Major (60p)</th>
+                <th className="p-3 text-left font-bold border-r border-indigo-200">Mini (30p)</th>
+                <th className="p-3 text-left font-bold">EXACT Contents Checklist</th>
               </tr>
             </thead>
-            <tbody className="text-zinc-300 divide-y divide-white/5">
-              <tr className="bg-white/[0.02]"><td className="p-3 border border-white/5">—</td><td className="p-3 border border-white/5">Title Page</td><td className="p-3 border border-white/5">1</td><td className="p-3 border border-white/5">1</td><td className="p-3 border border-white/5">University logo, College name, Dept, Guide, Title, Student Name, USN, Month Year</td></tr>
-              <tr><td className="p-3 border border-white/5">—</td><td className="p-3 border border-white/5">Bonafide Certificate + Declaration</td><td className="p-3 border border-white/5">1</td><td className="p-3 border border-white/5">1</td><td className="p-3 border border-white/5">HOD, Principal signatures. "I declare no plagiarism" paragraph.</td></tr>
-              <tr className="bg-white/[0.02]"><td className="p-3 border border-white/5">—</td><td className="p-3 border border-white/5">Acknowledgement + Dedication</td><td className="p-3 border border-white/5">2</td><td className="p-3 border border-white/5">1</td><td className="p-3 border border-white/5">Thank Guide, HOD, Principal, Parents, Lab Asst, Testing volunteers</td></tr>
-              <tr><td className="p-3 border border-white/5">—</td><td className="p-3 border border-white/5">Abstract + 5 Keywords</td><td className="p-3 border border-white/5">1</td><td className="p-3 border border-white/5">1</td><td className="p-3 border border-white/5">150-250 words, 1 para. 5 IEEE Index keywords comma-separated below.</td></tr>
-              <tr className="bg-white/[0.02]"><td className="p-3 border border-white/5">—</td><td className="p-3 border border-white/5">TOC, LOF, LOT</td><td className="p-3 border border-white/5">3</td><td className="p-3 border border-white/5">2</td><td className="p-3 border border-white/5">Table of Contents (3 levels deep). List of Figures, List of Tables with page numbers.</td></tr>
-              <tr><td className="p-3 border border-white/5">1</td><td className="p-3 border border-white/5">Introduction</td><td className="p-3 border border-white/5">5</td><td className="p-3 border border-white/5">3</td><td className="p-3 border border-white/5">Background + Motivation + Problem Statement + 4 Objectives + Scope + Organisation of Report (1 para per chapter)</td></tr>
-              <tr className="bg-white/[0.02]"><td className="p-3 border border-white/5">2</td><td className="p-3 border border-white/5">Literature Survey</td><td className="p-3 border border-white/5">8</td><td className="p-3 border border-white/5">4</td><td className="p-3 border border-white/5">8-12 IEEE papers (2020+) in comparison Table: S.No, Paper Title, Year, Method, Accuracy, Limitations. 3-4 lines per paper summary.</td></tr>
-              <tr><td className="p-3 border border-white/5">3</td><td className="p-3 border border-white/5">Requirement &amp; Feasibility Analysis</td><td className="p-3 border border-white/5">5</td><td className="p-3 border border-white/5">3</td><td className="p-3 border border-white/5">Functional / Non-Functional. HW/SW Requirement Tables. Economic/Technical/Operational Feasibility 3-paragraphs each.</td></tr>
-              <tr className="bg-white/[0.02]"><td className="p-3 border border-white/5">4</td><td className="p-3 border border-white/5">System Architecture &amp; Design</td><td className="p-3 border border-white/5">8</td><td className="p-3 border border-white/5">5</td><td className="p-3 border border-white/5">Block Diagram, Use Case, Class, Sequence, Activity, DFD / ER diagrams + UI wireframes of all major screens, DB Schema description.</td></tr>
-              <tr><td className="p-3 border border-white/5">5</td><td className="p-3 border border-white/5">Tools, Tech &amp; Algorithms</td><td className="p-3 border border-white/5">9</td><td className="p-3 border border-white/5">4</td><td className="p-3 border border-white/5">Deep dive 1-2 core algorithms, CNN / XGBoost / FaceNet papers explanation, stack rationale, comparisons with alternative choices.</td></tr>
-              <tr className="bg-white/[0.02]"><td className="p-3 border border-white/5">6</td><td className="p-3 border border-white/5">Implementation</td><td className="p-3 border border-white/5">10</td><td className="p-3 border border-white/5">4</td><td className="p-3 border border-white/5">Module-by-module explanation with 1-2 key code snippets each. Screenshots of every working screen. Build and deployment steps.</td></tr>
-              <tr><td className="p-3 border border-white/5">7</td><td className="p-3 border border-white/5">Testing &amp; Evaluation</td><td className="p-3 border border-white/5">7</td><td className="p-3 border border-white/5">2</td><td className="p-3 border border-white/5">Unit / Integration / System test cases (15+ each). Evaluation metrics, confusion matrix, accuracy, F1, graphs, benchmark tables.</td></tr>
-              <tr className="bg-white/[0.02]"><td className="p-3 border border-white/5">8</td><td className="p-3 border border-white/5">Results &amp; Discussion</td><td className="p-3 border border-white/5">3</td><td className="p-3 border border-white/5">0</td><td className="p-3 border border-white/5">Key output figures, bar chart comparison with baseline/competitors, qualitative discussion, failure modes analysis.</td></tr>
-              <tr><td className="p-3 border border-white/5">9</td><td className="p-3 border border-white/5">Conclusion &amp; Future Scope</td><td className="p-3 border border-white/5">2</td><td className="p-3 border border-white/5">0</td><td className="p-3 border border-white/5">1 para conclusion summarising work + metrics. 5 concrete future lines (not vague mobile-app). </td></tr>
-              <tr className="bg-white/[0.02]"><td className="p-3 border border-white/5">—</td><td className="p-3 border border-white/5">References (40+ IEEE Style)</td><td className="p-3 border border-white/5">2</td><td className="p-3 border border-white/5">0</td><td className="p-3 border border-white/5">Websites, Papers, Books, GitHub repos — IEEE numbered [1] to [40+] with DOIs.</td></tr>
-              <tr><td className="p-3 border border-white/5">—</td><td className="p-3 border border-white/5">Appendix A + B + C + CD Content</td><td className="p-3 border border-white/5">3</td><td className="p-3 border border-white/5">0</td><td className="p-3 border border-white/5">ER Diagram, Sample Code, Questionnaire, CD list. Add blank page (Total = 60).</td></tr>
+            <tbody className="text-slate-700 divide-y divide-slate-100">
+              <tr className="bg-slate-50/50"><td className="p-3 border-r border-slate-100 font-mono">—</td><td className="p-3 border-r border-slate-100 font-semibold text-slate-900">Title Page</td><td className="p-3 border-r border-slate-100">1</td><td className="p-3 border-r border-slate-100">1</td><td className="p-3 text-xs">University logo, College name, Dept, Guide, Title, Student Name, USN, Month Year</td></tr>
+              <tr><td className="p-3 border-r border-slate-100 font-mono">—</td><td className="p-3 border-r border-slate-100 font-semibold text-slate-900">Bonafide Certificate + Declaration</td><td className="p-3 border-r border-slate-100">1</td><td className="p-3 border-r border-slate-100">1</td><td className="p-3 text-xs">HOD, Principal signatures. &quot;I declare no plagiarism&quot; paragraph.</td></tr>
+              <tr className="bg-slate-50/50"><td className="p-3 border-r border-slate-100 font-mono">—</td><td className="p-3 border-r border-slate-100 font-semibold text-slate-900">Acknowledgement + Dedication</td><td className="p-3 border-r border-slate-100">2</td><td className="p-3 border-r border-slate-100">1</td><td className="p-3 text-xs">Thank Guide, HOD, Principal, Parents, Lab Asst, Testing volunteers</td></tr>
+              <tr><td className="p-3 border-r border-slate-100 font-mono">—</td><td className="p-3 border-r border-slate-100 font-semibold text-slate-900">Abstract + 5 Keywords</td><td className="p-3 border-r border-slate-100">1</td><td className="p-3 border-r border-slate-100">1</td><td className="p-3 text-xs">150-250 words, 1 para. 5 IEEE Index keywords comma-separated below.</td></tr>
+              <tr className="bg-slate-50/50"><td className="p-3 border-r border-slate-100 font-mono">—</td><td className="p-3 border-r border-slate-100 font-semibold text-slate-900">TOC, LOF, LOT</td><td className="p-3 border-r border-slate-100">3</td><td className="p-3 border-r border-slate-100">2</td><td className="p-3 text-xs">Table of Contents (3 levels deep). List of Figures, List of Tables with page numbers.</td></tr>
+              <tr><td className="p-3 border-r border-slate-100 font-mono font-bold text-indigo-700">1</td><td className="p-3 border-r border-slate-100 font-semibold text-slate-900">Introduction</td><td className="p-3 border-r border-slate-100">5</td><td className="p-3 border-r border-slate-100">3</td><td className="p-3 text-xs">Background + Motivation + Problem Statement + 4 Objectives + Scope + Organisation of Report (1 para per chapter)</td></tr>
+              <tr className="bg-slate-50/50"><td className="p-3 border-r border-slate-100 font-mono font-bold text-indigo-700">2</td><td className="p-3 border-r border-slate-100 font-semibold text-slate-900">Literature Survey</td><td className="p-3 border-r border-slate-100">8</td><td className="p-3 border-r border-slate-100">4</td><td className="p-3 text-xs">8-12 IEEE papers (2020+) in comparison Table: S.No, Paper Title, Year, Method, Accuracy, Limitations. 3-4 lines per paper summary.</td></tr>
+              <tr><td className="p-3 border-r border-slate-100 font-mono font-bold text-indigo-700">3</td><td className="p-3 border-r border-slate-100 font-semibold text-slate-900">Requirement &amp; Feasibility Analysis</td><td className="p-3 border-r border-slate-100">5</td><td className="p-3 border-r border-slate-100">3</td><td className="p-3 text-xs">Functional / Non-Functional. HW/SW Requirement Tables. Economic/Technical/Operational Feasibility 3-paragraphs each.</td></tr>
+              <tr className="bg-slate-50/50"><td className="p-3 border-r border-slate-100 font-mono font-bold text-indigo-700">4</td><td className="p-3 border-r border-slate-100 font-semibold text-slate-900">System Architecture &amp; Design</td><td className="p-3 border-r border-slate-100">8</td><td className="p-3 border-r border-slate-100">5</td><td className="p-3 text-xs">Block Diagram, Use Case, Class, Sequence, Activity, DFD / ER diagrams + UI wireframes of all major screens, DB Schema description.</td></tr>
+              <tr><td className="p-3 border-r border-slate-100 font-mono font-bold text-indigo-700">5</td><td className="p-3 border-r border-slate-100 font-semibold text-slate-900">Tools, Tech &amp; Algorithms</td><td className="p-3 border-r border-slate-100">9</td><td className="p-3 border-r border-slate-100">4</td><td className="p-3 text-xs">Deep dive 1-2 core algorithms, CNN / XGBoost / FaceNet papers explanation, stack rationale, comparisons with alternative choices.</td></tr>
+              <tr className="bg-slate-50/50"><td className="p-3 border-r border-slate-100 font-mono font-bold text-indigo-700">6</td><td className="p-3 border-r border-slate-100 font-semibold text-slate-900">Implementation</td><td className="p-3 border-r border-slate-100">10</td><td className="p-3 border-r border-slate-100">4</td><td className="p-3 text-xs">Module-by-module explanation with 1-2 key code snippets each. Screenshots of every working screen. Build and deployment steps.</td></tr>
+              <tr><td className="p-3 border-r border-slate-100 font-mono font-bold text-indigo-700">7</td><td className="p-3 border-r border-slate-100 font-semibold text-slate-900">Testing &amp; Evaluation</td><td className="p-3 border-r border-slate-100">7</td><td className="p-3 border-r border-slate-100">2</td><td className="p-3 text-xs">Unit / Integration / System test cases (15+ each). Evaluation metrics, confusion matrix, accuracy, F1, graphs, benchmark tables.</td></tr>
+              <tr className="bg-slate-50/50"><td className="p-3 border-r border-slate-100 font-mono font-bold text-indigo-700">8</td><td className="p-3 border-r border-slate-100 font-semibold text-slate-900">Results &amp; Discussion</td><td className="p-3 border-r border-slate-100">3</td><td className="p-3 border-r border-slate-100">0</td><td className="p-3 text-xs">Key output figures, bar chart comparison with baseline/competitors, qualitative discussion, failure modes analysis.</td></tr>
+              <tr><td className="p-3 border-r border-slate-100 font-mono font-bold text-indigo-700">9</td><td className="p-3 border-r border-slate-100 font-semibold text-slate-900">Conclusion &amp; Future Scope</td><td className="p-3 border-r border-slate-100">2</td><td className="p-3 border-r border-slate-100">0</td><td className="p-3 text-xs">1 para conclusion summarising work + metrics. 5 concrete future lines (not vague mobile-app).</td></tr>
+              <tr className="bg-slate-50/50"><td className="p-3 border-r border-slate-100 font-mono">—</td><td className="p-3 border-r border-slate-100 font-semibold text-slate-900">References (40+ IEEE Style)</td><td className="p-3 border-r border-slate-100">2</td><td className="p-3 border-r border-slate-100">0</td><td className="p-3 text-xs">Websites, Papers, Books, GitHub repos — IEEE numbered [1] to [40+] with DOIs.</td></tr>
+              <tr><td className="p-3 border-r border-slate-100 font-mono">—</td><td className="p-3 border-r border-slate-100 font-semibold text-slate-900">Appendix A + B + C + CD Content</td><td className="p-3 border-r border-slate-100">3</td><td className="p-3 border-r border-slate-100">0</td><td className="p-3 text-xs">ER Diagram, Sample Code, Questionnaire, CD list. Add blank page (Total = 60).</td></tr>
             </tbody>
           </table>
         </div>
 
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-white mt-12 mb-4">
+        <h2 className="text-2xl md:text-3xl font-display font-bold text-slate-900 mt-12 mb-4">
           📑 Correct IEEE Reference Format (Don&apos;t lose marks here!)
         </h2>
         <p className="mb-4">Viva examiners randomly pick a reference number and ask you to quote it. Get this EXACT right — number ordering in text matches the References list order. Example 8-correct template:</p>
-        <div className="p-6 rounded-2xl bg-zinc-900/70 border border-white/10 space-y-3 font-mono text-xs md:text-sm mb-10">
+        <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200/90 space-y-3 font-mono text-xs md:text-sm mb-10 text-slate-700 shadow-xs">
           <div>[1] F. Schroff, D. Kalenichenko, and J. Philbin, &quot;FaceNet: A Unified Embedding for Face Recognition and Clustering,&quot; in <em>Proc. IEEE/CVF Conf. Comput. Vis. Pattern Recognit.</em>, Boston, MA, USA, Jun. 2015, pp. 815-823. doi: 10.1109/CVPR.2015.7298682.</div>
-          <div>[2] M. Tan and Q. V. Le, &quot;EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks,&quot; in <em>Proc. 36th Int. Conf. Mach. Learn.</em>, Long Beach, CA, USA, Jun. 2019, pp. 6105-6114. [Online]. Available: https://proceedings.mlr.press/v97/tan19a.html.</div>
+          <div>[2] M. Tan and Q. V. Le, &quot;EfficientNet: Rethinking Model Scaling for Convolutional Neural Networks,&quot; in <em>Proc. 36th Int. Conf. Mach. Learn.</em>, Long Beach, CA, USA, Jun. 2019, pp. 6105-6114.</div>
           <div>[3] A. Howard <em>et al.</em>, &quot;MobileNetV2: Inverted Residuals and Linear Bottlenecks,&quot; <em>arXiv:1801.04381</em>, 2018.</div>
-          <div>[4] Worldline and ULB Machine Learning Group, &quot;Credit Card Fraud Detection,&quot; Kaggle Datasets. 2018. [Online]. Available: https://www.kaggle.com/mlg-ulb/creditcardfraud.</div>
+          <div>[4] Worldline and ULB Machine Learning Group, &quot;Credit Card Fraud Detection,&quot; Kaggle Datasets. 2018.</div>
           <div>[5] D. P. Kingma and J. Ba, &quot;Adam: A Method for Stochastic Optimization,&quot; in <em>Proc. 3rd Int. Conf. Learn. Representations</em>, San Diego, CA, USA, May 2015.</div>
           <div>[6] R. Mehta and C. K. J. Tom, &quot;Data Science from Scratch: First Principles with Python,&quot; 2nd ed. Sebastopol, CA: O&apos;Reilly Media, 2019, ch. 11, pp. 139-152.</div>
-          <div>[7] S. Raschka, &quot;ROC AUC vs. PR AUC,&quot; Sebastian Raschka Blog. [Online]. Available: https://sebastianraschka.com/faq/docs/roc-vs-pr.html. [Accessed 12 May 2026].</div>
-          <div>[8] &quot;TensorFlow Documentation,&quot; Google Developers. [Online]. Available: https://www.tensorflow.org/guide/keras/transfer_learning. [Accessed 15 Aug. 2026].</div>
+          <div>[7] S. Raschka, &quot;ROC AUC vs. PR AUC,&quot; Sebastian Raschka Blog. 2026.</div>
+          <div>[8] &quot;TensorFlow Documentation,&quot; Google Developers. 2026.</div>
         </div>
 
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-white mt-12 mb-4">
+        <h2 className="text-2xl md:text-3xl font-display font-bold text-slate-900 mt-12 mb-4">
           🏛️ University-Specific Adjustments (India)
         </h2>
         <ol className="space-y-2 pl-6 list-decimal mb-10">
@@ -646,7 +502,7 @@ export const BLOG_CONTENT: Record<string, BlogContentEntry> = {
           <li><strong>MDU Haryana / KUK / DU</strong>: Minor Project + Major Project: Mid-term review PPT + Final PPT. Final report 70-80 pages including synopsis.</li>
         </ol>
 
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-white mt-12 mb-4">
+        <h2 className="text-2xl md:text-3xl font-display font-bold text-slate-900 mt-12 mb-4">
           ❓ Common Black Book Mistakes (Students Lose 15+ Marks Here!)
         </h2>
         <div className="space-y-3 mb-10">
@@ -657,12 +513,12 @@ export const BLOG_CONTENT: Record<string, BlogContentEntry> = {
             { q: 'Mistake 4 — Future Scope is "we will add mobile app" (vague)', a: 'Bad. Instead: "Phase 2 will integrate the EfficientNetB3 Keras model as a TensorFlow-Lite INT8 .tflite binary on a React Native Android app using CameraX API with real-time 30 FPS leaf disease classification and offline-first SQLite cache." — specific, believable.' },
             { q: 'Mistake 5 — Conclusion re-writes the Introduction', a: 'Bad. Conclusion should: (a) summarise performance numbers achieved, (b) compare vs baseline numbers, (c) state 1 concrete learning you had during the project. That gets 5/5 marks.' },
           ].map((m, i) => (
-            <details key={i} className="p-5 rounded-2xl bg-zinc-900/70 border border-white/10 group open:border-brand-500/30 transition-all">
-              <summary className="cursor-pointer font-bold text-white text-base md:text-lg flex items-start gap-3">
-                <span className="text-rose-400 font-black shrink-0">!{i + 1}.</span>
+            <details key={i} className="p-5 rounded-2xl bg-white border border-slate-200/90 shadow-xs group open:border-indigo-300 transition-all">
+              <summary className="cursor-pointer font-bold text-slate-900 text-base md:text-lg flex items-start gap-3 select-none">
+                <span className="text-rose-600 font-black shrink-0">!{i + 1}.</span>
                 <span>{m.q}</span>
               </summary>
-              <p className="text-sm md:text-base text-zinc-300 pl-9 mt-3 leading-relaxed">
+              <p className="text-sm md:text-base text-slate-600 pl-8 mt-3 leading-relaxed">
                 {m.a}
               </p>
             </details>

@@ -1,56 +1,41 @@
 'use client';
 import { useState } from 'react';
-import { Terminal, FolderOpen, Play, GraduationCap, CheckCircle2, Copy, Check } from 'lucide-react';
+import { Terminal, FolderOpen, Play, GraduationCap, CheckCircle2, Copy, Check, Zap } from 'lucide-react';
 
 const STEPS = [
   {
-    num: '01',
-    icon: <FolderOpen className="w-5 h-5 text-blue-400" />,
-    color: 'border-blue-500/40 bg-blue-500/10',
-    iconBg: 'bg-blue-500/10',
+    n: '01',
     title: 'Extract the ZIP',
-    desc: 'Right-click the downloaded file and select "Extract All" (Windows) or double-click (Mac). You\'ll find three folders inside:',
-    items: ['📁 Code — the full project source', '📄 Report — your IEEE Black Book (.docx)', '📊 PPT — Defense slides with speaker notes'],
+    desc: 'Right-click → "Extract All" (Windows) or double-click (Mac). You\'ll see three folders:',
+    items: ['Code — the full project source', 'Report — your IEEE Black Book (.docx)', 'PPT — Defense slides with speaker notes'],
     code: null,
   },
   {
-    num: '02',
-    icon: <Terminal className="w-5 h-5 text-emerald-400" />,
-    color: 'border-emerald-500/40 bg-emerald-500/10',
-    iconBg: 'bg-emerald-500/10',
-    title: 'Run the Project (Windows)',
-    desc: 'Open the Code folder. Double-click the launcher — it installs dependencies and starts the server automatically:',
+    n: '02',
+    title: 'Run on Windows',
+    desc: 'Open the Code folder and double-click the launcher:',
     items: null,
-    code: { label: 'Windows (1-click)', value: 'run.bat', lang: 'bat' },
+    code: { label: 'Windows (1-click)', value: 'run.bat' },
   },
   {
-    num: '03',
-    icon: <Terminal className="w-5 h-5 text-purple-400" />,
-    color: 'border-purple-500/40 bg-purple-500/10',
-    iconBg: 'bg-purple-500/10',
-    title: 'Run the Project (Mac / Linux)',
+    n: '03',
+    title: 'Run on Mac / Linux',
     desc: 'Open Terminal in the Code folder and run:',
     items: null,
-    code: { label: 'Mac / Linux', value: 'bash run.sh', lang: 'bash' },
+    code: { label: 'Mac / Linux', value: 'bash run.sh' },
   },
   {
-    num: '04',
-    icon: <Play className="w-5 h-5 text-amber-400" />,
-    color: 'border-amber-500/40 bg-amber-500/10',
-    iconBg: 'bg-amber-500/10',
+    n: '04',
     title: 'Open in Browser',
-    desc: 'Once the terminal shows "Ready", open your browser and visit:',
+    desc: 'When terminal shows "Ready", open:',
     items: null,
-    code: { label: 'Your browser', value: 'http://localhost:3000', lang: 'url' },
+    code: { label: 'In your browser', value: 'http://localhost:3000' },
   },
   {
-    num: '05',
-    icon: <GraduationCap className="w-5 h-5 text-rose-400" />,
-    color: 'border-rose-500/40 bg-rose-500/10',
-    iconBg: 'bg-rose-500/10',
+    n: '05',
     title: 'Prepare for Viva',
-    desc: 'Open the PPT slides and read the speaker notes — they tell you word-for-word what to say to your examiner. Print the IEEE Black Book and submit.',
-    items: ['Print the Report (.docx) at a local print shop', 'Read speaker notes in the PPT before your defense', 'Use the 25 Viva Q&A list to prepare answers'],
+    desc: 'Read the PPT speaker notes — they tell you word-for-word what to say. Print the Black Book.',
+    items: ['Print the Report at a local print shop', 'Read speaker notes in PPT before your defense', 'Use the Viva Q&A list to prepare answers'],
     code: null,
   },
 ];
@@ -58,42 +43,41 @@ const STEPS = [
 function CodeBlock({ value, label }: { value: string; label: string }) {
   const [copied, setCopied] = useState(false);
   return (
-    <div className="mt-3 bg-zinc-950 rounded-xl border border-white/10 overflow-hidden">
-      <div className="flex items-center justify-between px-4 py-2 bg-white/[0.03] border-b border-white/5">
-        <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-wider">{label}</span>
+    <div style={{ marginTop: '.75rem', borderRadius: '10px', overflow: 'hidden', background: '#F8FAFC', border: '1px solid #E2E8F0' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '.4375rem .875rem', background: '#F1F5F9', borderBottom: '1px solid #E2E8F0' }}>
+        <span style={{ fontFamily: 'var(--font-mono)', fontSize: '.625rem', color: '#475569', textTransform: 'uppercase', letterSpacing: '.08em', fontWeight: 700 }}>{label}</span>
         <button
           onClick={() => { navigator.clipboard.writeText(value); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
-          className="flex items-center gap-1 text-[11px] text-zinc-500 hover:text-white transition-colors"
+          style={{ display: 'flex', alignItems: 'center', gap: '.25rem', background: 'none', border: 'none', cursor: 'pointer', fontSize: '.75rem', color: copied ? '#059669' : '#64748B', fontWeight: 600, padding: '.1875rem .375rem' }}
         >
-          {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+          {copied ? <Check style={{ width: '.75rem', height: '.75rem' }} /> : <Copy style={{ width: '.75rem', height: '.75rem' }} />}
           {copied ? 'Copied!' : 'Copy'}
         </button>
       </div>
-      <div className="px-4 py-3 font-mono text-sm text-emerald-400">{value}</div>
+      <div style={{ padding: '.625rem .875rem', fontFamily: 'var(--font-mono)', fontSize: '.875rem', color: '#0F172A', fontWeight: 600 }}>
+        <span style={{ color: '#94A3B8' }}>$ </span>{value}
+      </div>
     </div>
   );
 }
 
-interface HowToRunProps {
-  compact?: boolean; // for sidebar usage
-}
-
-export function HowToRun({ compact = false }: HowToRunProps) {
+export function HowToRun({ compact = false }: { compact?: boolean }) {
   const [open, setOpen] = useState<number | null>(0);
 
   if (compact) {
-    // Simple numbered list for sidebar
     return (
-      <div className="space-y-3">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '.625rem' }}>
         {STEPS.map((step, i) => (
-          <div key={i} className="flex gap-3">
-            <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5 ${step.iconBg} border ${step.color.split(' ')[0]}`}>
-              {i + 1}
+          <div key={i} style={{ display: 'flex', gap: '.75rem', alignItems: 'flex-start' }}>
+            <div style={{ width: '1.625rem', height: '1.625rem', borderRadius: '6px', flexShrink: 0, background: 'var(--surface-teal)', border: '1px solid var(--teal-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-mono)', fontSize: '.625rem', fontWeight: 800, color: 'var(--teal)', marginTop: '.125rem' }}>
+              {step.n}
             </div>
             <div>
-              <p className="text-zinc-300 text-xs font-semibold">{step.title}</p>
+              <p style={{ fontSize: '.8125rem', fontWeight: 600, color: 'var(--navy)', lineHeight: 1.3 }}>{step.title}</p>
               {step.code && (
-                <code className="text-[11px] font-mono text-emerald-400 bg-zinc-900 px-1.5 py-0.5 rounded mt-1 inline-block">{step.code.value}</code>
+                <code style={{ fontSize: '.6875rem', fontFamily: 'var(--font-mono)', color: 'var(--teal-dark)', background: 'var(--teal-50)', border: '1px solid var(--teal-100)', padding: '.125rem .375rem', borderRadius: '4px', display: 'inline-block', marginTop: '.25rem' }}>
+                  {step.code.value}
+                </code>
               )}
             </div>
           </div>
@@ -103,41 +87,33 @@ export function HowToRun({ compact = false }: HowToRunProps) {
   }
 
   return (
-    <div className="space-y-3">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '.625rem' }}>
       {STEPS.map((step, i) => {
         const isOpen = open === i;
         return (
-          <div
-            key={i}
-            className={`rounded-2xl border transition-all duration-200 overflow-hidden ${
-              isOpen ? step.color + ' border-opacity-60' : 'border-white/8 bg-white/[0.02] hover:border-white/15'
-            }`}
-          >
+          <div key={i} style={{ borderRadius: '12px', border: `1px solid ${isOpen ? 'var(--teal-100)' : 'var(--line)'}`, background: isOpen ? 'var(--surface-teal)' : 'var(--surface)', overflow: 'hidden', transition: 'all 200ms' }}>
             <button
-              className="w-full flex items-center gap-4 p-4 text-left"
               onClick={() => setOpen(isOpen ? null : i)}
+              style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '.875rem', padding: '.875rem 1rem', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', WebkitTapHighlightColor: 'transparent' }}
             >
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${step.iconBg}`}>
-                {step.icon}
+              <div style={{ width: '2.25rem', height: '2.25rem', borderRadius: '10px', flexShrink: 0, background: isOpen ? 'var(--teal-100)' : 'var(--surface-2)', border: `1px solid ${isOpen ? 'var(--line-teal)' : 'var(--line)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-mono)', fontSize: '.75rem', fontWeight: 800, color: isOpen ? 'var(--teal-dark)' : 'var(--ink-3)' }}>
+                {step.n}
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-black text-zinc-600 font-mono">STEP {step.num}</span>
-                </div>
-                <p className="text-sm font-semibold text-white">{step.title}</p>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <p style={{ fontSize: '.9375rem', fontWeight: 600, color: 'var(--navy)', lineHeight: 1.3 }}>{step.title}</p>
               </div>
-              <CheckCircle2 className={`w-4 h-4 shrink-0 transition-colors ${isOpen ? 'text-emerald-400' : 'text-zinc-700'}`} />
+              <CheckCircle2 style={{ width: '1rem', height: '1rem', color: isOpen ? 'var(--teal)' : 'var(--line-2)', flexShrink: 0 }} />
             </button>
 
             {isOpen && (
-              <div className="px-4 pb-5">
-                <p className="text-zinc-400 text-sm leading-relaxed mb-2">{step.desc}</p>
+              <div style={{ padding: '0 1rem .875rem 1rem' }}>
+                <p style={{ fontSize: '.875rem', color: 'var(--ink-2)', lineHeight: 1.65, marginBottom: '.5rem' }}>{step.desc}</p>
                 {step.items && (
-                  <ul className="space-y-1.5 mt-2">
+                  <ul style={{ display: 'flex', flexDirection: 'column', gap: '.375rem' }}>
                     {step.items.map((item, j) => (
-                      <li key={j} className="text-zinc-300 text-xs flex items-start gap-2">
-                        <span className="shrink-0 mt-0.5">{item.split(' ')[0]}</span>
-                        <span>{item.split(' ').slice(1).join(' ')}</span>
+                      <li key={j} style={{ display: 'flex', alignItems: 'flex-start', gap: '.5rem', fontSize: '.8125rem', color: 'var(--ink-2)' }}>
+                        <CheckCircle2 style={{ width: '.875rem', height: '.875rem', color: 'var(--teal)', flexShrink: 0, marginTop: '.125rem' }} />
+                        {item}
                       </li>
                     ))}
                   </ul>

@@ -16,7 +16,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     oneLiner: 'Complete hospital network with live patient vital monitors and an automatic medicine clash detector.',
     tenthGradeExplainer: 'Stops deadly prescription mistakes. If a doctor prescribes two medicines that clash, the system alerts them in real time.',
     badge: '⚡ Instant Download',
-    isReady: false,
+    isReady: true,
   },
   'blood-bank-management': {
     slug: 'blood-bank-management',
@@ -25,7 +25,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     oneLiner: 'Emergency blood bank network with real-time donor matching and cold-storage expiry tracking.',
     tenthGradeExplainer: 'Finds and alerts nearby blood donors for emergency patients in seconds, and notifies staff before rare blood bags expire.',
     badge: '⚡ Instant Download',
-    isReady: false,
+    isReady: true,
   },
   'resume-parsing-engine': {
     slug: 'resume-parsing-engine',
@@ -34,7 +34,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     oneLiner: 'AI resume reader that extracts candidate skills from PDF resumes and ranks applicants for hiring.',
     tenthGradeExplainer: 'Upload any resume PDF: the AI reads work experience, scores candidate skills against the job, and ranks the best applicants.',
     badge: '⚡ Instant Download',
-    isReady: false,
+    isReady: true,
   },
   'online-code-compiler': {
     slug: 'online-code-compiler',
@@ -43,7 +43,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     oneLiner: 'In-browser code execution sandbox (Python, JS, SQL) with instant performance tips and Big-O runtime analysis.',
     tenthGradeExplainer: 'Run and test code right in your browser. Catches infinite loops, tests execution speed, and gives tips to make code run faster.',
     badge: '⚡ Instant Download',
-    isReady: false,
+    isReady: true,
   },
   'credit-card-fraud': {
     slug: 'credit-card-fraud',
@@ -70,7 +70,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     oneLiner: 'Contactless table-side QR ordering system with live kitchen display screen and instant digital bills.',
     tenthGradeExplainer: 'Diners scan a QR code at their table to order on their phone, sending food tickets straight to the chef with zero wait time.',
     badge: '⚡ Instant Download',
-    isReady: false,
+    isReady: true,
   },
   'aerofuel-predictor': {
     slug: 'aerofuel-predictor',
@@ -79,7 +79,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     oneLiner: 'Aviation fuel burn forecasting engine that calculates exact flight fuel needs using weather and route telemetry.',
     tenthGradeExplainer: 'Calculates the exact amount of fuel an airliner needs based on route distance and winds, saving airlines lakhs on wasted jet fuel.',
     badge: '⚡ Instant Download',
-    isReady: false,
+    isReady: true,
   },
   'smart-expense-tracker': {
     slug: 'smart-expense-tracker',
@@ -88,7 +88,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     oneLiner: 'Automatic receipt scanner and money manager that categorizes expenses and predicts monthly budgets.',
     tenthGradeExplainer: 'Snap a photo of any receipt: it automatically extracts the amount, groups your spending, and warns you before you overspend.',
     badge: '⚡ Instant Download',
-    isReady: false,
+    isReady: true,
   },
 
   // ─── AI & Machine Learning (15 New) ───────────────────────────────────────
@@ -98,8 +98,8 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'FinTech',
     oneLiner: 'Deep Reinforcement Learning (PPO) agent that simulates stock market trading using historical OHLCV data.',
     tenthGradeExplainer: 'An AI that learned how to trade stocks by playing the stock market like a video game, maximizing profit over time.',
-    badge: '🌟 Featured Bestseller',
-    isReady: true,
+    badge: '⏳ In QA Pipeline · Pre-Book',
+    isReady: false,
   },
   'decentralized-evoting-web3': {
     slug: 'decentralized-evoting-web3',
@@ -107,7 +107,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'Cybersecurity',
     oneLiner: 'Decentralized electronic voting system using Ethereum Smart Contracts and Next.js.',
     tenthGradeExplainer: 'A highly secure voting system where votes are locked into a blockchain, making it mathematically impossible to hack or rig the election.',
-    badge: '🌟 Featured Bestseller',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'autonomous-llm-researcher': {
@@ -116,7 +116,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'AIML',
     oneLiner: 'Multi-agent AI framework using LangChain that autonomously browses the web to synthesize cited research reports.',
     tenthGradeExplainer: 'Give it a topic, and multiple AI agents will talk to each other, browse the internet, and write a full 5-page research paper for you.',
-    badge: '🌟 Featured Bestseller',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'deepfake-video-detector': {
@@ -125,7 +125,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'Cybersecurity',
     oneLiner: 'Frame-by-frame video analysis using Vision Transformers (ViT) to detect AI-generated deepfake artifacts.',
     tenthGradeExplainer: 'Upload a video, and this AI will analyze the pixels to tell you if the video is real or a deepfake generated by AI.',
-    badge: '🌟 Featured Bestseller',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'genomic-disease-predictor': {
@@ -134,7 +134,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'Healthcare',
     oneLiner: 'Recurrent Neural Network (LSTM) that processes raw DNA sequences to predict genetic disease predispositions.',
     tenthGradeExplainer: 'An AI that reads raw DNA code (A, C, G, T) and predicts if a person has a genetic risk for certain diseases.',
-    badge: '🌟 Featured Bestseller',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'face-recognition-attendance': {
@@ -143,8 +143,8 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'AIML',
     oneLiner: 'Real-time face recognition attendance system using OpenCV and deep learning with a live dashboard.',
     tenthGradeExplainer: 'Uses your webcam to recognize faces and mark attendance automatically — no roll call needed.',
-    badge: '⚡ Instant Download',
-    isReady: true,
+    badge: '⏳ In QA Pipeline · Pre-Book',
+    isReady: false,
   },
   'plant-disease-detection': {
     slug: 'plant-disease-detection',
@@ -152,8 +152,8 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'AIML',
     oneLiner: 'CNN-powered plant disease classifier trained on 54,000 images with 97% accuracy and treatment recommendations.',
     tenthGradeExplainer: 'Upload a photo of a sick plant leaf — the AI identifies the disease and tells you how to treat it.',
-    badge: '⚡ Instant Download',
-    isReady: true,
+    badge: '⏳ In QA Pipeline · Pre-Book',
+    isReady: false,
   },
   'sentiment-analysis-dashboard': {
     slug: 'sentiment-analysis-dashboard',
@@ -161,8 +161,8 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'AIML',
     oneLiner: 'Real-time NLP sentiment analysis dashboard with live Twitter/review data, emotion scoring, and trend charts.',
     tenthGradeExplainer: 'Analyzes thousands of tweets or reviews to tell you if people are happy, sad, or angry about a topic.',
-    badge: '⚡ Instant Download',
-    isReady: true,
+    badge: '⏳ In QA Pipeline · Pre-Book',
+    isReady: false,
   },
   'object-detection-security': {
     slug: 'object-detection-security',
@@ -170,7 +170,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'AIML',
     oneLiner: 'YOLOv8 real-time object detection security system with person counting, zone alerts, and event logging.',
     tenthGradeExplainer: 'An AI-powered CCTV that automatically detects people, cars, and suspicious objects and sends alerts.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'handwriting-recognition': {
@@ -179,7 +179,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'AIML',
     oneLiner: 'CNN-based handwritten digit and character recognition with interactive canvas input and 99.1% MNIST accuracy.',
     tenthGradeExplainer: 'Draw any letter or number on screen — the AI reads it instantly, like how banks read cheque amounts.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'movie-recommendation-engine': {
@@ -188,7 +188,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'AIML',
     oneLiner: 'Hybrid collaborative + content-based movie recommender using cosine similarity on MovieLens 100K dataset.',
     tenthGradeExplainer: 'Like Netflix — tell it movies you liked and it recommends similar ones you\'ll love, using real math.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'fake-news-detector': {
@@ -197,8 +197,8 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'AIML',
     oneLiner: 'NLP fake news detector with TF-IDF + Logistic Regression achieving 94.2% accuracy on LIAR dataset.',
     tenthGradeExplainer: 'Paste any news headline — the AI reads it and tells you if it\'s real or fake news with a confidence score.',
-    badge: '⚡ Instant Download',
-    isReady: true,
+    badge: '⏳ In QA Pipeline · Pre-Book',
+    isReady: false,
   },
   'image-caption-generator': {
     slug: 'image-caption-generator',
@@ -206,7 +206,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'AIML',
     oneLiner: 'CNN encoder + LSTM decoder image captioning model trained on Flickr8k, generates natural language descriptions.',
     tenthGradeExplainer: 'Upload any photo — the AI automatically writes a sentence describing what it sees in the picture.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'chatbot-intent-classifier': {
@@ -215,7 +215,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'AIML',
     oneLiner: 'Intent classification chatbot with TF-IDF + SVM, rule-based response engine, and a modern web chat UI.',
     tenthGradeExplainer: 'A smart chatbot that understands what you\'re asking and gives the right answer — built with real AI.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'spam-email-classifier': {
@@ -224,8 +224,8 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'AIML',
     oneLiner: 'Naive Bayes spam email classifier with 98.4% accuracy trained on SpamAssassin dataset with email UI.',
     tenthGradeExplainer: 'Paste an email — the AI instantly tells you if it\'s spam like fake lottery or phishing, with reasons.',
-    badge: '⚡ Instant Download',
-    isReady: true,
+    badge: '⏳ In QA Pipeline · Pre-Book',
+    isReady: false,
   },
   'emotion-detection-text': {
     slug: 'emotion-detection-text',
@@ -233,7 +233,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'AIML',
     oneLiner: 'DistilBERT fine-tuned on GoEmotions dataset detects 6 emotions from text with real-time analysis dashboard.',
     tenthGradeExplainer: 'Type any sentence — the AI detects if you\'re happy, angry, sad, fearful, surprised, or disgusted.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'house-price-predictor': {
@@ -242,8 +242,8 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'AIML',
     oneLiner: 'XGBoost house price prediction with SHAP explainability, trained on Ames Housing dataset with 89% R² score.',
     tenthGradeExplainer: 'Enter house details like rooms and location — the AI predicts the price and shows which factors matter most.',
-    badge: '⚡ Instant Download',
-    isReady: true,
+    badge: '⏳ In QA Pipeline · Pre-Book',
+    isReady: false,
   },
   'customer-churn-predictor': {
     slug: 'customer-churn-predictor',
@@ -251,7 +251,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'AIML',
     oneLiner: 'Gradient boosted churn prediction with SHAP explainability on Telco dataset, helping businesses retain customers.',
     tenthGradeExplainer: 'Predicts which customers are about to leave a company so businesses can offer them discounts to stay.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'medical-image-classifier': {
@@ -260,7 +260,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'AIML',
     oneLiner: 'DenseNet121 trained on ChestX-ray14 classifies pneumonia/normal with GradCAM heatmap visualization.',
     tenthGradeExplainer: 'Upload a chest X-ray — the AI highlights the infected areas and predicts if the patient has pneumonia.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'ai-resume-scorer': {
@@ -269,7 +269,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'AIML',
     oneLiner: 'spaCy NER + TF-IDF resume scoring engine that ranks candidates against job descriptions with detailed breakdown.',
     tenthGradeExplainer: 'Upload a resume and job description — the AI scores how well they match, like a real recruiter would.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
 
@@ -280,7 +280,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'FullStack',
     oneLiner: 'Complete e-commerce platform with cart, checkout, inventory management, and admin dashboard.',
     tenthGradeExplainer: 'A fully working online shopping website like Amazon — add to cart, checkout, track orders.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'task-management-board': {
@@ -289,7 +289,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'FullStack',
     oneLiner: 'Drag-and-drop Kanban board with real-time team collaboration, task assignments, and progress tracking.',
     tenthGradeExplainer: 'Like Trello — organize tasks into To Do, In Progress, Done columns and drag them as you work.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'realtime-chat-app': {
@@ -298,7 +298,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'FullStack',
     oneLiner: 'WebSocket-based real-time chat with rooms, typing indicators, file sharing, and message history.',
     tenthGradeExplainer: 'A WhatsApp-like chat app that sends messages instantly — you type, the other person sees it live.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'learning-management-system': {
@@ -307,7 +307,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'FullStack',
     oneLiner: 'Complete LMS with course creation, video lessons, auto-graded quizzes, progress tracking, and certificates.',
     tenthGradeExplainer: 'Like Udemy — teachers upload courses, students watch lessons and take quizzes, get certificates.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'job-portal': {
@@ -316,7 +316,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'FullStack',
     oneLiner: 'Full-featured job portal with employer/candidate dashboards, resume upload, ATS pipeline, and job alerts.',
     tenthGradeExplainer: 'Like Naukri.com — companies post jobs, students apply, and employers track applications.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'event-management-system': {
@@ -325,7 +325,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'FullStack',
     oneLiner: 'Event creation, RSVP management, QR-code ticketing, check-in scanner, and analytics dashboard.',
     tenthGradeExplainer: 'Create events, sell tickets, and check people in with a QR code scanner at the door.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'hotel-booking-system': {
@@ -334,7 +334,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'FullStack',
     oneLiner: 'Hotel booking platform with availability calendar, room search, reservation engine, and admin dashboard.',
     tenthGradeExplainer: 'Like MakeMyTrip for hotels — search rooms, check availability, book, and manage reservations.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'inventory-management': {
@@ -343,7 +343,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'FullStack',
     oneLiner: 'Inventory management system with barcode generation, stock alerts, supplier tracking, and sales reports.',
     tenthGradeExplainer: 'Tracks how many products are in stock, alerts when running low, and generates business reports.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'blog-cms-platform': {
@@ -352,7 +352,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'FullStack',
     oneLiner: 'Full-featured CMS with rich text editor, categories, tags, SEO metadata, comments, and admin dashboard.',
     tenthGradeExplainer: 'A WordPress-like blogging platform where you write articles, add images, and manage your website.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'social-media-dashboard': {
@@ -361,7 +361,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'FullStack',
     oneLiner: 'Social media analytics dashboard with post scheduling, engagement metrics, follower trends, and reporting.',
     tenthGradeExplainer: 'Track likes, followers, and engagement across platforms in one beautiful dashboard.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
 
@@ -372,7 +372,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'Cybersecurity',
     oneLiner: 'Scapy-based network packet capture and protocol dissection tool with live traffic visualization dashboard.',
     tenthGradeExplainer: 'Monitors all data packets flowing through a network in real-time, like an X-ray for internet traffic.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'password-strength-analyzer': {
@@ -381,7 +381,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'Cybersecurity',
     oneLiner: 'Password entropy calculator with dictionary attack simulation, HaveIBeenPwned API, and strength recommendations.',
     tenthGradeExplainer: 'Tests how strong your password is and tells you if it\'s already been stolen in a data breach.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'vulnerability-scanner': {
@@ -390,7 +390,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'Cybersecurity',
     oneLiner: 'Automated OWASP Top 10 vulnerability scanner with XSS/SQLi detection, crawling, and security report generation.',
     tenthGradeExplainer: 'Automatically finds security holes in websites — like a pen tester checking for weak locks.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'intrusion-detection-system': {
@@ -399,8 +399,8 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'Cybersecurity',
     oneLiner: 'ML-based network intrusion detection using Isolation Forest on KDD Cup 99 dataset with real-time alert dashboard.',
     tenthGradeExplainer: 'An AI watchdog that monitors network traffic and sounds an alarm when it detects a hacker.',
-    badge: '⚡ Instant Download',
-    isReady: true,
+    badge: '⏳ In QA Pipeline · Pre-Book',
+    isReady: false,
   },
   'secure-file-sharing': {
     slug: 'secure-file-sharing',
@@ -408,7 +408,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'Cybersecurity',
     oneLiner: 'AES-256 encrypted file sharing with password-protected links, expiry timers, and download tracking.',
     tenthGradeExplainer: 'Send files securely — encrypted with a password, link expires after use, nobody else can open it.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'dns-lookup-tool': {
@@ -417,7 +417,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'Cybersecurity',
     oneLiner: 'Comprehensive DNS lookup, WHOIS query, SSL certificate analysis, and domain reputation scoring tool.',
     tenthGradeExplainer: 'Investigates any website domain — finds who owns it, checks its security certificate, and rates its reputation.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'ssl-certificate-checker': {
@@ -426,7 +426,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'Cybersecurity',
     oneLiner: 'SSL certificate chain validator with expiry monitoring, cipher suite analysis, and vulnerability reporting.',
     tenthGradeExplainer: 'Checks if a website\'s security certificate is valid, expiring, or vulnerable to known attacks.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'keylogger-detector': {
@@ -435,7 +435,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'Cybersecurity',
     oneLiner: 'Process monitor that detects suspicious keystroke-intercepting processes and unauthorized API hooks.',
     tenthGradeExplainer: 'Scans your computer for hidden spy programs that secretly record everything you type.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
 
@@ -446,7 +446,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'Healthcare',
     oneLiner: 'Doctor appointment scheduling system with availability management, slot booking, and SMS/email reminders.',
     tenthGradeExplainer: 'Book a doctor appointment online and get a reminder — no more waiting on the phone.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'medicine-inventory-tracker': {
@@ -455,7 +455,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'Healthcare',
     oneLiner: 'Pharmacy drug inventory system with expiry alerts, batch tracking, supplier management, and usage reports.',
     tenthGradeExplainer: 'Tracks all medicines in a pharmacy, alerts before they expire, and auto-orders when stock runs low.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'mental-health-chatbot': {
@@ -464,7 +464,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'Healthcare',
     oneLiner: 'NLP-powered mental health chatbot with CBT-based responses, mood tracking, and crisis escalation detection.',
     tenthGradeExplainer: 'A compassionate AI chatbot that listens to your feelings and provides mental health support techniques.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'disease-prediction-symptoms': {
@@ -473,7 +473,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'Healthcare',
     oneLiner: 'Decision tree + Random Forest disease predictor from symptoms with 92% accuracy on 4900 patient dataset.',
     tenthGradeExplainer: 'Enter your symptoms — the AI predicts which disease you might have and recommends seeing a doctor.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'diet-nutrition-planner': {
@@ -482,7 +482,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'Healthcare',
     oneLiner: 'AI-powered diet planner with calorie/macro calculator, personalized meal suggestions, and BMI tracking.',
     tenthGradeExplainer: 'Enter your weight goals — the AI creates a daily diet plan with recipes matched to your calorie needs.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
 
@@ -493,7 +493,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'FinTech',
     oneLiner: 'Live stock market dashboard with yfinance API, candlestick charts, portfolio tracker, and moving average signals.',
     tenthGradeExplainer: 'Real-time stock prices, charts, and buy/sell signals — like a professional trading terminal.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'personal-finance-manager': {
@@ -502,7 +502,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'FinTech',
     oneLiner: 'Income/expense tracker with category analytics, budget goals, spending predictions, and monthly reports.',
     tenthGradeExplainer: 'Track every rupee you spend, see where money goes in charts, and get alerts when over budget.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'loan-eligibility-predictor': {
@@ -511,7 +511,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'FinTech',
     oneLiner: 'XGBoost loan eligibility predictor with SHAP explainability trained on Lending Club dataset, 91% accuracy.',
     tenthGradeExplainer: 'Enter your income and credit history — the AI predicts if a bank will approve your loan and why.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'invoice-generator': {
@@ -520,7 +520,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'FinTech',
     oneLiner: 'Professional invoice generator with PDF export, client management, payment status tracking, and tax calculation.',
     tenthGradeExplainer: 'Generate professional business invoices with your logo, tax calculations, and track who has paid.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'crypto-portfolio-tracker': {
@@ -529,7 +529,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'FinTech',
     oneLiner: 'Real-time cryptocurrency portfolio tracker with CoinGecko API, P&L tracking, price alerts, and historical charts.',
     tenthGradeExplainer: 'Track Bitcoin, Ethereum, and all your crypto coins in real-time with profit/loss calculations.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
 
@@ -540,7 +540,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'Cloud',
     oneLiner: 'Real-time weather monitoring dashboard with OpenWeatherMap API, historical data charts, and 7-day forecast.',
     tenthGradeExplainer: 'Live weather dashboard showing temperature, humidity, wind speed with beautiful charts and forecasts.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'smart-home-dashboard': {
@@ -549,7 +549,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'FullStack',
     oneLiner: 'Smart home IoT dashboard with simulated device control, energy consumption monitoring, and automation rules.',
     tenthGradeExplainer: 'Control all your smart home devices from one screen — lights, fans, security cameras, temperature.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'server-health-monitor': {
@@ -558,7 +558,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'Cloud',
     oneLiner: 'HTTP uptime monitor with response time graphs, downtime alerts, uptime percentage, and email notifications.',
     tenthGradeExplainer: 'Pings websites every minute and sends an alert if they go down — like a watchdog for servers.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'air-quality-tracker': {
@@ -567,7 +567,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'Cloud',
     oneLiner: 'Real-time AQI monitoring using OpenAQ API with health recommendations, city comparison, and trend analysis.',
     tenthGradeExplainer: 'Tracks air pollution levels in your city, shows health risks, and compares with other cities.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
 
@@ -578,7 +578,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'FullStack',
     oneLiner: 'Full-featured URL shortener with click analytics, geographic tracking, QR codes, and custom aliases.',
     tenthGradeExplainer: 'Turns long URLs into short links like bit.ly, tracks how many people clicked and from which country.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'student-result-management': {
@@ -587,7 +587,7 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'FullStack',
     oneLiner: 'Student result management system with marks entry, GPA calculation, PDF report cards, and analytics.',
     tenthGradeExplainer: 'Teachers enter marks, the system calculates grades, rank, and generates printable report cards.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
   'food-delivery-tracker': {
@@ -596,15 +596,47 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     category: 'FullStack',
     oneLiner: 'Complete food delivery platform with restaurant listings, cart, real-time order tracking, and rider dashboard.',
     tenthGradeExplainer: 'Like Zomato — browse restaurants, add to cart, order food, and track delivery on a live map.',
-    badge: '⚡ Instant Download',
+    badge: '⏳ In QA Pipeline · Pre-Book',
     isReady: false,
   },
 };
 
-export const AVAILABLE_PROJECT_SLUGS = new Set(Object.keys(READY_PROJECTS));
+export const AVAILABLE_CORE_SLUGS = [
+  'healthcare-ehr-portal',
+  'blood-bank-management',
+  'resume-parsing-engine',
+  'online-code-compiler',
+  'credit-card-fraud',
+  'phishing-detector-ai',
+  'restaurant-qr-ordering',
+  'aerofuel-predictor',
+  'smart-expense-tracker',
+] as const;
+
+export type AvailableCoreSlug = (typeof AVAILABLE_CORE_SLUGS)[number];
+
+export const AVAILABLE_PROJECT_SLUGS = new Set<string>(AVAILABLE_CORE_SLUGS);
+
+const SLUG_ALIASES_MAP: Record<string, string> = {
+  'credit-card-fraud-detection': 'credit-card-fraud',
+  'credit-card-fraud-detector': 'credit-card-fraud',
+  'fraud-radar': 'credit-card-fraud',
+  'phishing-detector': 'phishing-detector-ai',
+  'resume-parser': 'resume-parsing-engine',
+  'ehr-portal': 'healthcare-ehr-portal',
+  'healthcare-portal': 'healthcare-ehr-portal',
+  'blood-bank': 'blood-bank-management',
+  'code-compiler': 'online-code-compiler',
+  'restaurant-qr': 'restaurant-qr-ordering',
+  'aero-fuel': 'aerofuel-predictor',
+  'expense-tracker': 'smart-expense-tracker',
+};
 
 export function isProjectAvailable(slug: string): boolean {
-  return AVAILABLE_PROJECT_SLUGS.has(slug);
+  if (!slug) return false;
+  const clean = slug.toLowerCase().trim();
+  const resolved = SLUG_ALIASES_MAP[clean] || clean;
+  return AVAILABLE_PROJECT_SLUGS.has(resolved);
 }
 
 /** @deprecated live URLs removed — use /projects/[slug] instead */

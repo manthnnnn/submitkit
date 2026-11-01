@@ -4,6 +4,8 @@ import { razorpay } from '@/lib/razorpay';
 import { PaymentPayload } from '@/lib/types';
 import { CONSTANTS } from '@/lib/constants';
 import { checkRateLimit, getClientIP, checkOrigin } from '@/lib/rate-limit';
+import { getAllStaticProjects } from '@/lib/static-catalog';
+import { isProjectAvailable } from '@/lib/available-projects';
 import crypto from 'crypto';
 
 export async function POST(req: NextRequest) {
@@ -29,19 +31,36 @@ export async function POST(req: NextRequest) {
 
     const supabase = createAdminClient();
     
-    // Fetch project to get actual price (never trust client price)
-    const { data: project, error: projectError } = await supabase
-      .from('projects')
-      .select('*')
-      .eq('id', body.projectId)
-      .single();
+    // Fetch project (check Supabase or fall back to static catalog)
+    let project: any = null;
+    try {
+      const { data } = await supabase
+        .from('projects')
+        .select('*')
+        .or(`id.eq.${body.projectId},slug.eq.${body.projectId}`)
+        .maybeSingle();
+      if (data) project = data;
+    } catch { /* ignore */ }
+
+    if (!project) {
+      const allStatic = getAllStaticProjects();
+      project = allStatic.find(p => p.id === body.projectId || p.slug === body.projectId);
+    }
       
-    if (projectError || !project) {
+    if (!project) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }
+
+    // Safety check: Only genuinely ready-to-ship projects can be purchased for instant delivery
+    if (!isProjectAvailable(project.slug)) {
+      return NextResponse.json({
+        error: 'This project is in QA verification and available for Pre-Book only. No payment is charged yet — please use the Pre-Book form on the project page.'
+      }, { status: 400 });
+    }
     
-    // Calculate final amount
-    let totalAmount = project.price_inr;
+    // Standard pricing: Mini ₹299 / Major ₹499
+    const basePrice = project.tier === 'MAJOR' ? CONSTANTS.PRICING.MAJOR_PROJECT : CONSTANTS.PRICING.MINI_PROJECT;
+    let totalAmount = basePrice;
     if (body.addPersonalization) totalAmount += CONSTANTS.PRICING.ADDONS.PERSONALIZATION;
     if (body.addPlagiarismCert) totalAmount += CONSTANTS.PRICING.ADDONS.PLAGIARISM_CERT;
     if (body.addVivaCall) totalAmount += CONSTANTS.PRICING.ADDONS.VIVA_CALL;

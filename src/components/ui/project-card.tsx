@@ -1,140 +1,171 @@
-import Link from "next/link";
-import { Project } from "@/lib/types";
-import { formatCurrency } from "@/lib/utils";
-import { TechBadge } from "./tech-badge";
-import { ArrowRight, Flame, CheckCircle2, Clock, Lock, Bell } from "lucide-react";
-import { isProjectAvailable, getProjectMeta } from "@/lib/available-projects";
+'use client';
+import { useState } from 'react';
+import { Project } from '@/lib/types';
+import { formatCurrency } from '@/lib/utils';
+import { TechBadge } from './tech-badge';
+import { ArrowRight, Flame, CheckCircle2, Clock, Lock, Bell, Zap, FileText, Terminal, LayoutGrid, GitBranch, Copy, Check, Eye } from 'lucide-react';
+import { isProjectAvailable, getProjectMeta } from '@/lib/available-projects';
 
-const TRENDING_SLUGS = ['spam-classifier-nlp', 'face-attendance-system', 'crypto-portfolio-tracker', 'spaceshield-ai', 'crop-disease-detector'];
+const TRENDING = ['spam-classifier-nlp','face-attendance-system','crypto-portfolio-tracker','face-recognition-attendance','intrusion-detection-system'];
+type Tab = 'overview' | 'deliverables' | 'run';
 
-export function ProjectCard({ project, onReserve }: { project: Project; onReserve?: (projectName: string) => void }) {
-  const isMajor     = project.tier === 'MAJOR';
-  const isTrending  = TRENDING_SLUGS.includes(project.slug);
-  const isAvailable = isProjectAvailable(project.slug);
-  const meta        = getProjectMeta(project.slug);
-  const href        = `/projects/${project.slug}`;
+const DELIVS = (isMajor: boolean) => [
+  { l: 'Source Code (.zip)',                         ok: true },
+  { l: isMajor ? '60-Page IEEE Black Book (.docx)' : '30-Page IEEE Black Book (.docx)', ok: true },
+  { l: 'Viva Defense PPT (.pptx)',                   ok: true },
+  { l: isMajor ? 'Top 25 Viva Q&A' : 'Top 15 Viva Q&A', ok: true },
+  { l: 'Architecture Diagram',                       ok: true },
+  { l: '1-Click run.bat + run.sh launcher',          ok: true },
+];
+
+function CopyBtn({ value }: { value: string }) {
+  const [c, setC] = useState(false);
+  return (
+    <button onClick={e => { e.preventDefault(); e.stopPropagation(); navigator.clipboard.writeText(value); setC(true); setTimeout(() => setC(false), 2000); }}
+      style={{ background: c ? 'var(--teal-50)' : '#FFFFFF', color: c ? 'var(--teal)' : '#64748B', border: '1px solid #CBD5E1', cursor: 'pointer', padding: '.3125rem', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '1.875rem', height: '1.875rem' }}
+      aria-label="Copy"
+    >
+      {c ? <Check style={{ width: '.75rem', height: '.75rem' }} /> : <Copy style={{ width: '.75rem', height: '.75rem' }} />}
+    </button>
+  );
+}
+
+export function ProjectCard({ project, onReserve }: { project: Project; onReserve?: (name: string) => void }) {
+  const [tab, setTab] = useState<Tab>('overview');
+  const isMajor       = project.tier === 'MAJOR';
+  const trending      = TRENDING.includes(project.slug);
+  const available     = isProjectAvailable(project.slug);
+  const meta          = getProjectMeta(project.slug);
+  const runCmd        = project.tech_stack?.includes('Docker') ? 'docker-compose up' : project.tech_stack?.includes('Python') ? 'python app.py' : 'npm run dev';
+
+  const TABS: { id: Tab; label: string; Icon: React.ComponentType<any> }[] = [
+    { id: 'overview',     label: 'Overview',     Icon: LayoutGrid },
+    { id: 'deliverables', label: 'Deliverables', Icon: FileText   },
+    { id: 'run',          label: 'Run',          Icon: Terminal   },
+  ];
 
   return (
-    <div
-      style={{ transform: 'translateZ(0)' }}
-      className={`glass-card flex flex-col hover-glow group transition-all duration-200 hover:-translate-y-1 relative overflow-hidden ${
-        isAvailable
-          ? 'border-emerald-500/20 hover:border-emerald-500/40'
-          : 'border-white/5 hover:border-white/20'
-      }`}
-    >
-      {/* Status badges */}
-      <div className="absolute top-3 right-3 z-20 flex items-center gap-1.5">
-        {isAvailable ? (
-          <div className="flex items-center gap-1 bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-[10px] font-bold px-2.5 py-0.5 rounded-full">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-            <span>Available</span>
-          </div>
-        ) : (
-          <div className="flex items-center gap-1 bg-purple-500/15 text-purple-300 border border-purple-500/30 text-[10px] font-bold px-2 py-0.5 rounded-full">
-            <Clock className="w-2.5 h-2.5" />
-            <span>Upcoming</span>
-          </div>
-        )}
-        {isTrending && !isAvailable && (
-          <div className="flex items-center gap-1 bg-orange-500/15 text-orange-400 border border-orange-500/25 text-[10px] font-bold px-2 py-0.5 rounded-full">
-            <Flame className="w-2.5 h-2.5" /> High Demand
-          </div>
-        )}
-      </div>
+    <div className="card card-lift aslide" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden', borderRadius: '18px', background: 'var(--surface)', willChange: 'transform' }}>
+      {/* Tier bar */}
+      <div style={{ height: '3px', background: isMajor ? 'linear-gradient(90deg,#0D9488,#14B8A6)' : 'linear-gradient(90deg,#14B8A6,#2DD4BF)' }} />
 
       {/* Header */}
-      <div className="p-5 pb-0 flex justify-between items-start mb-3 relative z-10">
-        <div className="flex flex-col flex-grow min-w-0 pr-24">
-          <div className="flex items-center gap-2 mb-2.5">
-            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
-              isMajor
-                ? 'bg-brand-500/15 text-brand-400 border-brand-500/25'
-                : 'bg-zinc-800 text-zinc-300 border-white/10'
-            }`}>
-              {project.tier} BUNDLE
-            </span>
-            <span className="text-[10px] font-semibold text-zinc-500 uppercase tracking-wider">
-              {project.category}
-            </span>
-          </div>
-          <Link href={href}>
-            <h3 className="font-display text-base font-semibold text-white hover:text-emerald-200 transition-colors line-clamp-2 leading-snug hover:underline decoration-emerald-500/40 underline-offset-2">
-              {project.title}
-            </h3>
-          </Link>
+      <div style={{ padding: '1.125rem 1.25rem .875rem', position: 'relative' }}>
+        <div style={{ position: 'absolute', top: '1rem', right: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '.3rem' }}>
+          {available
+            ? <span className="tag tag-teal" style={{ fontSize: '.6rem' }}><span className="dot-live apulse" style={{ width:'5px',height:'5px' }} /> Ready to Ship</span>
+            : <span className="tag tag-amber" style={{ fontSize: '.6rem' }}><Clock style={{ width:'.625rem',height:'.625rem' }} /> Pre-Book</span>
+          }
+          {trending && <span className="tag tag-rose" style={{ fontSize: '.6rem' }}><Flame style={{ width:'.625rem',height:'.625rem' }} />Hot</span>}
         </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem', marginBottom: '.75rem', paddingRight: '6rem' }}>
+          <span className={`tag ${isMajor ? 'tag-violet' : 'tag-teal'}`} style={{ fontSize: '.6rem' }}>{project.tier}</span>
+          <span style={{ fontSize: '.6875rem', fontWeight: 600, color: 'var(--ink-4)', textTransform: 'uppercase', letterSpacing: '.05em' }}>{project.category}</span>
+        </div>
+
+        {/* Title */}
+        <h3 className="font-display" style={{ fontSize: '1.0625rem', fontWeight: 700, color: 'var(--navy)', lineHeight: 1.35, letterSpacing: '-.025em', marginBottom: '.5rem', paddingRight: '6rem', transition: 'color 150ms' }}>
+          {project.title}
+        </h3>
+
+        <p style={{ fontSize: '.875rem', color: 'var(--ink-3)', lineHeight: 1.65 }} className="line-clamp-2">
+          {meta?.oneLiner || project.description}
+        </p>
       </div>
 
-      {/* Body */}
-      <div className="p-5 pt-0 flex-grow flex flex-col">
-        <p className="text-zinc-400 text-xs leading-relaxed mb-3 line-clamp-2">
-          {meta ? meta.oneLiner : project.description}
-        </p>
+      {/* Tab bar */}
+      <div style={{ display: 'flex', borderTop: '1px solid var(--line)', borderBottom: '1px solid var(--line)', background: 'var(--surface-2)' }}>
+        {TABS.map(({ id, label, Icon }) => (
+          <button key={id} onClick={e => { e.preventDefault(); e.stopPropagation(); setTab(id); }}
+            style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '.3rem', padding: '.625rem .25rem', fontSize: '.6875rem', fontWeight: tab===id ? 700 : 500, color: tab===id ? 'var(--teal)' : 'var(--ink-3)', background: tab===id ? 'var(--surface)' : 'transparent', border: 'none', cursor: 'pointer', borderBottom: tab===id ? `2px solid var(--teal)` : '2px solid transparent', transition: 'all 150ms', minHeight: '40px', WebkitTapHighlightColor: 'transparent' }}
+          >
+            <Icon style={{ width: '.8125rem', height: '.8125rem' }} />
+            <span className="hidden sm:inline">{label}</span>
+          </button>
+        ))}
+      </div>
 
-        {meta && (
-          <div className="mb-4 p-2.5 rounded-xl bg-zinc-900/60 border border-white/5 text-[11px] text-zinc-300 leading-relaxed">
-            <span className="text-emerald-400 font-semibold text-[10px] uppercase tracking-wider block mb-0.5">Quick Overview:</span>
-            {meta.tenthGradeExplainer}
+      {/* Tab content */}
+      <div className="atab flex-1" style={{ padding: '1rem 1.25rem', minHeight: '9rem' }}>
+        {tab === 'overview' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '.875rem' }}>
+            {meta && (
+              <div style={{ padding: '.875rem', borderRadius: '12px', background: 'var(--surface-teal)', border: '1px solid var(--teal-100)', fontSize: '.8125rem', color: 'var(--navy)', lineHeight: 1.7 }}>
+                <div style={{ fontSize: '.625rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.08em', color: 'var(--teal)', marginBottom: '.375rem' }}>Plain English</div>
+                {meta.tenthGradeExplainer}
+              </div>
+            )}
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.375rem' }}>
+              {project.tech_stack.slice(0, 4).map(t => <TechBadge key={t} tech={t} />)}
+              {project.tech_stack.length > 4 && <span style={{ fontSize: '.6875rem', color: 'var(--ink-4)', alignSelf: 'center' }}>+{project.tech_stack.length - 4}</span>}
+            </div>
           </div>
         )}
 
-        {/* Deliverables */}
-        <div className="mb-4 pt-2 border-t border-white/5 grid grid-cols-2 gap-1.5 text-[10px] text-zinc-400">
-          {[
-            '1-Click Runnable Code',
-            isMajor ? '60-Page Black Book' : '30-Page Black Book',
-            'Viva Defense PPT',
-            isMajor ? 'Top 25 Viva Q&As' : 'Top 15 Viva Q&As'
-          ].map(item => (
-            <div key={item} className="flex items-center gap-1">
-              <CheckCircle2 className={`w-3 h-3 shrink-0 ${isAvailable ? 'text-emerald-400' : 'text-zinc-600'}`} />
-              <span>{item}</span>
+        {tab === 'deliverables' && (
+          <ul style={{ display: 'flex', flexDirection: 'column', gap: '.5rem' }}>
+            {DELIVS(isMajor).map(({ l, ok }) => (
+              <li key={l} style={{ display: 'flex', alignItems: 'center', gap: '.75rem', fontSize: '.875rem', color: ok ? 'var(--ink-2)' : 'var(--ink-4)' }}>
+                <CheckCircle2 style={{ width: '.9375rem', height: '.9375rem', color: ok ? 'var(--teal)' : 'var(--line-2)', flexShrink: 0 }} />
+                {l}
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {tab === 'run' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
+            <div style={{ borderRadius: '12px', overflow: 'hidden', background: 'var(--canvas-warm)', border: '1px solid var(--line)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '.5rem .875rem', background: 'var(--surface-3)', borderBottom: '1px solid var(--line)' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '.625rem', color: 'var(--ink-4)', textTransform: 'uppercase', letterSpacing: '.08em', fontWeight: 600 }}>Start project</span>
+                <CopyBtn value={runCmd} />
+              </div>
+              <div style={{ padding: '.75rem .875rem', fontFamily: 'var(--font-mono)', fontSize: '.8125rem', color: 'var(--navy)' }}>
+                <span style={{ color: '#10B981', fontWeight: 700 }}>$ </span>{runCmd}
+              </div>
             </div>
-          ))}
-        </div>
-
-        <div className="mt-auto space-y-3">
-          {/* Tech stack */}
-          <div className="flex flex-wrap gap-1.5">
-            {project.tech_stack.slice(0, 3).map(tech => <TechBadge key={tech} tech={tech} />)}
-            {project.tech_stack.length > 3 && (
-              <span className="text-[10px] text-zinc-600 flex items-center">+{project.tech_stack.length - 3} more</span>
-            )}
+            <div style={{ padding: '.75rem 1rem', borderRadius: '12px', background: 'var(--teal-50)', border: '1px solid var(--teal-100)', fontSize: '.875rem', color: 'var(--teal-dark)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '.5rem' }}>
+              <Zap style={{ width: '.9375rem', height: '.9375rem' }} />
+              Windows: double-click <code style={{ fontFamily: 'var(--font-mono)', background: 'var(--teal-100)', padding: '.125rem .375rem', borderRadius: '4px' }}>run.bat</code>
+            </div>
           </div>
+        )}
+      </div>
 
-          {/* Footer */}
-          <div className="pt-3 border-t border-white/5">
-            {isAvailable ? (
-              /* UNLOCKED: show price + buy button */
-              <div className="flex items-center justify-between">
-                <div>
-                  <span className="font-bold text-white text-sm">{formatCurrency(project.price_inr)}</span>
-                  <span className="text-[10px] text-zinc-500 ml-1">one-time</span>
-                </div>
-                <Link href={href} className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all group/btn text-zinc-950 bg-white hover:bg-emerald-400 shadow-md shadow-white/10">
-                  <span>View &amp; Buy</span>
-                  <ArrowRight className="h-3 w-3 group-hover/btn:translate-x-0.5 transition-transform text-zinc-950" />
-                </Link>
-              </div>
-            ) : (
-              /* LOCKED: no price, no buy — clear coming soon state */
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-[11px] text-amber-400 font-semibold">
-                  <Lock className="w-3 h-3" />
-                  <span>In Development — Coming Soon</span>
-                </div>
-                <button
-                  onClick={() => onReserve ? onReserve(project.title) : null}
-                  className="w-full flex items-center justify-center gap-1.5 text-xs font-bold text-zinc-200 bg-white/5 hover:bg-amber-500/20 hover:text-amber-300 border border-white/10 hover:border-amber-500/40 px-3 py-2 rounded-lg transition-all"
-                >
-                  <Bell className="w-3 h-3" />
-                  Notify Me When Ready
-                </button>
-              </div>
-            )}
+      {/* Footer */}
+      <div style={{ padding: '1rem 1.25rem', borderTop: '1px solid var(--line)' }}>
+        {available ? (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div>
+              <span className="font-display" style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--navy)', letterSpacing: '-.04em' }}>{formatCurrency(project.price_inr)}</span>
+              <span style={{ fontSize: '.6875rem', color: 'var(--ink-4)', marginLeft: '.25rem' }}>instant download</span>
+            </div>
+            {/* Visual button — actual navigation handled by outer Link wrapper */}
+            <div
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '.375rem', padding: '.4375rem 1rem', borderRadius: '10px', background: 'var(--teal)', color: '#fff', fontWeight: 700, fontSize: '.875rem', boxShadow: '0 4px 14px rgba(13,148,136,.28)', cursor: 'pointer' }}
+            >
+              Buy &amp; Download
+              <ArrowRight style={{ width: '.875rem', height: '.875rem' }} />
+            </div>
           </div>
-        </div>
+        ) : (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div>
+              <span className="font-display" style={{ fontSize: '1.25rem', fontWeight: 800, color: '#92400E', letterSpacing: '-.03em' }}>
+                {formatCurrency(isMajor ? 499 : 299)}
+              </span>
+              <span style={{ fontSize: '.6875rem', color: 'var(--amber)', marginLeft: '.25rem', fontWeight: 600 }}>pre-book</span>
+            </div>
+            <div
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '.375rem', padding: '.4375rem .875rem', borderRadius: '10px', background: 'var(--amber-50)', color: 'var(--amber)', border: '1.5px solid var(--amber-100)', fontWeight: 700, fontSize: '.8125rem', cursor: 'pointer' }}
+            >
+              <Bell style={{ width: '.8125rem', height: '.8125rem' }} />
+              Pre-Book
+              <ArrowRight style={{ width: '.8125rem', height: '.8125rem' }} />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

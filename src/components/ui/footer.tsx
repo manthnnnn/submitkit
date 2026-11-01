@@ -2,109 +2,108 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Logo } from '@/components/ui/logo';
-
-// Inline SVG icons for Instagram & WhatsApp (lucide-react version doesn't include them)
-function InstagramIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
-      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
-    </svg>
-  );
-}
-
-function WhatsAppIcon({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-    </svg>
-  );
-}
+import { CONSTANTS } from '@/lib/constants';
 
 export function Footer() {
   const pathname = usePathname();
-  if (pathname?.startsWith('/admin')) {
-    return null;
-  }
+  if (pathname?.startsWith('/admin')) return null;
 
   return (
-    <footer className="bg-[#09090b] border-t border-white/5 pt-14 pb-8">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
-          
-          {/* Brand Column */}
-          <div className="md:col-span-2">
-            <Logo size="sm" href="/" className="mb-4" />
-            <p className="text-zinc-500 text-sm leading-relaxed max-w-xs mb-5">
-              India's premier digital marketplace for academic project bundles. Get working code, a 60-page Black Book, and Viva PPTs -- instantly.
+    <footer style={{ background: '#1A1814', color: '#A09890', borderTop: 'none' }}>
+      <div className="shell" style={{ paddingTop: '4rem', paddingBottom: '2.5rem' }}>
+
+        {/* Top grid */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2.5rem', justifyContent: 'space-between', marginBottom: '3rem', paddingBottom: '3rem', borderBottom: '1px solid rgba(255,255,255,.08)' }}>
+
+          {/* Brand column */}
+          <div style={{ maxWidth: '22rem' }}>
+            <div style={{ marginBottom: '1.25rem' }}>
+              <Logo size="sm" href="/" light />
+            </div>
+            <p style={{ fontSize: '.875rem', color: '#8A8278', lineHeight: 1.75, marginBottom: '1.5rem' }}>
+              India&apos;s premier marketplace for engineering project bundles. Code + IEEE Black Book + Viva PPTs — delivered instantly.
             </p>
-            <div className="flex gap-3">
-              <a
-                href="https://instagram.com/submitkit.in"
-                target="_blank" rel="noopener noreferrer"
-                className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-brand-500/20 hover:border-brand-500/30 transition-all group"
-                aria-label="Instagram"
+
+            {/* Live badge */}
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '.5rem', marginBottom: '1.5rem', padding: '.375rem .875rem', borderRadius: '9999px', background: 'rgba(16,185,129,.12)', border: '1px solid rgba(16,185,129,.2)' }}>
+              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#10B981', boxShadow: '0 0 0 2px rgba(16,185,129,.25)' }} className="apulse" />
+              <span style={{ fontSize: '.75rem', fontWeight: 700, color: '#34D399' }}>All Systems Operational</span>
+            </div>
+
+            {/* Contact */}
+            <div style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap' }}>
+              <a href="mailto:team@submitkit.in"
+                style={{ fontSize: '.8125rem', color: '#8A8278', fontWeight: 500, transition: 'color 150ms' }}
+                onMouseEnter={e => (e.currentTarget.style.color = '#14B8A6')}
+                onMouseLeave={e => (e.currentTarget.style.color = '#8A8278')}
               >
-                <InstagramIcon className="w-4 h-4 text-zinc-500 group-hover:text-brand-400 transition-colors" />
+                team@submitkit.in
               </a>
-              <a
-                href="https://wa.me/918799814256"
-                target="_blank" rel="noopener noreferrer"
-                className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-emerald-500/20 hover:border-emerald-500/30 transition-all group"
-                aria-label="WhatsApp"
+              <a href="https://wa.me/918799814256" target="_blank" rel="noopener noreferrer"
+                style={{ fontSize: '.8125rem', color: '#8A8278', fontWeight: 500, transition: 'color 150ms' }}
+                onMouseEnter={e => (e.currentTarget.style.color = '#4ADE80')}
+                onMouseLeave={e => (e.currentTarget.style.color = '#8A8278')}
               >
-                <WhatsAppIcon className="w-4 h-4 text-zinc-500 group-hover:text-emerald-400 transition-colors" />
+                WhatsApp support
               </a>
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div>
-            <h3 className="text-white text-sm font-semibold mb-4">Browse</h3>
-            <ul className="space-y-2.5 text-sm text-zinc-500">
-              <li><Link href="/blueprint" className="text-zinc-300 hover:text-white font-medium transition-colors flex items-center gap-1.5"><span>Choose Your Topic</span><span className="text-[10px] px-1.5 py-0.2 bg-white/10 text-zinc-300 rounded font-bold">1,000+</span></Link></li>
-              <li><Link href="/projects" className="hover:text-zinc-300 transition-colors">All Projects</Link></li>
-              <li><Link href="/projects#custom" className="text-brand-400 hover:text-brand-300 font-medium transition-colors flex items-center gap-1.5"><span>Custom Project</span><span className="text-[10px] px-1.5 py-0.2 bg-brand-500/20 text-brand-300 rounded border border-brand-500/30 font-bold">48h</span></Link></li>
-              <li><Link href="/projects?tier=MINI" className="hover:text-zinc-300 transition-colors">Mini Projects</Link></li>
-              <li><Link href="/projects?tier=MAJOR" className="hover:text-zinc-300 transition-colors">Major Projects</Link></li>
-              <li><Link href="/projects?category=AIML" className="hover:text-zinc-300 transition-colors">AI / ML Projects</Link></li>
-              <li><Link href="/projects?category=Cybersecurity" className="hover:text-zinc-300 transition-colors">Cybersecurity Projects</Link></li>
-            </ul>
+          {/* Links */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(10rem, 1fr))', gap: '2.5rem' }}>
+            <div>
+              <h4 style={{ fontSize: '.75rem', fontWeight: 800, color: '#F5F0E8', marginBottom: '1.25rem', letterSpacing: '.08em', textTransform: 'uppercase' }}>Browse</h4>
+              <ul style={{ display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
+                {[
+                  { href: '/projects',              label: 'All Project Kits' },
+                  { href: '/projects?tier=MINI',    label: `Mini (₹${CONSTANTS.PRICING.MINI_PROJECT})` },
+                  { href: '/projects?tier=MAJOR',   label: `Major (₹${CONSTANTS.PRICING.MAJOR_PROJECT})` },
+                  { href: '/blueprint',             label: 'Free Blueprints' },
+                  { href: '/custom',                label: 'Custom Project' },
+                  { href: '/blog',                  label: 'Project Guides' },
+                ].map(({ href, label }) => (
+                  <li key={href}>
+                    <Link href={href}
+                      style={{ fontSize: '.875rem', color: '#8A8278', fontWeight: 500, transition: 'color 150ms' }}
+                      onMouseEnter={e => (e.currentTarget.style.color = '#F5F0E8')}
+                      onMouseLeave={e => (e.currentTarget.style.color = '#8A8278')}
+                    >
+                      {label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <h4 style={{ fontSize: '.75rem', fontWeight: 800, color: '#F5F0E8', marginBottom: '1.25rem', letterSpacing: '.08em', textTransform: 'uppercase' }}>Company</h4>
+              <ul style={{ display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
+                {[
+                  { href: '/order/lookup', label: 'Track Order' },
+                  { href: '/terms',        label: 'Terms of Service' },
+                  { href: '/privacy',      label: 'Privacy Policy' },
+                  { href: '/refund',       label: 'Refund Policy' },
+                ].map(({ href, label }) => (
+                  <li key={href}>
+                    <Link href={href}
+                      style={{ fontSize: '.875rem', color: '#8A8278', fontWeight: 500, transition: 'color 150ms' }}
+                      onMouseEnter={e => (e.currentTarget.style.color = '#F5F0E8')}
+                      onMouseLeave={e => (e.currentTarget.style.color = '#8A8278')}
+                    >
+                      {label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
-
-          {/* Legal */}
-          <div>
-            <h3 className="text-white text-sm font-semibold mb-4">Company</h3>
-            <ul className="space-y-2.5 text-sm text-zinc-500">
-              <li><Link href="/terms" className="hover:text-zinc-300 transition-colors">Terms of Service</Link></li>
-              <li><Link href="/privacy" className="hover:text-zinc-300 transition-colors">Privacy Policy</Link></li>
-              <li><Link href="/refund" className="hover:text-zinc-300 transition-colors">Refund Policy</Link></li>
-              <li>
-                <a href="mailto:team@submitkit.in" className="hover:text-zinc-300 transition-colors">
-                  Support
-                </a>
-              </li>
-              <li>
-                <a
-                  href="mailto:team@submitkit.in?subject=Custom Project Request&body=Hi, I need a custom project. Details: "
-                  className="hover:text-zinc-300 transition-colors flex items-center gap-1.5"
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                  Custom Project Request
-                </a>
-              </li>
-            </ul>
-          </div>
-
         </div>
 
-        <div className="pt-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-2 text-xs text-zinc-600">
+        {/* Bottom bar */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '.75rem', fontSize: '.8125rem', color: '#5C574F' }}>
           <p>&copy; {new Date().getFullYear()} SubmitKit. All rights reserved.</p>
-          <p className="text-center">Disclaimer: Sold as educational reference materials only.</p>
+          <p>Built as educational reference material for engineering students</p>
         </div>
       </div>
     </footer>
   );
 }
-

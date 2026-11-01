@@ -32,17 +32,17 @@ export function LiveTicker() {
   if (items.length === 0) return null;
 
   return (
-    <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/5 text-zinc-300 text-xs sm:text-sm font-medium mb-6 backdrop-blur-sm overflow-hidden max-w-full justify-center relative shadow-[0_0_15px_rgba(16,185,129,0.08)]">
-      <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
-      <div className="relative h-5 flex items-center justify-center overflow-hidden">
+    <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-emerald-200/90 bg-emerald-50/80 text-emerald-900 text-xs font-medium backdrop-blur-sm shadow-sm">
+      <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+      <div className="relative h-4 flex items-center justify-center overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentIndex}
-            initial={{ y: 12, opacity: 0 }}
+            initial={{ y: 10, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -12, opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-            className="whitespace-nowrap text-center text-xs sm:text-sm text-zinc-200 font-medium"
+            exit={{ y: -10, opacity: 0 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className="whitespace-nowrap text-center text-xs text-emerald-900 font-semibold"
           >
             {items[currentIndex]}
           </motion.div>

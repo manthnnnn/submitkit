@@ -1,656 +1,413 @@
 "use client";
 
-import { useState, useMemo, useDeferredValue, useEffect, useCallback } from "react";
+import { useState, useMemo, useDeferredValue, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import {
-  Search,
-  Clock,
-  Zap,
-  Star,
-  BookOpen,
-  ShieldCheck,
-  ArrowRight,
-  Flame,
-  Layers,
-  Sparkles,
-  Filter,
-  X,
-  SlidersHorizontal,
-  Brain,
-  Cpu,
-  Globe,
-  Lock,
-  Rocket,
-  RefreshCw,
-  MessageCircle,
-  FileText,
+  Search, Clock, Zap, BookOpen, ShieldCheck, ArrowRight,
+  Flame, Layers, Sparkles, X, Brain, Cpu, Lock,
+  RefreshCw, MessageCircle, FileText, ChevronDown, Check,
 } from "lucide-react";
 import {
-  ALL_TOPICS,
-  getFeaturedTopics,
-  getAllLetters,
-  getTopicsByLetter,
-  TopicCard,
-  canBuildOnAntigravity,
-  getProjectSize,
-  getProjectTypeTags,
+  ALL_TOPICS, getFeaturedTopics, getAllLetters, getTopicsByLetter,
+  type TopicCard, canBuildOnAntigravity, getProjectSize, getProjectTypeTags,
 } from "@/lib/blueprint-engine";
 
-const CATEGORIES: { id: string; label: string }[] = [
-  { id: "ALL", label: "All Topics" },
-  { id: "RAG", label: "🧠 RAG & GenAI" },
-  { id: "IoT", label: "📡 IoT & Edge AI" },
-  { id: "AIML", label: "🤖 AI & Vision" },
-  { id: "STARTUPS", label: "🚀 Startup Ideas" },
-  { id: "NLP", label: "💬 NLP & Agents" },
-  { id: "FullStack", label: "🌐 Full Stack" },
-  { id: "Cybersecurity", label: "🔐 Cybersecurity" },
-  { id: "DataScience", label: "📊 Data Science" },
-  { id: "Blockchain", label: "⛓️ Blockchain" },
-  { id: "Mobile", label: "📱 Mobile Apps" },
-  { id: "Fintech", label: "💳 Fintech" },
+const CATS = [
+  { id: "ALL",          label: "All Topics" },
+  { id: "RAG",          label: "RAG & GenAI" },
+  { id: "IoT",          label: "IoT & Edge AI" },
+  { id: "AIML",         label: "AI & Vision" },
+  { id: "STARTUPS",     label: "Startup Ideas" },
+  { id: "NLP",          label: "NLP & Agents" },
+  { id: "FullStack",    label: "Full Stack" },
+  { id: "Cybersecurity",label: "Cybersecurity" },
+  { id: "DataScience",  label: "Data Science" },
+  { id: "Blockchain",   label: "Blockchain" },
+  { id: "Mobile",       label: "Mobile Apps" },
+  { id: "Fintech",      label: "FinTech" },
 ];
 
-const QUICK_SEARCH_CHIPS = [
-  "RAG Pipeline",
-  "IoT Telemetry",
-  "ESP32 TinyML",
-  "Computer Vision",
-  "1-Prompt No-Code",
-];
+const TRENDING_CHIPS = ["RAG Pipeline", "IoT Telemetry", "ESP32 TinyML", "Computer Vision", "1-Prompt No-Code"];
 
-export default function BlueprintBrowserPage() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
-  const [selectedSize, setSelectedSize] = useState<string>("ALL");
-  const [buildMode, setBuildMode] = useState<"ALL" | "NOCODE" | "CODE">("ALL");
-  const [sortBy, setSortBy] = useState<"popular" | "difficulty-asc" | "difficulty-desc" | "name-asc">("popular");
-  const [visibleCount, setVisibleCount] = useState<number>(24);
-  const [expandedLetters, setExpandedLetters] = useState<Set<string>>(new Set());
-  const [bannerDismissed, setBannerDismissed] = useState(false);
+const SORT_OPTIONS = [
+  { value: "popular",         label: "Trending First",      desc: "Most viewed by CSE students" },
+  { value: "difficulty-asc",  label: "Mini Projects First", desc: "Faster to build (2–3 days)" },
+  { value: "difficulty-desc", label: "Major Projects First",desc: "Comprehensive capstones (5+ days)" },
+  { value: "name-asc",        label: "Alphabetical (A–Z)",  desc: "Sorted A to Z" },
+] as const;
+
+export default function BlueprintClient() {
+  const [query,       setQuery]       = useState("");
+  const [selCat,      setSelCat]      = useState("ALL");
+  const [selSize,     setSelSize]     = useState("ALL");
+  const [buildMode,   setBuildMode]   = useState<"ALL"|"NOCODE"|"CODE">("ALL");
+  const [sortBy,      setSortBy]      = useState<"popular"|"difficulty-asc"|"difficulty-desc"|"name-asc">("popular");
+  const [sortOpen,    setSortOpen]    = useState(false);
+  const sortRef                       = useRef<HTMLDivElement>(null);
+  const [visible,     setVisible]     = useState(24);
+  const [expanded,    setExpanded]    = useState<Set<string>>(new Set());
+  const [dismissed,   setDismissed]   = useState(false);
 
   useEffect(() => {
-    try {
-      if (typeof window !== "undefined") {
-        const dismissed = sessionStorage.getItem("blueprint_starter_banner_dismissed");
-        if (dismissed === "true") setBannerDismissed(true);
+    const handleOutside = (e: MouseEvent) => {
+      if (sortRef.current && !sortRef.current.contains(e.target as Node)) {
+        setSortOpen(false);
       }
-    } catch {}
+    };
+    document.addEventListener("mousedown", handleOutside);
+    return () => document.removeEventListener("mousedown", handleOutside);
   }, []);
 
-  const handleDismissBanner = () => {
-    setBannerDismissed(true);
-    try {
-      if (typeof window !== "undefined") {
-        sessionStorage.setItem("blueprint_starter_banner_dismissed", "true");
-      }
-    } catch {}
-  };
-
-  const toggleLetter = useCallback((letter: string) => {
-    setExpandedLetters((prev) => {
-      const next = new Set(prev);
-      if (next.has(letter)) next.delete(letter);
-      else next.add(letter);
-      return next;
-    });
+  useEffect(() => {
+    try { if (sessionStorage.getItem("bp_banner") === "1") setDismissed(true); } catch {}
   }, []);
 
-  const letters = getAllLetters();
+  const dismiss = () => { setDismissed(true); try { sessionStorage.setItem("bp_banner","1"); } catch {} };
+
+  const toggleLetter = useCallback((l: string) => {
+    setExpanded(prev => { const n = new Set(prev); n.has(l) ? n.delete(l) : n.add(l); return n; });
+  }, []);
+
+  const letters  = getAllLetters();
   const featured = useMemo(() => getFeaturedTopics(), []);
 
-  // Pre-indexed search data created once with rich size and domain metadata
-  const searchIndex = useMemo(() => {
-    return ALL_TOPICS.map((t) => {
-      const size = getProjectSize(t);
-      const isStartup =
-        t.id.startsWith("startup-") ||
-        t.title.toLowerCase().includes("startup") ||
-        t.tagline.toLowerCase().includes("startup");
-      const isNoCode = canBuildOnAntigravity(t);
-      const tags = getProjectTypeTags(t);
+  const searchIndex = useMemo(() => ALL_TOPICS.map(t => {
+    const size    = getProjectSize(t);
+    const isStart = t.id.startsWith("startup-") || t.title.toLowerCase().includes("startup");
+    const isNC    = canBuildOnAntigravity(t);
+    const tags    = getProjectTypeTags(t);
+    const str = `${t.title} ${t.tagline} ${t.whatItDoes} ${t.category} ${t.id} ${tags.join(" ")} ${size} ${isNC ? "no code nocode 1 prompt" : ""} ${isStart ? "startup" : ""} final year project cse`.toLowerCase();
+    return { topic: t, size, tags, isStart, isNC, str };
+  }), []);
 
-      const sizeKeywords =
-        size === "Mini"
-          ? "mini project mini easy beginner simple 2-3 days small"
-          : size === "Mid"
-          ? "mid project mid-level moderate 3-5 days intermediate"
-          : "major project major final year capstone advanced complex 5+ days";
-
-      const ragKeywords = tags.includes("RAG") ? "rag retrieval augmented generation vector database chromadb pinecone llamaindex langchain embeddings hybrid search" : "";
-      const agentKeywords = tags.includes("Agent") ? "agent multi agent crewai langgraph autonomous tool calling function calling workflow" : "";
-      const llmKeywords = tags.includes("LLM") ? "llm large language model generative ai genai ollama mistral llama gpt prompt" : "";
-      const iotKeywords = tags.includes("IoT") ? "iot internet of things esp32 esp32-cam arduino raspberry pi sensor telemetry lorawan tinyml edge ai mqtt" : "";
-      const aiKeywords = tags.includes("AI") ? "ai based ai project artificial intelligence computer vision neural deep learning" : "";
-      const mlKeywords = tags.includes("ML") ? "ml based ml project machine learning model classifier prediction dataset scikit" : "";
-      const nlpKeywords = tags.includes("NLP") ? "nlp natural language processing indicbert bert sentiment text speech voice translation summarization" : "";
-      const webKeywords = tags.includes("Web") ? "web based web project full stack fullstack website portal dashboard app" : "";
-      const noCodeKeywords = isNoCode ? "no code nocode 1 prompt one prompt antigravity without coding" : "";
-      const startupKeywords = isStartup ? "startup idea startup project business product saas" : "";
-
-      return {
-        topic: t,
-        size,
-        tags,
-        isStartup,
-        isNoCode,
-        searchStr: `${t.title} ${t.tagline} ${t.whatItDoes} ${t.category} ${t.id} ${tags.join(" ")} ${sizeKeywords} ${ragKeywords} ${agentKeywords} ${llmKeywords} ${iotKeywords} ${aiKeywords} ${mlKeywords} ${nlpKeywords} ${webKeywords} ${noCodeKeywords} ${startupKeywords} final year project college project cse it`.toLowerCase(),
-      };
-    });
-  }, []);
-
-  // Sync state with URL params on initial load
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    try {
-      const params = new URLSearchParams(window.location.search);
-      const q = params.get("q");
-      const cat = params.get("category");
-      const size = params.get("size");
-      const mode = params.get("mode");
-      const sort = params.get("sort");
-
-      if (q) setSearchQuery(q);
-      if (cat && (CATEGORIES.some((c) => c.id === cat) || cat === "AI" || cat === "ML" || cat === "RAG" || cat === "IoT")) {
-        setSelectedCategory(cat);
-      }
-      if (size && ["Mini", "Mid", "Major", "ALL"].includes(size)) {
-        setSelectedSize(size);
-      }
-      if (mode && ["ALL", "NOCODE", "CODE"].includes(mode)) {
-        setBuildMode(mode as any);
-      }
-      if (sort && ["popular", "difficulty-asc", "difficulty-desc", "name-asc"].includes(sort)) {
-        setSortBy(sort as any);
-      }
-    } catch {
-      // ignore URL parsing errors
-    }
-  }, []);
-
-  // Update URL params without triggering a full page reload or suspense remount
-  const updateUrl = useCallback(
-    (q: string, cat: string, size: string, mode: string, sort: string) => {
-      if (typeof window === "undefined") return;
-      const params = new URLSearchParams();
-      if (q.trim()) params.set("q", q.trim());
-      if (cat !== "ALL") params.set("category", cat);
-      if (size !== "ALL") params.set("size", size);
-      if (mode !== "ALL") params.set("mode", mode);
-      if (sort !== "popular") params.set("sort", sort);
-
-      const qs = params.toString();
-      const newUrl = qs ? `${window.location.pathname}?${qs}` : window.location.pathname;
-      window.history.replaceState({}, "", newUrl);
-    },
-    []
-  );
-
-  // Quick Pick counts computed from the search index
   const counts = useMemo(() => {
-    let ragCount = 0;
-    let aiCount = 0;
-    let mlCount = 0;
-    let iotCount = 0;
-    let miniCount = 0;
-    let majorCount = 0;
-    let noCodeCount = 0;
-    let codeCount = 0;
-    let startupCount = 0;
-    let webCount = 0;
-    let cyberCount = 0;
-
-    for (const item of searchIndex) {
-      if (item.tags.includes("RAG") || item.tags.includes("LLM") || item.tags.includes("Agent")) ragCount++;
-      if (item.tags.includes("AI") || item.topic.category === "AIML") aiCount++;
-      if (item.tags.includes("ML") || item.topic.category === "DataScience") mlCount++;
-      if (item.tags.includes("IoT") || item.topic.category === "IoT") iotCount++;
-      if (item.size === "Mini") miniCount++;
-      if (item.size === "Major") majorCount++;
-      if (item.isNoCode) noCodeCount++;
-      else codeCount++;
-      if (item.isStartup) startupCount++;
-      if (item.tags.includes("Web") || item.topic.category === "FullStack") webCount++;
-      if (item.topic.category === "Cybersecurity") cyberCount++;
+    let rag=0,ai=0,iot=0,mini=0,major=0,nc=0,startup=0,web=0,cyber=0;
+    for (const i of searchIndex) {
+      if (i.tags.includes("RAG")||i.tags.includes("LLM")||i.tags.includes("Agent")) rag++;
+      if (i.tags.includes("AI")||i.topic.category==="AIML") ai++;
+      if (i.tags.includes("IoT")||i.topic.category==="IoT") iot++;
+      if (i.size==="Mini") mini++;
+      if (i.size==="Major") major++;
+      if (i.isNC) nc++;
+      if (i.isStart) startup++;
+      if (i.tags.includes("Web")||i.topic.category==="FullStack") web++;
+      if (i.topic.category==="Cybersecurity") cyber++;
     }
-
-    return {
-      rag: ragCount,
-      ai: aiCount,
-      ml: mlCount,
-      iot: iotCount,
-      mini: miniCount,
-      major: majorCount,
-      noCode: noCodeCount,
-      code: codeCount,
-      startup: startupCount,
-      web: webCount,
-      cyber: cyberCount,
-      total: searchIndex.length,
-    };
+    return { rag,ai,iot,mini,major,nc,startup,web,cyber,total:searchIndex.length };
   }, [searchIndex]);
 
-  // Defer search value to ensure input typing never stutters
-  const deferredQuery = useDeferredValue(searchQuery);
-  const deferredCategory = useDeferredValue(selectedCategory);
-  const deferredSize = useDeferredValue(selectedSize);
-  const deferredBuildMode = useDeferredValue(buildMode);
-  const deferredSort = useDeferredValue(sortBy);
+  const dQ  = useDeferredValue(query);
+  const dC  = useDeferredValue(selCat);
+  const dS  = useDeferredValue(selSize);
+  const dBM = useDeferredValue(buildMode);
+  const dSO = useDeferredValue(sortBy);
 
-  // Filtered and sorted topics
-  const filteredTopics = useMemo(() => {
+  const filtered = useMemo(() => {
     let list = searchIndex;
+    if (dC==="STARTUPS")  list = list.filter(i=>i.isStart);
+    else if (dC==="RAG")  list = list.filter(i=>i.tags.includes("RAG")||i.tags.includes("LLM")||i.tags.includes("Agent"));
+    else if (dC==="IoT")  list = list.filter(i=>i.tags.includes("IoT")||i.topic.category==="IoT");
+    else if (dC!=="ALL")  list = list.filter(i=>i.topic.category===dC);
+    if (dS!=="ALL") list = list.filter(i=>i.size===dS);
+    if (dBM==="NOCODE")   list = list.filter(i=>i.isNC);
+    else if (dBM==="CODE") list = list.filter(i=>!i.isNC);
+    const q = dQ.trim().toLowerCase();
+    if (q) list = list.filter(i=>i.str.includes(q));
+    const s = [...list];
+    if (dSO==="difficulty-asc") s.sort((a,b)=>a.topic.difficulty-b.topic.difficulty);
+    else if (dSO==="difficulty-desc") s.sort((a,b)=>b.topic.difficulty-a.topic.difficulty);
+    else if (dSO==="name-asc") s.sort((a,b)=>a.topic.title.localeCompare(b.topic.title));
+    else s.sort((a,b)=>(b.topic.trending?1:0)-(a.topic.trending?1:0));
+    return s.map(i=>i.topic);
+  }, [dQ,dC,dS,dBM,dSO,searchIndex]);
 
-    // Filter by category or AI/ML/RAG/IoT quick tags
-    if (deferredCategory === "STARTUPS") {
-      list = list.filter((item) => item.isStartup);
-    } else if (deferredCategory === "RAG") {
-      list = list.filter((item) => item.tags.includes("RAG") || item.tags.includes("LLM") || item.tags.includes("Agent"));
-    } else if (deferredCategory === "IoT") {
-      list = list.filter((item) => item.tags.includes("IoT") || item.topic.category === "IoT");
-    } else if (deferredCategory === "AI") {
-      list = list.filter((item) => item.tags.includes("AI") || item.topic.category === "AIML");
-    } else if (deferredCategory === "ML") {
-      list = list.filter((item) => item.tags.includes("ML") || item.topic.category === "AIML" || item.topic.category === "DataScience");
-    } else if (deferredCategory !== "ALL") {
-      list = list.filter((item) => item.topic.category === deferredCategory);
-    }
+  const isFiltering = Boolean(query.trim()) || selCat!=="ALL" || selSize!=="ALL" || buildMode!=="ALL";
 
-    // Filter by project size (Mini, Mid, Major)
-    if (deferredSize !== "ALL") {
-      list = list.filter((item) => item.size === deferredSize);
-    }
+  const reset = () => { setQuery(""); setSelCat("ALL"); setSelSize("ALL"); setBuildMode("ALL"); setSortBy("popular"); };
 
-    // Filter by buildMode
-    if (deferredBuildMode === "NOCODE") {
-      list = list.filter((item) => item.isNoCode);
-    } else if (deferredBuildMode === "CODE") {
-      list = list.filter((item) => !item.isNoCode);
-    }
+  useEffect(() => { setVisible(24); }, [query,selCat,selSize,buildMode,sortBy]);
 
-    // Filter by text search query
-    const q = deferredQuery.trim().toLowerCase();
-    if (q) {
-      list = list.filter((item) => item.searchStr.includes(q));
-    }
+  /* ── tag button style helper ── */
+  const catBtn = (active: boolean): React.CSSProperties => ({
+    display: 'inline-flex', alignItems: 'center', gap: '.375rem',
+    padding: '.4375rem .875rem', borderRadius: '10px',
+    fontSize: '.8125rem', fontWeight: active ? 700 : 500, cursor: 'pointer',
+    border: active ? 'none' : '1px solid var(--line)',
+    background: active ? 'var(--teal)' : 'var(--surface)',
+    color: active ? '#fff' : 'var(--ink-3)',
+    transition: 'all 150ms', whiteSpace: 'nowrap' as const,
+    WebkitTapHighlightColor: 'transparent',
+  });
 
-    // Sort results
-    const sorted = [...list];
-    if (deferredSort === "difficulty-asc") {
-      sorted.sort((a, b) => a.topic.difficulty - b.topic.difficulty);
-    } else if (deferredSort === "difficulty-desc") {
-      sorted.sort((a, b) => b.topic.difficulty - a.topic.difficulty);
-    } else if (deferredSort === "name-asc") {
-      sorted.sort((a, b) => a.topic.title.localeCompare(b.topic.title));
-    } else {
-      // Default: trending first, then balanced
-      sorted.sort((a, b) => (b.topic.trending ? 1 : 0) - (a.topic.trending ? 1 : 0));
-    }
-
-    return sorted.map((item) => item.topic);
-  }, [deferredQuery, deferredCategory, deferredSize, deferredBuildMode, deferredSort, searchIndex]);
-
-  // Reset pagination when query or filters change
-  useEffect(() => {
-    setVisibleCount(24);
-    updateUrl(searchQuery, selectedCategory, selectedSize, buildMode, sortBy);
-  }, [searchQuery, selectedCategory, selectedSize, buildMode, sortBy, updateUrl]);
-
-  // Check if any filter is active
-  const isFilteringActive =
-    Boolean(searchQuery.trim()) ||
-    selectedCategory !== "ALL" ||
-    selectedSize !== "ALL" ||
-    buildMode !== "ALL";
-
-  const handleResetFilters = () => {
-    setSearchQuery("");
-    setSelectedCategory("ALL");
-    setSelectedSize("ALL");
-    setBuildMode("ALL");
-    setSortBy("popular");
-  };
+  const sizeBtn = (active: boolean): React.CSSProperties => ({
+    padding: '.3125rem .75rem', borderRadius: '8px', border: 'none',
+    fontSize: '.8125rem', fontWeight: active ? 700 : 500, cursor: 'pointer',
+    background: active ? 'var(--surface)' : 'transparent',
+    color: active ? 'var(--navy)' : 'var(--ink-3)',
+    boxShadow: active ? 'var(--sh-xs)' : 'none',
+    transition: 'all 150ms',
+  });
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-[#09090b] text-white page-enter">
-      {/* Background glow orbs matching SubmitKit */}
-      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
-        <div className="glow-orb w-[850px] h-[850px] bg-brand-500/10 top-0 left-1/2 -translate-x-1/2 -translate-y-1/2" />
-        <div className="glow-orb w-[650px] h-[650px] bg-emerald-500/8 bottom-10 right-10" />
-        <div className="glow-orb w-[500px] h-[500px] bg-purple-500/5 top-1/3 left-10" />
-      </div>
+    <div style={{ background: 'var(--canvas)', minHeight: '100vh', paddingBottom: '4rem' }}>
+      <div className="shell" style={{ paddingTop: '2.5rem' }}>
 
-      <div className="container mx-auto px-4 py-16 max-w-6xl space-y-12 relative z-10">
-        {/* Hero Section */}
-        <div className="text-center space-y-5 max-w-3xl mx-auto pt-4">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-500/10 text-brand-400 font-bold text-xs border border-brand-500/25 tracking-wide uppercase">
-            <BookOpen className="w-3.5 h-3.5" />
-            Project Blueprint Generator · 1,000+ Topics
-          </div>
-
-          <h1 className="text-4xl md:text-6xl font-display font-bold tracking-tight text-white leading-tight">
-            Choose Your Project. <br />
-            <span className="text-gradient font-extrabold">
-              Make It in ONE Prompt.
-            </span>
+        {/* ── Hero section ── */}
+        <div style={{ textAlign: 'center', maxWidth: '44rem', margin: '0 auto 3rem' }}>
+          <span className="label-chip" style={{ marginBottom: '1rem', display: 'inline-flex' }}>
+            Project Blueprint Generator · 1,078+ Topics
+          </span>
+          <h1 className="font-display font-black" style={{ fontSize: 'clamp(2rem, 5vw, 3.25rem)', letterSpacing: '-.04em', color: 'var(--navy)', marginTop: '.875rem', marginBottom: '1rem', lineHeight: 1.1 }}>
+            Find your topic.{' '}
+            <em className="text-teal-grad" style={{ fontStyle: 'italic' }}>Build it in one prompt.</em>
           </h1>
-
-          <p className="text-base md:text-lg text-zinc-400 max-w-2xl mx-auto leading-relaxed">
-            Pick from 1,000+ verified engineering topics. Filter by AI, ML, Mini vs. Major, or No-Code. Get the complete step-by-step roadmap, mock dataset generator, and 1-prompt AI build guide — <span className="text-emerald-400 font-semibold">completely free</span>.
+          <p style={{ fontSize: 'clamp(.9375rem, 2vw, 1.0625rem)', color: 'var(--ink-3)', lineHeight: 1.75 }}>
+            Browse 1,078 verified engineering topics. Get the complete IEEE roadmap, architecture, mock dataset, and 1-prompt AI build guide —{' '}
+            <strong style={{ color: 'var(--teal-dark)', fontWeight: 700 }}>completely free</strong>.
           </p>
         </div>
 
-        {/* ─── CLEAN SEARCH & DISCOVERY CONSOLE ─── */}
-        <div className="space-y-6 max-w-5xl mx-auto pt-2">
-          {/* Centered Search Bar */}
-          <div className="max-w-2xl mx-auto space-y-3">
-            <div className="relative flex items-center bg-zinc-900/90 border border-white/10 hover:border-white/20 rounded-2xl p-2 shadow-2xl backdrop-blur-xl focus-within:border-brand-500 focus-within:ring-2 focus-within:ring-brand-500/20 transition-all">
-              <Search className="h-5 w-5 text-zinc-400 ml-3 shrink-0" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-transparent border-none text-white px-3 py-2 outline-none text-sm placeholder:text-zinc-500"
-                placeholder="Search 1,000+ topics by tech stack, domain, or keyword..."
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery("")}
-                  className="px-2.5 py-1 text-xs text-zinc-400 hover:text-white bg-white/5 rounded-lg mr-2 transition-colors flex items-center gap-1"
-                >
-                  <X className="w-3 h-3" /> Clear
-                </button>
-              )}
-            </div>
-
-            {/* Curated Trending Searches (Clean & focused) */}
-            <div className="flex flex-wrap items-center justify-center gap-2">
-              <span className="text-[11px] text-zinc-500 font-medium">Trending:</span>
-              {QUICK_SEARCH_CHIPS.map((chip) => (
-                <button
-                  key={chip}
-                  onClick={() => {
-                    if (chip === "1-Prompt No-Code") {
-                      setBuildMode("NOCODE");
-                      setSearchQuery("");
-                    } else {
-                      setSearchQuery(chip);
-                    }
-                  }}
-                  className="px-2.5 py-1 rounded-full text-[11px] font-medium bg-white/[0.04] text-zinc-400 hover:text-white hover:bg-white/10 border border-white/5 transition-all"
-                >
-                  {chip}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* ₹19 Blueprint Starter Callout Banner (Dismissable) */}
-          {!bannerDismissed && (
-            <div className="relative overflow-hidden rounded-2xl border border-emerald-500/30 bg-gradient-to-r from-emerald-950/40 via-zinc-900/90 to-emerald-950/30 p-4 sm:p-5 shadow-xl shadow-emerald-500/5 backdrop-blur-md">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div className="flex items-start gap-3.5">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0 mt-0.5 shadow-sm">
-                    <FileText className="w-5 h-5" />
-                  </div>
-                  <div className="space-y-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="text-sm font-bold text-white">
-                        Every Topic Includes a Free Blueprint Starter Pack
-                      </span>
-                      <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-extrabold uppercase tracking-wider">
-                        100% Free
-                      </span>
-                    </div>
-                    <p className="text-xs text-zinc-300 max-w-2xl leading-relaxed">
-                      Get the complete step-by-step IEEE roadmap (.docx &amp; .pdf), system architecture, mock dataset, and top 10 examiner Q&amp;A for any topic — no purchase needed.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
-                  <button
-                    onClick={() => {
-                      const sampleCard = document.querySelector('a[href^="/blueprint/"]');
-                      if (sampleCard) {
-                        sampleCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                      }
-                    }}
-                    className="px-3.5 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-xs font-bold transition-all flex items-center gap-1"
-                  >
-                    <span>Pick a Topic</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
-                  <button
-                    onClick={handleDismissBanner}
-                    className="p-1.5 rounded-lg text-zinc-500 hover:text-zinc-300 hover:bg-white/5 transition-colors"
-                    title="Dismiss"
-                    aria-label="Dismiss banner"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Unified Domain Category Tabs with Live Counts */}
-          <div className="flex flex-wrap items-center justify-center gap-2 max-w-4xl mx-auto py-1">
-            {CATEGORIES.map((cat) => {
-              const count =
-                cat.id === "ALL" ? counts.total :
-                cat.id === "RAG" ? `${counts.rag}+` :
-                cat.id === "IoT" ? `${counts.iot}+` :
-                cat.id === "AIML" ? `${counts.ai}+` :
-                cat.id === "STARTUPS" ? counts.startup :
-                cat.id === "FullStack" ? counts.web :
-                cat.id === "Cybersecurity" ? counts.cyber :
-                null;
-
-              return (
-                <button
-                  key={cat.id}
-                  onClick={() => setSelectedCategory(cat.id)}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all flex items-center gap-1.5 shrink-0 ${
-                    selectedCategory === cat.id
-                      ? "bg-white text-zinc-950 font-bold shadow-md scale-[1.02]"
-                      : "bg-zinc-900/80 text-zinc-400 hover:text-white hover:bg-zinc-800/80 border border-white/5"
-                  }`}
-                >
-                  <span>{cat.label}</span>
-                  {count !== null && (
-                    <span
-                      className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
-                        selectedCategory === cat.id
-                          ? "bg-zinc-200 text-zinc-950 font-bold"
-                          : "bg-white/10 text-zinc-400"
-                      }`}
-                    >
-                      {count}
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Single Compact Refinement Strip */}
-          <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-2xl bg-zinc-900/50 border border-white/10 backdrop-blur-xl">
-            {/* Scope (Mini / Mid / Major) & 1-Prompt Mode */}
-            <div className="flex flex-wrap items-center gap-2.5">
-              <div className="flex items-center gap-1 p-1 rounded-xl bg-black/40 border border-white/5">
-                {[
-                  { id: "ALL", label: "All Sizes" },
-                  { id: "Mini", label: "Mini (2–3d)" },
-                  { id: "Mid", label: "Mid-Level" },
-                  { id: "Major", label: "Major (5d+)" },
-                ].map((size) => (
-                  <button
-                    key={size.id}
-                    onClick={() => setSelectedSize(size.id)}
-                    className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
-                      selectedSize === size.id
-                        ? "bg-white/20 text-white font-bold"
-                        : "text-zinc-500 hover:text-zinc-300"
-                    }`}
-                  >
-                    {size.label}
-                  </button>
-                ))}
-              </div>
-
-              {/* 1-Prompt No-Code Toggle */}
-              <button
-                onClick={() => setBuildMode(buildMode === "NOCODE" ? "ALL" : "NOCODE")}
-                className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-1.5 border ${
-                  buildMode === "NOCODE"
-                    ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-sm shadow-emerald-500/20"
-                    : "bg-black/30 text-zinc-400 hover:text-emerald-300 border-white/5"
-                }`}
-              >
-                <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-                <span>⚡ 1-Prompt Only ({counts.noCode})</span>
+        {/* ── Search bar ── */}
+        <div style={{ maxWidth: '40rem', margin: '0 auto 1.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', background: 'var(--surface)', border: '1.5px solid var(--line)', borderRadius: '14px', padding: '.375rem .375rem .375rem .875rem', gap: '.5rem', boxShadow: 'var(--sh-sm)', transition: 'all 150ms' }}>
+            <Search style={{ width: '1.125rem', height: '1.125rem', color: 'var(--ink-4)', flexShrink: 0 }} />
+            <input
+              type="text"
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+              placeholder="Search 1,078 topics by tech, domain, or keyword..."
+              style={{ flex: 1, background: 'none', border: 'none', outline: 'none', fontSize: '.9375rem', color: 'var(--ink)', fontFamily: 'var(--font-sans)', minWidth: 0 }}
+            />
+            {query && (
+              <button onClick={() => setQuery("")} style={{ display: 'inline-flex', alignItems: 'center', gap: '.25rem', padding: '.25rem .625rem', borderRadius: '7px', background: 'var(--surface-2)', border: 'none', cursor: 'pointer', fontSize: '.75rem', color: 'var(--ink-3)', fontWeight: 600 }}>
+                <X style={{ width: '.75rem', height: '.75rem' }} /> Clear
               </button>
-            </div>
-
-            {/* Sort Order & Reset */}
-            <div className="flex items-center gap-2">
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
-                className="bg-zinc-900 text-zinc-300 text-xs border border-white/10 rounded-xl px-3 py-1.5 outline-none focus:border-brand-500 cursor-pointer"
-              >
-                <option value="popular">🔥 Trending / Most Popular</option>
-                <option value="difficulty-asc">🟢 Mini First (Easy → Hard)</option>
-                <option value="difficulty-desc">🔴 Major First (Hard → Easy)</option>
-                <option value="name-asc">🔤 Alphabetical (A → Z)</option>
-              </select>
-
-              {isFilteringActive && (
-                <button
-                  onClick={handleResetFilters}
-                  className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs text-brand-400 hover:text-brand-300 hover:bg-brand-500/10 rounded-lg transition-colors font-medium"
-                >
-                  <RefreshCw className="w-3 h-3" /> Reset
-                </button>
-              )}
-            </div>
+            )}
           </div>
 
-          {/* Active Filter Pills (if filtering) */}
-          {isFilteringActive && (
-            <div className="flex flex-wrap items-center gap-1.5 pt-1 text-xs">
-              <span className="text-zinc-500 text-[11px]">Active filters:</span>
-              {selectedCategory !== "ALL" && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-brand-500/15 text-brand-300 border border-brand-500/30 text-[11px]">
-                  {CATEGORIES.find((c) => c.id === selectedCategory)?.label || selectedCategory}
-                  <button onClick={() => setSelectedCategory("ALL")} className="hover:text-white">
-                    <X className="w-3 h-3" />
-                  </button>
-                </span>
-              )}
-              {selectedSize !== "ALL" && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-teal-500/15 text-teal-300 border border-teal-500/30 text-[11px]">
-                  Size: {selectedSize}
-                  <button onClick={() => setSelectedSize("ALL")} className="hover:text-white">
-                    <X className="w-3 h-3" />
-                  </button>
-                </span>
-              )}
-              {buildMode === "NOCODE" && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 text-[11px]">
-                  Mode: 1-Prompt No Code
-                  <button onClick={() => setBuildMode("ALL")} className="hover:text-white">
-                    <X className="w-3 h-3" />
-                  </button>
-                </span>
-              )}
-              {searchQuery && (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/10 text-white border border-white/20 text-[11px]">
-                  Query: &quot;{searchQuery}&quot;
-                  <button onClick={() => setSearchQuery("")} className="hover:text-white">
-                    <X className="w-3 h-3" />
-                  </button>
-                </span>
-              )}
-            </div>
-          )}
+          {/* Trending chips */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '.5rem', marginTop: '.875rem', alignItems: 'center' }}>
+            <span style={{ fontSize: '.6875rem', color: 'var(--ink-4)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.08em' }}>Trending:</span>
+            {TRENDING_CHIPS.map(c => (
+              <button key={c} onClick={() => c === "1-Prompt No-Code" ? (setBuildMode("NOCODE"), setQuery("")) : setQuery(c)}
+                style={{ padding: '.3125rem .75rem', borderRadius: '9999px', background: 'var(--surface)', border: '1px solid var(--line)', fontSize: '.8125rem', fontWeight: 500, color: 'var(--ink-2)', cursor: 'pointer', transition: 'all 150ms', WebkitTapHighlightColor: 'transparent' }}
+                onMouseEnter={e => { e.currentTarget.style.background = 'var(--surface-teal)'; e.currentTarget.style.color = 'var(--teal-dark)'; e.currentTarget.style.borderColor = 'var(--line-teal)'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = 'var(--surface)'; e.currentTarget.style.color = 'var(--ink-2)'; e.currentTarget.style.borderColor = 'var(--line)'; }}
+              >
+                {c}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* ─── SEARCH / FILTER RESULTS ─── */}
-        {isFilteringActive && (
-          <div className="space-y-6 pt-2">
-            <div className="flex items-center justify-between border-b border-white/10 pb-3">
-              <h2 className="text-xl font-display font-bold text-white flex items-center gap-2">
-                <Layers className="w-5 h-5 text-brand-400" />
-                Matching Projects ({filteredTopics.length})
-              </h2>
-              <span className="text-xs text-zinc-400">
-                Showing {Math.min(visibleCount, filteredTopics.length)} of {filteredTopics.length} topics
-              </span>
-            </div>
-
-            {filteredTopics.length === 0 ? (
-              <div className="text-center py-16 text-zinc-400 glass-card rounded-2xl border border-white/5 p-8 space-y-4 max-w-xl mx-auto">
-                <div className="w-12 h-12 rounded-full bg-zinc-800/80 border border-white/10 flex items-center justify-center mx-auto text-zinc-400">
-                  <Search className="w-6 h-6" />
+        {/* ── Free blueprint banner ── */}
+        {!dismissed && (
+          <div className="card" style={{ maxWidth: '40rem', margin: '0 auto 2rem', padding: '1.125rem 1.375rem', background: 'linear-gradient(135deg, var(--emerald-50) 0%, var(--surface) 100%)', border: '1px solid var(--emerald-100)' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '.875rem' }}>
+                <div style={{ width: '2.25rem', height: '2.25rem', borderRadius: '10px', background: 'var(--emerald-100)', border: '1px solid var(--emerald-200)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <FileText style={{ width: '1rem', height: '1rem', color: 'var(--emerald)' }} />
                 </div>
                 <div>
-                  <p className="text-base font-bold text-white mb-1">
-                    No matching project found for your criteria
-                  </p>
-                  <p className="text-xs text-zinc-400 leading-relaxed">
-                    Try clearing one of the filters or searching with a broader keyword (e.g. &quot;ai based&quot;, &quot;mini project&quot;, &quot;fraud&quot;).
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem', flexWrap: 'wrap', marginBottom: '.25rem' }}>
+                    <span style={{ fontSize: '.875rem', fontWeight: 700, color: 'var(--navy)' }}>Every Topic Includes a Free Blueprint Starter</span>
+                    <span className="tag tag-emerald" style={{ fontSize: '.6rem' }}>100% Free</span>
+                  </div>
+                  <p style={{ fontSize: '.8125rem', color: 'var(--ink-3)', margin: 0, lineHeight: 1.6 }}>
+                    IEEE roadmap, system architecture, mock dataset, and top 10 examiner Q&amp;A — no purchase needed.
                   </p>
                 </div>
-                <button
-                  onClick={handleResetFilters}
-                  className="px-5 py-2.5 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-xs font-bold inline-flex items-center gap-2 shadow-lg shadow-brand-500/20 transition-all"
-                >
-                  <RefreshCw className="w-3.5 h-3.5" />
-                  Reset All Filters
-                </button>
+              </div>
+              <button onClick={dismiss} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ink-4)', padding: '.25rem', flexShrink: 0 }} aria-label="Dismiss">
+                <X style={{ width: '1rem', height: '1rem' }} />
+              </button>
+            </div>
+          </div>
+        )}
 
-                {/* Suggestions fallback */}
-                <div className="pt-6 border-t border-white/10 text-left space-y-3">
-                  <p className="text-xs font-bold text-zinc-300 uppercase tracking-wider">
-                    Recommended Trending Projects You Might Like:
-                  </p>
-                  <div className="grid grid-cols-1 gap-2">
-                    {featured.slice(0, 3).map((f) => (
-                      <Link
-                        key={f.id}
-                        href={`/blueprint/${f.id}`}
-                        className="flex items-center justify-between p-3 rounded-xl bg-zinc-900/90 border border-white/5 hover:border-brand-500/30 group transition-all"
+        {/* ── Category tabs ── */}
+        <div className="scroll-x" style={{ display: 'flex', gap: '.5rem', paddingBottom: '.5rem', marginBottom: '1.5rem', maxWidth: '100%' }}>
+          {CATS.map(c => {
+            const count = c.id==="ALL" ? counts.total : c.id==="RAG" ? `${counts.rag}+` : c.id==="IoT" ? `${counts.iot}+` : c.id==="AIML" ? `${counts.ai}+` : c.id==="STARTUPS" ? counts.startup : c.id==="FullStack" ? counts.web : c.id==="Cybersecurity" ? counts.cyber : null;
+            const active = selCat === c.id;
+            return (
+              <button key={c.id} onClick={() => setSelCat(c.id)} className="snap-s"
+                style={{ ...catBtn(active), flexShrink: 0 }}
+                onMouseEnter={e => { if (!active) { e.currentTarget.style.background = 'var(--surface-teal)'; e.currentTarget.style.color = 'var(--teal-dark)'; e.currentTarget.style.borderColor = 'var(--line-teal)'; }}}
+                onMouseLeave={e => { if (!active) { e.currentTarget.style.background = 'var(--surface)'; e.currentTarget.style.color = 'var(--ink-3)'; e.currentTarget.style.borderColor = 'var(--line)'; }}}
+              >
+                {c.label}
+                {count !== null && (
+                  <span style={{ padding: '.0625rem .4375rem', borderRadius: '9999px', fontSize: '.625rem', fontWeight: 700, background: active ? 'rgba(255,255,255,.2)' : 'var(--surface-2)', color: active ? '#fff' : 'var(--ink-4)' }}>
+                    {count}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* ── Refinement strip ── */}
+        <div className="card" style={{ padding: '.875rem 1.125rem', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '.75rem', marginBottom: '2rem' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '.625rem' }}>
+            {/* Size filter */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '.125rem', padding: '.25rem', background: 'var(--surface-2)', borderRadius: '10px', border: '1px solid var(--line)' }}>
+              {[{id:"ALL",l:"All Sizes"},{id:"Mini",l:"Mini (2–3d)"},{id:"Mid",l:"Mid-Level"},{id:"Major",l:"Major (5d+)"}].map(s => (
+                <button key={s.id} onClick={() => setSelSize(s.id)} style={sizeBtn(selSize===s.id)}>{s.l}</button>
+              ))}
+            </div>
+            {/* No-code toggle */}
+            <button
+              onClick={() => setBuildMode(buildMode==="NOCODE" ? "ALL" : "NOCODE")}
+              className={buildMode==="NOCODE" ? "btn btn-teal btn-sm" : "btn btn-outline btn-sm"}
+              style={{ gap: '.375rem' }}
+            >
+              <Sparkles style={{ width: '.875rem', height: '.875rem' }} />
+              1-Prompt Ready ({counts.nc})
+            </button>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '.625rem' }}>
+            {/* Custom Aesthetic Sort Dropdown */}
+            <div ref={sortRef} style={{ position: 'relative' }}>
+              <button
+                type="button"
+                onClick={() => setSortOpen(!sortOpen)}
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '.5rem',
+                  background: 'var(--surface)',
+                  color: 'var(--navy)',
+                  fontSize: '.8125rem',
+                  fontWeight: 600,
+                  border: '1px solid var(--line)',
+                  borderRadius: '10px',
+                  padding: '.4375rem .875rem',
+                  cursor: 'pointer',
+                  boxShadow: 'var(--sh-xs)',
+                  transition: 'all 150ms ease',
+                }}
+                onMouseEnter={e => (e.currentTarget.style.borderColor = 'var(--line-teal)')}
+                onMouseLeave={e => { if (!sortOpen) e.currentTarget.style.borderColor = 'var(--line)'; }}
+              >
+                <span style={{ color: 'var(--ink-4)', fontWeight: 500 }}>Sort:</span>
+                <span>{SORT_OPTIONS.find(o => o.value === sortBy)?.label || 'Trending First'}</span>
+                <ChevronDown style={{ width: '.8125rem', height: '.8125rem', color: 'var(--ink-4)', transform: sortOpen ? 'rotate(180deg)' : 'none', transition: 'transform 150ms' }} />
+              </button>
+
+              {sortOpen && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 'calc(100% + 6px)',
+                    right: 0,
+                    zIndex: 50,
+                    minWidth: '15.5rem',
+                    background: 'rgba(255, 255, 255, 0.98)',
+                    backdropFilter: 'blur(20px)',
+                    border: '1px solid var(--line-teal)',
+                    borderRadius: '12px',
+                    boxShadow: '0 12px 30px rgba(60, 40, 10, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04)',
+                    padding: '.375rem',
+                  }}
+                >
+                  <div style={{ padding: '.375rem .625rem .25rem', fontSize: '.6875rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.06em', color: 'var(--ink-5)' }}>
+                    Sort Blueprints
+                  </div>
+                  {SORT_OPTIONS.map(opt => {
+                    const active = sortBy === opt.value;
+                    return (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        onClick={() => {
+                          setSortBy(opt.value as typeof sortBy);
+                          setSortOpen(false);
+                        }}
+                        style={{
+                          width: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          gap: '.75rem',
+                          padding: '.5rem .625rem',
+                          borderRadius: '8px',
+                          border: 'none',
+                          background: active ? 'var(--surface-teal)' : 'transparent',
+                          color: active ? 'var(--teal-dark)' : 'var(--ink-2)',
+                          fontSize: '.8125rem',
+                          fontWeight: active ? 700 : 500,
+                          cursor: 'pointer',
+                          textAlign: 'left',
+                          transition: 'all 120ms',
+                        }}
+                        onMouseEnter={e => {
+                          if (!active) e.currentTarget.style.background = 'var(--surface-2)';
+                        }}
+                        onMouseLeave={e => {
+                          if (!active) e.currentTarget.style.background = 'transparent';
+                        }}
                       >
                         <div>
-                          <p className="text-xs font-bold text-white group-hover:text-brand-300">
-                            {f.title}
-                          </p>
-                          <p className="text-[11px] text-zinc-500">{f.tagline}</p>
+                          <div style={{ lineHeight: 1.25 }}>{opt.label}</div>
+                          <div style={{ fontSize: '.6875rem', color: 'var(--ink-5)', marginTop: '.125rem', fontWeight: 400 }}>{opt.desc}</div>
                         </div>
-                        <ArrowRight className="w-3.5 h-3.5 text-zinc-500 group-hover:text-white shrink-0 ml-2" />
-                      </Link>
-                    ))}
-                  </div>
+                        {active && <Check style={{ width: '.875rem', height: '.875rem', color: 'var(--teal)', flexShrink: 0 }} />}
+                      </button>
+                    );
+                  })}
                 </div>
+              )}
+            </div>
+            {isFiltering && (
+              <button onClick={reset} className="btn btn-outline btn-sm" style={{ gap: '.25rem' }}>
+                <RefreshCw style={{ width: '.8125rem', height: '.8125rem' }} /> Reset
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* ── Active filter pills ── */}
+        {isFiltering && (
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '.5rem', marginBottom: '1.5rem' }}>
+            <span style={{ fontSize: '.6875rem', color: 'var(--ink-4)', fontWeight: 600 }}>Active:</span>
+            {selCat!=="ALL" && <FilterPill label={CATS.find(c=>c.id===selCat)?.label||selCat} onRemove={() => setSelCat("ALL")} />}
+            {selSize!=="ALL" && <FilterPill label={`Size: ${selSize}`} onRemove={() => setSelSize("ALL")} />}
+            {buildMode==="NOCODE" && <FilterPill label="1-Prompt No-Code" onRemove={() => setBuildMode("ALL")} />}
+            {query.trim() && <FilterPill label={`"${query.trim()}"`} onRemove={() => setQuery("")} />}
+          </div>
+        )}
+
+        {/* ── Filtered results ── */}
+        {isFiltering && (
+          <div style={{ marginBottom: '2rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid var(--line)' }}>
+              <h2 className="font-display" style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--navy)', display: 'flex', alignItems: 'center', gap: '.5rem' }}>
+                <Layers style={{ width: '1.125rem', height: '1.125rem', color: 'var(--teal)' }} />
+                Matching Topics ({filtered.length})
+              </h2>
+              <span style={{ fontSize: '.8125rem', color: 'var(--ink-4)' }}>Showing {Math.min(visible, filtered.length)} of {filtered.length}</span>
+            </div>
+
+            {filtered.length === 0 ? (
+              <div className="card" style={{ padding: '3rem 2rem', textAlign: 'center', maxWidth: '32rem', margin: '0 auto' }}>
+                <Search style={{ width: '2.5rem', height: '2.5rem', color: 'var(--ink-5)', margin: '0 auto 1rem' }} />
+                <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '.5rem' }}>No topics matched</h3>
+                <p style={{ fontSize: '.875rem', color: 'var(--ink-3)', marginBottom: '1.25rem', lineHeight: 1.65 }}>Try a broader keyword or clear one of the filters.</p>
+                <button onClick={reset} className="btn btn-teal btn-sm" style={{ margin: '0 auto' }}>
+                  <RefreshCw style={{ width: '.875rem', height: '.875rem' }} /> Reset All Filters
+                </button>
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                  {filteredTopics.slice(0, visibleCount).map((topic) => (
-                    <SubmitKitTopicCard key={topic.id} topic={topic} />
-                  ))}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 21rem), 1fr))', gap: '1.125rem' }}>
+                  {filtered.slice(0, visible).map(t => <TopicCard key={t.id} topic={t} />)}
                 </div>
-
-                {visibleCount < filteredTopics.length && (
-                  <div className="text-center pt-6">
-                    <button
-                      onClick={() => setVisibleCount((prev) => prev + 24)}
-                      className="px-8 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-xs inline-flex items-center gap-2 border border-white/10 shadow-lg transition-all hover:scale-105"
-                    >
-                      Show More Projects ({filteredTopics.length - visibleCount} remaining)
-                      <ArrowRight className="w-3.5 h-3.5" />
+                {visible < filtered.length && (
+                  <div style={{ textAlign: 'center', marginTop: '2rem' }}>
+                    <button onClick={() => setVisible(v => v + 24)} className="btn btn-outline" style={{ padding: '0 2rem' }}>
+                      Show More ({filtered.length - visible} remaining) <ArrowRight style={{ width: '.9375rem', height: '.9375rem' }} />
                     </button>
                   </div>
                 )}
@@ -659,38 +416,37 @@ export default function BlueprintBrowserPage() {
           </div>
         )}
 
-        {/* ─── TRENDING / FEATURED TOPICS (Default View) ─── */}
-        {!isFilteringActive && featured.length > 0 && (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between border-b border-white/10 pb-3">
-              <div className="flex items-center gap-2">
-                <Flame className="w-5 h-5 text-orange-400 fill-orange-400" />
-                <h2 className="text-xl font-display font-bold text-white">Trending Final Year Topics</h2>
-              </div>
-              <span className="text-xs text-zinc-500 font-medium">Most requested by students</span>
+        {/* ── Default view: Featured ── */}
+        {!isFiltering && featured.length > 0 && (
+          <div style={{ marginBottom: '3rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', paddingBottom: '.875rem', borderBottom: '1px solid var(--line)' }}>
+              <h2 className="font-display" style={{ fontSize: '1.375rem', fontWeight: 700, color: 'var(--navy)', display: 'flex', alignItems: 'center', gap: '.5rem' }}>
+                <Flame style={{ width: '1.125rem', height: '1.125rem', color: 'var(--amber)', fill: 'var(--amber)' }} />
+                Trending Final Year Topics
+              </h2>
+              <span style={{ fontSize: '.8125rem', color: 'var(--ink-4)', fontWeight: 500 }}>Most requested</span>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-              {featured.map((topic) => (
-                <SubmitKitTopicCard key={topic.id} topic={topic} featured={true} />
-              ))}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 21rem), 1fr))', gap: '1.125rem' }}>
+              {featured.map(t => <TopicCard key={t.id} topic={t} featured />)}
             </div>
           </div>
         )}
 
-        {/* ─── A-Z DIRECTORY (Default View) ─── */}
-        {!isFilteringActive && (
-          <div className="space-y-10 pt-6">
-            <div className="flex items-center justify-between border-b border-white/10 pb-3">
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="w-5 h-5 text-emerald-400" />
-                <h2 className="text-xl font-display font-bold text-white">A-Z Topic Directory</h2>
-              </div>
-              <div className="flex flex-wrap gap-1.5 text-xs text-zinc-400">
-                {letters.map((l) => (
-                  <a
-                    key={l}
-                    href={`#letter-${l}`}
-                    className="w-6 h-6 flex items-center justify-center rounded bg-zinc-900 border border-white/5 hover:border-brand-500 hover:text-white transition-colors font-mono"
+        {/* ── Default view: A-Z Directory ── */}
+        {!isFiltering && (
+          <div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem', paddingBottom: '.875rem', borderBottom: '1px solid var(--line)' }}>
+              <h2 className="font-display" style={{ fontSize: '1.375rem', fontWeight: 700, color: 'var(--navy)', display: 'flex', alignItems: 'center', gap: '.5rem' }}>
+                <BookOpen style={{ width: '1.125rem', height: '1.125rem', color: 'var(--teal)' }} />
+                A-Z Topic Directory
+              </h2>
+              {/* Letter jump links */}
+              <div className="scroll-x hidden sm:flex" style={{ gap: '.375rem' }}>
+                {letters.map(l => (
+                  <a key={l} href={`#letter-${l}`}
+                    style={{ width: '1.625rem', height: '1.625rem', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', borderRadius: '6px', background: 'var(--surface-2)', border: '1px solid var(--line)', fontSize: '.6875rem', fontWeight: 700, color: 'var(--ink-3)', textDecoration: 'none', transition: 'all 150ms', fontFamily: 'var(--font-mono)' }}
+                    onMouseEnter={e => { e.currentTarget.style.background = 'var(--teal-50)'; e.currentTarget.style.color = 'var(--teal-dark)'; e.currentTarget.style.borderColor = 'var(--teal-100)'; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = 'var(--surface-2)'; e.currentTarget.style.color = 'var(--ink-3)'; e.currentTarget.style.borderColor = 'var(--line)'; }}
                   >
                     {l}
                   </a>
@@ -698,63 +454,53 @@ export default function BlueprintBrowserPage() {
               </div>
             </div>
 
-            <div className="space-y-12">
-              {letters.map((letter) => {
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
+              {letters.map(letter => {
                 const topics = getTopicsByLetter(letter);
-                const isExpanded = expandedLetters.has(letter);
-                const displayTopics = isExpanded ? topics : topics.slice(0, 6);
+                const isExp  = expanded.has(letter);
+                const shown  = isExp ? topics : topics.slice(0, 6);
                 return (
-                  <div key={letter} id={`letter-${letter}`} className="space-y-4 scroll-mt-24">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <span className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center font-display font-black text-lg text-white">
+                  <div key={letter} id={`letter-${letter}`} style={{ scrollMarginTop: '5rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.125rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '.75rem' }}>
+                        <div style={{ width: '2.25rem', height: '2.25rem', borderRadius: '10px', background: 'var(--navy)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-display)', fontSize: '1.0625rem', fontWeight: 900, color: '#fff', flexShrink: 0 }}>
                           {letter}
-                        </span>
-                        <div className="h-px w-16 md:w-32 bg-white/10"></div>
-                        <span className="text-xs text-zinc-500">{topics.length} topics</span>
+                        </div>
+                        <div style={{ width: '3rem', height: '1px', background: 'var(--line)' }} />
+                        <span style={{ fontSize: '.75rem', color: 'var(--ink-4)', fontWeight: 500 }}>{topics.length} topics</span>
                       </div>
                       {topics.length > 6 && (
-                        <button
-                          onClick={() => toggleLetter(letter)}
-                          className="text-xs text-brand-400 hover:text-brand-300 font-semibold flex items-center gap-1 transition-colors"
-                        >
-                          {isExpanded ? (
-                            <>Show less (6 of {topics.length})</>
-                          ) : (
-                            <>View all {topics.length} <ArrowRight className="w-3 h-3" /></>
-                          )}
+                        <button onClick={() => toggleLetter(letter)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '.8125rem', fontWeight: 700, color: 'var(--teal)', display: 'inline-flex', alignItems: 'center', gap: '.25rem' }}>
+                          {isExp ? `Show less` : `View all ${topics.length}`}
+                          <ArrowRight style={{ width: '.875rem', height: '.875rem' }} />
                         </button>
                       )}
                     </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                      {displayTopics.map((topic) => (
-                        <SubmitKitTopicCard key={topic.id} topic={topic} />
-                      ))}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 21rem), 1fr))', gap: '1.125rem' }}>
+                      {shown.map(t => <TopicCard key={t.id} topic={t} />)}
                     </div>
                   </div>
                 );
               })}
             </div>
 
-            {/* ── REQUEST A TOPIC CTA ── */}
-            <div className="rounded-2xl border border-brand-500/25 bg-gradient-to-r from-brand-950/60 via-purple-950/40 to-zinc-950 p-8 text-center space-y-4 shadow-xl mt-12">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-brand-500/20 text-brand-400 mx-auto">
-                <Sparkles className="w-6 h-6" />
-              </div>
-              <div className="space-y-1.5 max-w-xl mx-auto">
-                <h3 className="text-xl font-display font-bold text-white">Can't find your project topic?</h3>
-                <p className="text-xs md:text-sm text-zinc-300 leading-relaxed">
-                  Tell us your topic and technical requirements. Our engineering team will craft a custom 20-page blueprint with Master Prompt within 24 hours.
-                </p>
-              </div>
+            {/* Bottom CTA */}
+            <div className="card-teal" style={{ marginTop: '4rem', padding: '2.5rem', textAlign: 'center' }}>
+              <Sparkles style={{ width: '2.25rem', height: '2.25rem', color: 'var(--teal)', margin: '0 auto 1rem' }} />
+              <h3 className="font-display" style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--navy)', marginBottom: '.625rem', letterSpacing: '-.03em' }}>
+                Can&apos;t find your topic?
+              </h3>
+              <p style={{ fontSize: '.9375rem', color: 'var(--ink-3)', lineHeight: 1.7, maxWidth: '30rem', margin: '0 auto 1.5rem' }}>
+                Tell us your topic and requirements. Our team will craft a custom 20-page blueprint with Master Prompt within 24 hours.
+              </p>
               <a
-                href={`https://wa.me/918799814256?text=${encodeURIComponent("Hi SubmitKit! I couldn't find my project topic in the blueprint catalog. I need a blueprint for: ")}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-[#25D366] hover:bg-[#20bd5a] text-black font-bold rounded-xl text-xs sm:text-sm transition-all shadow-[0_0_20px_rgba(37,211,102,0.3)]"
+                href={`https://wa.me/918799814256?text=${encodeURIComponent("Hi SubmitKit! I couldn't find my project topic. I need a blueprint for: ")}`}
+                target="_blank" rel="noopener noreferrer"
+                className="btn btn-navy"
+                style={{ minHeight: '48px', fontSize: '.9375rem', display: 'inline-flex', gap: '.5rem' }}
               >
-                <MessageCircle className="w-4 h-4" /> Request a Custom Blueprint on WhatsApp
+                <WaIcon />
+                Request Custom Blueprint on WhatsApp
               </a>
             </div>
           </div>
@@ -764,103 +510,91 @@ export default function BlueprintBrowserPage() {
   );
 }
 
-function SubmitKitTopicCard({ topic, featured = false }: { topic: TopicCard; featured?: boolean }) {
-  const isNoCode = canBuildOnAntigravity(topic);
+/* ── Topic card component ── */
+function TopicCard({ topic, featured = false }: { topic: TopicCard; featured?: boolean }) {
+  const isNC = canBuildOnAntigravity(topic);
   const size = getProjectSize(topic);
 
+  const sizeTag = size === "Mini"
+    ? { bg: 'var(--teal-50)', color: 'var(--teal-dark)', border: 'var(--teal-100)', dot: 'var(--teal)', label: 'Mini (2–3d)' }
+    : size === "Mid"
+    ? { bg: 'var(--amber-50)', color: 'var(--amber)', border: 'var(--amber-100)', dot: 'var(--amber)', label: 'Mid (3–5d)' }
+    : { bg: 'var(--violet-50)', color: 'var(--violet)', border: 'var(--violet-100)', dot: 'var(--violet)', label: 'Major Capstone' };
+
   return (
-    <Link
-      href={`/blueprint/${topic.id}`}
-      className={`glass-card flex flex-col group transition-all duration-300 hover:-translate-y-1 relative overflow-hidden rounded-2xl border p-5 bg-zinc-900/50 backdrop-blur-xl ${
-        featured
-          ? "border-orange-500/30 hover:border-orange-500/60 shadow-lg shadow-orange-500/5"
-          : isNoCode
-          ? "border-white/10 hover:border-emerald-500/50 hover:shadow-xl hover:shadow-emerald-500/10"
-          : "border-white/5 hover:border-brand-500/40 hover:shadow-xl hover:shadow-brand-500/5"
-      }`}
+    <Link href={`/blueprint/${topic.id}`}
+      className="card card-lift"
+      style={{ display: 'flex', flexDirection: 'column', padding: '1.25rem', textDecoration: 'none', overflow: 'hidden', position: 'relative' }}
     >
-      <div className="flex flex-wrap justify-between items-start gap-2 mb-3">
-        <div className="flex items-center gap-1.5 flex-wrap">
-          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border border-brand-500/20 bg-brand-500/10 text-brand-400 uppercase tracking-wider">
-            {topic.category}
+      {/* Top accent line */}
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: isNC ? 'linear-gradient(90deg, var(--teal), #2DD4BF)' : featured ? 'linear-gradient(90deg, var(--amber), #F97316)' : 'linear-gradient(90deg, var(--navy), var(--navy-2))' }} />
+
+      {/* Badges row */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-start', gap: '.5rem', marginBottom: '.875rem', marginTop: '.125rem' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.375rem' }}>
+          {/* Category */}
+          <span className="tag tag-navy" style={{ fontSize: '.6rem' }}>{topic.category}</span>
+          {/* Size */}
+          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '.25rem', padding: '.1875rem .625rem', borderRadius: '9999px', fontSize: '.625rem', fontWeight: 700, background: sizeTag.bg, color: sizeTag.color, border: `1px solid ${sizeTag.border}` }}>
+            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: sizeTag.dot, display: 'inline-block' }} />
+            {sizeTag.label}
           </span>
-
-          {/* Project Size Badge */}
-          {size === "Mini" && (
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-teal-500/15 text-teal-300 border border-teal-500/25 flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-teal-400 inline-block" />
-              Mini (2-3d)
-            </span>
-          )}
-          {size === "Mid" && (
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/25 flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 inline-block" />
-              Mid (3-5d)
-            </span>
-          )}
-          {size === "Major" && (
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-500/15 text-indigo-300 border border-indigo-500/25 flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 inline-block" />
-              Major Capstone
-            </span>
-          )}
         </div>
-
-        <div className="flex items-center gap-1.5">
-          {isNoCode ? (
-            <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center gap-1 shadow-sm">
-              <Sparkles className="w-2.5 h-2.5 text-emerald-400" /> 1-Prompt No-Code
-            </span>
-          ) : topic.category === "IoT" ? (
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-400 border border-sky-500/30 flex items-center gap-1">
-              <Cpu className="w-2.5 h-2.5 text-sky-400" /> Hardware + Code
-            </span>
-          ) : topic.category === "Cybersecurity" ? (
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-400 border border-rose-500/30 flex items-center gap-1">
-              <Lock className="w-2.5 h-2.5 text-rose-400" /> Security Blueprint
-            </span>
-          ) : topic.category === "Blockchain" ? (
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-500/15 text-purple-400 border border-purple-500/30 flex items-center gap-1">
-              <Layers className="w-2.5 h-2.5 text-purple-400" /> Web3 Guide
-            </span>
-          ) : (
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-300 border border-white/10 flex items-center gap-1">
-              <BookOpen className="w-2.5 h-2.5 text-zinc-400" /> Full Code Guide
+        <div style={{ display: 'flex', gap: '.375rem' }}>
+          {isNC && (
+            <span className="tag tag-teal" style={{ fontSize: '.6rem' }}>
+              <Sparkles style={{ width: '.625rem', height: '.625rem' }} /> 1-Prompt
             </span>
           )}
-          {featured && (
-            <span className="flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-orange-500/15 text-orange-400 border border-orange-500/25">
-              <Flame className="w-3 h-3" /> HOT
+          {featured && !isNC && (
+            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '.25rem', padding: '.1875rem .5rem', borderRadius: '9999px', fontSize: '.6rem', fontWeight: 700, background: 'var(--amber-50)', color: 'var(--amber)', border: '1px solid var(--amber-100)' }}>
+              <Flame style={{ width: '.625rem', height: '.625rem', fill: 'var(--amber)' }} /> Hot
             </span>
           )}
         </div>
       </div>
 
-      <h3 className="text-base font-display font-bold text-white group-hover:text-brand-400 transition-colors line-clamp-2 leading-snug mb-2">
+      {/* Title */}
+      <h3 className="font-display" style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--navy)', lineHeight: 1.35, letterSpacing: '-.02em', marginBottom: '.5rem', transition: 'color 150ms' }}
+        onMouseEnter={e => (e.currentTarget.style.color = 'var(--teal)')}
+        onMouseLeave={e => (e.currentTarget.style.color = 'var(--navy)')}
+      >
         {topic.title}
       </h3>
 
-      <p className="text-xs text-zinc-400 line-clamp-2 leading-relaxed mb-4 flex-1">
+      <p style={{ fontSize: '.8125rem', color: 'var(--ink-3)', lineHeight: 1.65, marginBottom: '1rem', flex: 1 }} className="line-clamp-2">
         {topic.tagline}
       </p>
 
-      <div className="flex items-center justify-between pt-3 border-t border-white/5 text-xs">
-        {isNoCode ? (
-          <div className="flex items-center gap-1.5 text-emerald-400 font-semibold text-xs">
-            <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Make in 1 Prompt</span>
-          </div>
-        ) : (
-          <div className="flex items-center gap-1.5 text-zinc-400 font-medium text-xs">
-            <BookOpen className="w-3.5 h-3.5 text-zinc-400" />
-            <span>Step-by-Step Code</span>
-          </div>
-        )}
-
-        <span className="inline-flex items-center gap-1 text-xs font-semibold text-brand-400 group-hover:translate-x-0.5 transition-transform">
-          Free Preview <ArrowRight className="w-3 h-3" />
+      {/* Footer */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '.875rem', borderTop: '1px solid var(--line)', fontSize: '.8125rem' }}>
+        <span style={{ color: isNC ? 'var(--teal-dark)' : 'var(--ink-3)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '.375rem' }}>
+          {isNC ? <><Sparkles style={{ width: '.875rem', height: '.875rem', color: 'var(--teal)' }} /> Make in 1 Prompt</> : <><BookOpen style={{ width: '.875rem', height: '.875rem' }} /> Step-by-Step Guide</>}
+        </span>
+        <span style={{ color: 'var(--teal)', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '.25rem' }}>
+          Free Preview <ArrowRight style={{ width: '.875rem', height: '.875rem' }} />
         </span>
       </div>
     </Link>
+  );
+}
+
+/* ── Filter pill ── */
+function FilterPill({ label, onRemove }: { label: string; onRemove: () => void }) {
+  return (
+    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '.375rem', padding: '.25rem .75rem', borderRadius: '9999px', background: 'var(--teal-50)', color: 'var(--teal-dark)', border: '1px solid var(--teal-100)', fontSize: '.75rem', fontWeight: 600 }}>
+      {label}
+      <button onClick={onRemove} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--teal)', display: 'flex', padding: 0 }}>
+        <X style={{ width: '.75rem', height: '.75rem' }} />
+      </button>
+    </span>
+  );
+}
+
+function WaIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
   );
 }

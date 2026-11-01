@@ -1,75 +1,58 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { Clock } from 'lucide-react';
+import { Clock, Zap } from 'lucide-react';
 
 export function UrgencyTimer() {
-  // null = not yet hydrated (avoids server/client mismatch flash)
-  const [timeLeft, setTimeLeft] = useState<{ minutes: number; seconds: number } | null>(null);
-  const [isExpired, setIsExpired] = useState(false);
+  const [time, setTime] = useState<{ m: number; s: number } | null>(null);
+  const [expired, setExpired] = useState(false);
 
   useEffect(() => {
-    const sessionKey = 'submitkit_offer_expiry';
-    let expiryTime = parseInt(sessionStorage.getItem(sessionKey) || '0');
-
-    if (!expiryTime || expiryTime < Date.now()) {
-      expiryTime = Date.now() + 15 * 60 * 1000;
-      sessionStorage.setItem(sessionKey, expiryTime.toString());
+    const KEY = 'sk_offer_exp';
+    let exp = parseInt(sessionStorage.getItem(KEY) || '0');
+    if (!exp || exp < Date.now()) {
+      exp = Date.now() + 15 * 60 * 1000;
+      sessionStorage.setItem(KEY, exp.toString());
     }
-
     const tick = () => {
-      const remaining = expiryTime - Date.now();
-      if (remaining <= 0) {
-        setIsExpired(true);
-        return;
-      }
-      setTimeLeft({
-        minutes: Math.floor((remaining / 1000 / 60) % 60),
-        seconds: Math.floor((remaining / 1000) % 60),
-      });
+      const r = exp - Date.now();
+      if (r <= 0) { setExpired(true); return; }
+      setTime({ m: Math.floor((r / 1000 / 60) % 60), s: Math.floor((r / 1000) % 60) });
     };
-
-    tick(); // Sync immediately on mount — no flash
-    const interval = setInterval(tick, 1000);
-    return () => clearInterval(interval);
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
   }, []);
 
-  // Pre-hydration: render an invisible placeholder with the same height
-  // to prevent layout shift when the timer appears
-  if (timeLeft === null && !isExpired) {
-    return (
-      <div className="rounded-xl p-3 h-[44px] bg-amber-500/5 border border-amber-500/10 animate-pulse" />
-    );
+  if (time === null && !expired) {
+    return <div style={{ height: '3.25rem', borderRadius: '12px', background: 'var(--amber-50)', border: '1px solid var(--amber-100)' }} />;
   }
 
-  // Expired — show a clean "deal active" nudge without revealing the timer is fake
-  if (isExpired) {
+  if (expired) {
     return (
-      <div className="bg-brand-500/10 border border-brand-500/20 rounded-xl p-3 flex items-center gap-2">
-        <div className="w-1.5 h-1.5 rounded-full bg-brand-400 animate-pulse shrink-0" />
-        <p className="text-xs text-brand-300 font-medium">
-          Special pricing active — limited availability
-        </p>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '.625rem', padding: '.875rem 1rem', borderRadius: '12px', background: 'var(--teal-50)', border: '1px solid var(--teal-100)' }}>
+        <Zap style={{ width: '1rem', height: '1rem', color: 'var(--teal)' }} />
+        <p style={{ fontSize: '.9rem', color: 'var(--teal-dark)', fontWeight: 600, margin: 0 }}>Special pricing active — limited availability</p>
       </div>
     );
   }
 
-  const mins = String(timeLeft!.minutes).padStart(2, '0');
-  const secs = String(timeLeft!.seconds).padStart(2, '0');
+  const fmt = (n: number) => String(n).padStart(2, '0');
 
   return (
-    <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-3 flex items-center justify-between gap-3">
-      <div className="flex items-center gap-2">
-        <Clock className="w-4 h-4 text-amber-400 shrink-0" />
-        <p className="text-xs text-amber-300 font-medium">Special offer ends in</p>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '.75rem', padding: '.875rem 1rem', borderRadius: '12px', background: 'var(--amber-50)', border: '1.5px solid var(--amber-100)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem' }}>
+        <Clock style={{ width: '1rem', height: '1rem', color: 'var(--amber)' }} />
+        <p style={{ fontSize: '.9rem', color: '#92400E', fontWeight: 600, margin: 0 }}>Offer ends in</p>
       </div>
-      <div className="flex items-center gap-1 font-mono" aria-live="polite" aria-label={`${mins} minutes ${secs} seconds remaining`}>
-        <div className="bg-amber-500/20 text-amber-300 font-bold text-sm px-2 py-0.5 rounded min-w-[32px] text-center tabular-nums">
-          {mins}
-        </div>
-        <span className="text-amber-400 font-bold text-sm">:</span>
-        <div className="bg-amber-500/20 text-amber-300 font-bold text-sm px-2 py-0.5 rounded min-w-[32px] text-center tabular-nums">
-          {secs}
-        </div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '.375rem' }} aria-live="polite">
+        {[fmt(time!.m), fmt(time!.s)].map((v, i) => (
+          <span key={i} style={{ display: 'flex', alignItems: 'center', gap: '.25rem' }}>
+            <span style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', minWidth: '2.375rem', padding: '.25rem .5rem', borderRadius: '8px', background: 'var(--amber)', color: '#fff', fontFamily: 'var(--font-mono)', fontSize: '1rem', fontWeight: 800 }}>
+              {v}
+            </span>
+            {i === 0 && <span style={{ color: 'var(--amber)', fontWeight: 800, fontSize: '1.125rem' }}>:</span>}
+          </span>
+        ))}
       </div>
     </div>
   );

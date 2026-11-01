@@ -1,439 +1,444 @@
 'use client';
 
-import { ProjectCard } from "@/components/ui/project-card";
-import { Project } from "@/lib/types";
-import { Terminal, Zap, Clock, CheckCircle2, Sparkles, Search, MessageCircle, ArrowRight, Bell, Check } from "lucide-react";
-import { isProjectAvailable } from "@/lib/available-projects";
+import { ProjectCard } from '@/components/ui/project-card';
+import { Project } from '@/lib/types';
+import { Clock, CheckCircle2, Sparkles, Search, ArrowRight, Bell, Check } from 'lucide-react';
+import { isProjectAvailable } from '@/lib/available-projects';
 import { useState, useMemo, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
-import Link from "next/link";
-import { CONSTANTS } from "@/lib/constants";
+import { useSearchParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { CONSTANTS } from '@/lib/constants';
 
 type StatusFilter = 'ALL' | 'AVAILABLE' | 'UPCOMING';
-type TierFilter = 'ALL' | 'MINI' | 'MAJOR';
-type CategoryFilter = string;
+type TierFilter   = 'ALL' | 'MINI' | 'MAJOR';
 
 export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[] }) {
-  const searchParams = useSearchParams();
-  const rawTier = searchParams.get('tier')?.toUpperCase();
-  const initialTier: TierFilter = (rawTier === 'MINI' || rawTier === 'MAJOR') ? rawTier : 'ALL';
-  const initialCat = searchParams.get('category') || 'ALL';
+  const sp     = useSearchParams();
+  const router = useRouter();
 
-  const [statusFilter, setStatusFilter] = useState<StatusFilter>('ALL');
-  const [tierFilter, setTierFilter] = useState<TierFilter>(initialTier);
-  const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>(initialCat);
-  const [searchQuery, setSearchQuery] = useState('');
+  // Read URL params on every render — these are the source of truth for tier/category
+  const urlTier: TierFilter = (() => {
+    const t = sp.get('tier')?.toUpperCase();
+    return t === 'MINI' || t === 'MAJOR' ? t : 'ALL';
+  })();
+  const urlCat = sp.get('category') || 'ALL';
+  const urlStatus: StatusFilter = (() => {
+    const s = sp.get('status')?.toUpperCase();
+    if (s === 'UPCOMING') return 'UPCOMING';
+    if (s === 'ALL') return 'ALL';
+    return 'AVAILABLE'; // Default to Available Now (9 verified kits)
+  })();
 
+  // Local-only state (defaults to 9 Available Kits)
+  const [status,   setStatus]   = useState<StatusFilter>(urlStatus);
+  const [query,    setQuery]    = useState('');
+  // These mirror URL but can be overridden locally (clicking chips without nav)
+  const [tier,     setTierLocal] = useState<TierFilter>(urlTier);
+  const [cat,      setCatLocal]  = useState<string>(urlCat);
+
+  // Sync local state whenever URL changes (e.g. navbar click → /projects?tier=MAJOR)
   useEffect(() => {
-    const t = searchParams.get('tier')?.toUpperCase();
-    if (t === 'MINI' || t === 'MAJOR') {
-      setTierFilter(t);
-    }
-    const c = searchParams.get('category');
-    if (c) {
-      setCategoryFilter(c);
-    }
-  }, [searchParams]);
+    setTierLocal(urlTier);
+    setCatLocal(urlCat);
+    setStatus(urlStatus);
+    setQuery('');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sp.toString()]);
 
-  // Derive unique categories from project list
-  const categories = useMemo(() => {
-    const cats = Array.from(new Set(initialProjects.map(p => p.category)));
-    return cats.sort();
-  }, [initialProjects]);
-
-  const [reserveModalProject, setReserveModalProject] = useState<string | null>(null);
-  const [reservedEmail, setReservedEmail] = useState('');
-  const [reserveSuccess, setReserveSuccess] = useState(false);
-
-  const handleReserveSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!reservedEmail.includes('@') || !reserveModalProject) return;
-    try {
-      const slug = reserveModalProject.toLowerCase().replace(/\s+/g, '-');
-      await fetch('/api/reservations', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: reservedEmail, projectName: reserveModalProject, projectSlug: slug }),
-      });
-    } catch {
-      /* silent */
-    }
-    setReserveSuccess(true);
-    setTimeout(() => {
-      setReserveModalProject(null);
-      setReserveSuccess(false);
-      setReservedEmail('');
-    }, 3000);
-  };
-
-  const availableCount = useMemo(
+  const categories = useMemo(
+    () => Array.from(new Set(initialProjects.map(p => p.category))).sort(),
+    [initialProjects]
+  );
+  const availCount = useMemo(
     () => initialProjects.filter(p => isProjectAvailable(p.slug)).length,
     [initialProjects]
   );
-  const upcomingCount = initialProjects.length - availableCount;
+  const upCount = initialProjects.length - availCount;
 
-  // All filtering happens in memory — instant, zero network requests
-  const displayProjects = useMemo(() => {
-    let result = initialProjects;
-
-    // Search filter
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
-      result = result.filter(p =>
+  const displayed = useMemo(() => {
+    let r = initialProjects;
+    if (query.trim()) {
+      const q = query.toLowerCase();
+      r = r.filter(p =>
         p.title.toLowerCase().includes(q) ||
         p.description.toLowerCase().includes(q) ||
         p.category.toLowerCase().includes(q) ||
         p.tech_stack.some(t => t.toLowerCase().includes(q))
       );
     }
+    if (tier !== 'ALL')   r = r.filter(p => p.tier === tier);
+    if (cat  !== 'ALL')   r = r.filter(p => p.category === cat);
+    if (status === 'AVAILABLE')  r = r.filter(p => isProjectAvailable(p.slug));
+    else if (status === 'UPCOMING') r = r.filter(p => !isProjectAvailable(p.slug));
+    else r = [
+      ...r.filter(p =>  isProjectAvailable(p.slug)),
+      ...r.filter(p => !isProjectAvailable(p.slug)),
+    ];
+    return r;
+  }, [initialProjects, status, tier, cat, query]);
 
-    if (tierFilter !== 'ALL') {
-      result = result.filter(p => p.tier === tierFilter);
-    }
-    if (categoryFilter !== 'ALL') {
-      result = result.filter(p => p.category === categoryFilter);
-    }
-    if (statusFilter === 'AVAILABLE') {
-      result = result.filter(p => isProjectAvailable(p.slug));
-    } else if (statusFilter === 'UPCOMING') {
-      result = result.filter(p => !isProjectAvailable(p.slug));
-    } else {
-      // ALL — put available first
-      result = [
-        ...result.filter(p => isProjectAvailable(p.slug)),
-        ...result.filter(p => !isProjectAvailable(p.slug)),
-      ];
-    }
+  // Reserve modal state
+  const [reserve,  setReserve]  = useState<string | null>(null);
+  const [resEmail, setResEmail] = useState('');
+  const [resOk,    setResOk]    = useState(false);
 
-    return result;
-  }, [initialProjects, statusFilter, tierFilter, categoryFilter, searchQuery]);
+  const onReserveSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!resEmail.includes('@') || !reserve) return;
+    try {
+      await fetch('/api/reservations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: resEmail, projectName: reserve }),
+      });
+    } catch { /* silent */ }
+    setResOk(true);
+    setTimeout(() => { setReserve(null); setResOk(false); setResEmail(''); }, 3000);
+  };
 
-  const filteredAvailableCount = useMemo(
-    () => displayProjects.filter(p => isProjectAvailable(p.slug)).length,
-    [displayProjects]
-  );
+  // Change tier — update local state + push URL so back/forward works
+  const handleTierChange = (t: TierFilter) => {
+    setTierLocal(t);
+    const params = new URLSearchParams(sp.toString());
+    if (t === 'ALL') params.delete('tier');
+    else params.set('tier', t);
+    router.replace(`/projects?${params.toString()}`, { scroll: false });
+  };
+
+  const handleCatChange = (c: string) => {
+    setCatLocal(c);
+    const params = new URLSearchParams(sp.toString());
+    if (c === 'ALL') params.delete('category');
+    else params.set('category', c);
+    router.replace(`/projects?${params.toString()}`, { scroll: false });
+  };
+
+  const clearAll = () => {
+    setQuery('');
+    setStatus('AVAILABLE');
+    setTierLocal('ALL');
+    setCatLocal('ALL');
+    router.replace('/projects', { scroll: false });
+  };
 
   return (
     <>
-      {/* Page Header */}
-      <div className="mb-10">
-        <div className="inline-flex flex-wrap items-center gap-3 mb-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/5 text-zinc-300 text-sm">
-            <Terminal className="w-4 h-4 text-emerald-400" />
-            <span>SubmitKit Fleet Catalog</span>
-          </div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-300 text-sm font-medium">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>{availableCount} Available Now</span>
-          </div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-purple-500/30 bg-purple-500/10 text-purple-300 text-sm font-medium">
-            <Clock className="w-3.5 h-3.5" />
-            <span>{upcomingCount} Upcoming Drops</span>
-          </div>
+      {/* ── Page Header ── */}
+      <div style={{ marginBottom: '2.5rem' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '.625rem', marginBottom: '1.125rem' }}>
+          <span className="tag tag-teal">SubmitKit Fleet Catalog</span>
+          <span className="tag tag-emerald">
+            <span className="dot-live apulse" style={{ width: '5px', height: '5px' }} />
+            {availCount} Ready to Ship
+          </span>
+          <span className="tag tag-amber">
+            <Clock style={{ width: '.75rem', height: '.75rem' }} />
+            {upCount} Upcoming
+          </span>
         </div>
-        <h1 className="text-4xl md:text-5xl font-display font-medium text-white mb-4 tracking-tight">
-          Verified Engineering Projects. <span className="text-gradient">Ready to Run &amp; Submit.</span>
+        <h1 className="font-display" style={{ fontSize: 'clamp(1.875rem,5vw,3rem)', fontWeight: 900, letterSpacing: '-.04em', color: 'var(--navy)', marginBottom: '.875rem' }}>
+          Verified Projects.{' '}
+          <span className="text-teal-grad">Ready to Run &amp; Submit.</span>
         </h1>
-        <p className="text-zinc-400 max-w-2xl text-lg leading-relaxed">
-          Skip the endless GitHub bugs, missing Python libraries, and 3 AM panics. Every project kit comes with 100% working code, an IEEE format Black Book report (.docx), defense PPT slides, and top 25 Viva Q&amp;A with answers.
+        <p style={{ fontSize: 'clamp(.9375rem,2vw,1.0625rem)', color: 'var(--ink-3)', maxWidth: '42rem', lineHeight: 1.75 }}>
+          Skip the GitHub bugs. Every kit has 100% working code, IEEE Black Book, defense PPT, and top 25 Viva Q&amp;A.
         </p>
       </div>
 
-      {/* Short & High-Hook Custom Project Banner (#custom anchor) */}
-      <div
-        id="custom"
-        className="scroll-mt-24 mb-8 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-brand-500/15 via-[#13131c] to-emerald-500/15 border border-brand-500/30 relative overflow-hidden shadow-lg group flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
-      >
-        <div className="flex items-center gap-3.5">
-          <div className="w-10 h-10 rounded-xl bg-brand-500/20 border border-brand-500/30 flex items-center justify-center text-brand-400 shrink-0 shadow-[0_0_15px_rgba(59,130,246,0.2)]">
-            <Sparkles className="w-5 h-5 text-brand-400" />
+      {/* ── Custom Project Banner ── */}
+      <div className="card-teal" style={{ padding: '1.25rem 1.5rem', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', marginBottom: '2rem' }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '.875rem' }}>
+          <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: '12px', flexShrink: 0, background: 'var(--teal-100)', border: '1px solid var(--line-teal)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Sparkles style={{ width: '1.125rem', height: '1.125rem', color: 'var(--teal-dark)' }} />
           </div>
           <div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <h3 className="text-base sm:text-lg font-display font-bold text-white tracking-tight">
-                Need a Custom Project? We'll Build It in 48 Hours.
+            <div style={{ display: 'flex', alignItems: 'center', gap: '.625rem', flexWrap: 'wrap', marginBottom: '.3125rem' }}>
+              <h3 style={{ fontSize: '.9375rem', fontWeight: 700, color: 'var(--navy)', margin: 0 }}>
+                Need a Custom Project? Built in 48 Hours.
               </h3>
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 uppercase tracking-wide">
-                100% Custom Build
-              </span>
+              <span className="tag tag-teal" style={{ fontSize: '.6rem' }}>100% Custom</span>
             </div>
-            <p className="text-xs text-zinc-400 mt-0.5 flex items-center gap-2 flex-wrap">
-              <span>100% working custom code</span>
-              <span className="text-zinc-600">•</span>
-              <span>IEEE Black Book (.docx) &amp; PPT</span>
-              <span className="text-zinc-600">•</span>
-              <span>1-on-1 setup walkthrough</span>
-              <span className="text-zinc-600">•</span>
-              <span className="text-emerald-400 font-semibold">Starts ₹1,999</span>
+            <p style={{ fontSize: '.8125rem', color: 'var(--ink-3)', margin: 0 }}>
+              Working code · IEEE Black Book &amp; PPT · 1-on-1 walkthrough ·{' '}
+              <strong style={{ color: 'var(--teal-dark)' }}>Starts ₹1,999</strong>
             </p>
           </div>
         </div>
-
         <a
-          href={`https://wa.me/918799814256?text=${encodeURIComponent(
-            "Hi SubmitKit team! I want to build a custom project. Here are my requirements:\n\n• Project Title / Idea:\n• Preferred Tech Stack:\n• Core Features Needed:\n• Target Timeline / Deadline:"
-          )}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="shrink-0 w-full md:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-white bg-emerald-600 hover:bg-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all hover:scale-105 active:scale-95"
+          href={`https://wa.me/918799814256?text=${encodeURIComponent('Hi SubmitKit! I want a custom project.\n\nTopic:\nTech Stack:\nFeatures:\nDeadline:')}`}
+          target="_blank" rel="noopener noreferrer"
+          className="btn btn-teal btn-sm"
+          style={{ flexShrink: 0 }}
         >
-          <MessageCircle className="w-4 h-4 fill-current" />
-          <span>Chat on WhatsApp</span>
-          <ArrowRight className="w-3.5 h-3.5" />
+          <WaIcon />
+          Chat on WhatsApp
+          <ArrowRight style={{ width: '.8125rem', height: '.8125rem' }} />
         </a>
       </div>
 
-      {/* Search Bar */}
-      <div className="relative mb-6 max-w-lg">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500" />
+      {/* ── Search ── */}
+      <div style={{ position: 'relative', maxWidth: '36rem', marginBottom: '1.375rem' }}>
+        <Search style={{ position: 'absolute', left: '.875rem', top: '50%', transform: 'translateY(-50%)', width: '1rem', height: '1rem', color: 'var(--ink-4)', pointerEvents: 'none' }} />
         <input
           type="text"
-          placeholder="Search projects (e.g. Face Recognition, Fraud, EHR, Python, React)..."
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-          className="w-full bg-white/5 border border-white/10 rounded-2xl pl-11 pr-4 py-3 text-white placeholder:text-zinc-600 focus:outline-none focus:border-brand-500/30 focus:ring-1 focus:ring-brand-500/20 transition-all text-sm"
+          placeholder="Search — Face Recognition, Fraud Detection, EHR..."
+          value={query}
+          onChange={e => setQuery(e.target.value)}
+          className="input"
+          style={{ paddingLeft: '2.5rem' }}
         />
       </div>
 
-      {/* Status Tabs — pure useState, instant switching */}
-      <div className="flex flex-wrap items-center gap-2 mb-6 p-1.5 rounded-2xl bg-[#141419] border border-white/10 w-fit">
-        <button
-          onClick={() => setStatusFilter('ALL')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
-            statusFilter === 'ALL'
-              ? 'bg-white/15 text-white shadow-lg border border-white/20'
-              : 'text-zinc-400 hover:text-white hover:bg-white/5'
-          }`}
-        >
-          <span>All Projects</span>
-          <span className="text-xs px-2 py-0.5 rounded-full bg-white/10 text-zinc-300">{initialProjects.length}</span>
-        </button>
-
-        <button
-          onClick={() => setStatusFilter('AVAILABLE')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
-            statusFilter === 'AVAILABLE'
-              ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-[0_0_20px_rgba(16,185,129,0.15)]'
-              : 'text-zinc-400 hover:text-emerald-300 hover:bg-white/5'
-          }`}
-        >
-          <Zap className="w-4 h-4 text-emerald-400" />
-          <span>⚡ Ready to Ship (Instant Download)</span>
-          <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold">{availableCount}</span>
-        </button>
-
-        <button
-          onClick={() => setStatusFilter('UPCOMING')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${
-            statusFilter === 'UPCOMING'
-              ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40 shadow-[0_0_20px_rgba(168,85,247,0.15)]'
-              : 'text-zinc-400 hover:text-purple-300 hover:bg-white/5'
-          }`}
-        >
-          <Clock className="w-4 h-4 text-purple-400" />
-          <span>🚀 Upcoming Drops (Batch 2 Pipeline)</span>
-          <span className="text-xs px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 font-bold">{upcomingCount}</span>
-        </button>
-      </div>
-
-      {/* Secondary Filters Row */}
-      <div className="flex flex-wrap items-center gap-2 mb-8">
-        {/* Tier filter */}
-        <div className="flex items-center gap-1 p-1 rounded-xl bg-white/[0.03] border border-white/5">
-          {(['ALL', 'MINI', 'MAJOR'] as TierFilter[]).map(tier => (
+      {/* ── Status Tabs (Aesthetic Segmented Control) ── */}
+      <div className="scroll-x no-scrollbar" style={{ display: 'inline-flex', alignItems: 'center', gap: '.25rem', padding: '.25rem', borderRadius: '12px', background: 'var(--surface-2)', border: '1px solid var(--line)', marginBottom: '1.25rem', maxWidth: '100%' }}>
+        {([
+          { v: 'AVAILABLE', label: 'Ready to Ship',      n: availCount,             live: true },
+          { v: 'UPCOMING',  label: 'Pre-Order Pipeline', n: upCount,                live: false },
+          { v: 'ALL',       label: 'All Project Kits',   n: initialProjects.length, live: false },
+        ] as const).map(({ v, label, n, live }) => {
+          const active = status === v;
+          return (
             <button
-              key={tier}
-              onClick={() => setTierFilter(tier)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                tierFilter === tier
-                  ? 'bg-white/15 text-white'
-                  : 'text-zinc-500 hover:text-zinc-300'
-              }`}
+              key={v}
+              onClick={() => setStatus(v)}
+              className="shrink-0 whitespace-nowrap active:scale-95"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '.5rem',
+                padding: '.5rem .875rem',
+                borderRadius: '9px',
+                border: 'none',
+                fontSize: '.8125rem',
+                fontWeight: active ? 700 : 500,
+                cursor: 'pointer',
+                background: active ? 'var(--surface)' : 'transparent',
+                color: active ? 'var(--navy)' : 'var(--ink-4)',
+                boxShadow: active ? '0 2px 6px rgba(60,40,10,0.07), 0 1px 2px rgba(0,0,0,0.04)' : 'none',
+                transition: 'all 150ms ease',
+              }}
             >
-              {tier === 'ALL' ? 'All Tiers' : tier === 'MINI' ? 'Mini (₹299)' : 'Major (₹499)'}
-            </button>
-          ))}
-        </div>
-
-        {/* Category filter */}
-        <div className="flex flex-wrap items-center gap-1 p-1 rounded-xl bg-white/[0.03] border border-white/5">
-          <button
-            onClick={() => setCategoryFilter('ALL')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-              categoryFilter === 'ALL' ? 'bg-white/15 text-white' : 'text-zinc-500 hover:text-zinc-300'
-            }`}
-          >
-            All
-          </button>
-          {categories.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setCategoryFilter(cat)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                categoryFilter === cat ? 'bg-white/15 text-white' : 'text-zinc-500 hover:text-zinc-300'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* Contextual banner */}
-      {statusFilter === 'UPCOMING' && (
-        <div className="mb-8 bg-purple-500/10 border border-purple-500/20 rounded-xl p-4 flex items-start gap-3">
-          <div className="bg-purple-500/20 p-2 rounded-lg mt-0.5 shrink-0">
-            <Clock className="w-4 h-4 text-purple-400" />
-          </div>
-          <div>
-            <h4 className="text-purple-300 font-bold text-sm mb-1">Batch 2 Waitlist is Open</h4>
-            <p className="text-purple-200/70 text-sm leading-relaxed">
-              These projects are in final testing. Preview the architecture and join the waitlist to be notified when they drop at launch pricing.
-            </p>
-          </div>
-        </div>
-      )}
-
-      {statusFilter === 'AVAILABLE' && (
-        <div className="mb-8 bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 flex items-start gap-3">
-          <div className="bg-emerald-500/20 p-2 rounded-lg mt-0.5 shrink-0">
-            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-          </div>
-          <div>
-            <h4 className="text-emerald-300 font-bold text-sm mb-1">Instant Fulfillment Active</h4>
-            <p className="text-emerald-200/70 text-sm leading-relaxed">
-              All projects below are verified and on CDN. Upon checkout you receive an instant download link for source code, IEEE report, and PPT defense slides.
-            </p>
-          </div>
-        </div>
-      )}
-
-      {/* Projects Grid */}
-      {displayProjects.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {displayProjects.map((project) => (
-            <ProjectCard key={project.id} project={project} onReserve={setReserveModalProject} />
-          ))}
-
-          {/* Custom Project Card in Grid */}
-          <div className="flex flex-col justify-between p-6 rounded-2xl bg-gradient-to-b from-[#14141d] to-[#0f0f14] border border-brand-500/30 hover:border-brand-500/60 transition-all group relative overflow-hidden shadow-[0_0_30px_rgba(59,130,246,0.06)]">
-            <div className="space-y-3">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-brand-500/15 border border-brand-500/30 text-brand-300 text-[11px] font-semibold">
-                <Sparkles className="w-3 h-3 text-brand-400" />
-                Custom Development
-              </div>
-              <h3 className="text-lg font-bold text-white group-hover:text-brand-300 transition-colors">
-                Need a Custom Project Built from Scratch?
-              </h3>
-              <p className="text-xs text-zinc-400 leading-relaxed">
-                If you have specific requirements or an unlisted topic, our engineers will build your custom software with clean code, a 20-page technical report, and setup assistance.
-              </p>
-            </div>
-            <div className="pt-6 mt-4 border-t border-white/5 space-y-3">
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-zinc-500">Turnaround</span>
-                <span className="text-emerald-400 font-semibold">48 Hours</span>
-              </div>
-              <div className="flex items-center justify-between text-xs">
-                <span className="text-zinc-500">Starting at</span>
-                <span className="text-white font-bold">₹1,999</span>
-              </div>
-              <a
-                href={`https://wa.me/918799814256?text=${encodeURIComponent(
-                  "Hi SubmitKit team! I want to request a custom project. My topic / idea is: "
-                )}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-emerald-600 text-white text-xs font-bold transition-all"
+              {live && (
+                <span className="dot-live apulse" style={{ width: '6px', height: '6px' }} />
+              )}
+              <span>{label}</span>
+              <span
+                style={{
+                  padding: '.125rem .5rem',
+                  borderRadius: '9999px',
+                  fontSize: '.6875rem',
+                  fontWeight: 700,
+                  background: active ? 'var(--teal-50)' : 'var(--surface-3)',
+                  color: active ? 'var(--teal-dark)' : 'var(--ink-4)',
+                  border: active ? '1px solid var(--teal-100)' : '1px solid transparent',
+                }}
               >
-                <MessageCircle className="w-3.5 h-3.5" />
-                <span>Submit Idea on WhatsApp</span>
-              </a>
+                {n}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* ── Unified Filter Toolbar: Tier & Domain ── */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '.875rem', marginBottom: '2rem' }}>
+        {/* Tier filter segmented track */}
+        <div className="scroll-x no-scrollbar max-w-full" style={{ display: 'inline-flex', alignItems: 'center', gap: '.25rem', padding: '.25rem', background: 'var(--surface-2)', border: '1px solid var(--line)', borderRadius: '10px' }}>
+          {(['ALL', 'MINI', 'MAJOR'] as TierFilter[]).map(t => {
+            const active = tier === t;
+            return (
+              <button
+                key={t}
+                onClick={() => handleTierChange(t)}
+                className="shrink-0 whitespace-nowrap active:scale-95"
+                style={{
+                  padding: '.375rem .75rem',
+                  borderRadius: '7px',
+                  border: 'none',
+                  fontSize: '.8125rem',
+                  fontWeight: active ? 700 : 500,
+                  cursor: 'pointer',
+                  background: active ? 'var(--surface)' : 'transparent',
+                  color: active ? 'var(--navy)' : 'var(--ink-4)',
+                  boxShadow: active ? '0 1px 3px rgba(60,40,10,0.07)' : 'none',
+                  transition: 'all 140ms ease',
+                }}
+              >
+                {t === 'ALL' ? 'All Tiers' : t === 'MINI' ? `Mini (₹${CONSTANTS.PRICING.MINI_PROJECT})` : `Major (₹${CONSTANTS.PRICING.MAJOR_PROJECT})`}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Category domain pills */}
+        <div className="scroll-x" style={{ display: 'flex', alignItems: 'center', gap: '.375rem', flex: 1, minWidth: 'min(100%, 18rem)', paddingBottom: '2px' }}>
+          <button
+            onClick={() => handleCatChange('ALL')}
+            style={{
+              padding: '.375rem .8125rem',
+              borderRadius: '9999px',
+              border: `1px solid ${cat === 'ALL' ? 'var(--teal)' : 'var(--line)'}`,
+              background: cat === 'ALL' ? 'var(--teal-50)' : 'var(--surface)',
+              color: cat === 'ALL' ? 'var(--teal-dark)' : 'var(--ink-3)',
+              fontSize: '.75rem',
+              fontWeight: cat === 'ALL' ? 700 : 500,
+              cursor: 'pointer',
+              flexShrink: 0,
+              transition: 'all 140ms ease',
+            }}
+          >
+            All Domains
+          </button>
+          {categories.map(c => {
+            const active = cat === c;
+            return (
+              <button
+                key={c}
+                onClick={() => handleCatChange(c)}
+                style={{
+                  padding: '.375rem .8125rem',
+                  borderRadius: '9999px',
+                  border: `1px solid ${active ? 'var(--teal)' : 'var(--line)'}`,
+                  background: active ? 'var(--teal-50)' : 'var(--surface)',
+                  color: active ? 'var(--teal-dark)' : 'var(--ink-3)',
+                  fontSize: '.75rem',
+                  fontWeight: active ? 700 : 500,
+                  cursor: 'pointer',
+                  flexShrink: 0,
+                  transition: 'all 140ms ease',
+                }}
+              >
+                {c}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ── Context Banners ── */}
+      {status === 'AVAILABLE' && (
+        <div style={{ display: 'flex', gap: '.875rem', padding: '1rem 1.25rem', borderRadius: '14px', background: 'var(--emerald-50)', border: '1px solid var(--emerald-100)', marginBottom: '2rem' }}>
+          <CheckCircle2 style={{ width: '1.25rem', height: '1.25rem', color: 'var(--emerald)', flexShrink: 0, marginTop: '.125rem' }} />
+          <div>
+            <h4 style={{ fontSize: '.9375rem', fontWeight: 700, color: 'var(--emerald)', margin: '0 0 .25rem' }}>9 Verified Kits Ready for Instant Submission</h4>
+            <p style={{ fontSize: '.875rem', color: 'var(--ink-3)', margin: 0, lineHeight: 1.65 }}>100% execution-tested code, 60-page IEEE Black Book (.docx), defense presentation slides, and top 25 Viva Q&amp;A. Checkout → instant download.</p>
+          </div>
+        </div>
+      )}
+      {status === 'UPCOMING' && (
+        <div style={{ display: 'flex', gap: '.875rem', padding: '1rem 1.25rem', borderRadius: '14px', background: 'var(--amber-50)', border: '1px solid var(--amber-100)', marginBottom: '2rem' }}>
+          <Clock style={{ width: '1.25rem', height: '1.25rem', color: '#D97706', flexShrink: 0, marginTop: '.125rem' }} />
+          <div>
+            <h4 style={{ fontSize: '.9375rem', fontWeight: 700, color: '#92400E', margin: '0 0 .25rem' }}>Pre-Order Early Access Pipeline</h4>
+            <p style={{ fontSize: '.875rem', color: '#B45309', margin: 0, lineHeight: 1.65 }}>These projects are in active QA and Black Book formatting. Pre-book now for ₹299 (Mini) / ₹499 (Major) to lock in 50% early bird discount and receive priority delivery.</p>
+          </div>
+        </div>
+      )}
+
+      {/* ── Active Filter Indicator ── */}
+      {(tier !== 'ALL' || cat !== 'ALL' || query.trim() || status !== 'ALL') && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem', flexWrap: 'wrap', marginBottom: '1.5rem' }}>
+          <span style={{ fontSize: '.75rem', color: 'var(--ink-4)', fontWeight: 600 }}>
+            Showing {displayed.length} of {initialProjects.length} projects
+          </span>
+          <button onClick={clearAll} style={{ fontSize: '.75rem', fontWeight: 700, color: 'var(--teal-dark)', background: 'none', border: 'none', cursor: 'pointer', padding: '.1875rem .5rem', textDecoration: 'underline', textUnderlineOffset: '2px' }}>
+            Clear all
+          </button>
+        </div>
+      )}
+
+      {/* ── Project Grid ── */}
+      {displayed.length > 0 ? (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%,22rem),1fr))', gap: '1.25rem' }}>
+          {displayed.map(p => (
+            /* Entire card is clickable — Link wraps ProjectCard */
+            <Link
+              key={p.id}
+              href={`/projects/${p.slug}`}
+              style={{ textDecoration: 'none', display: 'block' }}
+            >
+              <ProjectCard project={p} onReserve={(name) => { setReserve(name); }} />
+            </Link>
+          ))}
+
+          {/* Custom Project Card */}
+          <div className="card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', background: 'linear-gradient(135deg,var(--teal-50) 0%,var(--surface) 100%)', border: '1px solid var(--teal-100)' }}>
+            <span className="tag tag-teal" style={{ fontSize: '.6rem', width: 'fit-content', marginBottom: '.875rem' }}>Custom Development</span>
+            <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '.5rem' }}>Need a Custom Project from Scratch?</h3>
+            <p style={{ fontSize: '.875rem', color: 'var(--ink-3)', lineHeight: 1.65, marginBottom: '1.25rem', flex: 1 }}>
+              Specific topic or stack? Our engineers build your exact project with clean code, a technical report, and setup support.
+            </p>
+            <div style={{ paddingTop: '.875rem', borderTop: '1px solid var(--line)', display: 'flex', flexDirection: 'column', gap: '.5rem', marginBottom: '1rem' }}>
+              {[{ l: 'Turnaround', v: '48 Hours', c: 'var(--teal)' }, { l: 'Starting at', v: '₹1,999', c: 'var(--navy)' }].map(r => (
+                <div key={r.l} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '.875rem' }}>
+                  <span style={{ color: 'var(--ink-4)' }}>{r.l}</span>
+                  <span style={{ fontWeight: 700, color: r.c }}>{r.v}</span>
+                </div>
+              ))}
             </div>
+            <a href={`https://wa.me/918799814256?text=${encodeURIComponent('Hi SubmitKit! I want a custom project. My idea: ')}`}
+              target="_blank" rel="noopener noreferrer"
+              className="btn btn-teal btn-sm"
+              style={{ justifyContent: 'center' }}
+              onClick={e => e.stopPropagation()}
+            >
+              <WaIcon /> Submit Idea on WhatsApp
+            </a>
           </div>
         </div>
       ) : (
-        <div className="text-center py-16 px-4 bg-[#111115] border border-white/5 rounded-2xl max-w-xl mx-auto">
-          <Sparkles className="w-10 h-10 text-brand-400 mx-auto mb-4" />
-          <h3 className="text-xl font-bold text-white mb-2">Don't see your specific project or stack?</h3>
-          <p className="text-zinc-400 text-sm max-w-md mx-auto mb-6">
-            We can build your exact project from scratch in 48 hours with 100% bug-free code, a 20-page technical report, presentation slides, and technical walkthrough.
+        <div className="card" style={{ padding: '4rem 2rem', textAlign: 'center', maxWidth: '32rem', margin: '0 auto' }}>
+          <Sparkles style={{ width: '2.5rem', height: '2.5rem', color: 'var(--teal)', margin: '0 auto 1rem' }} />
+          <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '.5rem' }}>No projects match your filters</h3>
+          <p style={{ fontSize: '.9375rem', color: 'var(--ink-3)', marginBottom: '1.5rem', lineHeight: 1.65 }}>
+            Try clearing filters, or let us build a custom project for you in 48h.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <a
-              href={`https://wa.me/918799814256?text=${encodeURIComponent(
-                `Hi SubmitKit team! I searched for "${searchQuery}" in your catalog. Can your team build this custom project for me?`
-              )}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-sm transition-all shadow-[0_0_20px_rgba(16,185,129,0.3)]"
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.75rem', justifyContent: 'center' }}>
+            <a href={`https://wa.me/918799814256?text=${encodeURIComponent('Hi SubmitKit! I need a custom project.')}`}
+              target="_blank" rel="noopener noreferrer"
+              className="btn btn-teal"
+              style={{ padding: '0 1.5rem' }}
             >
-              <MessageCircle className="w-4 h-4 fill-current" />
-              <span>Get Custom Project on WhatsApp</span>
+              <WaIcon /> Custom on WhatsApp
             </a>
-            <button
-              onClick={() => {
-                setSearchQuery('');
-                setStatusFilter('ALL');
-                setTierFilter('ALL');
-                setCategoryFilter('ALL');
-              }}
-              className="w-full sm:w-auto px-5 py-3 bg-white/10 text-zinc-300 font-semibold rounded-xl hover:bg-white/15 text-sm transition-colors"
-            >
+            <button onClick={clearAll} className="btn btn-outline" style={{ padding: '0 1.5rem' }}>
               Clear All Filters
             </button>
           </div>
         </div>
       )}
-      {/* Pre-Order Modal */}
-      {reserveModalProject && (
+
+      {/* ── Pre-Order Modal ── */}
+      {reserve && (
         <div
-          className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4"
-          onClick={e => { if (e.target === e.currentTarget) setReserveModalProject(null); }}
+          style={{ position: 'fixed', inset: 0, zIndex: 200, background: 'rgba(15,23,42,.4)', backdropFilter: 'blur(6px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}
+          onClick={e => { if (e.target === e.currentTarget) setReserve(null); }}
         >
-          <div className="glass-card w-full max-w-md p-6 rounded-2xl border border-purple-500/30 shadow-2xl relative z-[101]">
-            <div className="flex items-start gap-3 mb-5">
-              <div className="w-10 h-10 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-400 shrink-0">
-                <Bell className="w-5 h-5" />
+          <div className="card" style={{ width: '100%', maxWidth: '26rem', padding: '1.75rem', borderRadius: '20px', boxShadow: 'var(--sh-2xl)' }}>
+            <div style={{ display: 'flex', gap: '.875rem', marginBottom: '1.25rem' }}>
+              <div style={{ width: '2.75rem', height: '2.75rem', borderRadius: '12px', background: 'var(--teal-50)', border: '1px solid var(--teal-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <Bell style={{ width: '1.25rem', height: '1.25rem', color: 'var(--teal)' }} />
               </div>
               <div>
-                <h4 className="text-base font-bold text-white mb-0.5">Pre-Order & Early Access</h4>
-                <p className="text-xs text-zinc-400 leading-relaxed">{reserveModalProject}</p>
+                <h4 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--navy)', margin: '0 0 .25rem' }}>Pre-Order &amp; Early Access</h4>
+                <p style={{ fontSize: '.8125rem', color: 'var(--ink-3)', margin: 0 }}>{reserve}</p>
               </div>
             </div>
-
-            {reserveSuccess ? (
-              <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-sm flex items-center gap-2">
-                <Check className="w-4 h-4 text-emerald-400 shrink-0" />
-                Reserved! You'll get an email as soon as this drops.
+            {resOk ? (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '.625rem', padding: '.875rem', borderRadius: '12px', background: 'var(--emerald-50)', border: '1px solid var(--emerald-100)', fontSize: '.875rem', color: 'var(--emerald)', fontWeight: 600 }}>
+                <Check style={{ width: '1rem', height: '1rem', flexShrink: 0 }} /> Reserved! You&apos;ll be emailed the moment this drops.
               </div>
             ) : (
-              <form onSubmit={handleReserveSubmit} className="space-y-4">
-                <p className="text-xs text-zinc-400 leading-relaxed">
-                  Lock in launch-day pricing (₹{CONSTANTS.PRICING.MINI_PROJECT}–₹{CONSTANTS.PRICING.MAJOR_PROJECT}) and get emailed the instant this kit drops.
+              <form onSubmit={onReserveSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '.875rem' }}>
+                <p style={{ fontSize: '.875rem', color: 'var(--ink-3)', margin: 0, lineHeight: 1.65 }}>
+                  Lock in launch pricing (₹{CONSTANTS.PRICING.MINI_PROJECT}–₹{CONSTANTS.PRICING.MAJOR_PROJECT}) and get emailed the instant this drops.
                 </p>
-                <input
-                  type="email"
-                  required
-                  placeholder="your@email.com"
-                  value={reservedEmail}
-                  onChange={e => setReservedEmail(e.target.value)}
-                  className="w-full px-4 py-2.5 rounded-xl bg-[#09090b] border border-white/10 text-white text-sm outline-none focus:border-purple-500/60 transition-all"
-                />
-                <div className="flex items-center justify-end gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setReserveModalProject(null)}
-                    className="text-xs font-semibold text-zinc-400 hover:text-white px-4 py-2"
-                  >
+                <input type="email" required placeholder="your@email.com" value={resEmail} onChange={e => setResEmail(e.target.value)} className="input" />
+                <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '.625rem' }}>
+                  <button type="button" onClick={() => setReserve(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '.875rem', fontWeight: 600, color: 'var(--ink-3)', padding: '.5rem .75rem' }}>
                     Cancel
                   </button>
-                  <button
-                    type="submit"
-                    className="text-xs font-bold text-purple-950 bg-purple-400 hover:bg-purple-300 px-5 py-2.5 rounded-lg transition-all"
-                  >
-                    Join Waitlist
-                  </button>
+                  <button type="submit" className="btn btn-teal btn-sm">Lock My Reservation</button>
                 </div>
               </form>
             )}
@@ -441,5 +446,13 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
         </div>
       )}
     </>
+  );
+}
+
+function WaIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
   );
 }
