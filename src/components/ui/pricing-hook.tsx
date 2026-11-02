@@ -1,38 +1,38 @@
 'use client';
 
-import { CheckCircle2, ShieldCheck, FileText, Code2, Presentation, ArrowRight, Sparkles } from 'lucide-react';
+import { CheckCircle2, ShieldCheck, FileText, Code2, Presentation, ArrowRight, Zap } from 'lucide-react';
 import Link from 'next/link';
 import { CONSTANTS } from '@/lib/constants';
 
 const DELIVERABLES = [
   {
     Icon: Code2,
-    label: '1-Click Runnable Source Code',
-    sub: 'Tested on Python / Node / Java — double-click run.bat, zero errors',
+    label: '1-Click Runnable Code',
+    sub: 'Double-click run.bat — zero errors, 2 min setup',
     accent: '#0D9488',
     bg: 'linear-gradient(135deg, #CCFBF1 0%, #E6FFFA 100%)',
     border: 'rgba(13, 148, 136, 0.25)',
   },
   {
     Icon: FileText,
-    label: '30+ Page IEEE Black Book (.docx)',
-    sub: 'University formatted — Literature Survey, Architecture & UML',
+    label: '30-Page IEEE Black Book (.docx)',
+    sub: 'Pre-formatted, fill in your name & submit',
     accent: '#0F766E',
     bg: 'linear-gradient(135deg, #D1FAE5 0%, #ECFDF5 100%)',
     border: 'rgba(5, 150, 105, 0.25)',
   },
   {
     Icon: Presentation,
-    label: 'Examiner Defense PPT Presentation',
-    sub: '12 professional slides with word-for-word speaker notes on what to say',
+    label: 'Viva Defense PPT Slides',
+    sub: 'Speaker notes tell you what to say',
     accent: '#D97706',
     bg: 'linear-gradient(135deg, #FEF3C7 0%, #FFFBEB 100%)',
     border: 'rgba(217, 119, 6, 0.25)',
   },
   {
     Icon: CheckCircle2,
-    label: 'Top 25 Viva Q&A with Model Answers',
-    sub: 'Every question examiners ask, with exact answers to score 90%+',
+    label: 'Top 15 Viva Q&A with Answers',
+    sub: 'Every question examiners typically ask',
     accent: '#059669',
     bg: 'linear-gradient(135deg, #D1FAE5 0%, #F0FDF4 100%)',
     border: 'rgba(16, 185, 129, 0.25)',
@@ -40,8 +40,8 @@ const DELIVERABLES = [
 ];
 
 export function PricingHook() {
-  const mini = CONSTANTS.PRICING.MINI_PROJECT;
-  const major = CONSTANTS.PRICING.MAJOR_PROJECT;
+  const mini = CONSTANTS.PRICING.MINI_PROJECT; // ₹299
+  const major = CONSTANTS.PRICING.MAJOR_PROJECT; // ₹499
 
   return (
     <div className="w-full max-w-[27rem] mx-auto lg:ml-auto lg:mr-0 relative">
@@ -66,7 +66,7 @@ export function PricingHook() {
         className="relative rounded-3xl p-[1.5px] transition-all duration-300 shadow-2xl"
         style={{
           background:
-            'linear-gradient(145deg, rgba(13, 148, 136, 0.45) 0%, rgba(20, 184, 166, 0.2) 28%, rgba(245, 158, 11, 0.28) 68%, rgba(5, 150, 105, 0.42) 100%)',
+            'linear-gradient(145deg, rgba(13, 148, 136, 0.5) 0%, rgba(20, 184, 166, 0.25) 28%, rgba(245, 158, 11, 0.3) 68%, rgba(5, 150, 105, 0.45) 100%)',
           boxShadow:
             '0 24px 60px -12px rgba(13, 148, 136, 0.16), 0 12px 28px -6px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.4)',
         }}
@@ -91,79 +91,40 @@ export function PricingHook() {
           />
 
           <div className="p-4 sm:p-5 lg:p-6">
-            {/* Executive Badges Row */}
-            <div className="flex items-center justify-between gap-2 mb-3.5 flex-wrap sm:flex-nowrap">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-bold text-teal-900 bg-gradient-to-r from-teal-100/90 via-emerald-100/80 to-teal-50 border border-teal-300/70 shadow-xs uppercase tracking-wide">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-600"></span>
-                </span>
+            {/* Executive Badges Row (Matches Image 3) */}
+            <div className="flex items-center justify-between gap-2 mb-3">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold text-teal-900 bg-teal-50 border border-teal-200/80 shadow-xs uppercase tracking-wide">
+                <Zap className="w-3 h-3 text-teal-600 fill-teal-600" />
                 Verified Kit
               </span>
-              <span className="text-[11px] font-bold text-amber-900 uppercase tracking-wider bg-gradient-to-r from-amber-100/70 to-orange-50/70 px-2.5 py-1 rounded-full border border-amber-300/60 shadow-xs">
-                Mini Bundle · Sem 5/6
+              <span className="text-[11px] font-bold text-amber-900 uppercase tracking-wider bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200/70 shadow-xs">
+                Mini Bundle
               </span>
             </div>
 
-            {/* Title & Tagline */}
-            <h3 className="font-display text-2xl sm:text-[1.65rem] font-black text-slate-900 tracking-tight leading-tight mb-1.5">
+            {/* Title & Tagline (Matches Image 3) */}
+            <h3 className="font-display text-2xl sm:text-[1.65rem] font-black text-slate-900 tracking-tight leading-tight mb-1">
               Mini Project Kit
             </h3>
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-4">
-              Complete turn-key submission package with 1-click execution, IEEE report &amp; viva coaching.
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-3.5">
+              5th &amp; 6th semester done right. Download, run, submit with confidence.
             </p>
 
-            {/* Luxury Price Showcase with Warm Iridescent Gradient (Zero-Wrap Guaranteed) */}
-            <div
-              className="rounded-2xl p-3.5 sm:p-4 mb-4 relative overflow-hidden transition-all"
-              style={{
-                background:
-                  'linear-gradient(135deg, rgba(240, 253, 250, 0.95) 0%, rgba(255, 255, 255, 0.98) 45%, rgba(254, 243, 199, 0.5) 100%)',
-                border: '1px solid rgba(13, 148, 136, 0.22)',
-                boxShadow:
-                  '0 4px 20px -2px rgba(13, 148, 136, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9)',
-              }}
-            >
-              {/* Subtle ambient flare in corner */}
-              <div
-                className="absolute -top-6 -right-6 w-24 h-24 rounded-full pointer-events-none opacity-40 blur-xl"
-                style={{
-                  background: 'radial-gradient(circle, rgba(245, 158, 11, 0.35) 0%, transparent 70%)',
-                }}
-              />
-
-              <div className="relative z-10">
-                <div className="flex items-center justify-between gap-2.5 flex-wrap">
-                  {/* Price & strike - strictly non-wrapping */}
-                  <div className="flex items-baseline gap-2 whitespace-nowrap shrink-0">
-                    <span className="text-4xl sm:text-5xl font-black text-slate-900 tracking-tight font-display whitespace-nowrap leading-none select-none">
-                      ₹{mini}
-                    </span>
-                    <span className="text-sm sm:text-base font-semibold text-slate-400 line-through whitespace-nowrap select-none">
-                      ₹{mini + 1200}
-                    </span>
-                  </div>
-
-                  {/* Gradient discount pill */}
-                  <div className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-black uppercase tracking-wider text-emerald-900 bg-gradient-to-r from-emerald-100 via-teal-100 to-emerald-50 border border-emerald-300/80 shadow-xs whitespace-nowrap shrink-0">
-                    Save 80% (₹1,200)
-                  </div>
-                </div>
-
-                <div className="mt-2.5 pt-2 border-t border-slate-200/70 flex items-center justify-between text-[11px] text-slate-600 font-medium flex-wrap gap-1">
-                  <span className="inline-flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-teal-600 inline-block shrink-0" />
-                    <span>One-time payment · Lifetime access</span>
-                  </span>
-                  <span className="font-bold text-teal-700 whitespace-nowrap">
-                    Instant Download
-                  </span>
-                </div>
-              </div>
+            {/* Clean, Non-Wrapping Price Showcase (Matches Image 3) */}
+            <div className="flex items-baseline gap-3 mb-4 flex-wrap sm:flex-nowrap">
+              <span className="text-4xl sm:text-[2.75rem] font-black text-slate-900 tracking-tight font-display whitespace-nowrap leading-none select-none inline-block">
+                ₹{mini}
+              </span>
+              <span className="text-base sm:text-lg font-semibold text-slate-400 line-through whitespace-nowrap select-none inline-block">
+                ₹1499
+              </span>
+              <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] sm:text-xs font-bold text-teal-800 bg-teal-50/90 border border-teal-200 whitespace-nowrap uppercase tracking-wider shadow-2xs">
+                SAVE ₹1,200
+              </span>
             </div>
 
-            {/* High-Class Deliverables Capsules */}
-            <div className="space-y-2 mb-4.5">
+            {/* Deliverables List (Matches Image 3) */}
+            <div className="space-y-2 mb-4">
               {DELIVERABLES.map(({ Icon, label, sub, accent, bg, border }) => (
                 <div
                   key={label}
@@ -192,10 +153,10 @@ export function PricingHook() {
               ))}
             </div>
 
-            {/* Luxury Tactile CTA Button */}
+            {/* High-Converting CTA Button (Matches Image 3) */}
             <Link
               href="/projects?tier=MINI"
-              className="group relative w-full flex items-center justify-center gap-2.5 rounded-xl text-sm sm:text-base font-bold text-white transition-all active:scale-[0.98] shadow-lg hover:shadow-xl overflow-hidden"
+              className="group relative w-full flex items-center justify-center gap-2 rounded-xl text-sm sm:text-base font-bold text-white transition-all active:scale-[0.98] shadow-lg hover:shadow-xl overflow-hidden"
               style={{
                 minHeight: '48px',
                 background: 'linear-gradient(135deg, #0D9488 0%, #0F766E 50%, #065F59 100%)',
@@ -204,20 +165,20 @@ export function PricingHook() {
               }}
             >
               <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
-              <Sparkles className="w-4 h-4 text-teal-200 animate-pulse shrink-0" />
+              <Zap className="w-4 h-4 text-teal-200 fill-teal-200 shrink-0" />
               <span className="whitespace-nowrap font-bold">Get Mini Kit — ₹{mini}</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform shrink-0" />
             </Link>
 
-            {/* Trust Footnote */}
+            {/* Guarantee Footnote (Matches Image 3) */}
             <p className="text-center text-[11px] text-slate-500 mt-2.5 flex items-center justify-center gap-1.5 font-medium flex-wrap">
               <ShieldCheck className="w-3.5 h-3.5 text-teal-600 shrink-0" />
-              <span>Instant Download · 100% Run Guarantee · Verified</span>
+              <span>Instant Download · 100% Bug-Free Guarantee</span>
             </p>
 
-            {/* Executive Major Project Upsell Drawer */}
+            {/* Major Project Upsell Drawer (Matches Top Right of Image 1) */}
             <div
-              className="mt-3.5 pt-3 rounded-xl p-3 border flex items-center justify-between gap-3"
+              className="mt-3.5 pt-2.5 rounded-xl p-3 border flex items-center justify-between gap-3"
               style={{
                 background:
                   'linear-gradient(135deg, rgba(240, 253, 250, 0.7) 0%, rgba(254, 249, 235, 0.5) 100%)',
@@ -226,17 +187,17 @@ export function PricingHook() {
             >
               <div className="min-w-0">
                 <div className="text-[10px] font-black text-teal-800 uppercase tracking-wider">
-                  Need Final Year Major Capstone?
+                  Need Major Project?
                 </div>
                 <div className="text-xs sm:text-sm font-bold text-slate-900 mt-0.5 whitespace-nowrap">
-                  ₹{major} <span className="text-[11px] font-normal text-slate-500">/ 60+ Page IEEE Report</span>
+                  ₹{major} <span className="text-[11px] font-normal text-slate-500">/ 60-pg Report</span>
                 </div>
               </div>
               <Link
                 href="/projects?tier=MAJOR"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-teal-900 bg-white border border-teal-300/80 hover:bg-teal-50 transition-all shrink-0 active:scale-95 shadow-xs"
+                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold text-teal-900 bg-white border border-teal-300/80 hover:bg-teal-50 transition-all shrink-0 active:scale-95 shadow-xs"
               >
-                <span>View Major</span>
+                <span>View</span>
                 <ArrowRight className="w-3.5 h-3.5 text-teal-700" />
               </Link>
             </div>

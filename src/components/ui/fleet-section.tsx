@@ -23,14 +23,14 @@ const PRICE_MAP: Record<string, number> = {
   'smart-expense-tracker':  CONSTANTS.PRICING.MINI_PROJECT,
 };
 
-// Tag colours for upcoming cards
+// Tag colours for upcoming cards (Clean Teal, Amber, Emerald, Slate palette — zero rogue purple)
 const TAG_COLORS: Record<string, string> = {
   'Dropping Friday': 'text-amber-800 bg-amber-50 border-amber-200',
   'High Demand':     'text-rose-800 bg-rose-50 border-rose-200',
-  'Most Requested':  'text-indigo-800 bg-indigo-50 border-indigo-200',
-  'Trending':        'text-orange-800 bg-orange-50 border-orange-200',
+  'Most Requested':  'text-teal-900 bg-teal-50 border-teal-200',
+  'Trending':        'text-amber-900 bg-amber-50/80 border-amber-200',
   'In Testing':      'text-slate-800 bg-slate-100 border-slate-200',
-  'Security Lab':    'text-red-800 bg-red-50 border-red-200',
+  'Security Lab':    'text-emerald-800 bg-emerald-50 border-emerald-200',
 };
 
 const UPCOMING_CATALOG = [
@@ -189,24 +189,24 @@ export function FleetSection() {
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.18 }}
             >
-              {/* Category Pills */}
+              {/* Category Pills — Clean, Descent, No Emojis, 3D Tactile Filter */}
               <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
                 {[
                   { id: 'ALL',          label: 'All 9 Kits' },
-                  { id: 'Healthcare',   label: '🏥 Healthcare' },
-                  { id: 'AIML',         label: '🧠 AI / ML' },
-                  { id: 'Cloud',        label: '⚡ Cloud & DevTools' },
-                  { id: 'Cybersecurity',label: '🛡️ Cybersecurity' },
-                  { id: 'FinTech',      label: '💳 FinTech' },
-                  { id: 'FullStack',    label: '📱 Full-Stack' },
+                  { id: 'Healthcare',   label: 'Healthcare' },
+                  { id: 'AIML',         label: 'AI / Machine Learning' },
+                  { id: 'Cloud',        label: 'Cloud & DevTools' },
+                  { id: 'Cybersecurity',label: 'Cybersecurity' },
+                  { id: 'FinTech',      label: 'FinTech' },
+                  { id: 'FullStack',    label: 'Full-Stack' },
                 ].map(cat => (
                   <button
                     key={cat.id}
                     onClick={() => setSelectedCategory(cat.id)}
-                    className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                    className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                       selectedCategory === cat.id
-                        ? 'bg-indigo-600 text-white shadow-sm'
-                        : 'text-slate-600 hover:text-slate-900 bg-white border border-slate-200 shadow-sm hover:border-slate-300'
+                        ? 'bg-gradient-to-r from-teal-700 to-teal-800 text-white shadow-md shadow-teal-900/20'
+                        : 'text-slate-600 hover:text-slate-900 bg-white border border-slate-200/90 shadow-2xs hover:border-teal-300 hover:bg-teal-50/40'
                     }`}
                   >
                     {cat.label}
@@ -224,8 +224,21 @@ export function FleetSection() {
                     <Link
                       key={project.slug}
                       href={`/projects/${project.slug}`}
-                      className="flex flex-col rounded-2xl border border-slate-200/90 hover:border-emerald-300 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden p-6 bg-white shadow-sm hover:shadow-md group cursor-pointer"
+                      className="card card-lift flex flex-col rounded-2xl border border-slate-200/90 hover:border-teal-400 transition-all duration-300 relative overflow-hidden p-6 group cursor-pointer"
+                      style={{
+                        background: 'linear-gradient(165deg, rgba(255, 255, 255, 0.98) 0%, rgba(253, 251, 247, 0.95) 45%, rgba(246, 252, 250, 0.98) 100%)',
+                        boxShadow: '0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -4px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.95)',
+                      }}
                     >
+                      {/* Top 3D accent */}
+                      <div
+                        className="absolute top-0 left-0 right-0 h-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                        style={{
+                          background: isMajor
+                            ? 'linear-gradient(90deg, #0D9488, #14B8A6)'
+                            : 'linear-gradient(90deg, #14B8A6, #059669)',
+                        }}
+                      />
                       {/* Tier badge top-right */}
                       <div className="absolute top-4 right-4">
                         <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${
@@ -331,7 +344,11 @@ export function FleetSection() {
                   return (
                     <div
                       key={project.slug}
-                      className="flex flex-col rounded-2xl border border-slate-200 hover:border-teal-300 transition-all duration-300 hover:-translate-y-1 relative overflow-hidden p-6 bg-white shadow-sm group"
+                      className="card card-lift flex flex-col rounded-2xl border border-slate-200/90 hover:border-teal-400 transition-all duration-300 relative overflow-hidden p-6 group"
+                      style={{
+                        background: 'linear-gradient(165deg, rgba(255, 255, 255, 0.98) 0%, rgba(253, 251, 247, 0.95) 45%, rgba(246, 252, 250, 0.98) 100%)',
+                        boxShadow: '0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -4px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.95)',
+                      }}
                     >
                       {/* Top row */}
                       <div className="flex items-center justify-between gap-2 mb-3">

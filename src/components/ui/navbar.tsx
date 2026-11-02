@@ -55,8 +55,20 @@ export function Navbar() {
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
         transition: 'all 300ms',
         ...(scrolled
-          ? { background: 'rgba(252,252,249,.97)', backdropFilter: 'blur(20px)', borderBottom: '1px solid var(--line)', boxShadow: '0 2px 16px rgba(60,40,10,.07)' }
-          : { background: 'rgba(250,250,247,.88)', backdropFilter: 'blur(12px)', borderBottom: '1px solid transparent' }
+          ? {
+              background: 'rgba(253, 251, 247, 0.92)',
+              backdropFilter: 'blur(24px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(24px) saturate(180%)',
+              borderBottom: '1px solid rgba(232, 225, 213, 0.85)',
+              boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.06), inset 0 -1px 0 rgba(255, 255, 255, 0.7)',
+            }
+          : {
+              background: 'rgba(250, 248, 244, 0.82)',
+              backdropFilter: 'blur(16px)',
+              WebkitBackdropFilter: 'blur(16px)',
+              borderBottom: '1px solid rgba(232, 225, 213, 0.45)',
+              boxShadow: '0 1px 3px rgba(15, 23, 42, 0.02)',
+            }
         ),
       }}>
         <div className="shell" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '64px' }}>
@@ -72,9 +84,12 @@ export function Navbar() {
                   padding: '.5rem 1rem', borderRadius: '10px',
                   fontSize: '.9375rem', fontWeight: active(href) ? 700 : 500,
                   textDecoration: 'none', transition: 'all 150ms',
-                  background: active(href) ? 'var(--teal-50)' : 'transparent',
-                  color: active(href) ? 'var(--teal-dark)' : 'var(--ink-2)',
-                  border: active(href) ? '1px solid var(--teal-100)' : '1px solid transparent',
+                  background: active(href)
+                    ? 'linear-gradient(135deg, rgba(204, 251, 241, 0.8) 0%, rgba(240, 253, 250, 0.9) 100%)'
+                    : 'transparent',
+                  color: active(href) ? 'var(--teal-darker)' : 'var(--ink-2)',
+                  border: active(href) ? '1px solid rgba(13, 148, 136, 0.25)' : '1px solid transparent',
+                  boxShadow: active(href) ? '0 2px 6px -1px rgba(13, 148, 136, 0.12), inset 0 1px 0 #FFFFFF' : 'none',
                 }}
                 onMouseEnter={e => { if (!active(href)) { e.currentTarget.style.background = 'var(--surface-2)'; e.currentTarget.style.color = 'var(--ink)'; }}}
                 onMouseLeave={e => { if (!active(href)) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--ink-2)'; }}}

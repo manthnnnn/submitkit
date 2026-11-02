@@ -6,7 +6,8 @@ import { CONSTANTS } from '@/lib/constants';
 import {
   ArrowRight, CheckCircle2, Zap, ShieldCheck,
   Search, ChevronRight, MessageCircle,
-  FileText, Presentation, Star, Eye
+  FileText, Presentation, Star, Eye,
+  Package, BookOpen, Award
 } from 'lucide-react';
 import { PricingHook } from '@/components/ui/pricing-hook';
 import { FleetSection } from '@/components/ui/fleet-section';
@@ -45,14 +46,68 @@ function useCounter(target: number, dur = 1600) {
   return { n, ref };
 }
 
-function StatNum({ val, suffix = '', label, color }: { val: number; suffix?: string; label: string; color?: string }) {
-  const { n, ref } = useCounter(val);
+function StatCard({
+  icon: Icon,
+  val,
+  suffix = '',
+  label,
+  accent = '#0D9488',
+  bg = 'rgba(13,148,136,0.08)',
+  border = 'rgba(13,148,136,0.18)',
+  customVal,
+}: {
+  icon: any;
+  val?: number;
+  suffix?: string;
+  label: string;
+  accent?: string;
+  bg?: string;
+  border?: string;
+  customVal?: string;
+}) {
+  const { n, ref } = useCounter(val || 0);
   return (
-    <div ref={ref} className="text-center">
-      <div style={{ fontSize: 'clamp(1.875rem,4vw,2.5rem)', fontWeight: 900, letterSpacing: '-.05em', color: color || 'var(--navy)', lineHeight: 1 }}>
-        {n.toLocaleString('en-IN')}{suffix}
+    <div
+      ref={ref}
+      className="card card-lift group"
+      style={{
+        padding: '1.25rem 1.125rem',
+        textAlign: 'center',
+        position: 'relative',
+        overflow: 'hidden',
+        background: 'linear-gradient(165deg, rgba(255, 255, 255, 0.98) 0%, rgba(253, 251, 247, 0.95) 45%, rgba(246, 252, 250, 0.98) 100%)',
+        border: '1px solid rgba(226, 232, 240, 0.9)',
+        borderRadius: '20px',
+        boxShadow: '0 4px 16px -2px rgba(15, 23, 42, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.95)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      {/* Top micro squircle */}
+      <div
+        className="w-8 h-8 rounded-xl mb-2.5 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform"
+        style={{ background: bg, border: `1px solid ${border}` }}
+      >
+        <Icon className="w-4 h-4" style={{ color: accent }} />
       </div>
-      <div style={{ fontSize: '.75rem', color: 'var(--ink-4)', marginTop: '.375rem', fontWeight: 500 }}>{label}</div>
+
+      {/* Main Metric Value — strictly non-wrapping */}
+      <div
+        className="font-display font-black tracking-tight leading-none whitespace-nowrap"
+        style={{
+          fontSize: 'clamp(1.75rem, 3.5vw, 2.25rem)',
+          color: customVal ? accent : 'var(--navy)',
+        }}
+      >
+        {customVal || `${n.toLocaleString('en-IN')}${suffix}`}
+      </div>
+
+      {/* Metric Label */}
+      <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mt-1.5 whitespace-nowrap">
+        {label}
+      </div>
     </div>
   );
 }
@@ -223,7 +278,7 @@ export default function HomePage() {
           {/* ── Focused AI Topic Explorer Hub ── */}
           <motion.div
             initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .48, delay: .32 }}
-            className="mt-6 sm:mt-10 lg:mt-12 max-w-2xl sm:max-w-3xl mx-auto w-full"
+            className="mt-8 sm:mt-12 lg:mt-14 max-w-5xl mx-auto w-full"
           >
             <AiTopicExplorer />
           </motion.div>
@@ -259,24 +314,15 @@ export default function HomePage() {
       </section>
 
       {/* ════════════════════════════════════════════
-          STATS STRIP — Frosted Glass Cards
+          STATS STRIP — 3D Tactile Metric Dock
       ════════════════════════════════════════════ */}
-      <section style={{ ...S.section(), borderTop: '1px solid var(--line)', borderBottom: '1px solid var(--line)', padding: '2.75rem 0' }}>
+      <section style={{ ...S.section(), borderTop: '1px solid var(--line)', borderBottom: '1px solid var(--line)', padding: '2.5rem 0' }}>
         <div className="shell">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(13rem, 1fr))', gap: '1.25rem', maxWidth: '64rem', margin: '0 auto' }}>
-            <div className="stat-card">
-              <StatNum val={59} suffix="" label="Ready Project Kits" />
-            </div>
-            <div className="stat-card">
-              <StatNum val={CONSTANTS.TOTAL_TOPICS} suffix="+" label="Free Blueprints" />
-            </div>
-            <div className="stat-card">
-              <div style={{ fontSize: 'clamp(1.875rem,4vw,2.5rem)', fontWeight: 900, letterSpacing: '-.05em', color: 'var(--teal)', lineHeight: 1, whiteSpace: 'nowrap' }}>₹1,20,000+</div>
-              <div style={{ fontSize: '.75rem', color: 'var(--ink-4)', marginTop: '.375rem', fontWeight: 600 }}>Saved vs Local Vendors</div>
-            </div>
-            <div className="stat-card">
-              <StatNum val={512} suffix="+" label="Final Years Passed" color="var(--navy)" />
-            </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(13rem, 1fr))', gap: '1.25rem', maxWidth: '66rem', margin: '0 auto' }}>
+            <StatCard icon={Package} val={59} suffix="" label="Ready Project Kits" accent="#0D9488" bg="#F0FDFA" border="rgba(13,148,136,0.2)" />
+            <StatCard icon={BookOpen} val={CONSTANTS.TOTAL_TOPICS} suffix="+" label="Free Blueprints" accent="#0F766E" bg="#ECFDF5" border="rgba(5,150,105,0.2)" />
+            <StatCard icon={ShieldCheck} customVal="₹1,20,000+" label="Saved vs Local Vendors" accent="#059669" bg="#F0FDF4" border="rgba(5,150,105,0.2)" />
+            <StatCard icon={Award} val={512} suffix="+" label="Final Years Passed" accent="#D97706" bg="#FFFBEB" border="rgba(217,119,6,0.2)" />
           </div>
         </div>
       </section>
@@ -284,11 +330,11 @@ export default function HomePage() {
       {/* ════════════════════════════════════════════
           READY KITS LIST
       ════════════════════════════════════════════ */}
-      <section className="defer" style={{ ...S.section(), padding: '3.5rem 0' }}>
+      <section className="defer" style={{ ...S.section(), padding: '3.75rem 0' }}>
         <div className="shell">
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%,30rem), 1fr))', gap: '2.5rem 3rem', alignItems: 'start' }}>
 
-            {/* Left: list */}
+            {/* Left: 3D interactive list */}
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '.625rem', marginBottom: '1rem' }}>
                 <span className="tag tag-teal" style={{ fontSize: '.6rem' }}>
@@ -298,24 +344,48 @@ export default function HomePage() {
               </div>
               <h2 style={{ fontSize: 'clamp(1.75rem,4vw,2.5rem)', fontWeight: 900, letterSpacing: '-.04em', color: 'var(--navy)', marginBottom: '1.5rem' }}>Ready to Ship Kits</h2>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '.625rem', marginBottom: '1.375rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', marginBottom: '1.5rem' }}>
                 {READY.map((item, i) => (
                   <motion.div key={item.n}
                     initial={{ opacity: 0, x: -10 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
                     transition={{ duration: .32, delay: i * .07 }}
                   >
                     <Link href={`/projects/${item.slug}`}
-                      style={{ display: 'flex', alignItems: 'center', gap: '.875rem', padding: '1rem 1.25rem', borderRadius: '14px', background: 'var(--surface)', border: '1px solid var(--line)', textDecoration: 'none', transition: 'all 150ms' }}
-                      onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--line-teal)'; e.currentTarget.style.background = 'var(--surface-teal)'; }}
-                      onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--line)'; e.currentTarget.style.background = 'var(--surface)'; }}
+                      className="card card-lift group"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '1rem',
+                        padding: '1rem 1.25rem',
+                        borderRadius: '16px',
+                        background: 'linear-gradient(145deg, rgba(255,255,255,0.98) 0%, rgba(252,250,246,0.92) 100%)',
+                        border: '1px solid rgba(226, 232, 240, 0.9)',
+                        textDecoration: 'none',
+                        boxShadow: '0 2px 8px -1px rgba(15,23,42,0.04), inset 0 1px 0 rgba(255,255,255,0.95)',
+                      }}
                     >
-                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '.75rem', fontWeight: 700, color: 'var(--teal)', width: '1.75rem', flexShrink: 0 }}>{item.n}</span>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: '.9375rem', fontWeight: 700, color: 'var(--navy)', lineHeight: 1.3 }}>{item.name}</div>
-                        <div style={{ fontSize: '.75rem', color: 'var(--ink-4)', marginTop: '.125rem' }}>{item.cat}</div>
+                      <div className="w-8 h-8 rounded-xl flex items-center justify-center font-mono text-xs font-black text-teal-800 bg-teal-50 border border-teal-200/80 shrink-0 shadow-2xs">
+                        {item.n}
                       </div>
-                      <span style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--navy)', flexShrink: 0 }}>₹{item.price}</span>
-                      <ArrowRight style={{ width: '.9375rem', height: '.9375rem', color: 'var(--teal)', flexShrink: 0 }} />
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div className="text-sm sm:text-base font-bold text-slate-900 group-hover:text-teal-700 transition-colors leading-tight">
+                          {item.name}
+                        </div>
+                        <div className="text-xs text-slate-500 mt-0.5">
+                          {item.cat}
+                        </div>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <div className="text-base font-black text-slate-900 font-display">
+                          ₹{item.price}
+                        </div>
+                        <div className="text-[10px] text-emerald-700 font-bold uppercase tracking-wider">
+                          Ready
+                        </div>
+                      </div>
+                      <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-slate-50 group-hover:bg-teal-50 text-slate-400 group-hover:text-teal-700 transition-all shrink-0">
+                        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                      </div>
                     </Link>
                   </motion.div>
                 ))}
@@ -328,42 +398,53 @@ export default function HomePage() {
               </Link>
             </div>
 
-            {/* Right: blueprint + custom cards */}
+            {/* Right: 3D blueprint + custom cards */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
 
-              {/* Blueprint card */}
+              {/* 3D Blueprint showcase card */}
               <motion.div
                 initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: .42 }}
-                className="card-teal"
-                style={{ padding: '2rem 1.75rem', overflow: 'hidden', position: 'relative' }}
+                className="card card-lift relative overflow-hidden"
+                style={{
+                  padding: '2rem 1.75rem',
+                  background: 'linear-gradient(145deg, #F0FDFA 0%, #FFFFFF 50%, #ECFDF5 100%)',
+                  border: '1px solid rgba(13, 148, 136, 0.22)',
+                  borderRadius: '24px',
+                  boxShadow: '0 12px 32px -8px rgba(13, 148, 136, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.95)',
+                }}
               >
-                <div style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', fontSize: '7rem', fontWeight: 900, color: 'rgba(13,148,136,.07)', lineHeight: 1, userSelect: 'none', pointerEvents: 'none', fontFamily: 'var(--font-display)' }}>1K</div>
+                <div style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', fontSize: '7.5rem', fontWeight: 900, color: 'rgba(13,148,136,.06)', lineHeight: 1, userSelect: 'none', pointerEvents: 'none', fontFamily: 'var(--font-display)' }}>1K</div>
                 <span className="label-chip" style={{ marginBottom: '1rem', display: 'inline-flex', position: 'relative', zIndex: 1 }}>Topic Blueprints</span>
                 <div style={{ fontSize: 'clamp(2.5rem,5vw,3.5rem)', fontWeight: 900, letterSpacing: '-.055em', color: 'var(--navy)', lineHeight: 1, marginBottom: '.5rem', position: 'relative', zIndex: 1 }}>1,078</div>
-                <p style={{ fontSize: '.9375rem', color: 'var(--ink-2)', fontWeight: 600, marginBottom: '.375rem', position: 'relative', zIndex: 1 }}>Topic Blueprints — 100% Free</p>
-                <p style={{ fontSize: '.875rem', color: 'var(--ink-3)', lineHeight: 1.7, marginBottom: '1.375rem', maxWidth: '20rem', position: 'relative', zIndex: 1 }}>
+                <p style={{ fontSize: '.9375rem', color: 'var(--ink-2)', fontWeight: 700, marginBottom: '.375rem', position: 'relative', zIndex: 1 }}>Topic Blueprints — 100% Free</p>
+                <p style={{ fontSize: '.875rem', color: 'var(--ink-3)', lineHeight: 1.7, marginBottom: '1.375rem', maxWidth: '22rem', position: 'relative', zIndex: 1 }}>
                   Abstract, base paper, architecture and module breakdown. Completely free for all engineering students.
                 </p>
-                <Link href="/blueprint" className="btn btn-teal" style={{ minHeight: '44px', fontSize: '.9375rem', position: 'relative', zIndex: 1 }}>
+                <Link href="/blueprint" className="btn btn-teal" style={{ minHeight: '46px', fontSize: '.9375rem', position: 'relative', zIndex: 1 }}>
                   Browse Blueprints <ArrowRight style={{ width: '.9375rem', height: '.9375rem' }} />
                 </Link>
               </motion.div>
 
-              {/* Custom build card */}
+              {/* 3D Custom build card */}
               <motion.div
                 initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: .42, delay: .1 }}
-                className="card"
-                style={{ padding: '1.5rem 1.75rem' }}
+                className="card card-lift"
+                style={{
+                  padding: '1.75rem',
+                  borderRadius: '24px',
+                  background: 'linear-gradient(145deg, rgba(255,255,255,0.98) 0%, rgba(253,251,247,0.95) 100%)',
+                  boxShadow: '0 8px 24px -4px rgba(15,23,42,0.06), inset 0 1px 0 rgba(255,255,255,0.95)',
+                }}
               >
-                <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--navy)', letterSpacing: '-.025em', marginBottom: '.5rem' }}>Have your own idea?</h3>
+                <h3 style={{ fontSize: '1.125rem', fontWeight: 800, color: 'var(--navy)', letterSpacing: '-.025em', marginBottom: '.5rem' }}>Have your own project idea?</h3>
                 <p style={{ fontSize: '.9rem', color: 'var(--ink-3)', lineHeight: 1.65, marginBottom: '1.25rem' }}>
-                  We build custom projects with you, from topic selection to final documentation.
+                  We build custom projects with you, from topic selection and algorithm design to final IEEE documentation.
                 </p>
                 <a
                   href={`https://wa.me/918799814256?text=${encodeURIComponent('Hi SubmitKit! I need a custom project. My idea:')}`}
                   target="_blank" rel="noopener noreferrer"
                   className="btn btn-navy"
-                  style={{ minHeight: '48px', fontSize: '.9375rem', gap: '.5rem' }}
+                  style={{ minHeight: '48px', fontSize: '.9375rem', gap: '.5rem', width: '100%', justifyContent: 'center' }}
                 >
                   <WaIcon size={16} />
                   Chat on WhatsApp
@@ -375,28 +456,36 @@ export default function HomePage() {
       </section>
 
       {/* ════════════════════════════════════════════
-          HOW IT WORKS
+          HOW IT WORKS — 3D Steps
       ════════════════════════════════════════════ */}
-      <section className="defer" style={{ ...S.section(), borderTop: '1px solid var(--line)', padding: '3.5rem 0' }}>
+      <section className="defer" style={{ ...S.section(), borderTop: '1px solid var(--line)', padding: '3.75rem 0' }}>
         <div className="shell">
           <p style={{ fontSize: '.6875rem', fontWeight: 800, color: 'var(--ink-4)', textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: '1rem' }}>How It Works</p>
           <h2 style={{ fontSize: 'clamp(1.75rem,4vw,2.5rem)', fontWeight: 900, letterSpacing: '-.04em', color: 'var(--navy)', marginBottom: '2.25rem' }}>
             Preview first. Always.
           </h2>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%,16rem), 1fr))', gap: '1.5rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%,18rem), 1fr))', gap: '1.5rem' }}>
             {HOW.map((s, i) => (
               <motion.div key={s.n}
                 initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
                 transition={{ duration: .38, delay: i * .1 }}
-                style={{ display: 'flex', gap: '1rem', alignItems: 'flex-start' }}
+                className="card card-lift"
+                style={{
+                  padding: '1.75rem',
+                  borderRadius: '20px',
+                  display: 'flex',
+                  gap: '1rem',
+                  alignItems: 'flex-start',
+                  background: 'linear-gradient(165deg, rgba(255,255,255,0.98) 0%, rgba(252,250,246,0.95) 100%)',
+                }}
               >
-                <div style={{ width: '2.75rem', height: '2.75rem', borderRadius: '12px', flexShrink: 0, background: 'var(--surface-teal)', border: '1px solid var(--teal-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-mono)', fontSize: '.875rem', fontWeight: 800, color: 'var(--teal)' }}>
+                <div style={{ width: '2.75rem', height: '2.75rem', borderRadius: '14px', flexShrink: 0, background: 'var(--surface-teal)', border: '1px solid var(--teal-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-mono)', fontSize: '.9375rem', fontWeight: 900, color: 'var(--teal)', boxShadow: '0 2px 6px rgba(13,148,136,0.1)' }}>
                   {s.n}
                 </div>
                 <div>
-                  <div style={{ fontSize: '1.0625rem', fontWeight: 700, color: 'var(--navy)', lineHeight: 1.35, marginBottom: '.3125rem' }}>{s.t}</div>
-                  <div style={{ fontSize: '.9rem', color: 'var(--ink-3)' }}>{s.s}</div>
+                  <div style={{ fontSize: '1.0625rem', fontWeight: 800, color: 'var(--navy)', lineHeight: 1.35, marginBottom: '.375rem' }}>{s.t}</div>
+                  <div style={{ fontSize: '.875rem', color: 'var(--ink-3)', lineHeight: 1.6 }}>{s.s}</div>
                 </div>
               </motion.div>
             ))}
@@ -413,17 +502,19 @@ export default function HomePage() {
       ════════════════════════════════════════════ */}
       <section className="defer" style={{ ...S.section(), padding: '4rem 1rem 5rem' }}>
         <div className="shell" style={{ maxWidth: '52rem' }}>
-          <div style={{
-            background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(240,253,250,0.85) 55%, rgba(250,247,242,0.9) 100%)',
-            backdropFilter: 'blur(16px)',
-            border: '1px solid var(--line)',
-            borderRadius: '28px',
-            boxShadow: 'var(--sh-xl)',
-            padding: ' clamp(2.5rem, 6vw, 4.5rem) clamp(1.5rem, 4vw, 3rem)',
-            textAlign: 'center',
-            position: 'relative',
-            overflow: 'hidden',
-          }}>
+          <div
+            className="relative overflow-hidden"
+            style={{
+              background: 'linear-gradient(165deg, rgba(255,255,255,0.98) 0%, rgba(240,253,250,0.92) 45%, rgba(253,250,245,0.95) 100%)',
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
+              border: '1px solid rgba(13, 148, 136, 0.22)',
+              borderRadius: '28px',
+              boxShadow: '0 24px 60px -12px rgba(13, 148, 136, 0.16), 0 12px 28px -6px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.98)',
+              padding: 'clamp(2.5rem, 6vw, 4.5rem) clamp(1.5rem, 4vw, 3rem)',
+              textAlign: 'center',
+            }}
+          >
             {/* Ambient decorative glow */}
             <div style={{ position: 'absolute', top: '-40%', right: '-20%', width: '350px', height: '350px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(13,148,136,.12) 0%, transparent 70%)', pointerEvents: 'none' }} />
 

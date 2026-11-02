@@ -63,7 +63,9 @@ export function Footer() {
                   { href: '/blog',                  label: 'Project Guides' },
                 ].map(({ href, label }) => (
                   <li key={href}>
-                    <Link href={href}
+                    <Link
+                      href={href}
+                      prefetch={true}
                       style={{ fontSize: '.875rem', color: '#8A8278', fontWeight: 500, transition: 'color 150ms' }}
                       onMouseEnter={e => (e.currentTarget.style.color = '#F5F0E8')}
                       onMouseLeave={e => (e.currentTarget.style.color = '#8A8278')}
@@ -84,7 +86,9 @@ export function Footer() {
                   { href: '/refund',       label: 'Refund Policy' },
                 ].map(({ href, label }) => (
                   <li key={href}>
-                    <Link href={href}
+                    <Link
+                      href={href}
+                      prefetch={true}
                       style={{ fontSize: '.875rem', color: '#8A8278', fontWeight: 500, transition: 'color 150ms' }}
                       onMouseEnter={e => (e.currentTarget.style.color = '#F5F0E8')}
                       onMouseLeave={e => (e.currentTarget.style.color = '#8A8278')}

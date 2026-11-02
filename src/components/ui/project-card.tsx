@@ -45,9 +45,28 @@ export function ProjectCard({ project, onReserve }: { project: Project; onReserv
   ];
 
   return (
-    <div className="card card-lift aslide" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden', borderRadius: '18px', background: 'var(--surface)', willChange: 'transform' }}>
-      {/* Tier bar */}
-      <div style={{ height: '3px', background: isMajor ? 'linear-gradient(90deg,#0D9488,#14B8A6)' : 'linear-gradient(90deg,#14B8A6,#2DD4BF)' }} />
+    <div
+      className="card card-lift aslide group"
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden',
+        borderRadius: '20px',
+        background: 'linear-gradient(165deg, rgba(255, 255, 255, 0.98) 0%, rgba(253, 251, 247, 0.95) 45%, rgba(246, 252, 250, 0.98) 100%)',
+        border: '1px solid rgba(226, 232, 240, 0.85)',
+        boxShadow: '0 2px 8px -2px rgba(15, 23, 42, 0.05), 0 8px 24px -4px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.95)',
+        willChange: 'transform',
+      }}
+    >
+      {/* 3D Tier Jewel Bar */}
+      <div
+        style={{
+          height: '3.5px',
+          background: isMajor
+            ? 'linear-gradient(90deg, #0D9488 0%, #14B8A6 60%, #059669 100%)'
+            : 'linear-gradient(90deg, #14B8A6 0%, #2DD4BF 60%, #10B981 100%)',
+        }}
+      />
 
       {/* Header */}
       <div style={{ padding: '1.125rem 1.25rem .875rem', position: 'relative' }}>
@@ -74,11 +93,29 @@ export function ProjectCard({ project, onReserve }: { project: Project; onReserv
         </p>
       </div>
 
-      {/* Tab bar */}
-      <div style={{ display: 'flex', borderTop: '1px solid var(--line)', borderBottom: '1px solid var(--line)', background: 'var(--surface-2)' }}>
+      {/* Tab bar — 3D tactile segmented selector */}
+      <div style={{ display: 'flex', padding: '.25rem', borderTop: '1px solid var(--line)', borderBottom: '1px solid var(--line)', background: 'var(--surface-2)', gap: '.25rem' }}>
         {TABS.map(({ id, label, Icon }) => (
           <button key={id} onClick={e => { e.preventDefault(); e.stopPropagation(); setTab(id); }}
-            style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '.3rem', padding: '.625rem .25rem', fontSize: '.6875rem', fontWeight: tab===id ? 700 : 500, color: tab===id ? 'var(--teal)' : 'var(--ink-3)', background: tab===id ? 'var(--surface)' : 'transparent', border: 'none', cursor: 'pointer', borderBottom: tab===id ? `2px solid var(--teal)` : '2px solid transparent', transition: 'all 150ms', minHeight: '40px', WebkitTapHighlightColor: 'transparent' }}
+            style={{
+              flex: 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '.35rem',
+              padding: '.5rem .25rem',
+              fontSize: '.75rem',
+              fontWeight: tab===id ? 700 : 500,
+              color: tab===id ? 'var(--teal-dark)' : 'var(--ink-3)',
+              background: tab===id ? 'linear-gradient(180deg, #FFFFFF 0%, #FAF8F5 100%)' : 'transparent',
+              border: 'none',
+              borderRadius: '9px',
+              cursor: 'pointer',
+              boxShadow: tab===id ? '0 2px 6px -1px rgba(15,23,42,0.08), inset 0 1px 0 #FFFFFF' : 'none',
+              transition: 'all 150ms ease',
+              minHeight: '38px',
+              WebkitTapHighlightColor: 'transparent',
+            }}
           >
             <Icon style={{ width: '.8125rem', height: '.8125rem' }} />
             <span className="hidden sm:inline">{label}</span>
@@ -141,11 +178,19 @@ export function ProjectCard({ project, onReserve }: { project: Project; onReserv
               <span className="font-display" style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--navy)', letterSpacing: '-.04em' }}>{formatCurrency(project.price_inr)}</span>
               <span style={{ fontSize: '.6875rem', color: 'var(--ink-4)', marginLeft: '.25rem' }}>instant download</span>
             </div>
-            {/* Visual button — actual navigation handled by outer Link wrapper */}
+            {/* Tactile 3D button */}
             <div
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '.375rem', padding: '.4375rem 1rem', borderRadius: '10px', background: 'var(--teal)', color: '#fff', fontWeight: 700, fontSize: '.875rem', boxShadow: '0 4px 14px rgba(13,148,136,.28)', cursor: 'pointer' }}
+              className="btn btn-teal btn-sm"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '.375rem',
+                padding: '.4375rem 1rem',
+                borderRadius: '11px',
+                cursor: 'pointer',
+              }}
             >
-              Buy &amp; Download
+              <span>Buy &amp; Download</span>
               <ArrowRight style={{ width: '.875rem', height: '.875rem' }} />
             </div>
           </div>
