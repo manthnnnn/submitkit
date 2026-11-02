@@ -110,32 +110,24 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen relative flex items-center justify-center p-4 sm:p-6 select-none overflow-hidden bg-[#050608] font-sans">
-      {/* ── 3D Ambient Backdrop Mesh ── */}
-      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
-        {/* Subtle grid pattern */}
+    <div
+      className="min-h-screen relative flex items-center justify-center p-4 sm:p-6 select-none overflow-hidden font-sans"
+      style={{
+        background: 'linear-gradient(180deg, #FAF6EE 0%, #F5EFE6 50%, #FAF6EE 100%)',
+      }}
+    >
+      {/* ── Soft Ambient Floating Orbs (Matches Frontend) ── */}
+      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden" aria-hidden>
         <div
-          className="absolute inset-0 opacity-[0.035]"
+          className="absolute -top-20 -left-20 w-[600px] h-[600px] rounded-full blur-[100px] opacity-60"
           style={{
-            backgroundImage:
-              'radial-gradient(rgba(255, 255, 255, 0.8) 1px, transparent 1px)',
-            backgroundSize: '24px 24px',
-          }}
-        />
-
-        {/* Dynamic Glowing Aurora Orbs */}
-        <div
-          className="absolute -top-36 left-1/4 w-[650px] h-[550px] rounded-full blur-[140px] opacity-25"
-          style={{
-            background:
-              'radial-gradient(circle, #0D9488 0%, #059669 45%, transparent 75%)',
+            background: 'radial-gradient(circle, rgba(13, 148, 136, 0.12) 0%, transparent 70%)',
           }}
         />
         <div
-          className="absolute -bottom-40 right-1/4 w-[550px] h-[450px] rounded-full blur-[130px] opacity-20"
+          className="absolute -bottom-20 -right-20 w-[550px] h-[550px] rounded-full blur-[90px] opacity-50"
           style={{
-            background:
-              'radial-gradient(circle, #D97706 0%, #0D9488 40%, transparent 75%)',
+            background: 'radial-gradient(circle, rgba(217, 119, 6, 0.1) 0%, transparent 70%)',
           }}
         />
       </div>
@@ -145,103 +137,81 @@ export default function AdminLogin() {
           shake ? 'animate-shake' : ''
         }`}
       >
-        {/* ── Outer 3D Glass Shell ── */}
+        {/* ── Outer 3D Ivory Glass Shell (Soft Beige Theme) ── */}
         <div
-          className="relative rounded-[32px] p-6 sm:p-8 border shadow-2xl backdrop-blur-3xl overflow-hidden transition-all duration-500"
+          className="relative rounded-3xl p-6 sm:p-8 border transition-all duration-500 overflow-hidden"
           style={{
             background:
-              'linear-gradient(180deg, rgba(17, 20, 28, 0.82) 0%, rgba(9, 10, 14, 0.94) 100%)',
-            borderColor: unlocked
-              ? 'rgba(52, 211, 153, 0.5)'
-              : 'rgba(255, 255, 255, 0.1)',
+              'linear-gradient(165deg, rgba(255, 255, 255, 0.98) 0%, rgba(253, 251, 247, 0.95) 45%, rgba(246, 252, 250, 0.98) 100%)',
+            borderColor: unlocked ? 'rgba(5, 150, 105, 0.4)' : '#E8E1D5',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
             boxShadow: unlocked
-              ? '0 0 80px rgba(16, 185, 129, 0.3), 0 25px 60px -10px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255, 255, 255, 0.25)'
-              : '0 30px 70px -15px rgba(0, 0, 0, 0.9), 0 0 40px rgba(13, 148, 136, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.15)',
+              ? '0 20px 60px -10px rgba(5, 150, 105, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.95)'
+              : '0 20px 50px -12px rgba(15, 23, 42, 0.10), 0 4px 14px -2px rgba(13, 148, 136, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.95)',
           }}
         >
-          {/* Top Iridescent Status Light Bar */}
+          {/* Top Iridescent Jewel Accent Rule */}
           <div
-            className="absolute top-0 left-0 right-0 h-[3px] transition-all duration-500"
+            className="absolute top-0 left-0 right-0 h-[3.5px] transition-all duration-500"
             style={{
               background: unlocked
-                ? 'linear-gradient(90deg, #10B981, #34D399, #10B981)'
-                : 'linear-gradient(90deg, #0D9488 0%, #14B8A6 40%, #D97706 70%, #059669 100%)',
+                ? 'linear-gradient(90deg, #059669 0%, #10B981 100%)'
+                : 'linear-gradient(90deg, #0D9488 0%, #14B8A6 35%, #F59E0B 70%, #059669 100%)',
             }}
           />
 
           {/* ── Localhost Enclave Live Status Indicator ── */}
           <div className="flex items-center justify-between gap-2 mb-6">
-            <div
-              className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-bold tracking-wide transition-all"
-              style={{
-                background: unlocked
-                  ? 'rgba(16, 185, 129, 0.15)'
-                  : 'rgba(13, 148, 136, 0.12)',
-                border: `1px solid ${
-                  unlocked
-                    ? 'rgba(16, 185, 129, 0.4)'
-                    : 'rgba(13, 148, 136, 0.28)'
-                }`,
-                color: unlocked ? '#34d399' : '#2dd4bf',
-              }}
-            >
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-bold text-teal-900 bg-teal-50 border border-teal-200/80 shadow-xs uppercase tracking-wide">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-500"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-600"></span>
               </span>
               <span>
                 {unlocked
                   ? `Authenticated [${userRole}]`
-                  : 'LOCAL ENCLAVE · 127.0.0.1'}
+                  : 'Localhost Enclave · 127.0.0.1'}
               </span>
             </div>
 
-            <span className="text-[10px] text-zinc-500 font-mono tracking-wider flex items-center gap-1">
-              <Cpu className="w-3 h-3 text-zinc-400" />
+            <span className="text-[11px] text-slate-500 font-mono tracking-wider flex items-center gap-1">
+              <Cpu className="w-3.5 h-3.5 text-slate-400" />
               PORT :3000
             </span>
           </div>
 
-          {/* ── Brand & Security Avatar ── */}
+          {/* ── Brand & Security Icon ── */}
           <div className="flex flex-col items-center text-center mb-6">
-            <div className="relative mb-3.5 group">
+            <div className="relative mb-3.5">
               <div
-                className="w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-500 shadow-xl"
+                className="w-16 h-16 rounded-2xl flex items-center justify-center transition-all duration-500 shadow-sm"
                 style={{
-                  background: unlocked
-                    ? 'linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.3))'
-                    : 'linear-gradient(135deg, rgba(13, 148, 136, 0.2), rgba(15, 23, 42, 0.8))',
-                  border: `1px solid ${
-                    unlocked
-                      ? 'rgba(52, 211, 153, 0.6)'
-                      : 'rgba(13, 148, 136, 0.35)'
-                  }`,
-                  boxShadow: unlocked
-                    ? '0 0 30px rgba(16, 185, 129, 0.35)'
-                    : '0 10px 25px -5px rgba(0, 0, 0, 0.5)',
+                  background: unlocked ? 'var(--emerald-50)' : 'var(--teal-50)',
+                  border: `1px solid ${unlocked ? 'var(--emerald-100)' : 'var(--teal-100)'}`,
                 }}
               >
                 {unlocked ? (
-                  <CheckCircle2 className="w-8 h-8 text-emerald-400 animate-in zoom-in-75 duration-300" />
+                  <CheckCircle2 className="w-8 h-8 text-emerald-600 animate-in zoom-in-75 duration-300" />
                 ) : (
-                  <Lock className="w-7 h-7 text-teal-400 transition-transform group-hover:scale-110" />
+                  <Lock className="w-7 h-7 text-teal-700" />
                 )}
               </div>
             </div>
 
-            <h1 className="font-display text-xl sm:text-2xl font-bold text-white tracking-tight leading-tight">
-              SubmitKit <span className="text-teal-400">Admin HUD</span>
+            <h1 className="font-display text-2xl font-black text-slate-900 tracking-tight leading-tight m-0">
+              Submit<span className="text-teal-700">Kit</span> Admin
             </h1>
-            <p className="text-xs text-zinc-400 mt-1 max-w-[280px]">
+            <p className="text-xs text-slate-500 mt-1 max-w-[280px] leading-relaxed">
               {unlocked
-                ? 'Security clearance confirmed. Redirecting to console...'
-                : 'Zero-trust management console isolated to localhost.'}
+                ? 'Credentials verified. Launching operational console...'
+                : 'Zero-trust console restricted exclusively to localhost.'}
             </p>
           </div>
 
           {/* ── Mode Switcher Pills ── */}
           {!unlocked && (
-            <div className="grid grid-cols-2 gap-1 p-1 rounded-xl bg-zinc-900/80 border border-zinc-800/80 mb-5 text-xs font-semibold">
+            <div className="grid grid-cols-2 gap-1 p-1 rounded-xl bg-slate-100/90 border border-slate-200/80 mb-5 text-xs font-semibold">
               <button
                 type="button"
                 onClick={() => {
@@ -250,11 +220,11 @@ export default function AdminLogin() {
                 }}
                 className={`py-2 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                   authMode === 'master'
-                    ? 'bg-gradient-to-r from-teal-600 to-teal-700 text-white font-bold shadow-sm'
-                    : 'text-zinc-400 hover:text-zinc-200'
+                    ? 'bg-white text-slate-900 font-bold shadow-xs border border-slate-200/90'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                <KeyRound className="w-3.5 h-3.5" />
+                <KeyRound className="w-3.5 h-3.5 text-teal-700" />
                 <span>Master Passkey</span>
               </button>
               <button
@@ -265,12 +235,12 @@ export default function AdminLogin() {
                 }}
                 className={`py-2 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
                   authMode === 'team'
-                    ? 'bg-gradient-to-r from-teal-600 to-teal-700 text-white font-bold shadow-sm'
-                    : 'text-zinc-400 hover:text-zinc-200'
+                    ? 'bg-white text-slate-900 font-bold shadow-xs border border-slate-200/90'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
-                <Mail className="w-3.5 h-3.5" />
-                <span>Team Login</span>
+                <Mail className="w-3.5 h-3.5 text-teal-700" />
+                <span>Team Account</span>
               </button>
             </div>
           )}
@@ -279,11 +249,11 @@ export default function AdminLogin() {
           <form onSubmit={handleLogin} className="space-y-4">
             {authMode === 'team' && (
               <div>
-                <label className="block text-[11px] font-bold text-zinc-300 uppercase tracking-wider mb-1.5">
+                <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider mb-1.5">
                   Admin Email
                 </label>
                 <div className="relative">
-                  <Mail className="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
                     ref={emailRef}
                     type="email"
@@ -291,7 +261,7 @@ export default function AdminLogin() {
                     onChange={e => setEmail(e.target.value)}
                     placeholder="manthan@submitkit.in"
                     disabled={loading || unlocked}
-                    className="w-full bg-zinc-900/90 text-sm text-white placeholder:text-zinc-600 rounded-xl pl-10 pr-3.5 py-2.5 border border-zinc-800 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all"
+                    className="w-full bg-white text-sm text-slate-900 placeholder:text-slate-400 rounded-xl pl-10 pr-3.5 py-2.5 border border-slate-200/90 focus:border-teal-600 focus:ring-3 focus:ring-teal-500/15 outline-none transition-all shadow-xs"
                   />
                 </div>
               </div>
@@ -299,21 +269,21 @@ export default function AdminLogin() {
 
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="block text-[11px] font-bold text-zinc-300 uppercase tracking-wider">
-                  {authMode === 'master' ? 'Master Security Key' : 'Account Password'}
+                <label className="block text-[11px] font-bold text-slate-700 uppercase tracking-wider">
+                  {authMode === 'master' ? 'Master Security Passkey' : 'Account Password'}
                 </label>
                 <button
                   type="button"
                   onClick={handleQuickFill}
-                  className="text-[10px] text-teal-400 hover:text-teal-300 transition-colors flex items-center gap-1 cursor-pointer font-medium"
+                  className="text-[11px] text-teal-700 hover:text-teal-900 transition-colors flex items-center gap-1 cursor-pointer font-bold"
                 >
-                  <Sparkles className="w-3 h-3" />
+                  <Sparkles className="w-3 h-3 text-amber-500" />
                   Auto-fill Local Key
                 </button>
               </div>
 
               <div className="relative">
-                <Lock className="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   ref={passwordRef}
                   type={showPassword ? 'text' : 'password'}
@@ -325,13 +295,13 @@ export default function AdminLogin() {
                       : 'Enter password'
                   }
                   disabled={loading || unlocked}
-                  className="w-full bg-zinc-900/90 text-sm text-white placeholder:text-zinc-600 rounded-xl pl-10 pr-10 py-2.5 border border-zinc-800 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all font-mono tracking-tight"
+                  className="w-full bg-white text-sm text-slate-900 placeholder:text-slate-400 rounded-xl pl-10 pr-10 py-2.5 border border-slate-200/90 focus:border-teal-600 focus:ring-3 focus:ring-teal-500/15 outline-none transition-all font-mono tracking-tight shadow-xs"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(p => !p)}
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 transition-colors p-1"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 transition-colors p-1 cursor-pointer"
                 >
                   {showPassword ? (
                     <EyeOff className="w-4 h-4" />
@@ -344,9 +314,9 @@ export default function AdminLogin() {
 
             {/* Error Message */}
             {error && (
-              <div className="flex items-center gap-2 p-2.5 rounded-xl bg-red-950/40 border border-red-500/30 text-red-400 text-xs animate-in fade-in duration-200">
-                <AlertCircle className="w-4 h-4 shrink-0" />
-                <span>{error}</span>
+              <div className="flex items-center gap-2 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs animate-in fade-in duration-200">
+                <AlertCircle className="w-4 h-4 shrink-0 text-red-600" />
+                <span className="font-medium">{error}</span>
               </div>
             )}
 
@@ -354,15 +324,14 @@ export default function AdminLogin() {
             <button
               type="submit"
               disabled={loading || unlocked}
-              className="group relative w-full flex items-center justify-center gap-2 rounded-xl text-sm font-bold text-white transition-all active:scale-[0.98] shadow-lg hover:shadow-teal-900/30 overflow-hidden cursor-pointer"
+              className="group relative w-full flex items-center justify-center gap-2 rounded-xl text-sm font-bold text-white transition-all active:scale-[0.98] shadow-md hover:shadow-lg overflow-hidden cursor-pointer"
               style={{
                 minHeight: '46px',
                 background: unlocked
-                  ? 'linear-gradient(135deg, #10B981, #059669)'
-                  : 'linear-gradient(135deg, #0D9488 0%, #0F766E 60%, #065F59 100%)',
-                boxShadow: unlocked
-                  ? '0 0 30px rgba(16, 185, 129, 0.4)'
-                  : '0 8px 24px -4px rgba(13, 148, 136, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2)',
+                  ? 'linear-gradient(135deg, #059669 0%, #10B981 100%)'
+                  : 'linear-gradient(135deg, #0D9488 0%, #0F766E 50%, #065F59 100%)',
+                boxShadow:
+                  '0 8px 24px -4px rgba(13, 148, 136, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.28)',
               }}
             >
               <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
@@ -386,12 +355,12 @@ export default function AdminLogin() {
           </form>
 
           {/* ── Footer Localhost Safeguard Notice ── */}
-          <div className="mt-6 pt-4 border-t border-zinc-800/70 flex items-center justify-between text-[11px] text-zinc-500 font-medium">
+          <div className="mt-6 pt-4 border-t border-slate-200/80 flex items-center justify-between text-[11px] text-slate-500 font-medium">
             <span className="flex items-center gap-1.5">
-              <Terminal className="w-3.5 h-3.5 text-zinc-400" />
+              <Terminal className="w-3.5 h-3.5 text-slate-400" />
               Localhost Node Only
             </span>
-            <span className="text-zinc-400 font-mono">v2.4 Pro</span>
+            <span className="text-slate-600 font-mono font-bold">v2.4 Production</span>
           </div>
         </div>
       </div>

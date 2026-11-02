@@ -71,18 +71,23 @@ export function AdminShell({
   const sectionName = cleanPath ? cleanPath.charAt(0).toUpperCase() + cleanPath.slice(1) : 'Dashboard';
 
   return (
-    <div className="min-h-screen flex bg-[#07080B] text-zinc-100 font-sans selection:bg-teal-500/30 selection:text-teal-200">
+    <div
+      className="min-h-screen flex text-slate-900 font-sans selection:bg-teal-100 selection:text-teal-900"
+      style={{
+        background: 'linear-gradient(180deg, #FAF6EE 0%, #F5EFE6 50%, #FAF6EE 100%)',
+      }}
+    >
       <NavProgress />
 
-      {/* ── 3D Ambient Background Glows ── */}
-      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
+      {/* ── Soft Ambient Background Orbs (Matches Frontend) ── */}
+      <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden" aria-hidden>
         <div
-          className="absolute -top-40 left-1/3 w-[700px] h-[500px] rounded-full blur-[160px] opacity-15"
-          style={{ background: 'radial-gradient(circle, #0D9488 0%, transparent 70%)' }}
+          className="absolute -top-32 -left-20 w-[650px] h-[650px] rounded-full blur-[90px] opacity-60"
+          style={{ background: 'radial-gradient(circle, rgba(13, 148, 136, 0.09) 0%, transparent 70%)' }}
         />
         <div
-          className="absolute bottom-10 right-10 w-[550px] h-[450px] rounded-full blur-[140px] opacity-10"
-          style={{ background: 'radial-gradient(circle, #10B981 0%, transparent 70%)' }}
+          className="absolute bottom-10 right-10 w-[550px] h-[550px] rounded-full blur-[80px] opacity-50"
+          style={{ background: 'radial-gradient(circle, rgba(217, 119, 6, 0.08) 0%, transparent 70%)' }}
         />
       </div>
 
@@ -99,20 +104,21 @@ export function AdminShell({
         />
       </div>
 
-      {/* ── Mobile Top Bar ── */}
+      {/* ── Mobile Top Bar (Warm Ivory Acrylic) ── */}
       <div
-        className="md:hidden fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4 h-14 border-b border-white/[0.08]"
+        className="md:hidden fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4 h-14 border-b border-slate-200/90"
         style={{
-          background: 'rgba(9,10,15,0.96)',
+          background: 'rgba(255, 255, 255, 0.92)',
           backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
         }}
       >
         <Link href={session?.role === 'CONTENT_ADMIN' ? '/admin/projects' : '/admin'} className="flex items-center gap-2">
           <BrandIcon size="sm" />
-          <span className="font-display font-bold text-sm text-white">
-            Submit<span className="text-teal-400">Kit</span>
+          <span className="font-display font-bold text-sm text-slate-900">
+            Submit<span className="text-teal-700">Kit</span>
           </span>
-          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-teal-950 text-teal-300 border border-teal-800">
+          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-teal-50 text-teal-800 border border-teal-200">
             Localhost
           </span>
         </Link>
@@ -120,13 +126,15 @@ export function AdminShell({
         <div className="flex items-center gap-2">
           <button
             onClick={() => setPaletteOpen(true)}
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-zinc-400 hover:text-white bg-white/[0.04] border border-white/[0.08]"
+            aria-label="Open command search"
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-600 hover:text-slate-900 bg-white border border-slate-200 shadow-xs cursor-pointer"
           >
             <Search className="w-4 h-4" />
           </button>
           <button
             onClick={() => setSidebarOpen(p => !p)}
-            className="w-8 h-8 rounded-lg flex items-center justify-center text-zinc-400 hover:text-white bg-white/[0.04] border border-white/[0.08]"
+            aria-label="Toggle navigation menu"
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-600 hover:text-slate-900 bg-white border border-slate-200 shadow-xs cursor-pointer"
           >
             {sidebarOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
           </button>
@@ -137,10 +145,10 @@ export function AdminShell({
       {sidebarOpen && (
         <div className="md:hidden fixed inset-0 z-50 flex">
           <div
-            className="fixed inset-0 bg-black/70 backdrop-blur-sm"
+            className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs"
             onClick={() => setSidebarOpen(false)}
           />
-          <div className="relative z-10 w-72 h-full flex flex-col bg-[#090A0F]">
+          <div className="relative z-10 w-72 h-full flex flex-col bg-white">
             <AdminSidebar
               session={session}
               hasNewPreorders={hasNewPreorders}
@@ -155,20 +163,28 @@ export function AdminShell({
 
       {/* ── Main Workspace Area ── */}
       <div className="flex-1 min-w-0 flex flex-col md:pl-0 pt-14 md:pt-0">
-        {/* Desktop Top HUD Strip */}
-        <header className="hidden md:flex items-center justify-between px-6 lg:px-8 h-14 border-b border-white/[0.06] bg-white/[0.015] sticky top-0 z-20 backdrop-blur-xl">
+        {/* Desktop Top HUD Strip (Warm Ivory Acrylic) */}
+        <header
+          className="hidden md:flex items-center justify-between px-6 lg:px-8 h-14 border-b border-slate-200/90 sticky top-0 z-20"
+          style={{
+            background: 'rgba(255, 255, 255, 0.88)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            boxShadow: '0 1px 2px rgba(15,23,42,0.03)',
+          }}
+        >
           <div className="flex items-center gap-2.5 text-xs">
-            <span className="text-zinc-500 font-mono">Console</span>
-            <span className="text-zinc-600">/</span>
-            <span className="text-zinc-200 font-bold">{sectionName}</span>
+            <span className="text-slate-400 font-mono">Console</span>
+            <span className="text-slate-300">/</span>
+            <span className="text-slate-900 font-bold tracking-tight">{sectionName}</span>
           </div>
 
           <div className="flex items-center gap-3">
             {/* Localhost Enclave Live Tag */}
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold text-teal-300 bg-teal-950/50 border border-teal-700/40 shadow-xs">
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold text-teal-900 bg-teal-50 border border-teal-200/90 shadow-2xs">
               <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-500"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-teal-600"></span>
               </span>
               <span>Localhost 127.0.0.1</span>
             </div>
@@ -176,7 +192,7 @@ export function AdminShell({
             {/* Quick Action: New Project */}
             <Link
               href="/admin/projects/new"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-500 hover:to-emerald-500 shadow-sm active:scale-95 transition-all"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-gradient-to-r from-teal-700 to-teal-800 hover:from-teal-600 hover:to-teal-700 shadow-xs active:scale-95 transition-all"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>New Kit</span>

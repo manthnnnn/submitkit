@@ -17,8 +17,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
   const session = await parseAdminSession(token);
 
   return (
-    <AdminShell session={session}>
-      {children}
-    </AdminShell>
+    <div className="admin-root min-h-screen text-slate-900 bg-[#FAF6EE]">
+      <AdminShell session={session}>
+        {children}
+      </AdminShell>
+    </div>
   );
 }

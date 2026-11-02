@@ -68,25 +68,21 @@ export function CommandPalette({ isOpen, onClose }: { isOpen: boolean; onClose: 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isOpen) return;
-
-      if (e.key === 'ArrowDown') {
+      if (e.key === 'Escape') {
+        onClose();
+      } else if (e.key === 'ArrowDown') {
         e.preventDefault();
-        setSelectedIndex(i => (i + 1) % (filteredItems.length || 1));
+        setSelectedIndex(prev => (prev + 1) % Math.max(1, filteredItems.length));
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
-        setSelectedIndex(i => (i - 1 + filteredItems.length) % (filteredItems.length || 1));
+        setSelectedIndex(prev => (prev - 1 + filteredItems.length) % Math.max(1, filteredItems.length));
       } else if (e.key === 'Enter') {
         e.preventDefault();
-        const selected = filteredItems[selectedIndex];
-        if (selected) {
-          executeItem(selected);
+        if (filteredItems[selectedIndex]) {
+          executeItem(filteredItems[selectedIndex]);
         }
-      } else if (e.key === 'Escape') {
-        e.preventDefault();
-        onClose();
       }
     };
-
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, selectedIndex, filteredItems]);
@@ -105,30 +101,30 @@ export function CommandPalette({ isOpen, onClose }: { isOpen: boolean; onClose: 
   return (
     <div
       className="fixed inset-0 z-50 flex items-start justify-center pt-20 px-4"
-      style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(10px)' }}
+      style={{ background: 'rgba(15, 23, 42, 0.45)', backdropFilter: 'blur(8px)' }}
       onClick={onClose}
     >
       <div
         className="w-full max-w-xl rounded-2xl overflow-hidden shadow-2xl border transition-all animate-in fade-in zoom-in-95 duration-150"
         style={{
-          background: 'linear-gradient(180deg, #18181b 0%, #09090b 100%)',
-          borderColor: 'rgba(255,255,255,0.12)',
-          boxShadow: '0 25px 50px -12px rgba(0,0,0,0.7), 0 0 40px rgba(99,102,241,0.15)',
+          background: 'linear-gradient(165deg, rgba(255, 255, 255, 0.99) 0%, rgba(253, 251, 247, 0.98) 100%)',
+          borderColor: '#E8E1D5',
+          boxShadow: '0 25px 60px -12px rgba(15, 23, 42, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.95)',
         }}
         onClick={e => e.stopPropagation()}
       >
         {/* Search header */}
-        <div className="flex items-center px-4 py-3.5 border-b border-white/10 gap-3">
-          <Search className="h-5 w-5 text-indigo-400 shrink-0" />
+        <div className="flex items-center px-4 py-3.5 border-b border-slate-200/80 gap-3">
+          <Search className="h-5 w-5 text-teal-700 shrink-0" />
           <input
             ref={inputRef}
             type="text"
             value={query}
             onChange={e => setQuery(e.target.value)}
             placeholder="Search commands, pages, actions... (ESC to close)"
-            className="w-full bg-transparent text-sm text-white placeholder-zinc-500 focus:outline-none"
+            className="w-full bg-transparent text-sm text-slate-900 placeholder-slate-400 focus:outline-none font-medium"
           />
-          <kbd className="hidden sm:inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded bg-white/5 border border-white/10 text-zinc-400">
+          <kbd className="hidden sm:inline-flex items-center gap-1 text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 border border-slate-200 text-slate-500 shadow-2xs">
             ESC
           </kbd>
         </div>
@@ -136,7 +132,7 @@ export function CommandPalette({ isOpen, onClose }: { isOpen: boolean; onClose: 
         {/* Results list */}
         <div className="max-h-80 overflow-y-auto p-2 space-y-1">
           {filteredItems.length === 0 ? (
-            <div className="py-8 text-center text-zinc-500 text-xs">
+            <div className="py-8 text-center text-slate-400 text-xs font-mono">
               No matching commands or pages found.
             </div>
           ) : (
@@ -150,30 +146,31 @@ export function CommandPalette({ isOpen, onClose }: { isOpen: boolean; onClose: 
                   onMouseEnter={() => setSelectedIndex(index)}
                   className="flex items-center justify-between px-3 py-2.5 rounded-xl cursor-pointer text-sm transition-colors"
                   style={{
-                    background: isSelected ? 'rgba(99,102,241,0.18)' : 'transparent',
-                    border: isSelected ? '1px solid rgba(99,102,241,0.3)' : '1px solid transparent',
-                    color: isSelected ? '#ffffff' : '#a1a1aa',
+                    background: isSelected ? 'rgba(13, 148, 136, 0.08)' : 'transparent',
+                    border: isSelected ? '1px solid rgba(13, 148, 136, 0.25)' : '1px solid transparent',
+                    color: isSelected ? '#0F172A' : '#475569',
                   }}
                 >
                   <div className="flex items-center gap-3">
                     <div
-                      className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
+                      className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 shadow-2xs"
                       style={{
-                        background: isSelected ? 'rgba(99,102,241,0.3)' : 'rgba(255,255,255,0.05)',
-                        color: isSelected ? '#818cf8' : '#71717a',
+                        background: isSelected ? '#CCFBF1' : '#F0FDFA',
+                        color: '#0F766E',
+                        border: '1px solid rgba(13, 148, 136, 0.2)',
                       }}
                     >
                       <Icon className="h-4 w-4" />
                     </div>
                     <div>
-                      <span className="font-medium">{item.title}</span>
-                      <span className="text-[10px] text-zinc-500 ml-2 font-normal">
+                      <span className="font-bold text-slate-900">{item.title}</span>
+                      <span className="text-[10px] text-slate-400 ml-2 font-normal uppercase">
                         {item.category}
                       </span>
                     </div>
                   </div>
                   {item.shortcut && (
-                    <kbd className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-zinc-400">
+                    <kbd className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white border border-slate-200 text-slate-500 shadow-2xs">
                       {item.shortcut}
                     </kbd>
                   )}
@@ -184,12 +181,12 @@ export function CommandPalette({ isOpen, onClose }: { isOpen: boolean; onClose: 
         </div>
 
         {/* Footer shortcuts */}
-        <div className="px-4 py-2 border-t border-white/5 flex items-center justify-between text-[11px] text-zinc-500 bg-white/[0.01]">
+        <div className="px-4 py-2 border-t border-slate-200/80 flex items-center justify-between text-[11px] text-slate-500 bg-slate-50/70">
           <div className="flex items-center gap-3">
-            <span><kbd className="text-[10px] bg-white/5 px-1 py-0.5 rounded">↑↓</kbd> navigate</span>
-            <span><kbd className="text-[10px] bg-white/5 px-1 py-0.5 rounded">↵</kbd> select</span>
+            <span><kbd className="text-[10px] bg-white border border-slate-200 px-1 py-0.5 rounded shadow-2xs">↑↓</kbd> navigate</span>
+            <span><kbd className="text-[10px] bg-white border border-slate-200 px-1 py-0.5 rounded shadow-2xs">↵</kbd> select</span>
           </div>
-          <span>SubmitKit Admin v2</span>
+          <span className="font-mono text-slate-400">SubmitKit Console v2</span>
         </div>
       </div>
     </div>

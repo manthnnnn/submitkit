@@ -28,8 +28,8 @@ export async function middleware(request: NextRequest) {
   <style>
     * { box-sizing: border-box; }
     body {
-      background: #060709;
-      color: #f3f4f6;
+      background: linear-gradient(180deg, #FAF6EE 0%, #F5EFE6 50%, #FAF6EE 100%);
+      color: #0F172A;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       display: flex;
       align-items: center;
@@ -39,14 +39,14 @@ export async function middleware(request: NextRequest) {
       padding: 1.5rem;
     }
     .box {
-      background: linear-gradient(165deg, rgba(18, 20, 28, 0.95) 0%, rgba(10, 11, 16, 0.98) 100%);
-      border: 1px solid rgba(13, 148, 136, 0.3);
+      background: linear-gradient(165deg, rgba(255, 255, 255, 0.98) 0%, rgba(253, 251, 247, 0.95) 45%, rgba(246, 252, 250, 0.98) 100%);
+      border: 1px solid #E8E1D5;
       border-radius: 28px;
       padding: 2.75rem 2.25rem;
       max-width: 480px;
       text-align: center;
-      box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.8), 0 0 40px rgba(13, 148, 136, 0.1);
-      backdrop-filter: blur(24px);
+      box-shadow: 0 20px 50px -12px rgba(15, 23, 42, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
     }
     .badge {
       display: inline-flex;
@@ -56,9 +56,9 @@ export async function middleware(request: NextRequest) {
       border-radius: 9999px;
       font-size: 11px;
       font-weight: 700;
-      background: rgba(13, 148, 136, 0.15);
-      color: #2dd4bf;
-      border: 1px solid rgba(13, 148, 136, 0.35);
+      background: #F0FDFA;
+      color: #0F766E;
+      border: 1px solid #99F6E4;
       margin-bottom: 1.25rem;
       letter-spacing: 0.06em;
       text-transform: uppercase;
@@ -67,29 +67,30 @@ export async function middleware(request: NextRequest) {
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: #2dd4bf;
-      box-shadow: 0 0 8px #2dd4bf;
+      background: #0D9488;
+      box-shadow: 0 0 8px #0D9488;
     }
     h1 {
       font-size: 1.6rem;
-      font-weight: 800;
+      font-weight: 900;
       margin: 0 0 0.875rem;
       letter-spacing: -0.03em;
-      color: #ffffff;
+      color: #0F172A;
     }
     p {
       font-size: 0.9rem;
       line-height: 1.6;
-      color: #94a3b8;
+      color: #475569;
       margin: 0 0 1.75rem;
     }
     .hint {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px dashed rgba(255, 255, 255, 0.15);
+      background: #FAF6EE;
+      border: 1px dashed #0D9488;
       border-radius: 14px;
       padding: 1rem;
-      font-size: 0.8rem;
-      color: #38bdf8;
+      font-size: 0.85rem;
+      color: #0A7C72;
+      font-weight: 600;
       font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       word-break: break-all;
     }
@@ -97,18 +98,19 @@ export async function middleware(request: NextRequest) {
       display: inline-block;
       margin-top: 1.5rem;
       padding: 0.75rem 1.5rem;
-      background: #0f172a;
-      color: #94a3b8;
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: #0F172A;
+      color: #ffffff;
+      border: 1px solid rgba(15, 23, 42, 0.2);
       border-radius: 12px;
       text-decoration: none;
-      font-size: 0.825rem;
-      font-weight: 600;
+      font-size: 0.85rem;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
       transition: all 0.2s;
     }
     .btn:hover {
-      color: #ffffff;
-      border-color: rgba(255, 255, 255, 0.3);
+      background: #1E293B;
+      transform: translateY(-1px);
     }
   </style>
 </head>
@@ -116,7 +118,7 @@ export async function middleware(request: NextRequest) {
   <div class="box">
     <div class="badge"><span class="pulse-dot"></span> Localhost Secure Enclave</div>
     <h1>Admin Access Isolated</h1>
-    <p>For zero-trust security and operational isolation, the SubmitKit Admin Console is configured to execute strictly in your <strong>Localhost Development Environment</strong>.</p>
+    <p>For zero-trust security and operational safety, the SubmitKit Admin Console is configured to execute strictly in your <strong>Localhost Development Environment</strong>.</p>
     <div class="hint">Local Enclave Endpoint:<br>http://localhost:3000/admin</div>
     <a href="/" class="btn">Return to Storefront &rarr;</a>
   </div>

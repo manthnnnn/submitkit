@@ -98,20 +98,20 @@ export default async function AdminDashboard() {
         <div
           className="rounded-2xl p-5 flex items-start gap-4"
           style={{
-            background: 'linear-gradient(135deg, rgba(24,24,27,0.8), rgba(9,9,11,0.9))',
-            border: '1px solid rgba(245,158,11,0.25)',
-            backdropFilter: 'blur(20px)',
+            background: 'linear-gradient(165deg, rgba(255, 255, 255, 0.98) 0%, rgba(254, 243, 199, 0.5) 100%)',
+            border: '1px solid rgba(245, 158, 11, 0.3)',
+            boxShadow: '0 8px 24px -4px rgba(15, 23, 42, 0.06)',
           }}
         >
           <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
-            style={{ background: 'rgba(245,158,11,0.12)', border: '1px solid rgba(245,158,11,0.25)' }}>
-            <AlertTriangle className="h-4 w-4 text-amber-400" />
+            style={{ background: '#FEF3C7', border: '1px solid rgba(245, 158, 11, 0.4)' }}>
+            <AlertTriangle className="h-4 w-4 text-amber-700" />
           </div>
           <div>
-            <p className="text-amber-300 font-semibold text-sm mb-1">Unable to load stats</p>
-            <p className="text-zinc-400 text-xs leading-relaxed">
-              Check <code className="bg-white/10 px-1.5 py-0.5 rounded text-zinc-300">NEXT_PUBLIC_SUPABASE_URL</code> and{' '}
-              <code className="bg-white/10 px-1.5 py-0.5 rounded text-zinc-300">SUPABASE_SERVICE_ROLE_KEY</code> then reload.
+            <p className="text-amber-900 font-bold text-sm mb-1">Unable to load stats</p>
+            <p className="text-slate-600 text-xs leading-relaxed">
+              Check <code className="bg-amber-100/70 px-1.5 py-0.5 rounded text-amber-900 font-mono">NEXT_PUBLIC_SUPABASE_URL</code> and{' '}
+              <code className="bg-amber-100/70 px-1.5 py-0.5 rounded text-amber-900 font-mono">SUPABASE_SERVICE_ROLE_KEY</code> then reload.
             </p>
           </div>
         </div>

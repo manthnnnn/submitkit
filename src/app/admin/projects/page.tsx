@@ -14,10 +14,11 @@ import type { Project } from '@/lib/types';
 type ProjectRow = Project & { _pending?: boolean };
 
 const cardStyle: React.CSSProperties = {
-  background: 'linear-gradient(135deg, rgba(24,24,27,0.8), rgba(9,9,11,0.9))',
-  border: '1px solid rgba(255,255,255,0.08)',
+  background: 'linear-gradient(165deg, rgba(255, 255, 255, 0.98) 0%, rgba(253, 251, 247, 0.95) 45%, rgba(246, 252, 250, 0.98) 100%)',
+  border: '1px solid rgba(226, 232, 240, 0.9)',
   backdropFilter: 'blur(20px)',
-  boxShadow: '0 1px 0 rgba(255,255,255,0.06) inset',
+  boxShadow: '0 8px 24px -4px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.95)',
+  borderRadius: '16px',
 };
 
 interface UploadState {
@@ -202,7 +203,7 @@ export default function AdminProjectsPage() {
         <Link
           href="/admin/projects/new"
           className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:brightness-110"
-          style={{ background: 'linear-gradient(135deg, #6366f1, #4f46e5)', boxShadow: '0 0 20px rgba(99,102,241,0.3)' }}
+          style={{ background: 'linear-gradient(135deg, #0D9488, #0F766E)', boxShadow: '0 4px 14px rgba(13,148,136,0.3)' }}
         >
           <Plus className="w-4 h-4" /> New Project
         </Link>

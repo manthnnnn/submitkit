@@ -715,3 +715,96 @@
   }
   .aorb, .apulse, .aribbon, .afloat, .agrad, .apulse2 { animation: none !important; }
 }
+
+
+/* ═══════════════════════════════════════════════════
+   ADMIN CONSOLE — SOFT WARM BEIGE THEME (Matches Frontend)
+═══════════════════════════════════════════════════ */
+.admin-root {
+  background: linear-gradient(180deg, #FAF6EE 0%, #F5EFE6 50%, #FAF6EE 100%) !important;
+  color: #0F172A !important;
+}
+
+.admin-root h1,
+.admin-root h2,
+.admin-root h3,
+.admin-root h4 {
+  color: #0F172A !important;
+}
+
+.admin-root .text-white {
+  color: #0F172A !important;
+}
+
+.admin-root .text-zinc-500,
+.admin-root .text-zinc-400 {
+  color: #64748B !important;
+}
+
+.admin-root .text-zinc-300,
+.admin-root .text-zinc-200 {
+  color: #334155 !important;
+}
+
+.admin-root .text-zinc-600 {
+  color: #94A3B8 !important;
+}
+
+/* Card overrides for all admin subpages */
+.admin-root [style*="rgba(24,24,27"],
+.admin-root [style*="rgba(24, 24, 27"],
+.admin-root [style*="rgba(30, 30, 36"],
+.admin-root [style*="rgba(14, 14, 18"],
+.admin-root [style*="rgba(20,20,24"],
+.admin-root [style*="#18181b"],
+.admin-root [style*="#09090b"],
+.admin-root [style*="#070709"] {
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.98) 0%, rgba(253, 251, 247, 0.95) 45%, rgba(246, 252, 250, 0.98) 100%) !important;
+  border-color: rgba(226, 232, 240, 0.9) !important;
+  box-shadow: 0 10px 30px -6px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(13, 148, 136, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+  color: #0F172A !important;
+}
+
+/* Borders and dividers */
+.admin-root .border-white\/\[0\.08\],
+.admin-root .border-white\/\[0\.07\],
+.admin-root .border-white\/\[0\.06\],
+.admin-root .border-white\/\[0\.05\],
+.admin-root .border-white\/10,
+.admin-root .border-white\/5 {
+  border-color: #E8E1D5 !important;
+}
+
+/* Subtle backgrounds */
+.admin-root .bg-white\/\[0\.04\],
+.admin-root .bg-white\/\[0\.03\],
+.admin-root .bg-white\/\[0\.02\],
+.admin-root .bg-white\/5 {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  border-color: #E8E1D5 !important;
+  color: #0F172A !important;
+}
+
+/* Inputs, Selects, and Textareas */
+.admin-root input:not([type="checkbox"]):not([type="radio"]),
+.admin-root select,
+.admin-root textarea {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+  border-color: #CBD5E1 !important;
+}
+
+.admin-root input::placeholder,
+.admin-root textarea::placeholder {
+  color: #94A3B8 !important;
+}
+
+/* Buttons with indigo background -> change to brand teal */
+.admin-root [style*="#6366f1"],
+.admin-root [style*="#4f46e5"],
+.admin-root .bg-indigo-600,
+.admin-root .bg-indigo-500 {
+  background: linear-gradient(135deg, #0D9488 0%, #0F766E 100%) !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.25) !important;
+}

@@ -28,7 +28,7 @@ interface DailyOrders {
   paid: number;
 }
 
-// ── Shared Tooltip Shell ────────────────────────────────────────────────────
+// ── Shared Tooltip Shell (Light/Beige Theme) ─────────────────────────────────
 function ChartTooltip({
   label,
   lines,
@@ -39,21 +39,22 @@ function ChartTooltip({
   return (
     <div
       style={{
-        background: 'rgba(10, 12, 18, 0.96)',
+        background: 'rgba(255, 255, 255, 0.98)',
         border: '1px solid rgba(13, 148, 136, 0.3)',
         borderRadius: '12px',
         padding: '10px 14px',
         fontSize: '12px',
-        backdropFilter: 'blur(20px)',
-        boxShadow: '0 12px 32px rgba(0, 0, 0, 0.6), 0 0 20px rgba(13, 148, 136, 0.1)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        boxShadow: '0 12px 32px rgba(15, 23, 42, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.95)',
       }}
     >
-      <p style={{ color: '#71717a', marginBottom: '6px', fontSize: '11px', fontWeight: 600 }}>
+      <p style={{ color: '#64748B', marginBottom: '6px', fontSize: '11px', fontWeight: 600 }}>
         {label}
       </p>
       {lines.map(l => (
-        <p key={l.label} style={{ color: l.color, fontWeight: 800 }}>
-          {l.label !== '_' && <span style={{ color: '#a1a1aa', fontWeight: 400 }}>{l.label}: </span>}
+        <p key={l.label} style={{ color: l.color, fontWeight: 800, margin: 0 }}>
+          {l.label !== '_' && <span style={{ color: '#475569', fontWeight: 500 }}>{l.label}: </span>}
           {l.value}
         </p>
       ))}
@@ -61,12 +62,12 @@ function ChartTooltip({
   );
 }
 
-const axisStyle = { fontSize: 11, fill: '#52525b', fontWeight: 500 };
-const gridStyle = { stroke: 'rgba(255,255,255,0.05)', strokeDasharray: '4 4' };
+const axisStyle = { fontSize: 11, fill: '#64748B', fontWeight: 600 };
+const gridStyle = { stroke: 'rgba(15, 23, 42, 0.06)', strokeDasharray: '4 4' };
 
 function EmptyChart() {
   return (
-    <div className="h-[200px] flex items-center justify-center text-xs text-zinc-500 font-mono">
+    <div className="h-[200px] flex items-center justify-center text-xs text-slate-400 font-mono">
       No telemetry recorded for this timeframe
     </div>
   );
@@ -83,7 +84,7 @@ export function RevenueDayChart({ data }: { data: DailyRevenue[] }) {
         label={label}
         lines={[
           {
-            color: '#2dd4bf',
+            color: '#0D9488',
             label: 'Daily Revenue',
             value: `₹${Number(payload[0].value).toLocaleString('en-IN')}`,
           },
@@ -109,13 +110,13 @@ export function RevenueDayChart({ data }: { data: DailyRevenue[] }) {
           tickLine={false}
           tickFormatter={v => `₹${(v / 1000).toFixed(0)}k`}
         />
-        <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(13, 148, 136, 0.08)' }} />
+        <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(13, 148, 136, 0.05)' }} />
         <Bar dataKey="revenue" fill="url(#tealBarGrad)" radius={[6, 6, 0, 0]} maxBarSize={32}>
           <defs>
             <linearGradient id="tealBarGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#2dd4bf" />
-              <stop offset="60%" stopColor="#0d9488" />
-              <stop offset="100%" stopColor="#042f2e" stopOpacity={0.8} />
+              <stop offset="0%" stopColor="#14B8A6" />
+              <stop offset="60%" stopColor="#0D9488" />
+              <stop offset="100%" stopColor="#0F766E" />
             </linearGradient>
           </defs>
         </Bar>
@@ -135,7 +136,7 @@ export function RevenueProjectChart({ data }: { data: ProjectRevenue[] }) {
         label={label}
         lines={[
           {
-            color: '#fbbf24',
+            color: '#D97706',
             label: 'Kit Revenue',
             value: `₹${Number(payload[0].value).toLocaleString('en-IN')}`,
           },
@@ -164,12 +165,12 @@ export function RevenueProjectChart({ data }: { data: ProjectRevenue[] }) {
           width={150}
           tickFormatter={v => (v.length > 20 ? v.slice(0, 20) + '…' : v)}
         />
-        <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.03)' }} />
+        <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(15, 23, 42, 0.03)' }} />
         <Bar dataKey="revenue" radius={[0, 6, 6, 0]} maxBarSize={28}>
           {data.map((entry, i) => (
             <Cell
               key={i}
-              fill={entry.tier === 'MAJOR' ? '#f59e0b' : '#0d9488'}
+              fill={entry.tier === 'MAJOR' ? '#D97706' : '#0D9488'}
               fillOpacity={0.9}
             />
           ))}
@@ -189,8 +190,8 @@ export function SalesVelocityChart({ data }: { data: DailyOrders[] }) {
       <ChartTooltip
         label={label}
         lines={[
-          { color: '#2dd4bf', label: 'Paid Orders', value: String(payload[0]?.value ?? 0) },
-          { color: '#52525b', label: 'Total Carts', value: String(payload[1]?.value ?? 0) },
+          { color: '#0D9488', label: 'Paid Orders', value: String(payload[0]?.value ?? 0) },
+          { color: '#94A3B8', label: 'Total Carts', value: String(payload[1]?.value ?? 0) },
         ]}
       />
     );
@@ -206,15 +207,15 @@ export function SalesVelocityChart({ data }: { data: DailyOrders[] }) {
         <Line
           type="monotone"
           dataKey="paid"
-          stroke="#2dd4bf"
+          stroke="#0D9488"
           strokeWidth={2.5}
-          dot={{ r: 3, fill: '#0d9488', stroke: '#2dd4bf', strokeWidth: 1.5 }}
-          activeDot={{ r: 6, fill: '#2dd4bf' }}
+          dot={{ r: 3.5, fill: '#0F766E', stroke: '#14B8A6', strokeWidth: 1.5 }}
+          activeDot={{ r: 6, fill: '#0D9488' }}
         />
         <Line
           type="monotone"
           dataKey="total"
-          stroke="#3f3f46"
+          stroke="#94A3B8"
           strokeWidth={1.5}
           strokeDasharray="4 4"
           dot={false}
