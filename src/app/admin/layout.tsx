@@ -3,6 +3,9 @@ import { cookies } from 'next/headers';
 import { parseAdminSession } from '@/lib/rbac';
 import { AdminShell } from './components/admin-shell';
 
+// Admin pages read cookies and live data; never prerender them at build time.
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: 'SubmitKit Admin Console',
   robots: 'noindex, nofollow',
