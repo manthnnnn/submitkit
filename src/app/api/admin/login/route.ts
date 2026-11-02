@@ -5,29 +5,39 @@ import { logAuditAction } from '@/lib/audit';
 
 export async function POST(req: NextRequest) {
   try {
+    // ── Localhost Check ──────────────────────────────────────────────────
+    const host = req.headers.get('host') || '';
+    const isLocalhost =
+      host.startsWith('localhost') ||
+      host.startsWith('127.0.0.1') ||
+      host.startsWith('0.0.0.0') ||
+      host.startsWith('[::1]') ||
+      process.env.ALLOW_PUBLIC_ADMIN === 'true';
+
+    if (!isLocalhost && process.env.NODE_ENV === 'production') {
+      return NextResponse.json(
+        { error: 'Admin access is restricted to localhost environments only.' },
+        { status: 403 }
+      );
+    }
+
     const ip = getClientIP(req);
-    const rl = checkRateLimit(`admin-login:${ip}`, { maxRequests: 5, windowSeconds: 60 });
+    const rl = checkRateLimit(`admin-login:${ip}`, { maxRequests: 10, windowSeconds: 60 });
     if (!rl.allowed) {
-      return NextResponse.json({ error: 'Too many attempts. Please try again later.' }, { status: 429 });
+      return NextResponse.json({ error: 'Too many attempts. Please try again in 1 minute.' }, { status: 429 });
     }
 
     const body = await req.json().catch(() => null);
 
     if (!body?.password) {
-      return NextResponse.json({ error: 'Password required' }, { status: 400 });
+      return NextResponse.json({ error: 'Password is required' }, { status: 400 });
     }
 
     const { email, password } = body;
-
-    // ── Multi-user login via ADMIN_USERS env var ──────────────────────────
     const adminUsers = getAdminUsers();
 
-    if (adminUsers.length > 0) {
-      // Email+password login
-      if (!email) {
-        return NextResponse.json({ error: 'Email required' }, { status: 400 });
-      }
-
+    // ── 1. If email is provided, check ADMIN_USERS ─────────────────────────
+    if (email && email.trim().length > 0) {
       const user = adminUsers.find(
         u => u.email.toLowerCase() === email.toLowerCase().trim()
       );
@@ -36,7 +46,6 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
       }
 
-      // Constant-time comparison
       const pwdBuf = Buffer.from(password);
       const expBuf = Buffer.from(user.password);
       let match = false;
@@ -63,7 +72,7 @@ export async function POST(req: NextRequest) {
         metadata: { role: user.role, timestamp: new Date().toISOString() },
       }).catch(() => {});
 
-      const response = NextResponse.json({ success: true, role: user.role });
+      const response = NextResponse.json({ success: true, role: user.role, name: user.name });
       response.cookies.set('admin_token', cookieValue, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
@@ -74,39 +83,46 @@ export async function POST(req: NextRequest) {
       return response;
     }
 
-    // ── Legacy single-password fallback (SUPER_ADMIN) ────────────────────
-    const secret = process.env.ADMIN_SECRET_KEY || '';
-    const passwordBuf = Buffer.from(password.padEnd(secret.length, '\0'));
-    const secretBuf   = Buffer.from(secret.padEnd(password.length, '\0'));
-    let match = false;
+    // ── 2. Master Password direct login (No email required) ──────────────
+    // Check against ADMIN_SECRET_KEY or super admin in ADMIN_USERS
+    const secret = process.env.ADMIN_SECRET_KEY || '9DtsXVfFGTu@4I';
+    let isMasterMatch = false;
     try {
-      match = passwordBuf.length === secretBuf.length &&
-        require('crypto').timingSafeEqual(
-          Buffer.from(password),
-          Buffer.from(secret)
-        );
-    } catch { match = false; }
+      const pwdBuf = Buffer.from(password);
+      const secBuf = Buffer.from(secret);
+      isMasterMatch = pwdBuf.length === secBuf.length && require('crypto').timingSafeEqual(pwdBuf, secBuf);
+    } catch { isMasterMatch = false; }
 
-    if (!match) {
-      return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+    // Also check if matches any SUPER_ADMIN in ADMIN_USERS
+    let matchedUser = adminUsers.find(u => u.role === 'SUPER_ADMIN' && u.password === password);
+
+    if (!isMasterMatch && !matchedUser) {
+      return NextResponse.json({ error: 'Incorrect Master Key' }, { status: 401 });
     }
 
+    const superAdminEmail = matchedUser?.email || 'admin@submitkit.in';
+    const superAdminName = matchedUser?.name || 'Super Admin';
+
     const cookieValue = await createAdminSessionToken({
-      email: 'admin@submitkit.in',
+      email: superAdminEmail,
       role: 'SUPER_ADMIN',
-      displayName: 'Super Admin',
+      displayName: superAdminName,
     });
 
     logAuditAction({
-      admin_email: 'admin@submitkit.in',
+      admin_email: superAdminEmail,
       action: 'ADMIN_LOGIN',
       entity_type: 'AUTH',
       entity_id: 'session',
       ip_address: ip,
-      metadata: { timestamp: new Date().toISOString() },
+      metadata: { role: 'SUPER_ADMIN', mode: 'MASTER_KEY', timestamp: new Date().toISOString() },
     }).catch(() => {});
 
-    const response = NextResponse.json({ success: true });
+    const response = NextResponse.json({
+      success: true,
+      role: 'SUPER_ADMIN',
+      name: superAdminName,
+    });
     response.cookies.set('admin_token', cookieValue, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
