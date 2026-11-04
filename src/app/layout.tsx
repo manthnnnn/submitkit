@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/ui/navbar";
 import { Footer } from "@/components/ui/footer";
 import { WhatsAppWidget } from "@/components/ui/whatsapp-widget";
+import { BottomNav } from "@/components/ui/bottom-nav";
 import { AnalyticsTracker } from "@/components/analytics/analytics-tracker";
 import { CONSTANTS } from "@/lib/constants";
 import Script from "next/script";
@@ -143,6 +144,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer />
+        <BottomNav />
         <WhatsAppWidget />
       </body>
     </html>

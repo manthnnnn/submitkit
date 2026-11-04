@@ -694,6 +694,11 @@
   .aorb, .apulse, .aribbon, .afloat, .agrad, .apulse2 { animation: none !important; }
 }
 
+/* ── Mobile bottom nav — keep page content clear of the fixed bar ── */
+@media (max-width: 767px) {
+  body { padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px)); }
+}
+
 
 /* ═══════════════════════════════════════════════════
    ADMIN CONSOLE — SOFT WARM BEIGE THEME (Matches Frontend)
