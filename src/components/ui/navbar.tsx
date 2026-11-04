@@ -85,11 +85,11 @@ export function Navbar() {
                   fontSize: '.9375rem', fontWeight: active(href) ? 700 : 500,
                   textDecoration: 'none', transition: 'all 150ms',
                   background: active(href)
-                    ? 'linear-gradient(135deg, rgba(204, 251, 241, 0.8) 0%, rgba(240, 253, 250, 0.9) 100%)'
+                    ? 'var(--teal-50)'
                     : 'transparent',
                   color: active(href) ? 'var(--teal-darker)' : 'var(--ink-2)',
                   border: active(href) ? '1px solid rgba(13, 148, 136, 0.25)' : '1px solid transparent',
-                  boxShadow: active(href) ? '0 2px 6px -1px rgba(13, 148, 136, 0.12), inset 0 1px 0 #FFFFFF' : 'none',
+                  boxShadow: 'none',
                 }}
                 onMouseEnter={e => { if (!active(href)) { e.currentTarget.style.background = 'var(--surface-2)'; e.currentTarget.style.color = 'var(--ink)'; }}}
                 onMouseLeave={e => { if (!active(href)) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--ink-2)'; }}}
