@@ -205,7 +205,7 @@ export default function HomePage() {
 
               {/* Sub */}
               <motion.p
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .4, delay: .18 }}
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .35, delay: .05 }}
                 style={{ fontSize: 'clamp(.9375rem,2vw,1.0625rem)', color: 'var(--ink-3)', lineHeight: 1.75, marginBottom: '1.875rem', maxWidth: '30rem' }}
               >
                 Complete final-year kits with source code, documentation and viva prep.{' '}
