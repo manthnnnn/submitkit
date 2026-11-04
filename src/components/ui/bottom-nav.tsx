@@ -61,12 +61,13 @@ export function BottomNav() {
             background: 'none', border: 'none', textDecoration: 'none',
             cursor: 'pointer', WebkitTapHighlightColor: 'transparent',
           };
+          const cls = 'bn-tab';
           return 'external' in rest && rest.external ? (
-            <a key={href} href={href} target="_blank" rel="noopener noreferrer" aria-label={label} style={style}>
+            <a key={href} href={href} target="_blank" rel="noopener noreferrer" aria-label={label} style={style} className={cls}>
               {inner}
             </a>
           ) : (
-            <Link key={href} href={href} aria-label={label} style={style}>
+            <Link key={href} href={href} aria-label={label} style={style} className={cls}>
               {inner}
             </Link>
           );

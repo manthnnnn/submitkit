@@ -113,10 +113,10 @@ function StatCard({
 }
 
 const SLIDES = [
-  { h: 'Build a project you can actually', accent: 'explain.' },
-  { h: 'Stop fixing broken GitHub code.', accent: 'Get verified kits today.' },
-  { h: 'IEEE Report. Defense PPT.', accent: 'Running code included.' },
-  { h: 'Final year done right —', accent: 'download, run, submit.' },
+  { h: 'Final-year project kits,', accent: 'ready to submit.' },
+  { h: 'Working code + IEEE report,', accent: 'one download.' },
+  { h: 'Build a project you can', accent: 'actually explain.' },
+  { h: 'Preview free. Pay ₹299.', accent: 'Submit with confidence.' },
 ];
 
 const HOW = [
@@ -189,13 +189,13 @@ export default function HomePage() {
               </motion.div>
 
               {/* Rotating headline */}
-              <div style={{ minHeight: 'clamp(5.5rem,12vw,8rem)', display: 'flex', alignItems: 'flex-end', marginBottom: '1.25rem' }}>
+              <div style={{ minHeight: 'clamp(4rem,9vw,6rem)', display: 'flex', alignItems: 'flex-end', marginBottom: '1.25rem' }}>
                 <AnimatePresence mode="wait">
                   <motion.h1
                     key={si}
                     initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -14 }}
-                    transition={{ duration: .42, ease: [.25, 1, .5, 1] }}
-                    style={{ fontSize: 'clamp(2.5rem,6vw,4.25rem)', fontWeight: 900, letterSpacing: '-.045em', lineHeight: 1.08, color: 'var(--navy)' }}
+                    transition={{ duration: .38, ease: [.32, .72, 0, 1] }}
+                    style={{ fontSize: 'clamp(1.875rem,4.5vw,3.25rem)', fontWeight: 900, letterSpacing: '-.04em', lineHeight: 1.12, color: 'var(--navy)' }}
                   >
                     {SLIDES[si].h}{' '}
                     <em className="text-teal-grad" style={{ fontStyle: 'italic' }}>{SLIDES[si].accent}</em>
@@ -208,8 +208,8 @@ export default function HomePage() {
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .35, delay: .05 }}
                 style={{ fontSize: 'clamp(.9375rem,2vw,1.0625rem)', color: 'var(--ink-3)', lineHeight: 1.75, marginBottom: '1.875rem', maxWidth: '30rem' }}
               >
-                Complete final-year kits with source code, documentation and viva prep.{' '}
-                <strong style={{ color: 'var(--navy)', fontWeight: 700 }}>Preview every kit</strong> before you spend a rupee.
+                Ready-made final-year project kits — working source code, IEEE report, defense PPT and viva prep in one download.{' '}
+                <strong style={{ color: 'var(--navy)', fontWeight: 700 }}>Preview every kit free</strong> before you spend a rupee.
               </motion.p>
 
               {/* CTA buttons */}
