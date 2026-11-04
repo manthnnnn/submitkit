@@ -45,48 +45,28 @@ export function PricingHook() {
 
   return (
     <div className="w-full max-w-[27rem] mx-auto lg:ml-auto lg:mr-0 relative">
-      {/* Soft Multi-Tone Ambient Glow Backdrop */}
+      {/* Clean bordered card */}
       <div
-        className="absolute -inset-3 rounded-3xl opacity-60 blur-2xl pointer-events-none -z-10"
+        className="relative rounded-3xl"
         style={{
-          background:
-            'radial-gradient(ellipse at 80% 15%, rgba(13, 148, 136, 0.35) 0%, rgba(245, 158, 11, 0.18) 45%, transparent 75%)',
-        }}
-      />
-      <div
-        className="absolute -inset-2 rounded-3xl opacity-40 blur-xl pointer-events-none -z-10"
-        style={{
-          background:
-            'radial-gradient(circle at 20% 85%, rgba(5, 150, 105, 0.25) 0%, rgba(13, 148, 136, 0.15) 45%, transparent 70%)',
-        }}
-      />
-
-      {/* Outer Gradient-Border Card Shell */}
-      <div
-        className="relative rounded-3xl p-[1.5px] transition-all duration-300 shadow-2xl"
-        style={{
-          background:
-            'linear-gradient(145deg, rgba(13, 148, 136, 0.5) 0%, rgba(20, 184, 166, 0.25) 28%, rgba(245, 158, 11, 0.3) 68%, rgba(5, 150, 105, 0.45) 100%)',
-          boxShadow:
-            '0 24px 60px -12px rgba(13, 148, 136, 0.16), 0 12px 28px -6px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.4)',
+          background: 'var(--surface)',
+          border: '1px solid var(--teal-100)',
+          boxShadow: 'var(--sh-lg)',
         }}
       >
-        {/* Main Inner Card with Multi-Stop Gradient Blend */}
+        {/* Card body */}
         <div
           className="relative rounded-[calc(1.5rem-1.5px)] overflow-hidden"
           style={{
-            background:
-              'linear-gradient(170deg, #FFFFFF 0%, #F5FBF9 32%, #FCFAF7 68%, #F0FDF8 100%)',
-            backdropFilter: 'blur(24px)',
-            WebkitBackdropFilter: 'blur(24px)',
+            background: 'var(--surface)',
           }}
         >
-          {/* Top Iridescent Jewel Accent Rule */}
+          {/* Slim brand rule */}
           <div
             style={{
-              height: '4px',
+              height: '3px',
               background:
-                'linear-gradient(90deg, #0D9488 0%, #14B8A6 35%, #F59E0B 70%, #059669 100%)',
+                'linear-gradient(90deg, #0D9488 0%, #14B8A6 100%)',
             }}
           />
 
@@ -130,9 +110,8 @@ export function PricingHook() {
                   key={label}
                   className="flex items-start gap-2.5 sm:gap-3 p-2.5 rounded-xl transition-all duration-200 hover:translate-x-0.5"
                   style={{
-                    background:
-                      'linear-gradient(135deg, rgba(255, 255, 255, 0.75) 0%, rgba(246, 250, 249, 0.6) 100%)',
-                    border: '1px solid rgba(226, 232, 240, 0.8)',
+                    background: 'var(--surface-2)',
+                    border: '1px solid var(--line)',
                   }}
                 >
                   <div
@@ -159,9 +138,8 @@ export function PricingHook() {
               className="group relative w-full flex items-center justify-center gap-2 rounded-xl text-sm sm:text-base font-bold text-white transition-all active:scale-[0.98] shadow-lg hover:shadow-xl overflow-hidden"
               style={{
                 minHeight: '48px',
-                background: 'linear-gradient(135deg, #0D9488 0%, #0F766E 50%, #065F59 100%)',
-                boxShadow:
-                  '0 8px 24px -4px rgba(13, 148, 136, 0.45), 0 2px 6px -1px rgba(13, 148, 136, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.28)',
+                background: 'var(--teal)',
+                boxShadow: 'var(--sh-teal)',
               }}
             >
               <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
@@ -177,14 +155,13 @@ export function PricingHook() {
             </p>
 
             {/* Major Project Upsell Drawer (Matches Top Right of Image 1) */}
-            <div
-              className="mt-3.5 pt-2.5 rounded-xl p-3 border flex items-center justify-between gap-3"
-              style={{
-                background:
-                  'linear-gradient(135deg, rgba(240, 253, 250, 0.7) 0%, rgba(254, 249, 235, 0.5) 100%)',
-                borderColor: 'rgba(13, 148, 136, 0.18)',
-              }}
-            >
+              <div
+                className="mt-3.5 pt-2.5 rounded-xl p-3 border flex items-center justify-between gap-3"
+                style={{
+                  background: 'var(--teal-50)',
+                  borderColor: 'var(--teal-100)',
+                }}
+              >
               <div className="min-w-0">
                 <div className="text-[10px] font-black text-teal-800 uppercase tracking-wider">
                   Need Major Project?

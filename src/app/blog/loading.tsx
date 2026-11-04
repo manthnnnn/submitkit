@@ -56,7 +56,7 @@ export default function BlogLoading() {
               key={i}
               className="card p-6 rounded-2xl border border-slate-200/80 bg-white/90 space-y-4 animate-pulse"
               style={{
-                boxShadow: '0 4px 16px -2px rgba(15, 23, 42, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.95)',
+                boxShadow: '0 4px 16px -2px rgba(15, 23, 42, 0.04)',
               }}
             >
               <div className="flex justify-between">

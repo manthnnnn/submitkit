@@ -262,8 +262,8 @@ export default async function BlogPostPage(
                   key={i}
                   className="card p-5 rounded-2xl border border-slate-200/90 transition-all group open:border-teal-300 open:shadow-md"
                   style={{
-                    background: 'linear-gradient(165deg, rgba(255, 255, 255, 0.98) 0%, rgba(253, 251, 247, 0.95) 100%)',
-                    boxShadow: '0 2px 8px -2px rgba(15, 23, 42, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.95)',
+                    background: 'var(--surface)',
+                    boxShadow: '0 2px 8px -2px rgba(15, 23, 42, 0.04)',
                   }}
                 >
                   <summary className="cursor-pointer font-bold text-slate-900 text-sm sm:text-base flex items-start gap-3 select-none">
@@ -287,7 +287,7 @@ export default async function BlogPostPage(
           style={{
             background: 'linear-gradient(145deg, #FFFFFF 0%, #F5FBF9 45%, #FCF9F5 100%)',
             border: '1.5px solid rgba(13, 148, 136, 0.22)',
-            boxShadow: '0 20px 50px -12px rgba(13, 148, 136, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.98)',
+            boxShadow: '0 20px 50px -12px rgba(13, 148, 136, 0.15)',
           }}
         >
           <div className="relative z-10">
@@ -344,9 +344,9 @@ export default async function BlogPostPage(
                   key={rp.slug}
                   className="card card-lift p-5 rounded-2xl flex flex-col justify-between group relative overflow-hidden"
                   style={{
-                    background: 'linear-gradient(165deg, rgba(255, 255, 255, 0.98) 0%, rgba(253, 251, 247, 0.95) 100%)',
+                    background: 'var(--surface)',
                     border: '1px solid rgba(226, 232, 240, 0.9)',
-                    boxShadow: '0 2px 8px -2px rgba(15, 23, 42, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.95)',
+                    boxShadow: '0 2px 8px -2px rgba(15, 23, 42, 0.05)',
                   }}
                 >
                   <div

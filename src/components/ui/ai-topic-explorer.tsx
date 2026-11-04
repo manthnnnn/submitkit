@@ -101,10 +101,10 @@ export function AiTopicExplorer() {
       <div
         className="card relative rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-200/90 transition-all duration-300"
         style={{
-          background: 'linear-gradient(165deg, rgba(255, 255, 255, 0.98) 0%, rgba(253, 251, 247, 0.95) 45%, rgba(246, 252, 250, 0.98) 100%)',
+          background: 'var(--surface)',
           backdropFilter: 'blur(20px)',
           WebkitBackdropFilter: 'blur(20px)',
-          boxShadow: '0 12px 36px -8px rgba(15, 23, 42, 0.08), 0 4px 12px -2px rgba(13, 148, 136, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.95)',
+          boxShadow: '0 12px 36px -8px rgba(15, 23, 42, 0.08), 0 4px 12px -2px rgba(13, 148, 136, 0.05)',
         }}
       >
         <div className="p-4 sm:p-6 lg:p-7">
