@@ -166,7 +166,7 @@ export function Navbar() {
             {/* Links */}
             <nav style={{ flex: 1, padding: '.75rem 1rem' }}>
               {NAV.map(({ href, label, icon: Icon, sub, badge }) => (
-                <Link key={href} href={href}
+                <Link key={href} href={href} className="press"
                   style={{
                     display: 'flex', alignItems: 'center', gap: '1rem',
                     padding: '1rem', borderRadius: '14px', marginBottom: '.375rem',
