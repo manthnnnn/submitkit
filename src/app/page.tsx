@@ -75,10 +75,10 @@ function StatCard({
         textAlign: 'center',
         position: 'relative',
         overflow: 'hidden',
-        background: 'linear-gradient(165deg, rgba(255, 255, 255, 0.98) 0%, rgba(253, 251, 247, 0.95) 45%, rgba(246, 252, 250, 0.98) 100%)',
-        border: '1px solid rgba(226, 232, 240, 0.9)',
-        borderRadius: '20px',
-        boxShadow: '0 4px 16px -2px rgba(15, 23, 42, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.95)',
+        background: 'var(--surface)',
+        border: '1px solid var(--line)',
+        borderRadius: 'var(--r-xl)',
+        boxShadow: 'var(--sh-sm)',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -357,11 +357,11 @@ export default function HomePage() {
                         alignItems: 'center',
                         gap: '1rem',
                         padding: '1rem 1.25rem',
-                        borderRadius: '16px',
-                        background: 'linear-gradient(145deg, rgba(255,255,255,0.98) 0%, rgba(252,250,246,0.92) 100%)',
-                        border: '1px solid rgba(226, 232, 240, 0.9)',
+                        borderRadius: 'var(--r-lg)',
+                        background: 'var(--surface)',
+                        border: '1px solid var(--line)',
                         textDecoration: 'none',
-                        boxShadow: '0 2px 8px -1px rgba(15,23,42,0.04), inset 0 1px 0 rgba(255,255,255,0.95)',
+                        boxShadow: 'var(--sh-xs)',
                       }}
                     >
                       <div className="w-8 h-8 rounded-xl flex items-center justify-center font-mono text-xs font-black text-teal-800 bg-teal-50 border border-teal-200/80 shrink-0 shadow-2xs">
@@ -407,10 +407,10 @@ export default function HomePage() {
                 className="card card-lift relative overflow-hidden"
                 style={{
                   padding: '2rem 1.75rem',
-                  background: 'linear-gradient(145deg, #F0FDFA 0%, #FFFFFF 50%, #ECFDF5 100%)',
-                  border: '1px solid rgba(13, 148, 136, 0.22)',
-                  borderRadius: '24px',
-                  boxShadow: '0 12px 32px -8px rgba(13, 148, 136, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.95)',
+                  background: 'var(--surface)',
+                  border: '1px solid var(--teal-100)',
+                  borderRadius: 'var(--r-2xl)',
+                  boxShadow: 'var(--sh-sm)',
                 }}
               >
                 <div style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', fontSize: '7.5rem', fontWeight: 900, color: 'rgba(13,148,136,.06)', lineHeight: 1, userSelect: 'none', pointerEvents: 'none', fontFamily: 'var(--font-display)' }}>1K</div>
@@ -431,9 +431,9 @@ export default function HomePage() {
                 className="card card-lift"
                 style={{
                   padding: '1.75rem',
-                  borderRadius: '24px',
-                  background: 'linear-gradient(145deg, rgba(255,255,255,0.98) 0%, rgba(253,251,247,0.95) 100%)',
-                  boxShadow: '0 8px 24px -4px rgba(15,23,42,0.06), inset 0 1px 0 rgba(255,255,255,0.95)',
+                  borderRadius: 'var(--r-2xl)',
+                  background: 'var(--surface)',
+                  boxShadow: 'var(--sh-sm)',
                 }}
               >
                 <h3 style={{ fontSize: '1.125rem', fontWeight: 800, color: 'var(--navy)', letterSpacing: '-.025em', marginBottom: '.5rem' }}>Have your own project idea?</h3>
@@ -473,11 +473,11 @@ export default function HomePage() {
                 className="card card-lift"
                 style={{
                   padding: '1.75rem',
-                  borderRadius: '20px',
+                  borderRadius: 'var(--r-xl)',
                   display: 'flex',
                   gap: '1rem',
                   alignItems: 'flex-start',
-                  background: 'linear-gradient(165deg, rgba(255,255,255,0.98) 0%, rgba(252,250,246,0.95) 100%)',
+                  background: 'var(--surface)',
                 }}
               >
                 <div style={{ width: '2.75rem', height: '2.75rem', borderRadius: '14px', flexShrink: 0, background: 'var(--surface-teal)', border: '1px solid var(--teal-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-mono)', fontSize: '.9375rem', fontWeight: 900, color: 'var(--teal)', boxShadow: '0 2px 6px rgba(13,148,136,0.1)' }}>
@@ -505,19 +505,14 @@ export default function HomePage() {
           <div
             className="relative overflow-hidden"
             style={{
-              background: 'linear-gradient(165deg, rgba(255,255,255,0.98) 0%, rgba(240,253,250,0.92) 45%, rgba(253,250,245,0.95) 100%)',
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
-              border: '1px solid rgba(13, 148, 136, 0.22)',
-              borderRadius: '28px',
-              boxShadow: '0 24px 60px -12px rgba(13, 148, 136, 0.16), 0 12px 28px -6px rgba(15, 23, 42, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.98)',
+              background: 'var(--surface)',
+              border: '1px solid var(--teal-100)',
+              borderRadius: 'var(--r-2xl)',
+              boxShadow: 'var(--sh-lg)',
               padding: 'clamp(2.5rem, 6vw, 4.5rem) clamp(1.5rem, 4vw, 3rem)',
               textAlign: 'center',
             }}
           >
-            {/* Ambient decorative glow */}
-            <div style={{ position: 'absolute', top: '-40%', right: '-20%', width: '350px', height: '350px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(13,148,136,.12) 0%, transparent 70%)', pointerEvents: 'none' }} />
-
             <h2 style={{ fontSize: 'clamp(2rem,5vw,3rem)', fontWeight: 900, letterSpacing: '-.04em', color: 'var(--navy)', marginBottom: '.875rem', lineHeight: 1.15, position: 'relative', zIndex: 1 }}>
               Your project kit is waiting.
             </h2>
