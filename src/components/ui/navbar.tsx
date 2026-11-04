@@ -143,7 +143,9 @@ export function Navbar() {
             style={{
               position: 'fixed', top: 0, right: 0, bottom: 0, zIndex: 120,
               width: 'min(88vw, 360px)',
-              background: 'var(--surface)',
+              background: 'rgba(253, 251, 247, .93)',
+              backdropFilter: 'blur(20px) saturate(180%)',
+              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
               display: 'flex', flexDirection: 'column',
               boxShadow: 'var(--sh-2xl)',
               overflowY: 'auto',
