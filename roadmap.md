@@ -6,4 +6,5 @@
 - [x] Refresh homepage sections (stat cards, kit list, blueprint/custom cards, pricing card, CTA)
 - [x] Flatten inline 3D styles across blog, blueprint, projects, custom pages
 - [x] Audit key pages + mobile with browser screenshots — clean and consistent
+- [x] Speed up page load (removed blocking external Google Fonts, self-hosted JetBrains Mono) and tightened hero entrance animations (~1.1s → ~0.35s, uniform smooth easing)
 - [ ] Optional next pass: blueprint detail page and order flow deep-check
