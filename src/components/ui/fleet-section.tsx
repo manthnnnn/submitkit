@@ -226,8 +226,8 @@ export function FleetSection() {
                       href={`/projects/${project.slug}`}
                       className="card card-lift flex flex-col rounded-2xl border border-slate-200/90 hover:border-teal-400 transition-all duration-300 relative overflow-hidden p-6 group cursor-pointer"
                       style={{
-                        background: 'linear-gradient(165deg, rgba(255, 255, 255, 0.98) 0%, rgba(253, 251, 247, 0.95) 45%, rgba(246, 252, 250, 0.98) 100%)',
-                        boxShadow: '0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -4px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.95)',
+                        background: 'var(--surface)',
+                        boxShadow: '0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -4px rgba(15, 23, 42, 0.06)',
                       }}
                     >
                       {/* Top 3D accent */}
@@ -346,8 +346,8 @@ export function FleetSection() {
                       key={project.slug}
                       className="card card-lift flex flex-col rounded-2xl border border-slate-200/90 hover:border-teal-400 transition-all duration-300 relative overflow-hidden p-6 group"
                       style={{
-                        background: 'linear-gradient(165deg, rgba(255, 255, 255, 0.98) 0%, rgba(253, 251, 247, 0.95) 45%, rgba(246, 252, 250, 0.98) 100%)',
-                        boxShadow: '0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -4px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.95)',
+                        background: 'var(--surface)',
+                        boxShadow: '0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -4px rgba(15, 23, 42, 0.06)',
                       }}
                     >
                       {/* Top row */}

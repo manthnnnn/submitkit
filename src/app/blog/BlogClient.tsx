@@ -169,9 +169,9 @@ export function BlogClient({
                   key={i}
                   className="card p-4 rounded-2xl text-center group transition-all"
                   style={{
-                    background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.98) 0%, rgba(252, 250, 246, 0.92) 100%)',
+                    background: 'var(--surface)',
                     border: '1px solid rgba(226, 232, 240, 0.9)',
-                    boxShadow: '0 4px 14px -2px rgba(15, 23, 42, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.95)',
+                    boxShadow: '0 4px 14px -2px rgba(15, 23, 42, 0.05)',
                   }}
                 >
                   <div className="font-display font-black text-2xl sm:text-3xl text-slate-900 leading-none">
@@ -207,7 +207,7 @@ export function BlogClient({
                     background: active ? '#FFFFFF' : 'transparent',
                     color: active ? 'var(--teal-darker)' : 'var(--ink-3)',
                     boxShadow: active
-                      ? '0 2px 8px -1px rgba(13, 148, 136, 0.15), inset 0 1px 0 #FFFFFF'
+                      ? '0 2px 8px -1px rgba(13, 148, 136, 0.15)'
                       : 'none',
                     border: active ? '1px solid rgba(13, 148, 136, 0.2)' : '1px solid transparent',
                   }}
@@ -266,9 +266,9 @@ export function BlogClient({
                     whileHover={{ y: -5, transition: { duration: 0.2 } }}
                     className="card card-lift flex flex-col justify-between rounded-2xl overflow-hidden p-6 group cursor-pointer relative"
                     style={{
-                      background: 'linear-gradient(165deg, rgba(255, 255, 255, 0.98) 0%, rgba(253, 251, 247, 0.95) 45%, rgba(246, 252, 250, 0.98) 100%)',
+                      background: 'var(--surface)',
                       border: '1px solid rgba(226, 232, 240, 0.9)',
-                      boxShadow: '0 2px 8px -2px rgba(15, 23, 42, 0.05), 0 8px 24px -4px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.95)',
+                      boxShadow: '0 2px 8px -2px rgba(15, 23, 42, 0.05), 0 8px 24px -4px rgba(15, 23, 42, 0.06)',
                     }}
                   >
                     {/* Top 3D Jewel Accent */}
@@ -357,7 +357,7 @@ export function BlogClient({
             style={{
               background: 'linear-gradient(145deg, #FFFFFF 0%, #F5FBF9 40%, #FCF9F5 100%)',
               border: '1.5px solid rgba(13, 148, 136, 0.22)',
-              boxShadow: '0 20px 50px -12px rgba(13, 148, 136, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.98)',
+              boxShadow: '0 20px 50px -12px rgba(13, 148, 136, 0.15)',
             }}
           >
             {/* Ambient Corner Flare */}
@@ -433,7 +433,7 @@ export function BlogClient({
                         : '#FFFFFF',
                       borderColor: tier.highlight ? 'rgba(13, 148, 136, 0.3)' : 'rgba(226, 232, 240, 0.9)',
                       boxShadow: tier.highlight
-                        ? '0 6px 18px -2px rgba(13, 148, 136, 0.1), inset 0 1px 0 #FFFFFF'
+                        ? '0 6px 18px -2px rgba(13, 148, 136, 0.1)'
                         : '0 2px 6px rgba(15, 23, 42, 0.04)',
                     }}
                   >
@@ -488,8 +488,8 @@ export function BlogClient({
                 key={i}
                 className="card p-5 rounded-2xl border border-slate-200/90 transition-all group open:border-teal-300 open:shadow-md"
                 style={{
-                  background: 'linear-gradient(165deg, rgba(255, 255, 255, 0.98) 0%, rgba(253, 251, 247, 0.95) 100%)',
-                  boxShadow: '0 2px 8px -2px rgba(15, 23, 42, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.95)',
+                  background: 'var(--surface)',
+                  boxShadow: '0 2px 8px -2px rgba(15, 23, 42, 0.04)',
                 }}
               >
                 <summary className="cursor-pointer font-bold text-slate-900 text-sm sm:text-base flex items-start gap-3 select-none">

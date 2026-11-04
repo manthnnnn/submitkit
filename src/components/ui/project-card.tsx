@@ -52,9 +52,9 @@ export function ProjectCard({ project, onReserve }: { project: Project; onReserv
         flexDirection: 'column',
         overflow: 'hidden',
         borderRadius: '20px',
-        background: 'linear-gradient(165deg, rgba(255, 255, 255, 0.98) 0%, rgba(253, 251, 247, 0.95) 45%, rgba(246, 252, 250, 0.98) 100%)',
+        background: 'var(--surface)',
         border: '1px solid rgba(226, 232, 240, 0.85)',
-        boxShadow: '0 2px 8px -2px rgba(15, 23, 42, 0.05), 0 8px 24px -4px rgba(15, 23, 42, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.95)',
+        boxShadow: '0 2px 8px -2px rgba(15, 23, 42, 0.05), 0 8px 24px -4px rgba(15, 23, 42, 0.06)',
         willChange: 'transform',
       }}
     >
@@ -111,7 +111,7 @@ export function ProjectCard({ project, onReserve }: { project: Project; onReserv
               border: 'none',
               borderRadius: '9px',
               cursor: 'pointer',
-              boxShadow: tab===id ? '0 2px 6px -1px rgba(15,23,42,0.08), inset 0 1px 0 #FFFFFF' : 'none',
+              boxShadow: tab===id ? '0 2px 6px -1px rgba(15,23,42,0.08)' : 'none',
               transition: 'all 150ms ease',
               minHeight: '38px',
               WebkitTapHighlightColor: 'transparent',
