@@ -7,4 +7,5 @@
 - [x] Flatten inline 3D styles across blog, blueprint, projects, custom pages
 - [x] Audit key pages + mobile with browser screenshots — clean and consistent
 - [x] Speed up page load (removed blocking external Google Fonts, self-hosted JetBrains Mono) and tightened hero entrance animations (~1.1s → ~0.35s, uniform smooth easing)
+- [x] Mobile: app-style bottom nav (Home / Projects / Free Topics / Track / WhatsApp) with active states; body padding so content clears the bar
 - [ ] Optional next pass: blueprint detail page and order flow deep-check
