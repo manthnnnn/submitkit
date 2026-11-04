@@ -19,6 +19,7 @@ export const viewport: Viewport = {
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-display" });
+const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-mono" });
 
 // GA4 Measurement ID — set NEXT_PUBLIC_GA_ID in your env vars (format: G-XXXXXXXXXX)
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID;
@@ -107,13 +108,8 @@ export default function RootLayout({
   return (
     <html lang="en-IN">
       <head>
-        {/* Google Fonts — loaded via link to avoid Tailwind v4 @import conflict */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
+        {/* Fonts are self-hosted via next/font (Inter, Space Grotesk, JetBrains Mono) —
+            no external stylesheet request, so the page paints faster. */}
         {/* Teal brand theme */}
         {/* Razorpay checkout */}
         <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="lazyOnload" />
@@ -139,7 +135,7 @@ export default function RootLayout({
           </>
         )}
       </head>
-      <body className={`${inter.variable} ${spaceGrotesk.variable} antialiased min-h-screen flex flex-col`}>
+      <body className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} antialiased min-h-screen flex flex-col`}>
         <HomeSchema />
         <AnalyticsTracker />
         <Navbar />
