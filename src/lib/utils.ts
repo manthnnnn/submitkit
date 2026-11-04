@@ -5,12 +5,14 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-const inrFormatter = new Intl.NumberFormat('en-IN', {
+const inrOptions = {
   style: 'currency',
   currency: 'INR',
   minimumFractionDigits: 0,
   maximumFractionDigits: 0,
-});
+} as unknown as Intl.NumberFormatOptions;
+
+const inrFormatter = new Intl.NumberFormat('en-IN', inrOptions);
 
 export function formatCurrency(amount: number | string | null | undefined): string {
   const value: number = typeof amount === 'number' ? amount : Number(amount ?? 0);
