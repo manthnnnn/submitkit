@@ -214,7 +214,7 @@ export default function HomePage() {
 
               {/* CTA buttons */}
               <motion.div
-                initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .4, delay: .24 }}
+                initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .35, delay: .1 }}
                 style={{ display: 'flex', flexWrap: 'wrap', gap: '.75rem', marginBottom: '2rem' }}
               >
                 <Link href="/projects" className="btn btn-navy btn-lg">
@@ -227,7 +227,7 @@ export default function HomePage() {
 
               {/* Deliverable pills */}
               <motion.div
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .4, delay: .32 }}
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .35, delay: .15 }}
                 style={{ display: 'flex', flexWrap: 'wrap', gap: '.625rem .875rem', marginBottom: '2rem' }}
               >
                 {['Source code', 'IEEE Black Book', 'Defense PPT', 'Viva Q&A'].map(t => (
@@ -240,7 +240,7 @@ export default function HomePage() {
 
               {/* Social proof */}
               <motion.div
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .4, delay: .38 }}
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .35, delay: .2 }}
                 style={{ display: 'flex', alignItems: 'center', gap: '.875rem', paddingTop: '1.375rem', borderTop: '1px solid var(--line)' }}
               >
                 <div style={{ display: 'flex' }}>
@@ -269,7 +269,7 @@ export default function HomePage() {
 
             {/* ── RIGHT: Pricing card ── */}
             <motion.div
-              initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .52, delay: .2 }}
+              initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .45, delay: .1 }}
             >
               <PricingHook />
             </motion.div>
@@ -277,7 +277,7 @@ export default function HomePage() {
 
           {/* ── Focused AI Topic Explorer Hub ── */}
           <motion.div
-            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .48, delay: .32 }}
+            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .45, delay: .18 }}
             className="mt-8 sm:mt-12 lg:mt-14 max-w-5xl mx-auto w-full"
           >
             <AiTopicExplorer />
@@ -285,7 +285,7 @@ export default function HomePage() {
 
           {/* University trust row */}
           <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .5, delay: .55 }}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .4, delay: .3 }}
             className="mt-8 sm:mt-12 pt-6 sm:pt-8 text-center pb-8 sm:pb-12"
             style={{ borderTop: '1px solid var(--line)' }}
           >
