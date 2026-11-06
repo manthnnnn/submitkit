@@ -1,7 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { CONSTANTS } from '@/lib/constants';
 import {
   ArrowRight, CheckCircle2, Zap, ShieldCheck,
@@ -112,13 +111,6 @@ function StatCard({
   );
 }
 
-const SLIDES = [
-  { h: 'Final-year project kits,', accent: 'ready to submit.' },
-  { h: 'Working code + IEEE report,', accent: 'one download.' },
-  { h: 'Build a project you can', accent: 'actually explain.' },
-  { h: 'Preview free. Pay ₹299.', accent: 'Submit with confidence.' },
-];
-
 const HOW = [
   { n: '01', t: 'Pick a kit and preview it free',  s: 'See the demo and sample pages before paying' },
   { n: '02', t: 'Download and set up',              s: 'Step-by-step guide included with every kit' },
@@ -134,14 +126,6 @@ const READY = [
 
 /* ─── Main page ─── */
 export default function HomePage() {
-  const router = useRouter();
-  const [si, setSi] = useState(0);
-
-  useEffect(() => {
-    const id = setInterval(() => setSi(p => (p + 1) % SLIDES.length), 5200);
-    return () => clearInterval(id);
-  }, []);
-
   /* ─ inline style helpers ─ */
   const S = {
     section: (bg?: string): React.CSSProperties => ({
@@ -158,7 +142,7 @@ export default function HomePage() {
   };
 
   return (
-    <div style={{ background: 'var(--canvas)', overflowX: 'hidden', minHeight: '100vh' }}>
+    <div className="home-page" style={{ background: 'var(--canvas)', overflowX: 'hidden', minHeight: '100vh' }}>
 
       {/* ── background decoration ── */}
       <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }} aria-hidden>
@@ -170,51 +154,49 @@ export default function HomePage() {
       {/* ════════════════════════════════════════════
           HERO
       ════════════════════════════════════════════ */}
-      <section style={{ ...S.section(), paddingTop: '5.25rem', paddingBottom: '0' }}>
+      <section className="home-hero" style={{ ...S.section(), paddingTop: '5.25rem', paddingBottom: '0' }}>
         <div className="shell">
 
           {/* Two-column on lg+, stacked on mobile */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 28rem), 1fr))', gap: '2.5rem 3rem', alignItems: 'center' }}>
 
             {/* ── LEFT ── */}
-            <div style={{ maxWidth: '36rem' }}>
+            <div className="home-hero-copy" style={{ maxWidth: '36rem' }}>
 
               {/* Label + ticker */}
               <motion.div
                 initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .4 }}
+                className="home-hero-eyebrow"
                 style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '.625rem', marginBottom: '1.5rem' }}
               >
-                <span className="label-chip">Ready-to-run Project Kits</span>
-                <LiveTicker />
+                <span className="label-chip">Final-year project kits</span>
+                <span className="home-live-ticker"><LiveTicker /></span>
               </motion.div>
 
-              {/* Rotating headline */}
-              <div style={{ minHeight: 'clamp(4rem,9vw,6rem)', display: 'flex', alignItems: 'flex-end', marginBottom: '1.25rem' }}>
-                <AnimatePresence mode="wait">
-                  <motion.h1
-                    key={si}
-                    initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -14 }}
-                    transition={{ duration: .38, ease: [.32, .72, 0, 1] }}
-                    style={{ fontSize: 'clamp(1.875rem,4.5vw,3.25rem)', fontWeight: 900, letterSpacing: '-.04em', lineHeight: 1.12, color: 'var(--navy)' }}
-                  >
-                    {SLIDES[si].h}{' '}
-                    <em className="text-teal-grad" style={{ fontStyle: 'italic' }}>{SLIDES[si].accent}</em>
-                  </motion.h1>
-                </AnimatePresence>
+              <div className="home-hero-title-wrap">
+                <motion.h1
+                  initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: .42, ease: [.32, .72, 0, 1] }}
+                  className="home-hero-title"
+                >
+                  Final-year projects, <em className="text-teal-grad">ready to submit.</em>
+                </motion.h1>
               </div>
 
               {/* Sub */}
               <motion.p
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .35, delay: .05 }}
+                className="home-hero-description"
                 style={{ fontSize: 'clamp(.9375rem,2vw,1.0625rem)', color: 'var(--ink-3)', lineHeight: 1.75, marginBottom: '1.875rem', maxWidth: '30rem' }}
               >
-                Ready-made final-year project kits — working source code, IEEE report, defense PPT and viva prep in one download.{' '}
-                <strong style={{ color: 'var(--navy)', fontWeight: 700 }}>Preview every kit free</strong> before you spend a rupee.
+                Complete project kits with working code, an IEEE report, presentation slides and viva prep.{' '}
+                <strong style={{ color: 'var(--navy)', fontWeight: 700 }}>Preview free</strong> before you buy.
               </motion.p>
 
               {/* CTA buttons */}
               <motion.div
                 initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .35, delay: .1 }}
+                className="home-hero-actions"
                 style={{ display: 'flex', flexWrap: 'wrap', gap: '.75rem', marginBottom: '2rem' }}
               >
                 <Link href="/projects" className="btn btn-navy btn-lg">
@@ -228,6 +210,7 @@ export default function HomePage() {
               {/* Deliverable pills */}
               <motion.div
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .35, delay: .15 }}
+                className="home-deliverables"
                 style={{ display: 'flex', flexWrap: 'wrap', gap: '.625rem .875rem', marginBottom: '2rem' }}
               >
                 {['Source code', 'IEEE Black Book', 'Defense PPT', 'Viva Q&A'].map(t => (
@@ -241,6 +224,7 @@ export default function HomePage() {
               {/* Social proof */}
               <motion.div
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .35, delay: .2 }}
+                className="home-social-proof"
                 style={{ display: 'flex', alignItems: 'center', gap: '.875rem', paddingTop: '1.375rem', borderTop: '1px solid var(--line)' }}
               >
                 <div style={{ display: 'flex' }}>
@@ -271,20 +255,20 @@ export default function HomePage() {
             <motion.div
               initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .45, delay: .1 }}
             >
-              <PricingHook />
+              <div className="home-hero-pricing"><PricingHook /></div>
             </motion.div>
           </div>
 
           {/* ── Focused AI Topic Explorer Hub ── */}
           <motion.div
             initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .45, delay: .18 }}
-            className="mt-8 sm:mt-12 lg:mt-14 max-w-5xl mx-auto w-full"
+            className="home-topic-explorer mt-8 sm:mt-12 lg:mt-14 max-w-5xl mx-auto w-full"
           >
             <AiTopicExplorer />
           </motion.div>
 
           {/* University trust row */}
-          <motion.div
+          <motion.div className="home-university-trust"
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .4, delay: .3 }}
             className="mt-8 sm:mt-12 pt-6 sm:pt-8 text-center pb-8 sm:pb-12"
             style={{ borderTop: '1px solid var(--line)' }}
