@@ -3,7 +3,7 @@ import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import {
   CheckCircle2, Download, AlertCircle, Share2, ArrowRight,
-  Copy, Zap, ShieldCheck, FolderOpen, Terminal, Play, GraduationCap,
+  Copy, Zap, ShieldCheck, GraduationCap,
   Check, MessageCircle, FileText, Award, ChevronDown, ChevronUp,
   Loader2, BookOpen, Presentation
 } from 'lucide-react';
@@ -93,11 +93,13 @@ function SuccessContent() {
           if (!cancelled) setConfirmation(data);
           return;
         } catch (caught) {
-          if (attempt < 5 && !cancelled) {
+          if (caught instanceof TypeError && attempt < 5 && !cancelled) {
             await new Promise(resolve => window.setTimeout(resolve, 1200));
             continue;
           }
           if (!cancelled) setVerificationError(caught instanceof Error ? caught.message : 'We could not verify this order.');
+          if (!cancelled) setCheckingOrder(false);
+          return;
         } finally {
           if (!cancelled && attempt === 5) setCheckingOrder(false);
         }
