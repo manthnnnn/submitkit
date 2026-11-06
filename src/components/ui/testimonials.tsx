@@ -22,7 +22,7 @@ const AVBG = [
 
 export function Testimonials() {
   return (
-    <section className="defer" style={{ background: 'transparent', borderTop: '1px solid var(--line)', padding: '4rem 1rem' }}>
+    <section className="defer home-testimonials" style={{ background: 'transparent', borderTop: '1px solid var(--line)', padding: '4rem 1rem' }}>
       <div className="shell">
         <motion.div initial={{ opacity:0, y:12 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:.4 }}
           style={{ marginBottom: '2.5rem' }}
@@ -33,14 +33,14 @@ export function Testimonials() {
           </h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="home-review-track grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {R.map((r, i) => {
             const av = AVBG[r.i % AVBG.length];
             return (
               <motion.div key={r.name}
                 initial={{ opacity:0, y:16 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}
                 transition={{ duration:.35, delay:i*.06 }}
-                className="card card-lift"
+                className="card card-lift home-review-card"
                 style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}
               >
                 <div style={{ display: 'flex', gap: '2px', marginBottom: '1rem' }}>

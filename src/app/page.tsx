@@ -355,7 +355,7 @@ export default function HomePage() {
               </div>
               <h2 style={{ fontSize: 'clamp(1.75rem,4vw,2.5rem)', fontWeight: 900, letterSpacing: '-.04em', color: 'var(--navy)', marginBottom: '1.5rem' }}>Ready to Ship Kits</h2>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', marginBottom: '1.5rem' }}>
+              <div className="home-ready-track" style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', marginBottom: '1.5rem' }}>
                 {READY.map((item, i) => (
                   <motion.div key={item.n}
                     initial={{ opacity: 0, x: -10 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
@@ -470,7 +470,7 @@ export default function HomePage() {
             Preview first. Always.
           </h2>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%,18rem), 1fr))', gap: '1.5rem' }}>
+          <div className="home-how-track" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%,18rem), 1fr))', gap: '1.5rem' }}>
             {HOW.map((s, i) => (
               <motion.div key={s.n}
                 initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
