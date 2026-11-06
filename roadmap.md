@@ -13,5 +13,6 @@
 - [x] Mobile-first refresh: shorten the home screen, clarify what SubmitKit sells, and simplify phone navigation with polished iOS-inspired motion; keep the existing no-image rule
 - [x] Restore the homepage's rotating main hook titles, compact the phone layout, and leave one persistent WhatsApp button
 - [x] Replace the setup-video cover with a custom branded SVG poster; keep generated imagery out of the app
-- [ ] Review the order-success page against the storefront UI, verify the demo video placement, and resolve any payment-flow UX gaps
-- [ ] Scan customer-facing pages for remaining outdated dark UI and report what is intentional
+- [x] Review the order-success page against the storefront UI, verify the demo video placement, and resolve payment-confirmation loading/error states
+- [x] Scan customer-facing pages for remaining outdated dark UI and identify the intentionally dark sections
+- [ ] Verify a real paid order and download end-to-end (blocked until payment/database configuration is available in preview)
