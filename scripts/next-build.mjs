@@ -11,7 +11,7 @@ if (environment.NODE_OPTIONS) {
     .join(' ');
 }
 
-const build = spawn(process.execPath, [nextCli, 'build'], {
+const build = spawn(process.execPath, [nextCli, 'build', '--webpack'], {
   stdio: 'inherit',
   env: environment,
 });
