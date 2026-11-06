@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { checkRateLimit, getClientIP } from '@/lib/rate-limit';
+import { getOrderConfirmationState } from '@/lib/order-confirmation';
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -34,10 +35,11 @@ export async function GET(
     if (!order) {
       return NextResponse.json({ error: 'Order confirmation could not be verified.' }, { status: 404 });
     }
-    if (order.status === 'PENDING') {
+    const state = getOrderConfirmationState(order.status);
+    if (state === 'PENDING') {
       return NextResponse.json({ status: 'PENDING' }, { status: 202 });
     }
-    if (order.status !== 'PAID') {
+    if (state !== 'PAID') {
       return NextResponse.json({ error: 'This order is not confirmed as paid.' }, { status: 409 });
     }
 
@@ -46,8 +48,8 @@ export async function GET(
       projectTitle: (order.projects as { title?: string } | null)?.title ?? 'Your Project Bundle',
       amountPaid: Number(order.amount_paid) || 0,
       createdAt: order.created_at,
-      downloadCount: Number(order.download_count) || 0,
-      downloadLimit: Number(order.download_limit) || 3,
+      downloadCount: Number(order.download_count ?? 0),
+      downloadLimit: Number(order.download_limit ?? 3),
       hasPersonalization: Boolean(order.has_personalization),
       hasPlagiarismCert: Boolean(order.has_plagiarism_cert),
       hasVivaCall: Boolean(order.has_viva_call),

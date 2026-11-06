@@ -711,6 +711,26 @@
   body { padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px)); }
 }
 
+.order-success-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .75rem;
+  margin-top: 1rem;
+  padding-top: .875rem;
+  border-top: 1px solid var(--line);
+}
+.order-success-summary span { display: flex; flex-direction: column; gap: .125rem; color: var(--navy); font-weight: 700; }
+.order-success-summary strong { color: var(--ink-4); font-size: .6875rem; font-weight: 700; text-transform: uppercase; }
+.order-success-video video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: var(--surface-2); }
+@media (max-width: 639px) {
+  .order-success-page { padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px)) !important; }
+  .order-success-page > .shell { padding-top: 1rem !important; }
+  .order-success-page .shell { padding-left: .875rem; padding-right: .875rem; }
+  .order-success-page .card { border-radius: var(--r-lg); }
+  .order-success-summary { gap: .5rem; }
+  .order-success-page .btn { white-space: normal; text-align: center; }
+}
+
 /* Compact homepage rhythm and readable rotating hooks on phones. */
 .home-hero-title { max-width: 48rem; font-size: 3.25rem; line-height: 1.12; }
 .home-hero-title > span { display: inline-block; }
