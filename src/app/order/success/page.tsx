@@ -309,7 +309,7 @@ function SuccessContent() {
                 <p style={{ fontSize: '.8125rem', color: 'var(--ink-3)', marginTop: '.25rem' }}>Watch while your project bundle downloads.</p>
               </div>
               <div style={{ background: 'var(--surface-2)' }}>
-                <video controls playsInline preload="none" poster="/video-poster.jpg" className="w-full aspect-video">
+                <video aria-label="SubmitKit project setup guide" controls playsInline preload="none" poster="/video-poster.svg" className="w-full aspect-video">
                   <source src="/demo.mp4" type="video/mp4" />
                   Your browser does not support video playback.
                 </video>
