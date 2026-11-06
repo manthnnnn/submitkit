@@ -20,7 +20,6 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
-  distDir: 'dist',
   compress: true,
   reactStrictMode: true,
   typescript: {
