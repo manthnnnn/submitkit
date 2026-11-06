@@ -31,6 +31,14 @@ export function Navbar() {
     return () => { document.body.style.overflow = ''; };
   }, [open]);
   useEffect(() => {
+    if (!open) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOpen(false);
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, [open]);
+  useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 8);
     fn();
     window.addEventListener('scroll', fn, { passive: true });
@@ -137,9 +145,9 @@ export function Navbar() {
             }}
           >
             {/* Header */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 'calc(1rem + env(safe-area-inset-top,0px)) 1.25rem 1rem', borderBottom: '1px solid var(--line)' }}>
+            <div className="adrawer-head" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 'calc(1rem + env(safe-area-inset-top,0px)) 1.25rem 1rem', borderBottom: '1px solid var(--line)' }}>
               <Logo size="sm" href="/" />
-              <button onClick={() => setOpen(false)} className="tt rounded-xl" aria-label="Close"
+              <button onClick={() => setOpen(false)} className="tt rounded-xl adrawer-close" aria-label="Close menu"
                 style={{ background: 'var(--surface-2)', border: '1px solid var(--line)', color: 'var(--ink-3)' }}
               >
                 <X style={{ width: '1.25rem', height: '1.25rem' }} />
@@ -147,9 +155,9 @@ export function Navbar() {
             </div>
 
             {/* Links */}
-            <nav style={{ flex: 1, padding: '.75rem 1rem' }}>
+            <nav className="adrawer-nav" style={{ flex: 1, padding: '.75rem 1rem' }}>
               {NAV.map(({ href, label, icon: Icon, sub, badge }) => (
-                <Link key={href} href={href} className="press adrawer-link"
+                <Link key={href} href={href} className={`press adrawer-link${active(href) ? ' is-active' : ''}`}
                   style={{
                     display: 'flex', alignItems: 'center', gap: '1rem',
                     padding: '1rem', borderRadius: '14px', marginBottom: '.375rem',
