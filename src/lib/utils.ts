@@ -5,12 +5,12 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-const inrOptions = {
-  style: 'currency',
-  currency: 'INR',
+const inrOptions: Intl.NumberFormatOptions = {
+  style: "currency",
+  currency: "INR",
   minimumFractionDigits: 0,
   maximumFractionDigits: 0,
-} as unknown as Intl.NumberFormatOptions;
+};
 
 const inrFormatter = new Intl.NumberFormat('en-IN', inrOptions);
 
