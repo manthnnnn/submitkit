@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { formatCurrency } from '@/lib/utils';
 
 interface ConfirmedOrder {
   orderId: string;
@@ -32,6 +33,7 @@ function SuccessContent() {
   const hasPerson    = confirmation?.hasPersonalization ?? false;
   const hasPlagiarism= confirmation?.hasPlagiarismCert ?? false;
   const hasViva      = confirmation?.hasVivaCall ?? false;
+  const downloadsLeft = Math.max(0, (confirmation?.downloadLimit ?? 0) - (confirmation?.downloadCount ?? 0));
 
   const [error, setError]           = useState<string | null>(null);
   const [downloading, setDownloading] = useState(false);
@@ -146,6 +148,10 @@ function SuccessContent() {
 
   const waLink = `https://wa.me/918799814256?text=${encodeURIComponent(`Hi! I purchased "${projectTitle}" (Order: ${confirmation?.orderId.split('-')[0].toUpperCase() ?? ''}). Ready to discuss custom changes!`)}`;
   const shortId = confirmation?.orderId.split('-')[0].toUpperCase() ?? '';
+  const purchaseDate = confirmation ? new Date(confirmation.createdAt) : null;
+  const purchaseDateLabel = purchaseDate && Number.isFinite(purchaseDate.getTime())
+    ? purchaseDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+    : 'Confirmed';
 
   const inputSty: React.CSSProperties = { width: '100%', background: 'var(--surface)', border: '1.5px solid var(--line)', borderRadius: '10px', padding: '.625rem .875rem', fontSize: '.9375rem', color: 'var(--ink)', outline: 'none', fontFamily: 'var(--font-sans)', transition: 'border-color 150ms' };
 
@@ -191,13 +197,13 @@ function SuccessContent() {
           </h1>
           <p style={{ fontSize: '.9375rem', color: 'var(--teal-dark)', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '.375rem' }}>
             <span className="dot-live apulse" />
-            Order confirmed — check your email for receipt
+            Your payment has been verified
           </p>
         </motion.div>
 
         <div className="order-success-content" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', maxWidth: '58rem', margin: '0 auto' }}>
 
-          {/* ── LEFT: Order + Download ── */}
+          {/* Order and downloads */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', minWidth: 0 }}>
 
             {/* Order card */}
@@ -207,19 +213,23 @@ function SuccessContent() {
               <div style={{ padding: '1.375rem', borderBottom: '1px solid var(--line)' }}>
                 <p style={{ fontSize: '.6875rem', fontWeight: 700, color: 'var(--ink-4)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: '.375rem' }}>Purchased Item</p>
                 <p style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--navy)' }}>{projectTitle}</p>
+                <div className="order-success-summary">
+                  <span><strong>Paid</strong>{formatCurrency(confirmation?.amountPaid ?? 0)}</span>
+                  <span><strong>Order date</strong>{purchaseDateLabel}</span>
+                </div>
 
                 {/* Order ID */}
-                {orderId && (
+                {confirmation && (
                   <div style={{ marginTop: '1rem', padding: '1rem', borderRadius: '12px', background: 'var(--amber-50)', border: '1.5px solid var(--amber-100)' }}>
                     <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem' }}>
                       <div>
                         <p style={{ fontSize: '.6875rem', fontWeight: 800, color: 'var(--amber)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: '.375rem' }}>
-                          ⚠ Important — Save Your Order ID
+                          Save your Order ID
                         </p>
                         <p style={{ fontFamily: 'var(--font-mono)', fontSize: '1.75rem', fontWeight: 900, color: 'var(--navy)', letterSpacing: '.1em', lineHeight: 1 }}>{shortId}</p>
                         <p style={{ fontSize: '.75rem', color: 'var(--ink-3)', marginTop: '.375rem' }}>You need this to re-download or contact support</p>
                       </div>
-                      <button onClick={() => { navigator.clipboard.writeText(orderId); setIdCopied(true); setTimeout(() => setIdCopied(false), 2000); }}
+                      <button type="button" aria-label="Copy order ID" onClick={() => { navigator.clipboard.writeText(confirmation.orderId); setIdCopied(true); setTimeout(() => setIdCopied(false), 2000); }}
                         style={{ background: 'none', border: 'none', cursor: 'pointer', color: idCopied ? 'var(--teal)' : 'var(--ink-4)', padding: '.25rem', marginTop: '.25rem' }}
                       >
                         {idCopied ? <Check style={{ width: '1rem', height: '1rem' }} /> : <Copy style={{ width: '1rem', height: '1rem' }} />}
@@ -244,40 +254,57 @@ function SuccessContent() {
 
                 <div style={{ background: 'var(--emerald-50)', border: '1px solid var(--emerald-100)', borderRadius: '14px', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '.875rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '.8125rem', color: 'var(--emerald)', fontWeight: 600 }}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '.375rem' }}><Zap style={{ width: '.875rem', height: '.875rem' }} /> Link expires in 10 minutes</span>
-                    <span>Up to 3 downloads included</span>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '.375rem' }}><Zap style={{ width: '.875rem', height: '.875rem' }} /> {downloadsLeft} download{downloadsLeft === 1 ? '' : 's'} remaining</span>
+                    <span>{confirmation?.downloadCount ?? 0} / {confirmation?.downloadLimit ?? 0} used</span>
                   </div>
-                  <button onClick={handleDownload} disabled={downloading}
+                  <button onClick={handleDownload} disabled={downloading || downloadsLeft === 0}
                     className="btn btn-teal"
-                    style={{ width: '100%', justifyContent: 'center', minHeight: '56px', fontSize: '1.0625rem', fontWeight: 800, borderRadius: '12px', opacity: downloading ? .7 : 1 }}
+                    style={{ width: '100%', justifyContent: 'center', minHeight: '56px', fontSize: '1.0625rem', fontWeight: 800, borderRadius: '12px', opacity: downloading || downloadsLeft === 0 ? .7 : 1 }}
                   >
-                    {downloading ? <><Loader2 style={{ width: '1.125rem', height: '1.125rem', animation: 'spin .7s linear infinite' }} /> Preparing Your Bundle…</> : <><Download style={{ width: '1.125rem', height: '1.125rem' }} /> Download Complete Bundle (.zip)</>}
+                    {downloading ? <><Loader2 style={{ width: '1.125rem', height: '1.125rem', animation: 'spin .7s linear infinite' }} /> Preparing Your Bundle…</> : downloadsLeft === 0 ? 'Download limit reached' : <><Download style={{ width: '1.125rem', height: '1.125rem' }} /> Download Complete Bundle (.zip)</>}
                   </button>
                   <p style={{ textAlign: 'center', fontSize: '.8125rem', color: 'var(--ink-4)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '.375rem', fontWeight: 500 }}>
-                    <ShieldCheck style={{ width: '.875rem', height: '.875rem', color: 'var(--teal)' }} /> Secure delivery via Cloudflare CDN
+                    <ShieldCheck style={{ width: '.875rem', height: '.875rem', color: 'var(--teal)' }} /> Each download link is valid for 10 minutes
                   </p>
+                  {downloadsLeft === 0 && <Link href={`/order/lookup?query=${encodeURIComponent(shortId)}`} style={{ textAlign: 'center', fontSize: '.8125rem', color: 'var(--teal-dark)', fontWeight: 700 }}>Need another copy? Contact support with your order ID.</Link>}
                 </div>
 
                 {/* Quick access links */}
-                {orderId && (
+                {confirmation && (
                   <div style={{ display: 'flex', gap: '.625rem', marginTop: '.875rem', flexWrap: 'wrap' }}>
-                    <Link href={`/viva/${orderId}`}
+                    <Link href={`/viva/${confirmation.orderId}`}
                       style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '.375rem', padding: '.625rem', borderRadius: '10px', background: 'var(--violet-50)', border: '1px solid var(--violet-100)', color: 'var(--violet)', fontSize: '.875rem', fontWeight: 700, textDecoration: 'none', minWidth: '8rem' }}
                     >
                       <GraduationCap style={{ width: '.9375rem', height: '.9375rem' }} /> View Viva Q&amp;A
                     </Link>
-                    <Link href={`/certificate/${orderId}`} target="_blank"
+                    {hasPlagiarism && <Link href={`/certificate/${confirmation.orderId}`} target="_blank"
                       style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '.375rem', padding: '.625rem', borderRadius: '10px', background: 'var(--amber-50)', border: '1px solid var(--amber-100)', color: 'var(--amber)', fontSize: '.875rem', fontWeight: 700, textDecoration: 'none', minWidth: '8rem' }}
                     >
                       <Award style={{ width: '.9375rem', height: '.9375rem' }} /> Plagiarism Certificate
-                    </Link>
+                    </Link>}
                   </div>
                 )}
               </div>
             </motion.div>
 
+            {/* Setup guide immediately follows the bundle download actions. */}
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .4, delay: .12 }}
+              className="card order-success-video" style={{ overflow: 'hidden' }}
+            >
+              <div style={{ padding: '1.125rem 1.375rem', borderBottom: '1px solid var(--line)' }}>
+                <h3 style={{ fontSize: '.9375rem', fontWeight: 700, color: 'var(--navy)' }}>Setup guide</h3>
+                <p style={{ fontSize: '.8125rem', color: 'var(--ink-3)', marginTop: '.25rem' }}>Watch while your project bundle downloads.</p>
+              </div>
+              <div style={{ background: 'var(--surface-2)' }}>
+                <video controls playsInline preload="none" poster="/video-poster.jpg" className="w-full aspect-video">
+                  <source src="/demo.mp4" type="video/mp4" />
+                  Your browser does not support video playback.
+                </video>
+              </div>
+            </motion.div>
+
             {/* Report + PPT generator */}
-            {orderId && (
+            {confirmation && (
               <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .4, delay: .14 }}
                 className="card" style={{ padding: '1.375rem' }}
               >
@@ -404,20 +431,6 @@ function SuccessContent() {
                 </div>
               </motion.div>
             )}
-
-            {/* Setup video */}
-            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .4, delay: .26 }}
-              className="card" style={{ overflow: 'hidden' }}
-            >
-              <div style={{ padding: '1.125rem 1.375rem', borderBottom: '1px solid var(--line)' }}>
-                <h3 style={{ fontSize: '.9375rem', fontWeight: 700, color: 'var(--navy)' }}>How to Setup — Watch While Downloading</h3>
-              </div>
-              <div style={{ background: 'var(--surface-2)' }}>
-                <video controls playsInline preload="metadata" poster="/video-poster.jpg" className="w-full aspect-video">
-                  <source src="/demo.mp4" type="video/mp4" />
-                </video>
-              </div>
-            </motion.div>
 
             {/* Action row */}
             <div style={{ display: 'flex', gap: '.625rem', flexWrap: 'wrap' }}>
