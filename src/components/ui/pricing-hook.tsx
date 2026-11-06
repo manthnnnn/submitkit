@@ -156,8 +156,7 @@ export function PricingHook() {
 
             {/* Major Project Upsell Drawer (Matches Top Right of Image 1) */}
               <div
-                className="pricing-hook-upsell"
-                className="mt-3.5 pt-2.5 rounded-xl p-3 border flex items-center justify-between gap-3"
+                className="pricing-hook-upsell mt-3.5 pt-2.5 rounded-xl p-3 border flex items-center justify-between gap-3"
                 style={{
                   background: 'var(--teal-50)',
                   borderColor: 'var(--teal-100)',
