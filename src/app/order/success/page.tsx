@@ -73,8 +73,16 @@ function SuccessContent() {
       for (let attempt = 0; attempt < 6; attempt += 1) {
         try {
           const response = await fetch(`/api/orders/${encodeURIComponent(orderId)}/confirmation`, { cache: 'no-store' });
-          if (response.status === 202 && attempt < 5) {
-            await new Promise(resolve => window.setTimeout(resolve, 2000));
+          if (response.status === 202) {
+            if (attempt < 5) {
+              await new Promise(resolve => window.setTimeout(resolve, 2000));
+              continue;
+            }
+            if (!cancelled) setVerificationError('Payment is still being confirmed. Check your order again in a moment.');
+            return;
+          }
+          if (response.status >= 500 && attempt < 5) {
+            await new Promise(resolve => window.setTimeout(resolve, 1200));
             continue;
           }
           if (!response.ok) {
