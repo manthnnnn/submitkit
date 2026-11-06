@@ -268,7 +268,7 @@ export function FleetSection() {
                       </p>
 
                       {/* Quick Overview callout */}
-                      <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 mb-5 text-[11px] text-slate-600 leading-relaxed">
+                      <div className="fleet-card-overview p-3 rounded-xl bg-slate-50 border border-slate-100 mb-5 text-[11px] text-slate-600 leading-relaxed">
                         <div className="flex items-center gap-1.5 font-bold text-emerald-700 text-[10px] uppercase tracking-wider mb-1">
                           <CheckCircle2 className="w-3 h-3 text-emerald-600" />
                           Quick Overview:
@@ -277,7 +277,7 @@ export function FleetSection() {
                       </div>
 
                       {/* Deliverables */}
-                      <div className="grid grid-cols-2 gap-1.5 mb-5 pt-3 border-t border-slate-100 text-[10px] text-slate-500 font-medium">
+                      <div className="fleet-card-deliverables grid grid-cols-2 gap-1.5 mb-5 pt-3 border-t border-slate-100 text-[10px] text-slate-500 font-medium">
                         {[
                           '1-Click Runnable Code',
                           '60-Page IEEE Black Book',
@@ -377,7 +377,7 @@ export function FleetSection() {
                       </h3>
                       <p className="text-slate-500 text-xs leading-relaxed mb-4">{project.description}</p>
 
-                      <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 mb-5 text-[11px] text-slate-600 leading-relaxed">
+                      <div className="fleet-card-overview p-3 rounded-xl bg-slate-50 border border-slate-100 mb-5 text-[11px] text-slate-600 leading-relaxed">
                         <div className="flex items-center gap-1.5 font-bold text-teal-700 text-[10px] uppercase tracking-wider mb-1">
                           <CheckCircle2 className="w-3 h-3 text-teal-600" />
                           Quick Overview:
