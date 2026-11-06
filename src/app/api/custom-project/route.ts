@@ -44,9 +44,10 @@ export async function POST(req: NextRequest) {
 
     if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
       const tierLabels: Record<string, string> = {
-        mini: "Mini (₹1,999)",
-        major: "Major (₹2,999)",
-        enterprise: "Enterprise (₹4,999)",
+        mini: "Mini Project (₹299)",
+        major: "Major Project (₹499)",
+        custom: "Custom Project (Starts ₹1,999 - Varies with complexity)",
+        enterprise: "Custom Project (Starts ₹1,999 - Varies with complexity)",
       };
       const message = `🚀 NEW CUSTOM PROJECT REQUEST\n\n👤 ${name}\n📧 ${email}\n📞 ${phone}\n🏫 ${college || "Not specified"}\n\n📋 Tier: ${tierLabels[tier] || tier}\n🗂️ Category: ${category}\n💡 Topic: ${topic}\n⚙️ Tech: ${techPreference}\n📅 Deadline: ${deadline || "Not specified"}\n\n📝 Notes: ${specialRequirements || "None"}`;
 

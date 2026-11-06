@@ -194,7 +194,7 @@ export function HomeSchema() {
             name: 'Can I get a custom project built for my specific topic?',
             acceptedAnswer: {
               '@type': 'Answer',
-              text: 'Yes. SubmitKit builds custom projects from scratch to your exact problem statement, preferred tech stack, and college requirements. Delivery is guaranteed in 48 hours and includes a 1-on-1 code walkthrough on Google Meet. WhatsApp the team directly with your requirements to get a quote starting ₹1,999.',
+              text: 'Yes. SubmitKit builds custom projects from scratch to your exact problem statement, preferred tech stack, and college requirements. Delivery is guaranteed in 48 hours and includes a 1-on-1 code walkthrough on Google Meet. WhatsApp the team directly with your requirements to get a quote starting ₹1,999 (varies with complexity).',
             },
           },
         ],

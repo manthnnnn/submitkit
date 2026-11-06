@@ -1,8 +1,13 @@
 'use client';
+
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Zap, ChevronRight, BookOpen, Package } from 'lucide-react';
-import { useState, useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import {
+  Menu, X, Zap, ChevronRight, BookOpen,
+  Package, Search, Sparkles, MessageCircle
+} from 'lucide-react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Logo } from '@/components/ui/logo';
 import { CONSTANTS } from '@/lib/constants';
 
@@ -14,30 +19,55 @@ interface NavItem {
   badge?: string;
 }
 
-const NAV: NavItem[] = [
-  { href: '/projects',  label: 'Browse Projects', sub: 'All verified project kits',   icon: Package },
-  { href: '/blueprint', label: 'Free Topics',     sub: '1,078 free topic blueprints', icon: BookOpen, badge: 'Free' },
+const DESKTOP_NAV: NavItem[] = [
+  { href: '/projects',  label: 'Browse Projects', sub: '59+ verified runnable project kits', icon: Package, badge: '59+ Kits' },
+  { href: '/blueprint', label: 'Free Topics',     sub: '1,078 free topic blueprints',       icon: BookOpen, badge: 'Free' },
+];
+
+const MOBILE_DRAWER_NAV: NavItem[] = [
+  { href: '/projects',    label: 'Browse Project Kits',   sub: '59+ kits with IEEE Black Book & PPT', icon: Package, badge: '59+ Kits' },
+  { href: '/blueprint',   label: 'Topic Blueprints',      sub: '1,078 IEEE abstracts & viva questions', icon: BookOpen, badge: 'Free' },
+  { href: '/order/lookup',label: 'Track Order & Vault',   sub: 'Recover your purchased project downloads', icon: Search },
+  { href: '/custom',      label: 'Custom Project Build',  sub: 'Built in 48 hrs with 1-on-1 viva coaching', icon: Sparkles, badge: 'Custom' },
 ];
 
 export function Navbar() {
   const [open, setOpen]         = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname                = usePathname();
+  const lastToggleRef           = useRef(0);
 
-  useEffect(() => { setOpen(false); }, [pathname]);
+  // Close drawer on route change
   useEffect(() => {
-    if (open) document.body.style.overflow = 'hidden';
-    else       document.body.style.overflow = '';
-    return () => { document.body.style.overflow = ''; };
+    setOpen(false);
+  }, [pathname]);
+
+  // Lock body scroll when mobile drawer is open
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.touchAction = 'none';
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.touchAction = '';
+    };
   }, [open]);
+
+  // Close on Escape key
   useEffect(() => {
     if (!open) return;
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setOpen(false);
+    const closeOnEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setOpen(false);
     };
     window.addEventListener('keydown', closeOnEscape);
     return () => window.removeEventListener('keydown', closeOnEscape);
   }, [open]);
+
+  // Track scroll position for subtle acrylic navbar blur
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 8);
     fn();
@@ -45,9 +75,30 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', fn);
   }, []);
 
+  // Instant touch-safe toggle handler
+  const handleToggle = useCallback((e: React.SyntheticEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const now = Date.now();
+    if (now - lastToggleRef.current < 250) return; // Prevent double-trigger on touch
+    lastToggleRef.current = now;
+    setOpen(prev => !prev);
+  }, []);
+
+  const handleClose = useCallback((e?: React.SyntheticEvent) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    const now = Date.now();
+    if (now - lastToggleRef.current < 250) return;
+    lastToggleRef.current = now;
+    setOpen(false);
+  }, []);
+
   if (pathname?.startsWith('/admin')) return null;
 
-  const active = (href: string) => {
+  const isActive = (href: string) => {
     if (href === '/projects') {
       return pathname === '/projects' || pathname?.startsWith('/projects/');
     }
@@ -59,152 +110,341 @@ export function Navbar() {
 
   return (
     <>
-      <header style={{
-        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
-        transition: 'all 300ms',
-        ...(scrolled
-          ? {
-              background: 'rgba(253, 251, 247, 0.92)',
-              backdropFilter: 'blur(24px) saturate(180%)',
-              WebkitBackdropFilter: 'blur(24px) saturate(180%)',
-              borderBottom: '1px solid rgba(232, 225, 213, 0.85)',
-              boxShadow: '0 2px 10px -2px rgba(15, 23, 42, 0.06)',
-            }
-          : {
-              background: 'rgba(250, 248, 244, 0.82)',
-              backdropFilter: 'blur(16px)',
-              WebkitBackdropFilter: 'blur(16px)',
-              borderBottom: '1px solid rgba(232, 225, 213, 0.45)',
-              boxShadow: '0 1px 3px rgba(15, 23, 42, 0.02)',
-            }
-        ),
-      }}>
-        <div className="shell" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '64px' }}>
-
+      <header
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          zIndex: 125, // Always higher than backdrop (115) and drawer (120) so hamburger/close button is always clickable
+          transition: 'background-color 200ms ease, border-color 200ms ease, box-shadow 200ms ease',
+          ...(scrolled
+            ? {
+                background: 'rgba(253, 251, 247, 0.94)',
+                backdropFilter: 'blur(20px) saturate(180%)',
+                WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+                borderBottom: '1px solid rgba(232, 225, 213, 0.85)',
+                boxShadow: '0 2px 10px -2px rgba(15, 23, 42, 0.06)',
+              }
+            : {
+                background: 'rgba(250, 248, 244, 0.85)',
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)',
+                borderBottom: '1px solid rgba(232, 225, 213, 0.5)',
+                boxShadow: '0 1px 3px rgba(15, 23, 42, 0.02)',
+              }),
+        }}
+      >
+        <div
+          className="shell"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            height: '64px',
+          }}
+        >
           <Logo size="sm" href="/" />
 
-          {/* Desktop nav: Only Browse Projects & Free Topics */}
-          <nav className="hidden lg:flex" style={{ alignItems: 'center', gap: '.5rem' }}>
-            {NAV.map(({ href, label, badge }) => (
-              <Link key={href} href={href} prefetch={true}
-                style={{
-                  display: 'inline-flex', alignItems: 'center', gap: '.375rem',
-                  padding: '.5rem 1rem', borderRadius: '10px',
-                  fontSize: '.9375rem', fontWeight: active(href) ? 700 : 500,
-                  textDecoration: 'none', transition: 'all 150ms',
-                  background: active(href)
-                    ? 'var(--teal-50)'
-                    : 'transparent',
-                  color: active(href) ? 'var(--teal-darker)' : 'var(--ink-2)',
-                  border: active(href) ? '1px solid rgba(13, 148, 136, 0.25)' : '1px solid transparent',
-                  boxShadow: 'none',
-                }}
-                onMouseEnter={e => { if (!active(href)) { e.currentTarget.style.background = 'var(--surface-2)'; e.currentTarget.style.color = 'var(--ink)'; }}}
-                onMouseLeave={e => { if (!active(href)) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--ink-2)'; }}}
-              >
-                {label}
-                {badge && (
-                  <span className="tag tag-teal" style={{ fontSize: '.625rem', padding: '.125rem .45rem', fontWeight: 800 }}>
-                    {badge}
-                  </span>
-                )}
-              </Link>
-            ))}
+          {/* Desktop nav: Browse Projects & Free Topics */}
+          <nav className="hidden lg:flex" style={{ alignItems: 'center', gap: '0.5rem' }}>
+            {DESKTOP_NAV.map(({ href, label, badge }) => {
+              const active = isActive(href);
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  prefetch={true}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.375rem',
+                    padding: '0.5rem 1rem',
+                    borderRadius: '10px',
+                    fontSize: '0.9375rem',
+                    fontWeight: active ? 700 : 500,
+                    textDecoration: 'none',
+                    transition: 'all 150ms ease',
+                    background: active ? 'var(--teal-50)' : 'transparent',
+                    color: active ? 'var(--teal-darker)' : 'var(--ink-2)',
+                    border: active ? '1px solid rgba(13, 148, 136, 0.25)' : '1px solid transparent',
+                  }}
+                  onMouseEnter={e => {
+                    if (!active) {
+                      e.currentTarget.style.background = 'var(--surface-2)';
+                      e.currentTarget.style.color = 'var(--ink)';
+                    }
+                  }}
+                  onMouseLeave={e => {
+                    if (!active) {
+                      e.currentTarget.style.background = 'transparent';
+                      e.currentTarget.style.color = 'var(--ink-2)';
+                    }
+                  }}
+                >
+                  {label}
+                  {badge && (
+                    <span className="tag tag-teal" style={{ fontSize: '0.625rem', padding: '0.125rem 0.45rem', fontWeight: 800 }}>
+                      {badge}
+                    </span>
+                  )}
+                </Link>
+              );
+            })}
           </nav>
 
-          {/* Mobile */}
-          <div className="flex lg:hidden" style={{ alignItems: 'center', gap: '.625rem' }}>
-            <button onClick={() => setOpen(true)} className="tt rounded-xl" aria-label="Open menu"
-              style={{ background: 'var(--surface-2)', border: '1px solid var(--line)', color: 'var(--ink-2)' }}
+          {/* Mobile Hamburger / Close Toggle Button */}
+          <div className="flex lg:hidden" style={{ alignItems: 'center', gap: '0.625rem' }}>
+            <button
+              type="button"
+              onPointerDown={handleToggle}
+              onClick={handleToggle}
+              aria-expanded={open}
+              aria-label={open ? 'Close navigation menu' : 'Open navigation menu'}
+              className="tt rounded-xl cursor-pointer"
+              style={{
+                width: '44px',
+                height: '44px',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: open ? 'var(--teal-100)' : 'var(--surface-2)',
+                border: open ? '1px solid rgba(13, 148, 136, 0.4)' : '1px solid var(--line)',
+                color: open ? 'var(--teal-darker)' : 'var(--ink)',
+                transition: 'transform 150ms cubic-bezier(0.32, 0.72, 0, 1), background-color 150ms ease',
+                touchAction: 'manipulation',
+                userSelect: 'none',
+                WebkitUserSelect: 'none',
+              }}
             >
-              <Menu style={{ width: '1.25rem', height: '1.25rem' }} />
+              {open ? (
+                <X className="pointer-events-none" style={{ width: '1.35rem', height: '1.35rem' }} />
+              ) : (
+                <Menu className="pointer-events-none" style={{ width: '1.35rem', height: '1.35rem' }} />
+              )}
             </button>
           </div>
         </div>
       </header>
 
-      {/* Mobile Drawer */}
-      {open && (
-        <>
-          <div className="ai" onClick={() => setOpen(false)}
-            style={{ position: 'fixed', inset: 0, zIndex: 110, background: 'rgba(15,23,42,.35)', backdropFilter: 'blur(4px)' }}
-            aria-hidden="true"
-          />
-          <div className="adrawer" role="dialog" aria-modal="true" aria-label="Navigation"
-            style={{
-              position: 'fixed', top: 0, right: 0, bottom: 0, zIndex: 120,
-              width: 'min(88vw, 360px)',
-              background: 'rgba(253, 251, 247, .93)',
-              backdropFilter: 'blur(20px) saturate(180%)',
-              WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-              display: 'flex', flexDirection: 'column',
-              boxShadow: 'var(--sh-2xl)',
-              overflowY: 'auto',
-              overscrollBehavior: 'contain',
-              WebkitOverflowScrolling: 'touch',
-            }}
-          >
-            {/* Header */}
-            <div className="adrawer-head" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: 'calc(1rem + env(safe-area-inset-top,0px)) 1.25rem 1rem', borderBottom: '1px solid var(--line)' }}>
-              <Logo size="sm" href="/" />
-              <button onClick={() => setOpen(false)} className="tt rounded-xl adrawer-close" aria-label="Close menu"
-                style={{ background: 'var(--surface-2)', border: '1px solid var(--line)', color: 'var(--ink-3)' }}
+      {/* Modern iOS Spring Mobile Drawer */}
+      <AnimatePresence>
+        {open && (
+          <>
+            {/* Backdrop with soft acrylic blur */}
+            <motion.div
+              key="nav-backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.18, ease: [0.32, 0.72, 0, 1] }}
+              onPointerDown={(e) => {
+                if (e.target === e.currentTarget) {
+                  handleClose(e);
+                }
+              }}
+              style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                zIndex: 115,
+                background: 'rgba(15, 23, 42, 0.38)',
+                backdropFilter: 'blur(5px)',
+                WebkitBackdropFilter: 'blur(5px)',
+              }}
+              aria-hidden="true"
+            />
+
+            {/* iOS Floating Popover Drawer */}
+            <motion.div
+              key="nav-drawer"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Navigation Menu"
+              initial={{ opacity: 0, y: -14, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.98 }}
+              transition={{
+                type: 'spring',
+                damping: 28,
+                stiffness: 380,
+                mass: 0.7,
+              }}
+              style={{
+                position: 'fixed',
+                top: 'calc(4.25rem + env(safe-area-inset-top, 0px))',
+                right: '0.75rem',
+                left: '0.75rem',
+                maxWidth: '24rem',
+                marginLeft: 'auto',
+                zIndex: 120,
+                background: 'rgba(253, 251, 247, 0.98)',
+                backdropFilter: 'blur(24px) saturate(180%)',
+                WebkitBackdropFilter: 'blur(24px) saturate(180%)',
+                borderRadius: '20px',
+                border: '1px solid rgba(232, 225, 213, 0.95)',
+                boxShadow: '0 20px 40px -12px rgba(15, 23, 42, 0.22), 0 0 0 1px rgba(13, 148, 136, 0.08)',
+                display: 'flex',
+                flexDirection: 'column',
+                overflow: 'hidden',
+              }}
+            >
+              {/* Header inside drawer */}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '0.75rem 0.875rem 0.5rem',
+                  borderBottom: '1px solid var(--line)',
+                }}
               >
-                <X style={{ width: '1.25rem', height: '1.25rem' }} />
-              </button>
-            </div>
-
-            {/* Links */}
-            <nav className="adrawer-nav" style={{ flex: 1, padding: '.75rem 1rem' }}>
-              {NAV.map(({ href, label, icon: Icon, sub, badge }) => (
-                <Link key={href} href={href} className={`press adrawer-link${active(href) ? ' is-active' : ''}`}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span style={{ fontSize: '0.6875rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--ink-4)' }}>
+                    Menu
+                  </span>
+                  <span className="tag tag-emerald" style={{ fontSize: '0.625rem', padding: '0.1rem 0.45rem', fontWeight: 800 }}>
+                    ● 59+ Kits Ready
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  onPointerDown={handleClose}
+                  onClick={handleClose}
+                  aria-label="Close menu"
+                  className="tt rounded-lg cursor-pointer"
                   style={{
-                    display: 'flex', alignItems: 'center', gap: '1rem',
-                    padding: '1rem', borderRadius: '14px', marginBottom: '.375rem',
-                    textDecoration: 'none', transition: 'all 150ms', minHeight: '64px',
-                    background: active(href) ? 'var(--teal-50)' : 'transparent',
-                    color: active(href) ? 'var(--teal-dark)' : 'var(--ink-2)',
+                    width: '32px',
+                    height: '32px',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    background: 'var(--surface-2)',
+                    border: '1px solid var(--line)',
+                    color: 'var(--ink-3)',
                   }}
-                  onMouseEnter={e => { if (!active(href)) e.currentTarget.style.background = 'var(--surface-2)'; }}
-                  onMouseLeave={e => { if (!active(href)) e.currentTarget.style.background = 'transparent'; }}
                 >
-                  <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: '12px', flexShrink: 0, background: active(href) ? 'var(--teal-100)' : 'var(--surface-2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Icon style={{ width: '1.125rem', height: '1.125rem', color: active(href) ? 'var(--teal)' : 'var(--ink-3)' }} />
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem' }}>
-                      <span style={{ fontSize: '.9375rem', fontWeight: 600 }}>{label}</span>
-                      {badge && (
-                        <span className="tag tag-teal" style={{ fontSize: '.6rem', padding: '.125rem .45rem' }}>
-                          {badge}
-                        </span>
-                      )}
-                    </div>
-                    <p style={{ fontSize: '.8125rem', color: 'var(--ink-4)', marginTop: '.125rem' }}>{sub}</p>
-                  </div>
-                  <ChevronRight style={{ width: '1rem', height: '1rem', color: 'var(--ink-5)', flexShrink: 0 }} />
+                  <X style={{ width: '1rem', height: '1rem' }} />
+                </button>
+              </div>
+
+              {/* Navigation Items List */}
+              <nav style={{ padding: '0.5rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                {MOBILE_DRAWER_NAV.map(({ href, label, sub, icon: Icon, badge }) => {
+                  const active = isActive(href);
+                  return (
+                    <Link
+                      key={href}
+                      href={href}
+                      prefetch={true}
+                      onClick={() => setOpen(false)}
+                      className="press drawer-nav-item"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.75rem',
+                        padding: '0.6875rem 0.75rem',
+                        borderRadius: '14px',
+                        textDecoration: 'none',
+                        transition: 'background-color 150ms ease, transform 150ms cubic-bezier(0.32, 0.72, 0, 1)',
+                        background: active ? 'var(--teal-50)' : 'transparent',
+                        color: active ? 'var(--teal-darker)' : 'var(--navy)',
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: '2.25rem',
+                          height: '2.25rem',
+                          borderRadius: '11px',
+                          flexShrink: 0,
+                          background: active ? 'var(--teal-100)' : 'var(--surface-2)',
+                          border: active ? '1px solid rgba(13, 148, 136, 0.25)' : '1px solid var(--line)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        <Icon style={{ width: '1.1rem', height: '1.1rem', color: active ? 'var(--teal)' : 'var(--ink-2)' }} />
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
+                          <span style={{ fontSize: '0.9375rem', fontWeight: 700, lineHeight: 1.25 }}>{label}</span>
+                          {badge && (
+                            <span className="tag tag-teal" style={{ fontSize: '0.625rem', padding: '0.1rem 0.4rem', fontWeight: 800 }}>
+                              {badge}
+                            </span>
+                          )}
+                        </div>
+                        <p style={{ fontSize: '0.75rem', color: 'var(--ink-4)', margin: '0.125rem 0 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                          {sub}
+                        </p>
+                      </div>
+                      <ChevronRight style={{ width: '1rem', height: '1rem', color: 'var(--ink-5)', flexShrink: 0 }} />
+                    </Link>
+                  );
+                })}
+              </nav>
+
+              {/* Bottom Actions: Browse All Kits + WhatsApp Direct */}
+              <div
+                style={{
+                  padding: '0.625rem 0.75rem 0.75rem',
+                  borderTop: '1px solid var(--line)',
+                  background: 'rgba(248, 245, 238, 0.7)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.5rem',
+                }}
+              >
+                <Link
+                  href="/projects"
+                  prefetch={true}
+                  onClick={() => setOpen(false)}
+                  className="btn btn-teal drawer-cta-btn"
+                  style={{
+                    width: '100%',
+                    minHeight: '44px',
+                    fontSize: '0.875rem',
+                    fontWeight: 700,
+                    borderRadius: '12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.5rem',
+                    boxShadow: 'var(--sh-xs)',
+                  }}
+                >
+                  <Zap style={{ width: '0.9375rem', height: '0.9375rem', fill: 'white' }} />
+                  Browse All 59+ Kits
                 </Link>
-              ))}
-            </nav>
 
-            {/* Footer action */}
-            <div className="adrawer-footer" style={{ padding: '1rem 1rem calc(1rem + env(safe-area-inset-bottom,0px))', borderTop: '1px solid var(--line)', display: 'flex', flexDirection: 'column', gap: '.625rem' }}>
-              <Link href="/projects" className="btn btn-teal" style={{ width: '100%', minHeight: '52px', fontSize: '1rem', borderRadius: '14px' }}>
-                <Zap style={{ width: '1.125rem', height: '1.125rem', fill: 'white' }} />
-                Browse All Project Kits
-              </Link>
-            </div>
-          </div>
-        </>
-      )}
+                <a
+                  href="https://wa.me/918799814256?text=Hi%20SubmitKit!%20I%20have%20a%20question%20about%20a%20project."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => setOpen(false)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.375rem',
+                    fontSize: '0.75rem',
+                    fontWeight: 600,
+                    color: '#059669',
+                    textDecoration: 'none',
+                    padding: '0.375rem 0',
+                  }}
+                >
+                  <MessageCircle style={{ width: '0.875rem', height: '0.875rem' }} />
+                  Need immediate help? WhatsApp us 24/7
+                </a>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </>
-  );
-}
-
-function WhatsAppIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-    </svg>
   );
 }

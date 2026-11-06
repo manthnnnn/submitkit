@@ -128,7 +128,7 @@ export function FleetSection() {
   };
 
   return (
-    <section className="fleet-section py-20 relative border-t border-[var(--line)] bg-transparent">
+    <section className="fleet-section hidden md:block py-20 relative border-t border-[var(--line)] bg-transparent">
       <div className="container mx-auto px-4 relative z-10">
 
         {/* Section Header */}
@@ -205,7 +205,7 @@ export function FleetSection() {
                     onClick={() => setSelectedCategory(cat.id)}
                     className={`shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                       selectedCategory === cat.id
-                        ? 'bg-gradient-to-r from-teal-700 to-teal-800 text-white shadow-md shadow-teal-900/20'
+                        ? 'bg-gradient-to-r from-teal-700 to-teal-800 text-white shadow-xs'
                         : 'text-slate-600 hover:text-slate-900 bg-white border border-slate-200/90 shadow-2xs hover:border-teal-300 hover:bg-teal-50/40'
                     }`}
                   >
@@ -230,13 +230,13 @@ export function FleetSection() {
                         boxShadow: '0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px -4px rgba(15, 23, 42, 0.06)',
                       }}
                     >
-                      {/* Top 3D accent */}
+                      {/* Top soft jewel gradient accent */}
                       <div
-                        className="absolute top-0 left-0 right-0 h-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="absolute top-0 left-0 right-0 h-[2.5px] opacity-70 group-hover:opacity-100 transition-opacity"
                         style={{
                           background: isMajor
-                            ? 'linear-gradient(90deg, #0D9488, #14B8A6)'
-                            : 'linear-gradient(90deg, #14B8A6, #059669)',
+                            ? 'linear-gradient(90deg, #0D9488 0%, #14B8A6 60%, #059669 100%)'
+                            : 'linear-gradient(90deg, #14B8A6 0%, #2DD4BF 60%, #10B981 100%)',
                         }}
                       />
                       {/* Tier badge top-right */}
@@ -297,7 +297,7 @@ export function FleetSection() {
                           <span className="text-lg font-bold text-slate-900">₹{price}</span>
                           <span className="text-[10px] text-slate-400 ml-1">one-time</span>
                         </div>
-                        <div className="flex items-center gap-1 text-xs font-bold text-white bg-teal-600 group-hover:bg-teal-700 px-3.5 py-1.5 rounded-xl transition-all shadow-sm">
+                        <div className="btn btn-teal btn-sm !min-h-[34px] !px-3 !text-xs font-bold">
                           View & Buy
                           <ArrowRight className="w-3.5 h-3.5 ml-0.5" />
                         </div>

@@ -160,7 +160,7 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
             </div>
             <p style={{ fontSize: '.8125rem', color: 'var(--ink-3)', margin: 0 }}>
               Working code · IEEE Black Book &amp; PPT · 1-on-1 walkthrough ·{' '}
-              <strong style={{ color: 'var(--teal-dark)' }}>Starts ₹1,999</strong>
+              <strong style={{ color: 'var(--teal-dark)' }}>Starts ₹1,999 (varies with complexity)</strong>
             </p>
           </div>
         </div>
@@ -362,14 +362,14 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
           ))}
 
           {/* Custom Project Card */}
-          <div className="card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', background: 'linear-gradient(135deg,var(--teal-50) 0%,var(--surface) 100%)', border: '1px solid var(--teal-100)' }}>
+          <div className="card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', background: 'linear-gradient(145deg, #FFFFFF 0%, #FAF6EE 55%, #F4ECE0 100%)', border: '1px solid var(--line)' }}>
             <span className="tag tag-teal" style={{ fontSize: '.6rem', width: 'fit-content', marginBottom: '.875rem' }}>Custom Development</span>
             <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '.5rem' }}>Need a Custom Project from Scratch?</h3>
             <p style={{ fontSize: '.875rem', color: 'var(--ink-3)', lineHeight: 1.65, marginBottom: '1.25rem', flex: 1 }}>
               Specific topic or stack? Our engineers build your exact project with clean code, a technical report, and setup support.
             </p>
             <div style={{ paddingTop: '.875rem', borderTop: '1px solid var(--line)', display: 'flex', flexDirection: 'column', gap: '.5rem', marginBottom: '1rem' }}>
-              {[{ l: 'Turnaround', v: '48 Hours', c: 'var(--teal)' }, { l: 'Starting at', v: '₹1,999', c: 'var(--navy)' }].map(r => (
+              {[{ l: 'Turnaround', v: '48 Hours', c: 'var(--teal)' }, { l: 'Starting at', v: '₹1,999*', c: 'var(--navy)' }].map(r => (
                 <div key={r.l} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '.875rem' }}>
                   <span style={{ color: 'var(--ink-4)' }}>{r.l}</span>
                   <span style={{ fontWeight: 700, color: r.c }}>{r.v}</span>

@@ -90,11 +90,11 @@ export function AiTopicExplorer() {
 
   return (
     <div className="relative w-full">
-      {/* 3D Ambient Backdrop Glow */}
+      {/* Soft Ambient Backdrop Glow */}
       <div
-        className="absolute -inset-2.5 rounded-3xl opacity-40 blur-2xl pointer-events-none -z-10"
+        className="absolute -inset-3 rounded-3xl opacity-50 blur-2xl pointer-events-none -z-10"
         style={{
-          background: 'radial-gradient(ellipse at 50% 25%, rgba(13, 148, 136, 0.22) 0%, rgba(245, 158, 11, 0.1) 50%, transparent 80%)',
+          background: 'radial-gradient(ellipse at 50% 25%, rgba(245, 238, 225, 0.65) 0%, rgba(255, 255, 255, 0.45) 50%, transparent 80%)',
         }}
       />
       
@@ -102,11 +102,10 @@ export function AiTopicExplorer() {
         className="card relative rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-200/90 transition-all duration-300"
         style={{
           background: 'var(--surface)',
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
-          boxShadow: '0 12px 36px -8px rgba(15, 23, 42, 0.08), 0 4px 12px -2px rgba(13, 148, 136, 0.05)',
+          boxShadow: '0 12px 36px -8px rgba(15, 23, 42, 0.06), 0 4px 12px -2px rgba(13, 148, 136, 0.05)',
         }}
       >
+        <div style={{ height: '2.5px', background: 'linear-gradient(90deg, #0D9488 0%, #14B8A6 50%, #F59E0B 100%)' }} />
         <div className="p-4 sm:p-6 lg:p-7">
           {/* Header Row: Title, 100% Free, Subtitle & Live Counter */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
@@ -143,7 +142,7 @@ export function AiTopicExplorer() {
             </div>
           </div>
 
-          {/* Category Filter Pills (Matches Image 2) */}
+          {/* Category Filter Pills */}
           <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-1 mb-3.5 scrollbar-none">
             {CATEGORIES.map(cat => {
               const isActive = activeCategory === cat.id;
@@ -152,7 +151,7 @@ export function AiTopicExplorer() {
                   key={cat.id}
                   type="button"
                   onClick={() => handleCategoryClick(cat.id)}
-                  className={`px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition-all duration-150 active:scale-95 cursor-pointer ${
+                  className={`px-3 py-1 rounded-lg text-xs font-semibold whitespace-nowrap transition-all duration-150 cursor-pointer ${
                     isActive
                       ? 'bg-slate-900 text-white shadow-xs'
                       : 'bg-slate-100/80 text-slate-600 hover:bg-slate-200/70 hover:text-slate-900 border border-slate-200/70'

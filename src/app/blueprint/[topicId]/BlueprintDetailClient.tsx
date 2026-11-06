@@ -223,8 +223,8 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
     <div style={{ background: 'var(--canvas)', minHeight: '100vh', color: 'var(--ink)', position: 'relative' }}>
       {/* Ambient orbs */}
       <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }} aria-hidden>
-        <div className="aorb" style={{ position: 'absolute', width: '600px', height: '600px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(13,148,136,.07) 0%,transparent 70%)', top: '-10%', right: '-10%', filter: 'blur(70px)' }} />
-        <div className="aorb" style={{ position: 'absolute', width: '450px', height: '450px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(13,148,136,.05) 0%,transparent 70%)', bottom: '10%', left: '-8%', filter: 'blur(60px)', animationDelay: '4s' }} />
+        <div className="aorb" style={{ position: 'absolute', width: '600px', height: '600px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(248, 241, 230, 0.5) 45%, transparent 70%)', top: '-10%', right: '-10%', filter: 'blur(70px)' }} />
+        <div className="aorb" style={{ position: 'absolute', width: '450px', height: '450px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(245, 237, 222, 0.55) 0%, transparent 70%)', bottom: '10%', left: '-8%', filter: 'blur(60px)', animationDelay: '4s' }} />
       </div>
 
       <div className="shell" style={{ paddingTop: '2rem', paddingBottom: '4rem', display: 'flex', flexDirection: 'column', gap: '2rem', position: 'relative', zIndex: 1 }}>

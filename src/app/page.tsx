@@ -20,23 +20,30 @@ const MINI  = CONSTANTS.PRICING.MINI_PROJECT;
 const MAJOR = CONSTANTS.PRICING.MAJOR_PROJECT;
 
 /* ─── animated counter ─── */
-function useCounter(target: number, dur = 1600) {
-  const [n, setN] = useState(0);
+function useCounter(target: number, dur = 1400) {
+  // Always initialize with target so it NEVER shows 0 or blank on initial load or mobile
+  const [n, setN] = useState(target);
   const ref = useRef<HTMLDivElement>(null);
   const done = useRef(false);
   useEffect(() => {
+    if (typeof window === 'undefined' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setN(target);
+      return;
+    }
     const io = new IntersectionObserver(([e]) => {
       if (e.isIntersecting && !done.current) {
         done.current = true;
+        setN(0);
         const t0 = performance.now();
         const frame = (now: number) => {
           const p = Math.min((now - t0) / dur, 1);
           setN(Math.floor((1 - (1 - p) ** 3) * target));
           if (p < 1) requestAnimationFrame(frame);
+          else setN(target);
         };
         requestAnimationFrame(frame);
       }
-    }, { threshold: 0.15 });
+    }, { threshold: 0.05 });
     if (ref.current) io.observe(ref.current);
     return () => io.disconnect();
   }, [target, dur]);
@@ -62,7 +69,9 @@ function StatCard({
   border?: string;
   customVal?: string;
 }) {
-  const { n, ref } = useCounter(val || 0);
+  const targetVal = val ?? 59;
+  const { n, ref } = useCounter(targetVal);
+  const displayVal = customVal || (n > 0 ? `${n.toLocaleString('en-IN')}${suffix}` : `${targetVal.toLocaleString('en-IN')}${suffix}`);
   return (
     <div
       ref={ref}
@@ -75,7 +84,7 @@ function StatCard({
         background: 'var(--surface)',
         border: '1px solid var(--line)',
         borderRadius: 'var(--r-xl)',
-        boxShadow: 'var(--sh-sm)',
+        boxShadow: 'var(--sh-xs)',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
@@ -98,7 +107,7 @@ function StatCard({
           color: customVal ? accent : 'var(--navy)',
         }}
       >
-        {customVal || `${n.toLocaleString('en-IN')}${suffix}`}
+        {displayVal}
       </div>
 
       {/* Metric Label */}
@@ -160,11 +169,12 @@ export default function HomePage() {
   return (
     <div className="home-page" style={{ background: 'var(--canvas)', overflowX: 'hidden', minHeight: '100vh' }}>
 
-      {/* ── background decoration ── */}
+      {/* ── background decoration — soft atmospheric white & warm beige gradient orbs ── */}
       <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }} aria-hidden>
-        <div className="aorb" style={{ position: 'absolute', width: '700px', height: '700px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(13,148,136,.07) 0%,transparent 70%)', top: '-18%', right: '-12%', filter: 'blur(80px)' }} />
-        <div className="aorb" style={{ position: 'absolute', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(217,119,6,.05) 0%,transparent 70%)', bottom: '20%', left: '-10%', filter: 'blur(70px)', animationDelay: '4s' }} />
-        <div className="aorb" style={{ position: 'absolute', width: '350px', height: '350px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(13,148,136,.05) 0%,transparent 70%)', bottom: '-5%', right: '25%', filter: 'blur(60px)', animationDelay: '7s' }} />
+        <div className="aorb" style={{ position: 'absolute', width: '740px', height: '740px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(255, 255, 255, 0.85) 0%, rgba(248, 241, 230, 0.5) 45%, transparent 70%)', top: '-16%', right: '-8%', filter: 'blur(65px)' }} />
+        <div className="aorb" style={{ position: 'absolute', width: '580px', height: '580px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(245, 237, 222, 0.55) 0%, rgba(239, 229, 211, 0.3) 45%, transparent 70%)', top: '12%', left: '-10%', filter: 'blur(70px)', animationDelay: '4s' }} />
+        <div className="aorb" style={{ position: 'absolute', width: '520px', height: '520px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(255, 255, 255, 0.75) 0%, rgba(246, 239, 227, 0.45) 45%, transparent 70%)', top: '48%', right: '-6%', filter: 'blur(70px)', animationDelay: '6s' }} />
+        <div className="aorb" style={{ position: 'absolute', width: '540px', height: '540px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(243, 233, 216, 0.5) 0%, rgba(238, 226, 206, 0.25) 48%, transparent 70%)', bottom: '6%', left: '12%', filter: 'blur(75px)', animationDelay: '8s' }} />
       </div>
 
       {/* ════════════════════════════════════════════
@@ -335,7 +345,7 @@ export default function HomePage() {
       <section className="home-stats" style={{ ...S.section(), borderTop: '1px solid var(--line)', borderBottom: '1px solid var(--line)', padding: '2.5rem 0' }}>
         <div className="shell">
           <div className="home-stat-track" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(13rem, 1fr))', gap: '1.25rem', maxWidth: '66rem', margin: '0 auto' }}>
-            <StatCard icon={Package} val={59} suffix="" label="Ready Project Kits" accent="#0D9488" bg="#F0FDFA" border="rgba(13,148,136,0.2)" />
+            <StatCard icon={Package} val={CONSTANTS.TOTAL_PROJECTS || 59} suffix="+" label="Ready Project Kits" accent="#0D9488" bg="#F0FDFA" border="rgba(13,148,136,0.2)" />
             <StatCard icon={BookOpen} val={CONSTANTS.TOTAL_TOPICS} suffix="+" label="Free Blueprints" accent="#0F766E" bg="#ECFDF5" border="rgba(5,150,105,0.2)" />
             <StatCard icon={ShieldCheck} customVal="₹1,20,000+" label="Saved vs Local Vendors" accent="#059669" bg="#F0FDF4" border="rgba(5,150,105,0.2)" />
             <StatCard icon={Award} val={512} suffix="+" label="Final Years Passed" accent="#D97706" bg="#FFFBEB" border="rgba(217,119,6,0.2)" />
@@ -417,19 +427,19 @@ export default function HomePage() {
             {/* Right: 3D blueprint + custom cards */}
             <div className="home-secondary-track" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
 
-              {/* 3D Blueprint showcase card */}
+              {/* Blueprint showcase card with soft white & warm beige gradient */}
               <motion.div
                 initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: .42 }}
                 className="card card-lift home-blueprints-card relative overflow-hidden"
                 style={{
                   padding: '2rem 1.75rem',
-                  background: 'var(--surface)',
-                  border: '1px solid var(--teal-100)',
+                  background: 'linear-gradient(145deg, #FFFFFF 0%, #FAF6EE 55%, #F4ECE0 100%)',
+                  border: '1px solid #E5DCCF',
                   borderRadius: 'var(--r-2xl)',
-                  boxShadow: 'var(--sh-sm)',
+                  boxShadow: '0 4px 20px -2px rgba(220, 205, 185, 0.2)',
                 }}
               >
-                <div style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', fontSize: '7.5rem', fontWeight: 900, color: 'rgba(13,148,136,.06)', lineHeight: 1, userSelect: 'none', pointerEvents: 'none', fontFamily: 'var(--font-display)' }}>1K</div>
+                <div style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', fontSize: '7.5rem', fontWeight: 900, color: 'rgba(217, 119, 6, 0.05)', lineHeight: 1, userSelect: 'none', pointerEvents: 'none', fontFamily: 'var(--font-display)' }}>1K</div>
                 <span className="label-chip" style={{ marginBottom: '1rem', display: 'inline-flex', position: 'relative', zIndex: 1 }}>Topic Blueprints</span>
                 <div style={{ fontSize: 'clamp(2.5rem,5vw,3.5rem)', fontWeight: 900, letterSpacing: '-.055em', color: 'var(--navy)', lineHeight: 1, marginBottom: '.5rem', position: 'relative', zIndex: 1 }}>1,078</div>
                 <p style={{ fontSize: '.9375rem', color: 'var(--ink-2)', fontWeight: 700, marginBottom: '.375rem', position: 'relative', zIndex: 1 }}>Topic Blueprints — 100% Free</p>
@@ -441,15 +451,16 @@ export default function HomePage() {
                 </Link>
               </motion.div>
 
-              {/* 3D Custom build card */}
+              {/* Custom build card with soft warm beige tint */}
               <motion.div
                 initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: .42, delay: .1 }}
                 className="card card-lift home-custom-card"
                 style={{
                   padding: '1.75rem',
                   borderRadius: 'var(--r-2xl)',
-                  background: 'var(--surface)',
-                  boxShadow: 'var(--sh-sm)',
+                  background: 'linear-gradient(145deg, #FFFFFF 0%, #FAF8F4 55%, #F5EFE4 100%)',
+                  border: '1px solid #E2D9CC',
+                  boxShadow: '0 4px 18px -2px rgba(220, 205, 185, 0.2)',
                 }}
               >
                 <h3 style={{ fontSize: '1.125rem', fontWeight: 800, color: 'var(--navy)', letterSpacing: '-.025em', marginBottom: '.5rem' }}>Have your own project idea?</h3>
@@ -510,35 +521,35 @@ export default function HomePage() {
       {/* ════════════════════════════════════════════
           FINAL CTA
       ════════════════════════════════════════════ */}
-      <section className="home-final-cta defer" style={{ ...S.section(), padding: '4rem 1rem 5rem' }}>
+      <section className="home-final-cta defer" style={{ ...S.section(), padding: '1rem 1rem 3.5rem' }}>
         <div className="shell" style={{ maxWidth: '52rem' }}>
           <div
             className="home-final-panel relative overflow-hidden"
             style={{
-              background: 'var(--surface)',
-              border: '1px solid var(--teal-100)',
+              background: 'radial-gradient(ellipse 95% 85% at 50% -15%, #FFFFFF 0%, #FAF8F4 50%, #F4ECE0 100%)',
+              border: '1px solid #E5DCCF',
               borderRadius: 'var(--r-2xl)',
-              boxShadow: 'var(--sh-lg)',
-              padding: 'clamp(2.5rem, 6vw, 4.5rem) clamp(1.5rem, 4vw, 3rem)',
+              boxShadow: '0 8px 30px -4px rgba(220, 205, 185, 0.28), 0 2px 8px -2px rgba(15, 23, 42, 0.04)',
+              padding: 'clamp(1.75rem, 4vw, 2.75rem) clamp(1.25rem, 3vw, 2.5rem)',
               textAlign: 'center',
             }}
           >
-            <h2 style={{ fontSize: 'clamp(2rem,5vw,3rem)', fontWeight: 900, letterSpacing: '-.04em', color: 'var(--navy)', marginBottom: '.875rem', lineHeight: 1.15, position: 'relative', zIndex: 1 }}>
+            <h2 style={{ fontSize: 'clamp(1.875rem,4.5vw,2.75rem)', fontWeight: 900, letterSpacing: '-.04em', color: 'var(--navy)', marginBottom: '.75rem', lineHeight: 1.15, position: 'relative', zIndex: 1 }}>
               Your project kit is waiting.
             </h2>
-            <p style={{ fontSize: 'clamp(.9375rem,2vw,1.0625rem)', color: 'var(--ink-3)', lineHeight: 1.8, marginBottom: '2.25rem', position: 'relative', zIndex: 1 }}>
+            <p style={{ fontSize: 'clamp(.9375rem,2vw,1.0625rem)', color: 'var(--ink-3)', lineHeight: 1.7, marginBottom: '1.75rem', position: 'relative', zIndex: 1 }}>
               Mini kits from ₹{MINI} · Major kits from ₹{MAJOR}.<br />
               Preview free. Download instantly. Submit with confidence.
             </p>
 
-            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '.875rem', marginBottom: '2.5rem', position: 'relative', zIndex: 1 }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '.875rem', marginBottom: '2rem', position: 'relative', zIndex: 1 }}>
               <Link href="/projects" className="btn btn-teal btn-lg">
                 Browse All Kits <ArrowRight style={{ width: '1.125rem', height: '1.125rem' }} />
               </Link>
             </div>
 
             {/* Trust badges */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '.75rem 2rem', paddingTop: '2rem', borderTop: '1px solid var(--line)', fontSize: '.875rem', color: 'var(--ink-4)', fontWeight: 600, position: 'relative', zIndex: 1 }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '.75rem 2rem', paddingTop: '1.5rem', borderTop: '1px solid var(--line)', fontSize: '.875rem', color: 'var(--ink-4)', fontWeight: 600, position: 'relative', zIndex: 1 }}>
               {[
                 { Icon: ShieldCheck, t: 'Razorpay Secured' },
                 { Icon: Zap,         t: 'Instant Download' },

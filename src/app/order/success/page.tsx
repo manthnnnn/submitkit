@@ -201,7 +201,7 @@ function SuccessContent() {
       <>
       {/* Ambient orbs */}
       <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0 }} aria-hidden>
-        <div className="aorb" style={{ position: 'absolute', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(13,148,136,.09) 0%,transparent 70%)', top: '-10%', left: '50%', transform: 'translateX(-50%)', filter: 'blur(70px)' }} />
+        <div className="aorb" style={{ position: 'absolute', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(245, 237, 222, 0.6) 0%, transparent 70%)', top: '-10%', left: '50%', transform: 'translateX(-50%)', filter: 'blur(70px)' }} />
       </div>
 
       <div className="shell" style={{ paddingTop: '2rem', position: 'relative', zIndex: 1 }}>

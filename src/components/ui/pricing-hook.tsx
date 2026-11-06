@@ -45,44 +45,45 @@ export function PricingHook() {
 
   return (
     <div className="w-full max-w-[27rem] mx-auto lg:ml-auto lg:mr-0 relative">
-      {/* Clean bordered card */}
+      {/* Soft ambient glow backdrop */}
       <div
-        className="relative rounded-3xl"
+        className="absolute -inset-3 rounded-3xl opacity-60 blur-2xl pointer-events-none -z-10"
         style={{
-          background: 'var(--surface)',
-          border: '1px solid var(--teal-100)',
-          boxShadow: 'var(--sh-lg)',
+          background: 'radial-gradient(ellipse at 50% 30%, rgba(245, 238, 224, 0.7) 0%, rgba(255, 255, 255, 0.5) 45%, transparent 75%)',
+        }}
+      />
+
+      {/* Clean bordered card with soft brand gradient header */}
+      <div
+        className="card relative rounded-3xl overflow-hidden"
+        style={{
+          border: '1px solid #E5DCCF',
+          boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.05), 0 12px 32px -4px rgba(220, 205, 185, 0.25)',
         }}
       >
         {/* Card body */}
-        <div
-          className="pricing-hook-body relative rounded-[calc(1.5rem-1.5px)] overflow-hidden"
-          style={{
-            background: 'var(--surface)',
-          }}
-        >
-          {/* Slim brand rule */}
+        <div className="pricing-hook-body relative">
+          {/* Subtle multi-tone brand rule */}
           <div
             style={{
               height: '3px',
-              background:
-                'linear-gradient(90deg, #0D9488 0%, #14B8A6 100%)',
+              background: 'linear-gradient(90deg, #0D9488 0%, #14B8A6 40%, #F59E0B 75%, #10B981 100%)',
             }}
           />
 
           <div className="pricing-hook-content p-4 sm:p-5 lg:p-6">
-            {/* Executive Badges Row (Matches Image 3) */}
+            {/* Executive Badges Row */}
             <div className="pricing-hook-badges flex items-center justify-between gap-2 mb-3">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold text-teal-900 bg-teal-50 border border-teal-200/80 shadow-xs uppercase tracking-wide">
+              <span className="tag tag-teal text-[11px] font-bold">
                 <Zap className="w-3 h-3 text-teal-600 fill-teal-600" />
                 Verified Kit
               </span>
-              <span className="text-[11px] font-bold text-amber-900 uppercase tracking-wider bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200/70 shadow-xs">
+              <span className="tag tag-amber text-[11px] font-bold">
                 Mini Bundle
               </span>
             </div>
 
-            {/* Title & Tagline (Matches Image 3) */}
+            {/* Title & Tagline */}
             <h3 className="font-display text-2xl sm:text-[1.65rem] font-black text-slate-900 tracking-tight leading-tight mb-1">
               Mini Project Kit
             </h3>
@@ -90,7 +91,7 @@ export function PricingHook() {
               5th &amp; 6th semester done right. Download, run, submit with confidence.
             </p>
 
-            {/* Clean, Non-Wrapping Price Showcase (Matches Image 3) */}
+            {/* Clean, Non-Wrapping Price Showcase */}
             <div className="pricing-hook-price flex items-baseline gap-3 mb-4 flex-wrap sm:flex-nowrap">
               <span className="text-4xl sm:text-[2.75rem] font-black text-slate-900 tracking-tight font-display whitespace-nowrap leading-none select-none inline-block">
                 ₹{mini}
@@ -98,13 +99,13 @@ export function PricingHook() {
               <span className="text-base sm:text-lg font-semibold text-slate-400 line-through whitespace-nowrap select-none inline-block">
                 ₹1499
               </span>
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] sm:text-xs font-bold text-teal-800 bg-teal-50/90 border border-teal-200 whitespace-nowrap uppercase tracking-wider shadow-2xs">
+              <span className="tag tag-teal text-[11px] sm:text-xs font-bold whitespace-nowrap">
                 SAVE ₹1,200
               </span>
             </div>
 
-            {/* Deliverables List (Matches Image 3) */}
-          <div className="pricing-hook-deliverables space-y-2 mb-4">
+            {/* Deliverables List with clean surface rows */}
+            <div className="pricing-hook-deliverables space-y-2 mb-4">
               {DELIVERABLES.map(({ Icon, label, sub, accent, bg, border }) => (
                 <div
                   key={label}
@@ -132,14 +133,13 @@ export function PricingHook() {
               ))}
             </div>
 
-            {/* High-Converting CTA Button (Matches Image 3) */}
+            {/* High-Converting Minimal CTA Button */}
             <Link
               href="/projects?tier=MINI"
-              className="pricing-hook-cta group relative w-full flex items-center justify-center gap-2 rounded-xl text-sm sm:text-base font-bold text-white transition-all active:scale-[0.98] shadow-lg hover:shadow-xl overflow-hidden"
+              className="btn btn-teal w-full text-sm sm:text-base font-bold text-white group overflow-hidden"
               style={{
                 minHeight: '48px',
-                background: 'var(--teal)',
-                boxShadow: 'var(--sh-teal)',
+                borderRadius: '12px',
               }}
             >
               <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
@@ -148,20 +148,20 @@ export function PricingHook() {
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform shrink-0" />
             </Link>
 
-            {/* Guarantee Footnote (Matches Image 3) */}
+            {/* Guarantee Footnote */}
             <p className="pricing-hook-guarantee text-center text-[11px] text-slate-500 mt-2.5 flex items-center justify-center gap-1.5 font-medium flex-wrap">
               <ShieldCheck className="w-3.5 h-3.5 text-teal-600 shrink-0" />
               <span>Instant Download · 100% Bug-Free Guarantee</span>
             </p>
 
-            {/* Major Project Upsell Drawer (Matches Top Right of Image 1) */}
-              <div
-                className="pricing-hook-upsell mt-3.5 pt-2.5 rounded-xl p-3 border flex items-center justify-between gap-3"
-                style={{
-                  background: 'var(--teal-50)',
-                  borderColor: 'var(--teal-100)',
-                }}
-              >
+            {/* Major Project Upsell Drawer with soft warm gradient */}
+            <div
+              className="pricing-hook-upsell mt-3.5 pt-2.5 rounded-xl p-3 flex items-center justify-between gap-3"
+              style={{
+                background: 'linear-gradient(135deg, #FFFFFF 0%, #FAF6EE 50%, #F5EFE4 100%)',
+                border: '1px solid #E6DED0',
+              }}
+            >
               <div className="min-w-0">
                 <div className="text-[10px] font-black text-teal-800 uppercase tracking-wider">
                   Need Major Project?
@@ -172,7 +172,8 @@ export function PricingHook() {
               </div>
               <Link
                 href="/projects?tier=MAJOR"
-                className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold text-teal-900 bg-white border border-teal-300/80 hover:bg-teal-50 transition-all shrink-0 active:scale-95 shadow-xs"
+                className="btn btn-outline"
+                style={{ minHeight: '32px', padding: '0 0.75rem', fontSize: '0.75rem', borderRadius: '8px', fontWeight: 700 }}
               >
                 <span>View</span>
                 <ArrowRight className="w-3.5 h-3.5 text-teal-700" />

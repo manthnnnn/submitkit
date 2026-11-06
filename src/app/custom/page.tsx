@@ -4,7 +4,7 @@ import { CustomProjectClient } from "./CustomProjectClient";
 
 export const metadata: Metadata = {
   title: { absolute: `Custom Final Year Project — Built for You | ${CONSTANTS.APP_NAME}` },
-  description: `Can't find your exact topic? We build custom final year projects from scratch. Working source code + IEEE Black Book report + PPT + Viva Q&A. Custom Mini from ₹1,999. Delivered in 3-5 days. CSE AIML IoT FullStack Cybersecurity.`,
+  description: `Can't find your exact topic? We build custom final year projects from scratch. Working source code + IEEE Black Book report + PPT + Viva Q&A. Mini kits from ₹299, Major from ₹499, Custom starts from ₹1,999 (varies with complexity). Delivered in 48-72 hours. CSE AIML IoT FullStack Cybersecurity.`,
   keywords: [
     "custom final year project india",
     "custom engineering project with source code",
@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     locale: "en_IN",
     url: `${CONSTANTS.APP_URL}/custom`,
     title: `Custom Final Year Project — Built for You | ${CONSTANTS.APP_NAME}`,
-    description: `We build your exact project from scratch. Working code + IEEE Report + PPT + Viva Q&A. Custom Mini ₹1,999 / Major ₹2,999.`,
+    description: `We build your exact project from scratch. Working code + IEEE Report + PPT + Viva Q&A. Mini ₹299 / Major ₹499 / Custom starts ₹1,999 (varies with complexity).`,
     images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
   },
 };

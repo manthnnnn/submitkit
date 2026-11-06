@@ -22,13 +22,13 @@ const AVBG = [
 
 export function Testimonials() {
   return (
-    <section className="defer home-testimonials" style={{ background: 'transparent', borderTop: '1px solid var(--line)', padding: '4rem 1rem' }}>
+    <section className="defer home-testimonials" style={{ background: 'transparent', borderTop: '1px solid var(--line)', padding: '2.5rem 1rem 1rem' }}>
       <div className="shell">
         <motion.div initial={{ opacity:0, y:12 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:.4 }}
-          style={{ marginBottom: '2.5rem' }}
+          style={{ marginBottom: '1.5rem' }}
         >
-          <span className="label-chip" style={{ marginBottom: '1rem', display: 'inline-flex' }}>Student Reviews</span>
-          <h2 className="font-display font-black mt-3" style={{ fontSize: 'clamp(1.75rem,4vw,2.5rem)', letterSpacing: '-.035em', color: 'var(--navy)' }}>
+          <span className="label-chip" style={{ marginBottom: '.5rem', display: 'inline-flex' }}>Student Reviews</span>
+          <h2 className="font-display font-black mt-2" style={{ fontSize: 'clamp(1.75rem,4vw,2.5rem)', letterSpacing: '-.035em', color: 'var(--navy)' }}>
             1,200+ students already submitted
           </h2>
         </motion.div>
@@ -41,7 +41,7 @@ export function Testimonials() {
                 initial={{ opacity:0, y:16 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}
                 transition={{ duration:.35, delay:i*.06 }}
                 className="card card-lift home-review-card"
-                style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}
+                style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', background: 'linear-gradient(180deg, #FFFFFF 0%, #FAF8F5 100%)' }}
               >
                 <div style={{ display: 'flex', gap: '2px', marginBottom: '1rem' }}>
                   {[1,2,3,4,5].map(s => <Star key={s} style={{ width: '13px', height: '13px', fill: '#F59E0B', color: '#F59E0B' }} />)}
