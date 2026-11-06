@@ -711,6 +711,27 @@
   body { padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0px)); }
 }
 
+/* Compact homepage rhythm and readable rotating hooks on phones. */
+.home-hero-title { max-width: 48rem; font-size: 3.25rem; line-height: 1.12; }
+.home-hero-title > span { display: inline-block; }
+@media (max-width: 767px) {
+  .home-hero { padding-top: 1.75rem !important; }
+  .home-hero-title { max-width: 100%; font-size: 2rem; line-height: 1.14; }
+  .home-hero-eyebrow { margin-bottom: 1rem !important; gap: .4rem !important; }
+  .home-hero-description { font-size: .9375rem !important; line-height: 1.6 !important; margin-bottom: 1.25rem !important; }
+  .home-hero-actions { gap: .5rem !important; margin-bottom: 1.25rem !important; }
+  .home-hero-actions .btn { min-height: 46px; flex: 1; padding: 0 .75rem; font-size: .875rem; }
+  .home-deliverables { gap: .4rem !important; margin-bottom: 1.25rem !important; }
+  .home-deliverables .pill-check { padding: .3rem .55rem; font-size: .75rem; }
+  .home-social-proof { padding-top: 1rem !important; }
+  .home-topic-explorer { margin-top: 1.5rem !important; }
+  .home-university-trust { margin-top: 1.5rem !important; padding-top: 1.25rem !important; padding-bottom: 1.75rem !important; }
+  .home-stats { padding: 1.25rem 0 !important; }
+  .home-stats .shell > div { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: .625rem !important; }
+  .home-ready-kits, .home-how { padding: 2.5rem 0 !important; }
+  .home-final-cta { padding: 2.5rem .75rem 3rem !important; }
+}
+
 
 /* ═══════════════════════════════════════════════════
    ADMIN CONSOLE — SOFT WARM BEIGE THEME (Matches Frontend)
