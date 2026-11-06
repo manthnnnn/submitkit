@@ -81,9 +81,13 @@ function SuccessContent() {
             if (!cancelled) setVerificationError('Payment is still being confirmed. Check your order again in a moment.');
             return;
           }
-          if (response.status >= 500 && attempt < 5) {
-            await new Promise(resolve => window.setTimeout(resolve, 1200));
-            continue;
+          if (response.status >= 500) {
+            const body = await response.json().catch(() => ({}));
+            if (!cancelled) {
+              setVerificationError(body.error || 'Order verification is temporarily unavailable. Please look up your order or contact support.');
+              setCheckingOrder(false);
+            }
+            return;
           }
           if (!response.ok) {
             const body = await response.json().catch(() => ({}));
@@ -309,7 +313,7 @@ function SuccessContent() {
                 <p style={{ fontSize: '.8125rem', color: 'var(--ink-3)', marginTop: '.25rem' }}>Watch while your project bundle downloads.</p>
               </div>
               <div style={{ background: 'var(--surface-2)' }}>
-                <video controls playsInline preload="none" poster="/video-poster.jpg" className="w-full aspect-video">
+                <video aria-label="SubmitKit project setup guide" controls playsInline preload="none" poster="/video-poster.svg" className="w-full aspect-video">
                   <source src="/demo.mp4" type="video/mp4" />
                   Your browser does not support video playback.
                 </video>
