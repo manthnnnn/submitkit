@@ -29,7 +29,7 @@ export default function SentinelPayLandingPage() {
   };
 
   return (
-    <div style={{
+    <div className="sentinel-landing" style={{
       minHeight: '100vh',
       backgroundColor: '#06080d',
       color: '#f8fafc',
