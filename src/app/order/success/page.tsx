@@ -116,7 +116,10 @@ function SuccessContent() {
         setError(msg); setDownloading(false); return;
       }
       const data = await res.json();
-      if (data.url) window.location.href = data.url;
+      if (data.url) {
+        setConfirmation(current => current ? { ...current, downloadCount: Math.min(current.downloadCount + 1, current.downloadLimit) } : current);
+        window.location.href = data.url;
+      }
       else { setError('Missing download link.'); setDownloading(false); }
     } catch { setError('Network error. Check connection.'); setDownloading(false); }
   };
@@ -229,7 +232,7 @@ function SuccessContent() {
                         <p style={{ fontFamily: 'var(--font-mono)', fontSize: '1.75rem', fontWeight: 900, color: 'var(--navy)', letterSpacing: '.1em', lineHeight: 1 }}>{shortId}</p>
                         <p style={{ fontSize: '.75rem', color: 'var(--ink-3)', marginTop: '.375rem' }}>You need this to re-download or contact support</p>
                       </div>
-                      <button type="button" aria-label="Copy order ID" onClick={() => { navigator.clipboard.writeText(confirmation.orderId); setIdCopied(true); setTimeout(() => setIdCopied(false), 2000); }}
+                      <button type="button" aria-label="Copy order ID" title={idCopied ? 'Copied' : 'Copy order ID'} onClick={() => { navigator.clipboard.writeText(confirmation.orderId); setIdCopied(true); setTimeout(() => setIdCopied(false), 2000); }}
                         style={{ background: 'none', border: 'none', cursor: 'pointer', color: idCopied ? 'var(--teal)' : 'var(--ink-4)', padding: '.25rem', marginTop: '.25rem' }}
                       >
                         {idCopied ? <Check style={{ width: '1rem', height: '1rem' }} /> : <Copy style={{ width: '1rem', height: '1rem' }} />}
@@ -266,7 +269,7 @@ function SuccessContent() {
                   <p style={{ textAlign: 'center', fontSize: '.8125rem', color: 'var(--ink-4)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '.375rem', fontWeight: 500 }}>
                     <ShieldCheck style={{ width: '.875rem', height: '.875rem', color: 'var(--teal)' }} /> Each download link is valid for 10 minutes
                   </p>
-                  {downloadsLeft === 0 && <Link href={`/order/lookup?query=${encodeURIComponent(shortId)}`} style={{ textAlign: 'center', fontSize: '.8125rem', color: 'var(--teal-dark)', fontWeight: 700 }}>Need another copy? Contact support with your order ID.</Link>}
+                  {downloadsLeft === 0 && <p style={{ textAlign: 'center', fontSize: '.8125rem', color: 'var(--ink-3)' }}>Need another copy? Email <a href={`mailto:team@submitkit.in?subject=${encodeURIComponent(`Download reset for order ${shortId}`)}`} style={{ color: 'var(--teal-dark)', fontWeight: 700 }}>support</a> with your Order ID.</p>}
                 </div>
 
                 {/* Quick access links */}
