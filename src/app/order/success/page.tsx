@@ -9,15 +9,29 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Logo } from '@/components/ui/logo';
+
+interface ConfirmedOrder {
+  orderId: string;
+  projectTitle: string;
+  amountPaid: number;
+  createdAt: string;
+  downloadCount: number;
+  downloadLimit: number;
+  hasPersonalization: boolean;
+  hasPlagiarismCert: boolean;
+  hasVivaCall: boolean;
+}
 
 function SuccessContent() {
   const sp           = useSearchParams();
   const orderId      = sp.get('order_id');
-  const projectTitle = sp.get('title') || 'Your Project Bundle';
-  const hasPerson    = sp.get('personalize') === '1';
-  const hasPlagiarism= sp.get('plagiarism')  === '1';
-  const hasViva      = sp.get('viva')        === '1';
+  const [confirmation, setConfirmation] = useState<ConfirmedOrder | null>(null);
+  const [verificationError, setVerificationError] = useState<string | null>(null);
+  const [checkingOrder, setCheckingOrder] = useState(true);
+  const projectTitle = confirmation?.projectTitle ?? 'Your Project Bundle';
+  const hasPerson    = confirmation?.hasPersonalization ?? false;
+  const hasPlagiarism= confirmation?.hasPlagiarismCert ?? false;
+  const hasViva      = confirmation?.hasVivaCall ?? false;
 
   const [error, setError]           = useState<string | null>(null);
   const [downloading, setDownloading] = useState(false);
@@ -44,29 +58,56 @@ function SuccessContent() {
   const [genReport, setGenReport] = useState(false);
   const [genPPT, setGenPPT]       = useState(false);
 
-  // Confetti
+  // Verify paid status before showing the confirmation or purchase controls.
   useEffect(() => {
-    const s = document.createElement('script');
-    s.src = 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js';
-    s.onload = () => {
-      const c = (window as any).confetti;
-      if (!c) return;
-      const end = Date.now() + 3000;
-      (function frame() {
-        c({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#0D9488','#14B8A6','#fff'] });
-        c({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#0D9488','#14B8A6','#fff'] });
-        if (Date.now() < end) requestAnimationFrame(frame);
-      }());
+    let cancelled = false;
+    const checkOrder = async () => {
+      if (!orderId || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(orderId)) {
+        setVerificationError('This order link is incomplete or invalid. Use order lookup to find a paid purchase.');
+        setCheckingOrder(false);
+        return;
+      }
+
+      for (let attempt = 0; attempt < 6; attempt += 1) {
+        try {
+          const response = await fetch(`/api/orders/${encodeURIComponent(orderId)}/confirmation`, { cache: 'no-store' });
+          if (response.status === 202 && attempt < 5) {
+            await new Promise(resolve => window.setTimeout(resolve, 2000));
+            continue;
+          }
+          if (!response.ok) {
+            const body = await response.json().catch(() => ({}));
+            throw new Error(body.error || 'We could not verify this order.');
+          }
+          const data = await response.json() as ConfirmedOrder;
+          if (!cancelled) setConfirmation(data);
+          return;
+        } catch (caught) {
+          if (attempt < 5 && !cancelled) {
+            await new Promise(resolve => window.setTimeout(resolve, 1200));
+            continue;
+          }
+          if (!cancelled) setVerificationError(caught instanceof Error ? caught.message : 'We could not verify this order.');
+        } finally {
+          if (!cancelled && attempt === 5) setCheckingOrder(false);
+        }
+      }
+      if (!cancelled) setCheckingOrder(false);
     };
-    document.head.appendChild(s);
-    return () => { if (document.head.contains(s)) document.head.removeChild(s); };
-  }, []);
+
+    void checkOrder();
+    return () => { cancelled = true; };
+  }, [orderId]);
+
+  useEffect(() => {
+    if (confirmation) setCheckingOrder(false);
+  }, [confirmation]);
 
   const handleDownload = async () => {
-    if (downloading || !orderId) return;
+    if (downloading || !confirmation) return;
     setDownloading(true); setError(null);
     try {
-      const res = await fetch(`/api/downloads/${orderId}`);
+      const res = await fetch(`/api/downloads/${confirmation.orderId}`);
       if (!res.ok) {
         let msg = 'Download failed. Try again or email team@submitkit.in.';
         try { const b = await res.json(); if (b?.error) msg = b.error; } catch {}
@@ -80,10 +121,10 @@ function SuccessContent() {
 
   const handlePersonalize = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!orderId) return;
+    if (!confirmation) return;
     setPersonalizing(true); setPersonError(null);
     try {
-      const res = await fetch('/api/personalize', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ orderId, customerEmail: sEmail, studentName: sName, rollNumber: sRoll, guideName: sGuide, size: 'full' }) });
+      const res = await fetch('/api/personalize', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ orderId: confirmation.orderId, customerEmail: sEmail, studentName: sName, rollNumber: sRoll, guideName: sGuide, size: 'full' }) });
       if (!res.ok) { const d = await res.json().catch(() => ({})); setPersonError(d.error || 'Generation failed. Contact team@submitkit.in.'); setPersonalizing(false); return; }
       const blob = await res.blob();
       const url  = URL.createObjectURL(blob);
@@ -96,31 +137,48 @@ function SuccessContent() {
   };
 
   const buildReportUrl = (type: 'report'|'ppt') => {
-    if (!orderId) return '#';
+    if (!confirmation) return '#';
     const p = new URLSearchParams();
     if (type === 'report') p.set('size', reportSize);
     if (hasPerson && rName) { p.set('name', rName); if (rRoll) p.set('roll', rRoll); if (rGuide) p.set('guide', rGuide); if (rCollege) p.set('college', rCollege); }
-    return `/api/${type}/${orderId}?${p.toString()}`;
+    return `/api/${type}/${confirmation.orderId}?${p.toString()}`;
   };
 
-  const waLink = `https://wa.me/918799814256?text=${encodeURIComponent(`Hi! I purchased "${projectTitle}" (Order: ${orderId?.split('-')[0].toUpperCase() ?? ''}). Ready to discuss custom changes!`)}`;
-  const shortId = orderId ? orderId.split('-')[0].toUpperCase() : '';
+  const waLink = `https://wa.me/918799814256?text=${encodeURIComponent(`Hi! I purchased "${projectTitle}" (Order: ${confirmation?.orderId.split('-')[0].toUpperCase() ?? ''}). Ready to discuss custom changes!`)}`;
+  const shortId = confirmation?.orderId.split('-')[0].toUpperCase() ?? '';
 
   const inputSty: React.CSSProperties = { width: '100%', background: 'var(--surface)', border: '1.5px solid var(--line)', borderRadius: '10px', padding: '.625rem .875rem', fontSize: '.9375rem', color: 'var(--ink)', outline: 'none', fontFamily: 'var(--font-sans)', transition: 'border-color 150ms' };
 
   return (
-    <div style={{ background: 'var(--canvas)', minHeight: '100vh', paddingBottom: '4rem' }}>
+    <div className="order-success-page" style={{ background: 'var(--canvas)', minHeight: '100vh', paddingBottom: '4rem' }}>
+      {!confirmation && (
+        <div className="shell" style={{ maxWidth: '40rem', paddingTop: '3rem', position: 'relative', zIndex: 1 }}>
+          <div className="card" style={{ padding: '2rem', textAlign: 'center' }} aria-live="polite">
+            {checkingOrder ? (
+              <>
+                <Loader2 style={{ width: '2rem', height: '2rem', color: 'var(--teal)', margin: '0 auto 1rem', animation: 'spin .7s linear infinite' }} />
+                <h1 style={{ fontSize: '1.375rem', color: 'var(--navy)', marginBottom: '.5rem' }}>Confirming your order</h1>
+                <p style={{ color: 'var(--ink-3)', fontSize: '.9375rem' }}>This usually takes a few seconds. Please keep this page open.</p>
+              </>
+            ) : (
+              <>
+                <AlertCircle style={{ width: '2rem', height: '2rem', color: 'var(--amber)', margin: '0 auto 1rem' }} />
+                <h1 style={{ fontSize: '1.375rem', color: 'var(--navy)', marginBottom: '.5rem' }}>We couldn’t confirm this order</h1>
+                <p style={{ color: 'var(--ink-3)', fontSize: '.9375rem', marginBottom: '1.25rem' }}>{verificationError ?? 'Please look up your order or contact support.'}</p>
+                <Link href="/order/lookup" className="btn btn-teal">Find my order <ArrowRight style={{ width: '1rem', height: '1rem' }} /></Link>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+      {confirmation && (
+      <>
       {/* Ambient orbs */}
       <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0 }} aria-hidden>
         <div className="aorb" style={{ position: 'absolute', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(13,148,136,.09) 0%,transparent 70%)', top: '-10%', left: '50%', transform: 'translateX(-50%)', filter: 'blur(70px)' }} />
       </div>
 
       <div className="shell" style={{ paddingTop: '2rem', position: 'relative', zIndex: 1 }}>
-        {/* Logo */}
-        <div style={{ marginBottom: '2rem' }}>
-          <Logo size="sm" href="/" />
-        </div>
-
         {/* Success header */}
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .4 }}
           style={{ textAlign: 'center', marginBottom: '2rem' }}
@@ -137,10 +195,10 @@ function SuccessContent() {
           </p>
         </motion.div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 22rem), 1fr))', gap: '1.5rem', alignItems: 'start' }}>
+        <div className="order-success-content" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', maxWidth: '58rem', margin: '0 auto' }}>
 
           {/* ── LEFT: Order + Download ── */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', gridColumn: 'span 2' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', minWidth: 0 }}>
 
             {/* Order card */}
             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .4, delay: .08 }}
