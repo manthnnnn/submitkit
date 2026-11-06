@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Zap, ChevronRight, BookOpen, Layers, Package, MessageCircle } from 'lucide-react';
+import { Menu, X, Zap, ChevronRight, BookOpen, Package } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { Logo } from '@/components/ui/logo';
 import { CONSTANTS } from '@/lib/constants';
@@ -104,25 +104,8 @@ export function Navbar() {
             ))}
           </nav>
 
-          {/* Desktop right: WhatsApp Us */}
-          <div className="hidden lg:flex" style={{ alignItems: 'center', gap: '.75rem' }}>
-            <a href={`https://wa.me/918799814256`} target="_blank" rel="noopener noreferrer"
-              className="btn btn-wa"
-              style={{ minHeight: '40px', padding: '0 1.25rem', fontSize: '.875rem', gap: '.5rem', borderRadius: '11px', boxShadow: '0 4px 14px rgba(37,211,102,.3)' }}
-            >
-              <WhatsAppIcon />
-              WhatsApp Us
-            </a>
-          </div>
-
           {/* Mobile */}
           <div className="flex lg:hidden" style={{ alignItems: 'center', gap: '.625rem' }}>
-            <a href={`https://wa.me/918799814256`} target="_blank" rel="noopener noreferrer" aria-label="Chat on WhatsApp"
-              className="btn btn-wa wa-nav-btn"
-            >
-              <WhatsAppIcon />
-              <span className="hidden sm:inline">WhatsApp Us</span>
-            </a>
             <button onClick={() => setOpen(true)} className="tt rounded-xl" aria-label="Open menu"
               style={{ background: 'var(--surface-2)', border: '1px solid var(--line)', color: 'var(--ink-2)' }}
             >
@@ -196,18 +179,12 @@ export function Navbar() {
               ))}
             </nav>
 
-            {/* Footer CTAs */}
+            {/* Footer action */}
             <div style={{ padding: '1rem 1rem calc(1rem + env(safe-area-inset-bottom,0px))', borderTop: '1px solid var(--line)', display: 'flex', flexDirection: 'column', gap: '.625rem' }}>
               <Link href="/projects" className="btn btn-teal" style={{ width: '100%', minHeight: '52px', fontSize: '1rem', borderRadius: '14px' }}>
                 <Zap style={{ width: '1.125rem', height: '1.125rem', fill: 'white' }} />
                 Browse All Project Kits
               </Link>
-              <a href="https://wa.me/918799814256" target="_blank" rel="noopener noreferrer"
-                className="btn btn-wa" style={{ width: '100%', minHeight: '48px', fontSize: '.9375rem', borderRadius: '12px' }}
-              >
-                <WhatsAppIcon />
-                Chat on WhatsApp
-              </a>
             </div>
           </div>
         </>

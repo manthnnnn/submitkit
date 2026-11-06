@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Package, BookOpen, Search, MessageCircle } from 'lucide-react';
+import { Home, Package, BookOpen, Search } from 'lucide-react';
 
 /* App-style bottom navigation — mobile only (hidden md+) */
 
@@ -10,7 +10,6 @@ const ITEMS = [
   { href: '/projects',    label: 'Projects',   Icon: Package,       match: (p: string) => p.startsWith('/projects') },
   { href: '/blueprint',   label: 'Free Topics',Icon: BookOpen,      match: (p: string) => p.startsWith('/blueprint') },
   { href: '/order/lookup',label: 'Track',      Icon: Search,        match: (p: string) => p.startsWith('/order') },
-  { href: 'https://wa.me/918799814256', label: 'WhatsApp', Icon: MessageCircle, match: () => false, external: true },
 ] as const;
 
 export function BottomNav() {
