@@ -181,6 +181,14 @@ body::before {
 
 /* Lighten the project introduction; preserve the embedded code preview and IDE. */
 .devforge-landing {
+  --ide-bg-app: #FAF7F0;
+  --ide-bg-sidebar: #F5F0E6;
+  --ide-border: #EAE3D6;
+  --text-primary: #1E293B;
+  --text-secondary: #475569;
+  --text-muted: #64748B;
+}
+.devforge-landing {
   background: #FAF7F0 !important;
   color: #1E293B !important;
 }

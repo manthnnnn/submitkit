@@ -9,3 +9,4 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 <!-- END:nextjs-agent-rules -->
 
 - Payment success pages must derive confirmation and purchased add-ons from the paid order record server-side, never from URL claims, so only verified purchases see order actions.
+- Scope standalone-demo theme overrides to named outer-shell classes; keep IDE/editor surfaces dark for code readability and avoid leaking storefront styles into the demos.
