@@ -181,7 +181,7 @@ export default function HomePage() {
 
               {/* Label + ticker */}
               <motion.div
-                initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .4 }}
+                initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: .4 }}
                 className="home-hero-eyebrow"
                 style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '.625rem', marginBottom: '1.5rem' }}
               >
@@ -191,7 +191,7 @@ export default function HomePage() {
 
               <div className="home-hero-title-wrap">
                 <motion.h1
-                  initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+                  initial={false} animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: .42, ease: [.32, .72, 0, 1] }}
                   className="home-hero-title"
                 >
@@ -212,7 +212,7 @@ export default function HomePage() {
 
               {/* Sub */}
               <motion.p
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .35, delay: .05 }}
+                initial={false} animate={{ opacity: 1 }} transition={{ duration: .35, delay: .05 }}
                 className="home-hero-description"
                 style={{ fontSize: 'clamp(.9375rem,2vw,1.0625rem)', color: 'var(--ink-3)', lineHeight: 1.75, marginBottom: '1.875rem', maxWidth: '30rem' }}
               >
@@ -222,7 +222,7 @@ export default function HomePage() {
 
               {/* CTA buttons */}
               <motion.div
-                initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .35, delay: .1 }}
+                initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: .35, delay: .1 }}
                 className="home-hero-actions"
                 style={{ display: 'flex', flexWrap: 'wrap', gap: '.75rem', marginBottom: '2rem' }}
               >
@@ -236,7 +236,7 @@ export default function HomePage() {
 
               {/* Deliverable pills */}
               <motion.div
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .35, delay: .15 }}
+                initial={false} animate={{ opacity: 1 }} transition={{ duration: .35, delay: .15 }}
                 className="home-deliverables"
                 style={{ display: 'flex', flexWrap: 'wrap', gap: '.625rem .875rem', marginBottom: '2rem' }}
               >
@@ -250,7 +250,7 @@ export default function HomePage() {
 
               {/* Social proof */}
               <motion.div
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .35, delay: .2 }}
+                initial={false} animate={{ opacity: 1 }} transition={{ duration: .35, delay: .2 }}
                 className="home-social-proof"
                 style={{ display: 'flex', alignItems: 'center', gap: '.875rem', paddingTop: '1.375rem', borderTop: '1px solid var(--line)' }}
               >
@@ -280,7 +280,7 @@ export default function HomePage() {
 
             {/* ── RIGHT: Pricing card ── */}
             <motion.div
-              initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .45, delay: .1 }}
+              initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: .45, delay: .1 }}
             >
               <div className="home-hero-pricing"><PricingHook /></div>
             </motion.div>
