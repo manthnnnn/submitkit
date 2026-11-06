@@ -513,8 +513,7 @@ export default function HomePage() {
       <section className="home-final-cta defer" style={{ ...S.section(), padding: '4rem 1rem 5rem' }}>
         <div className="shell" style={{ maxWidth: '52rem' }}>
           <div
-            className="home-final-panel"
-            className="relative overflow-hidden"
+            className="home-final-panel relative overflow-hidden"
             style={{
               background: 'var(--surface)',
               border: '1px solid var(--teal-100)',
