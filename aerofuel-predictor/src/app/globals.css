@@ -172,6 +172,14 @@ a {
 
 /* Light storefront shell; aviation telemetry retains its own data coloring. */
 .aero-theme {
+  --background: #FAF7F0;
+  --foreground: #1E293B;
+  --color-dark: #FFFFFF;
+  --color-dark-glass: #FFFFFF;
+  --color-light-glass: #F5F0E6;
+  --text-primary: #1E293B;
+  --text-secondary: #475569;
+  --text-muted: #64748B;
   --aero-shell-canvas: #FAF7F0;
   --aero-shell-surface: #FFFFFF;
   --aero-shell-border: #EAE3D6;
@@ -186,6 +194,7 @@ a {
 .aero-theme, .aero-theme body { background: var(--aero-shell-canvas) !important; color: var(--aero-shell-ink) !important; }
 .aero-theme body { background-image: none !important; }
 .aero-theme h1, .aero-theme h2, .aero-theme h3, .aero-theme h4 { color: var(--aero-shell-heading) !important; }
+.aero-theme main > div { color: var(--aero-shell-ink) !important; }
 .aero-theme p[style*="rgba(255, 255, 255"],
 .aero-theme div[style*="rgba(255, 255, 255, 0."] { color: var(--aero-shell-muted) !important; }
 .aero-theme nav { background: var(--aero-shell-surface) !important; border-bottom-color: var(--aero-shell-border) !important; box-shadow: 0 1px 3px rgba(15,23,42,.06); }
@@ -198,6 +207,14 @@ a {
   background: var(--aero-shell-surface) !important;
   border-color: var(--aero-shell-border) !important;
   box-shadow: 0 1px 3px rgba(15,23,42,.06) !important;
+  color: var(--aero-shell-ink) !important;
+}
+.aero-theme [style*="rgba(10,10,10"],
+.aero-theme [style*="rgba(10,10,14"],
+.aero-theme [style*="rgba(10, 10, 10"],
+.aero-theme [style*="rgba(10, 10, 14"] {
+  background: var(--aero-shell-surface) !important;
+  border-color: var(--aero-shell-border) !important;
   color: var(--aero-shell-ink) !important;
 }
 .aero-theme .btn-premium { background: var(--aero-shell-teal) !important; color: var(--aero-shell-surface) !important; box-shadow: 0 2px 8px -1px rgba(13,148,136,.25) !important; }

@@ -78,7 +78,10 @@ function SuccessContent() {
               await new Promise(resolve => window.setTimeout(resolve, 2000));
               continue;
             }
-            if (!cancelled) setVerificationError('Payment is still being confirmed. Check your order again in a moment.');
+            if (!cancelled) {
+              setVerificationError('Payment is still being confirmed. Check your order again in a moment.');
+              setCheckingOrder(false);
+            }
             return;
           }
           if (response.status >= 500) {
