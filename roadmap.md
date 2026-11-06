@@ -10,6 +10,6 @@
 - [x] Mobile: app-style bottom nav (Home / Projects / Free Topics / Track / WhatsApp) with active states; body padding so content clears the bar
 - [x] iOS-style pass: Apple motion curve + press feedback (buttons, tabs, drawer), frosted mobile drawer, springier drawer animation
 - [x] Hero rewritten & resized: concrete copy ("Final-year project kits, ready to submit"), smaller type on mobile (30px) and desktop (52px)
-- [ ] Mobile-first refresh: shorten the home screen, clarify what SubmitKit sells, and simplify phone navigation with polished iOS-inspired motion; keep the existing no-image rule
-- [ ] Restore the homepage's main hook titles and remove the duplicate WhatsApp button, keeping only one
+- [x] Mobile-first refresh: shorten the home screen, clarify what SubmitKit sells, and simplify phone navigation with polished iOS-inspired motion; keep the existing no-image rule
+- [x] Restore the homepage's rotating main hook titles, compact the phone layout, and leave one persistent WhatsApp button
 - [ ] Optional next pass: blueprint detail page and order flow deep-check
