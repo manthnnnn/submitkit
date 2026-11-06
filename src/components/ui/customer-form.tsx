@@ -36,15 +36,12 @@ export function CustomerForm({ projectId, price }: Props) {
             const vr = await fetch('/api/orders/verify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ razorpay_order_id: r.razorpay_order_id, razorpay_payment_id: r.razorpay_payment_id, razorpay_signature: r.razorpay_signature }) });
             const vd = await vr.json();
             if (!vr.ok || !vd.success) { setError('Payment verification failed. Contact support with ID: ' + r.razorpay_payment_id); setLoading(false); return; }
-            const p = new URLSearchParams({ order_id: vd.orderId, title: vd.projectTitle || 'Your Project Bundle' });
-            if (vd.hasPersonalization) p.set('personalize', '1');
-            if (vd.hasPlagiarismCert) p.set('plagiarism', '1');
-            if (vd.hasVivaCall)       p.set('viva', '1');
+            const p = new URLSearchParams({ order_id: vd.orderId });
             window.location.href = `/order/success?${p.toString()}`;
           } catch { setError('Error after payment. Please contact support.'); setLoading(false); }
         },
         prefill: { name: form.customerName, email: form.customerEmail, contact: form.customerPhone },
-        theme: { color: '#4F46E5' },
+        theme: { color: '#0D9488' },
       };
       const rzp = new (window as any).Razorpay(opts);
       rzp.on('payment.failed', () => { setError('Payment failed or cancelled. Please try again.'); setLoading(false); });

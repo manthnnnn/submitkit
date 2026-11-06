@@ -3,21 +3,37 @@ import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import {
   CheckCircle2, Download, AlertCircle, Share2, ArrowRight,
-  Copy, Zap, ShieldCheck, FolderOpen, Terminal, Play, GraduationCap,
+  Copy, Zap, ShieldCheck, GraduationCap,
   Check, MessageCircle, FileText, Award, ChevronDown, ChevronUp,
   Loader2, BookOpen, Presentation
 } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Logo } from '@/components/ui/logo';
+import { formatCurrency } from '@/lib/utils';
+
+interface ConfirmedOrder {
+  orderId: string;
+  projectTitle: string;
+  amountPaid: number;
+  createdAt: string;
+  downloadCount: number;
+  downloadLimit: number;
+  hasPersonalization: boolean;
+  hasPlagiarismCert: boolean;
+  hasVivaCall: boolean;
+}
 
 function SuccessContent() {
   const sp           = useSearchParams();
   const orderId      = sp.get('order_id');
-  const projectTitle = sp.get('title') || 'Your Project Bundle';
-  const hasPerson    = sp.get('personalize') === '1';
-  const hasPlagiarism= sp.get('plagiarism')  === '1';
-  const hasViva      = sp.get('viva')        === '1';
+  const [confirmation, setConfirmation] = useState<ConfirmedOrder | null>(null);
+  const [verificationError, setVerificationError] = useState<string | null>(null);
+  const [checkingOrder, setCheckingOrder] = useState(true);
+  const projectTitle = confirmation?.projectTitle ?? 'Your Project Bundle';
+  const hasPerson    = confirmation?.hasPersonalization ?? false;
+  const hasPlagiarism= confirmation?.hasPlagiarismCert ?? false;
+  const hasViva      = confirmation?.hasVivaCall ?? false;
+  const downloadsLeft = Math.max(0, (confirmation?.downloadLimit ?? 0) - (confirmation?.downloadCount ?? 0));
 
   const [error, setError]           = useState<string | null>(null);
   const [downloading, setDownloading] = useState(false);
@@ -44,46 +60,86 @@ function SuccessContent() {
   const [genReport, setGenReport] = useState(false);
   const [genPPT, setGenPPT]       = useState(false);
 
-  // Confetti
+  // Verify paid status before showing the confirmation or purchase controls.
   useEffect(() => {
-    const s = document.createElement('script');
-    s.src = 'https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js';
-    s.onload = () => {
-      const c = (window as any).confetti;
-      if (!c) return;
-      const end = Date.now() + 3000;
-      (function frame() {
-        c({ particleCount: 5, angle: 60, spread: 55, origin: { x: 0 }, colors: ['#0D9488','#14B8A6','#fff'] });
-        c({ particleCount: 5, angle: 120, spread: 55, origin: { x: 1 }, colors: ['#0D9488','#14B8A6','#fff'] });
-        if (Date.now() < end) requestAnimationFrame(frame);
-      }());
+    let cancelled = false;
+    const checkOrder = async () => {
+      if (!orderId || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(orderId)) {
+        setVerificationError('This order link is incomplete or invalid. Use order lookup to find a paid purchase.');
+        setCheckingOrder(false);
+        return;
+      }
+
+      for (let attempt = 0; attempt < 6; attempt += 1) {
+        try {
+          const response = await fetch(`/api/orders/${encodeURIComponent(orderId)}/confirmation`, { cache: 'no-store' });
+          if (response.status === 202) {
+            if (attempt < 5) {
+              await new Promise(resolve => window.setTimeout(resolve, 2000));
+              continue;
+            }
+            if (!cancelled) setVerificationError('Payment is still being confirmed. Check your order again in a moment.');
+            return;
+          }
+          if (response.status >= 500 && attempt < 5) {
+            await new Promise(resolve => window.setTimeout(resolve, 1200));
+            continue;
+          }
+          if (!response.ok) {
+            const body = await response.json().catch(() => ({}));
+            throw new Error(body.error || 'We could not verify this order.');
+          }
+          const data = await response.json() as ConfirmedOrder;
+          if (!cancelled) setConfirmation(data);
+          return;
+        } catch (caught) {
+          if (caught instanceof TypeError && attempt < 5 && !cancelled) {
+            await new Promise(resolve => window.setTimeout(resolve, 1200));
+            continue;
+          }
+          if (!cancelled) setVerificationError(caught instanceof Error ? caught.message : 'We could not verify this order.');
+          if (!cancelled) setCheckingOrder(false);
+          return;
+        } finally {
+          if (!cancelled && attempt === 5) setCheckingOrder(false);
+        }
+      }
+      if (!cancelled) setCheckingOrder(false);
     };
-    document.head.appendChild(s);
-    return () => { if (document.head.contains(s)) document.head.removeChild(s); };
-  }, []);
+
+    void checkOrder();
+    return () => { cancelled = true; };
+  }, [orderId]);
+
+  useEffect(() => {
+    if (confirmation) setCheckingOrder(false);
+  }, [confirmation]);
 
   const handleDownload = async () => {
-    if (downloading || !orderId) return;
+    if (downloading || !confirmation) return;
     setDownloading(true); setError(null);
     try {
-      const res = await fetch(`/api/downloads/${orderId}`);
+      const res = await fetch(`/api/downloads/${confirmation.orderId}`);
       if (!res.ok) {
         let msg = 'Download failed. Try again or email team@submitkit.in.';
         try { const b = await res.json(); if (b?.error) msg = b.error; } catch {}
         setError(msg); setDownloading(false); return;
       }
       const data = await res.json();
-      if (data.url) window.location.href = data.url;
+      if (data.url) {
+        setConfirmation(current => current ? { ...current, downloadCount: Math.min(current.downloadCount + 1, current.downloadLimit) } : current);
+        window.location.href = data.url;
+      }
       else { setError('Missing download link.'); setDownloading(false); }
     } catch { setError('Network error. Check connection.'); setDownloading(false); }
   };
 
   const handlePersonalize = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!orderId) return;
+    if (!confirmation) return;
     setPersonalizing(true); setPersonError(null);
     try {
-      const res = await fetch('/api/personalize', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ orderId, customerEmail: sEmail, studentName: sName, rollNumber: sRoll, guideName: sGuide, size: 'full' }) });
+      const res = await fetch('/api/personalize', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ orderId: confirmation.orderId, customerEmail: sEmail, studentName: sName, rollNumber: sRoll, guideName: sGuide, size: 'full' }) });
       if (!res.ok) { const d = await res.json().catch(() => ({})); setPersonError(d.error || 'Generation failed. Contact team@submitkit.in.'); setPersonalizing(false); return; }
       const blob = await res.blob();
       const url  = URL.createObjectURL(blob);
@@ -96,31 +152,52 @@ function SuccessContent() {
   };
 
   const buildReportUrl = (type: 'report'|'ppt') => {
-    if (!orderId) return '#';
+    if (!confirmation) return '#';
     const p = new URLSearchParams();
     if (type === 'report') p.set('size', reportSize);
     if (hasPerson && rName) { p.set('name', rName); if (rRoll) p.set('roll', rRoll); if (rGuide) p.set('guide', rGuide); if (rCollege) p.set('college', rCollege); }
-    return `/api/${type}/${orderId}?${p.toString()}`;
+    return `/api/${type}/${confirmation.orderId}?${p.toString()}`;
   };
 
-  const waLink = `https://wa.me/918799814256?text=${encodeURIComponent(`Hi! I purchased "${projectTitle}" (Order: ${orderId?.split('-')[0].toUpperCase() ?? ''}). Ready to discuss custom changes!`)}`;
-  const shortId = orderId ? orderId.split('-')[0].toUpperCase() : '';
+  const waLink = `https://wa.me/918799814256?text=${encodeURIComponent(`Hi! I purchased "${projectTitle}" (Order: ${confirmation?.orderId.split('-')[0].toUpperCase() ?? ''}). Ready to discuss custom changes!`)}`;
+  const shortId = confirmation?.orderId.split('-')[0].toUpperCase() ?? '';
+  const purchaseDate = confirmation ? new Date(confirmation.createdAt) : null;
+  const purchaseDateLabel = purchaseDate && Number.isFinite(purchaseDate.getTime())
+    ? purchaseDate.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+    : 'Confirmed';
 
   const inputSty: React.CSSProperties = { width: '100%', background: 'var(--surface)', border: '1.5px solid var(--line)', borderRadius: '10px', padding: '.625rem .875rem', fontSize: '.9375rem', color: 'var(--ink)', outline: 'none', fontFamily: 'var(--font-sans)', transition: 'border-color 150ms' };
 
   return (
-    <div style={{ background: 'var(--canvas)', minHeight: '100vh', paddingBottom: '4rem' }}>
+    <div className="order-success-page" style={{ background: 'var(--canvas)', minHeight: '100vh', paddingBottom: '4rem' }}>
+      {!confirmation && (
+        <div className="shell" style={{ maxWidth: '40rem', paddingTop: '3rem', position: 'relative', zIndex: 1 }}>
+          <div className="card" style={{ padding: '2rem', textAlign: 'center' }} aria-live="polite">
+            {checkingOrder ? (
+              <>
+                <Loader2 style={{ width: '2rem', height: '2rem', color: 'var(--teal)', margin: '0 auto 1rem', animation: 'spin .7s linear infinite' }} />
+                <h1 style={{ fontSize: '1.375rem', color: 'var(--navy)', marginBottom: '.5rem' }}>Confirming your order</h1>
+                <p style={{ color: 'var(--ink-3)', fontSize: '.9375rem' }}>This usually takes a few seconds. Please keep this page open.</p>
+              </>
+            ) : (
+              <>
+                <AlertCircle style={{ width: '2rem', height: '2rem', color: 'var(--amber)', margin: '0 auto 1rem' }} />
+                <h1 style={{ fontSize: '1.375rem', color: 'var(--navy)', marginBottom: '.5rem' }}>We couldn’t confirm this order</h1>
+                <p style={{ color: 'var(--ink-3)', fontSize: '.9375rem', marginBottom: '1.25rem' }}>{verificationError ?? 'Please look up your order or contact support.'}</p>
+                <Link href="/order/lookup" className="btn btn-teal">Find my order <ArrowRight style={{ width: '1rem', height: '1rem' }} /></Link>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+      {confirmation && (
+      <>
       {/* Ambient orbs */}
       <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0 }} aria-hidden>
         <div className="aorb" style={{ position: 'absolute', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(13,148,136,.09) 0%,transparent 70%)', top: '-10%', left: '50%', transform: 'translateX(-50%)', filter: 'blur(70px)' }} />
       </div>
 
       <div className="shell" style={{ paddingTop: '2rem', position: 'relative', zIndex: 1 }}>
-        {/* Logo */}
-        <div style={{ marginBottom: '2rem' }}>
-          <Logo size="sm" href="/" />
-        </div>
-
         {/* Success header */}
         <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .4 }}
           style={{ textAlign: 'center', marginBottom: '2rem' }}
@@ -133,14 +210,14 @@ function SuccessContent() {
           </h1>
           <p style={{ fontSize: '.9375rem', color: 'var(--teal-dark)', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '.375rem' }}>
             <span className="dot-live apulse" />
-            Order confirmed — check your email for receipt
+            Your payment has been verified
           </p>
         </motion.div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 22rem), 1fr))', gap: '1.5rem', alignItems: 'start' }}>
+        <div className="order-success-content" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', maxWidth: '58rem', margin: '0 auto' }}>
 
-          {/* ── LEFT: Order + Download ── */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', gridColumn: 'span 2' }}>
+          {/* Order and downloads */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', minWidth: 0 }}>
 
             {/* Order card */}
             <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .4, delay: .08 }}
@@ -149,19 +226,23 @@ function SuccessContent() {
               <div style={{ padding: '1.375rem', borderBottom: '1px solid var(--line)' }}>
                 <p style={{ fontSize: '.6875rem', fontWeight: 700, color: 'var(--ink-4)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: '.375rem' }}>Purchased Item</p>
                 <p style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--navy)' }}>{projectTitle}</p>
+                <div className="order-success-summary">
+                  <span><strong>Paid</strong>{formatCurrency(confirmation?.amountPaid ?? 0)}</span>
+                  <span><strong>Order date</strong>{purchaseDateLabel}</span>
+                </div>
 
                 {/* Order ID */}
-                {orderId && (
+                {confirmation && (
                   <div style={{ marginTop: '1rem', padding: '1rem', borderRadius: '12px', background: 'var(--amber-50)', border: '1.5px solid var(--amber-100)' }}>
                     <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem' }}>
                       <div>
                         <p style={{ fontSize: '.6875rem', fontWeight: 800, color: 'var(--amber)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: '.375rem' }}>
-                          ⚠ Important — Save Your Order ID
+                          Save your Order ID
                         </p>
                         <p style={{ fontFamily: 'var(--font-mono)', fontSize: '1.75rem', fontWeight: 900, color: 'var(--navy)', letterSpacing: '.1em', lineHeight: 1 }}>{shortId}</p>
                         <p style={{ fontSize: '.75rem', color: 'var(--ink-3)', marginTop: '.375rem' }}>You need this to re-download or contact support</p>
                       </div>
-                      <button onClick={() => { navigator.clipboard.writeText(orderId); setIdCopied(true); setTimeout(() => setIdCopied(false), 2000); }}
+                      <button type="button" aria-label="Copy order ID" title={idCopied ? 'Copied' : 'Copy order ID'} onClick={() => { navigator.clipboard.writeText(confirmation.orderId); setIdCopied(true); setTimeout(() => setIdCopied(false), 2000); }}
                         style={{ background: 'none', border: 'none', cursor: 'pointer', color: idCopied ? 'var(--teal)' : 'var(--ink-4)', padding: '.25rem', marginTop: '.25rem' }}
                       >
                         {idCopied ? <Check style={{ width: '1rem', height: '1rem' }} /> : <Copy style={{ width: '1rem', height: '1rem' }} />}
@@ -186,40 +267,57 @@ function SuccessContent() {
 
                 <div style={{ background: 'var(--emerald-50)', border: '1px solid var(--emerald-100)', borderRadius: '14px', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '.875rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '.8125rem', color: 'var(--emerald)', fontWeight: 600 }}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '.375rem' }}><Zap style={{ width: '.875rem', height: '.875rem' }} /> Link expires in 10 minutes</span>
-                    <span>Up to 3 downloads included</span>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '.375rem' }}><Zap style={{ width: '.875rem', height: '.875rem' }} /> {downloadsLeft} download{downloadsLeft === 1 ? '' : 's'} remaining</span>
+                    <span>{confirmation?.downloadCount ?? 0} / {confirmation?.downloadLimit ?? 0} used</span>
                   </div>
-                  <button onClick={handleDownload} disabled={downloading}
+                  <button onClick={handleDownload} disabled={downloading || downloadsLeft === 0}
                     className="btn btn-teal"
-                    style={{ width: '100%', justifyContent: 'center', minHeight: '56px', fontSize: '1.0625rem', fontWeight: 800, borderRadius: '12px', opacity: downloading ? .7 : 1 }}
+                    style={{ width: '100%', justifyContent: 'center', minHeight: '56px', fontSize: '1.0625rem', fontWeight: 800, borderRadius: '12px', opacity: downloading || downloadsLeft === 0 ? .7 : 1 }}
                   >
-                    {downloading ? <><Loader2 style={{ width: '1.125rem', height: '1.125rem', animation: 'spin .7s linear infinite' }} /> Preparing Your Bundle…</> : <><Download style={{ width: '1.125rem', height: '1.125rem' }} /> Download Complete Bundle (.zip)</>}
+                    {downloading ? <><Loader2 style={{ width: '1.125rem', height: '1.125rem', animation: 'spin .7s linear infinite' }} /> Preparing Your Bundle…</> : downloadsLeft === 0 ? 'Download limit reached' : <><Download style={{ width: '1.125rem', height: '1.125rem' }} /> Download Complete Bundle (.zip)</>}
                   </button>
                   <p style={{ textAlign: 'center', fontSize: '.8125rem', color: 'var(--ink-4)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '.375rem', fontWeight: 500 }}>
-                    <ShieldCheck style={{ width: '.875rem', height: '.875rem', color: 'var(--teal)' }} /> Secure delivery via Cloudflare CDN
+                    <ShieldCheck style={{ width: '.875rem', height: '.875rem', color: 'var(--teal)' }} /> Each download link is valid for 10 minutes
                   </p>
+                  {downloadsLeft === 0 && <p style={{ textAlign: 'center', fontSize: '.8125rem', color: 'var(--ink-3)' }}>Need another copy? Email <a href={`mailto:team@submitkit.in?subject=${encodeURIComponent(`Download reset for order ${shortId}`)}`} style={{ color: 'var(--teal-dark)', fontWeight: 700 }}>support</a> with your Order ID.</p>}
                 </div>
 
                 {/* Quick access links */}
-                {orderId && (
+                {confirmation && (
                   <div style={{ display: 'flex', gap: '.625rem', marginTop: '.875rem', flexWrap: 'wrap' }}>
-                    <Link href={`/viva/${orderId}`}
+                    <Link href={`/viva/${confirmation.orderId}`}
                       style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '.375rem', padding: '.625rem', borderRadius: '10px', background: 'var(--violet-50)', border: '1px solid var(--violet-100)', color: 'var(--violet)', fontSize: '.875rem', fontWeight: 700, textDecoration: 'none', minWidth: '8rem' }}
                     >
                       <GraduationCap style={{ width: '.9375rem', height: '.9375rem' }} /> View Viva Q&amp;A
                     </Link>
-                    <Link href={`/certificate/${orderId}`} target="_blank"
+                    {hasPlagiarism && <Link href={`/certificate/${confirmation.orderId}`} target="_blank"
                       style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '.375rem', padding: '.625rem', borderRadius: '10px', background: 'var(--amber-50)', border: '1px solid var(--amber-100)', color: 'var(--amber)', fontSize: '.875rem', fontWeight: 700, textDecoration: 'none', minWidth: '8rem' }}
                     >
                       <Award style={{ width: '.9375rem', height: '.9375rem' }} /> Plagiarism Certificate
-                    </Link>
+                    </Link>}
                   </div>
                 )}
               </div>
             </motion.div>
 
+            {/* Setup guide immediately follows the bundle download actions. */}
+            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .4, delay: .12 }}
+              className="card order-success-video" style={{ overflow: 'hidden' }}
+            >
+              <div style={{ padding: '1.125rem 1.375rem', borderBottom: '1px solid var(--line)' }}>
+                <h3 style={{ fontSize: '.9375rem', fontWeight: 700, color: 'var(--navy)' }}>Setup guide</h3>
+                <p style={{ fontSize: '.8125rem', color: 'var(--ink-3)', marginTop: '.25rem' }}>Watch while your project bundle downloads.</p>
+              </div>
+              <div style={{ background: 'var(--surface-2)' }}>
+                <video controls playsInline preload="none" poster="/video-poster.jpg" className="w-full aspect-video">
+                  <source src="/demo.mp4" type="video/mp4" />
+                  Your browser does not support video playback.
+                </video>
+              </div>
+            </motion.div>
+
             {/* Report + PPT generator */}
-            {orderId && (
+            {confirmation && (
               <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .4, delay: .14 }}
                 className="card" style={{ padding: '1.375rem' }}
               >
@@ -347,20 +445,6 @@ function SuccessContent() {
               </motion.div>
             )}
 
-            {/* Setup video */}
-            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .4, delay: .26 }}
-              className="card" style={{ overflow: 'hidden' }}
-            >
-              <div style={{ padding: '1.125rem 1.375rem', borderBottom: '1px solid var(--line)' }}>
-                <h3 style={{ fontSize: '.9375rem', fontWeight: 700, color: 'var(--navy)' }}>How to Setup — Watch While Downloading</h3>
-              </div>
-              <div style={{ background: 'var(--surface-2)' }}>
-                <video controls playsInline preload="metadata" poster="/video-poster.jpg" className="w-full aspect-video">
-                  <source src="/demo.mp4" type="video/mp4" />
-                </video>
-              </div>
-            </motion.div>
-
             {/* Action row */}
             <div style={{ display: 'flex', gap: '.625rem', flexWrap: 'wrap' }}>
               <button onClick={() => { const t = 'Just got my final year project bundle from SubmitKit! Running perfectly!'; if (navigator.share) navigator.share({ title: 'SubmitKit', text: t, url: 'https://submitkit.in' }).catch(() => {}); else { navigator.clipboard.writeText(t + ' https://submitkit.in'); setCopied(true); setTimeout(() => setCopied(false), 2000); } }}
@@ -383,6 +467,7 @@ function SuccessContent() {
 
         </div>
       </div>
+      </>)}
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );

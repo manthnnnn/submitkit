@@ -178,3 +178,21 @@ body::before {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--accent-cyan);
 }
+
+/* Lighten the project introduction; preserve the embedded code preview and IDE. */
+.devforge-landing {
+  background: #FAF7F0 !important;
+  color: #1E293B !important;
+}
+.devforge-landing nav { background: rgba(253,251,247,.97) !important; border-bottom-color: #EAE3D6 !important; box-shadow: 0 1px 3px rgba(15,23,42,.06); }
+.devforge-landing nav a:not([style*="background: linear-gradient"]) { color: #334155 !important; }
+.devforge-landing h1, .devforge-landing h2, .devforge-landing h3, .devforge-landing h4 { color: #0F172A !important; }
+.devforge-landing p[style*="color: #94a3b8"], .devforge-landing p[style*="color:#94a3b8"],
+.devforge-landing p[style*="color: #cbd5e1"], .devforge-landing p[style*="color:#cbd5e1"] { color: #475569 !important; }
+.devforge-landing section[style*="rgba(139, 92, 246, 0.08)"],
+.devforge-landing section[style*="rgba(17, 24, 39, 0.7)"] {
+  background: #FFFFFF !important;
+  border-color: #EAE3D6 !important;
+  box-shadow: 0 1px 3px rgba(15,23,42,.06);
+}
+.devforge-landing footer { background: #F5F0E6 !important; border-color: #EAE3D6 !important; color: #475569 !important; }

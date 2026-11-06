@@ -14,7 +14,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body className="sentinel-theme">
         <FintechNavbar />
         <main style={{ minHeight: 'calc(100vh - 130px)', paddingBottom: '40px' }}>
           {children}
