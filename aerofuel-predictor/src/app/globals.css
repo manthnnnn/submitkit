@@ -169,3 +169,29 @@ a {
 .animate-pulse-glow {
   animation: pulse-glow 3s infinite;
 }
+
+/* Light storefront shell; aviation telemetry retains its own data coloring. */
+.aero-theme, .aero-theme body { background: #FAF7F0 !important; color: #1E293B !important; }
+.aero-theme body { background-image: none !important; }
+.aero-theme h1, .aero-theme h2, .aero-theme h3, .aero-theme h4 { color: #0F172A !important; }
+.aero-theme p[style*="rgba(255, 255, 255"],
+.aero-theme div[style*="rgba(255, 255, 255, 0."] { color: #475569 !important; }
+.aero-theme nav { background: rgba(253, 251, 247, .96) !important; border-bottom-color: #EAE3D6 !important; box-shadow: 0 1px 3px rgba(15,23,42,.06); }
+.aero-theme nav a { color: #334155 !important; }
+.aero-theme nav a[aria-current="page"], .aero-theme nav a[style*="color: var(--color-primary)"] { color: #0A7C72 !important; }
+.aero-theme .glass-panel,
+.aero-theme [style*="background: rgba(12, 14, 22"],
+.aero-theme [style*="background: rgba(10, 10, 14"],
+.aero-theme [style*="background: rgba(6, 8, 14"] {
+  background: #FFFFFF !important;
+  border-color: #EAE3D6 !important;
+  box-shadow: 0 1px 3px rgba(15,23,42,.06) !important;
+  color: #1E293B !important;
+}
+.aero-theme .btn-premium { background: #0D9488 !important; color: #FFFFFF !important; box-shadow: 0 2px 8px -1px rgba(13,148,136,.25) !important; }
+.aero-theme .premium-input { background: #FFFFFF !important; color: #1E293B !important; border: 1px solid #DED4C4 !important; }
+.aero-theme .premium-input::placeholder { color: #64748B !important; }
+.aero-theme .premium-input option { background: #FFFFFF !important; color: #1E293B !important; }
+.aero-theme ::-webkit-scrollbar-track { background: #FAF7F0; }
+.aero-theme ::-webkit-scrollbar-thumb { background: #DED4C4; }
+.aero-theme ::-webkit-scrollbar-thumb:hover { background: #0D9488; }

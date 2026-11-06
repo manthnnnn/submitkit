@@ -67,7 +67,7 @@ HAVING AVG(e.salary) > 85000;`
   };
 
   return (
-    <div style={{
+    <div className="devforge-landing" style={{
       minHeight: '100vh',
       backgroundColor: '#07090e',
       color: '#f8fafc',
