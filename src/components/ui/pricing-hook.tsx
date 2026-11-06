@@ -104,7 +104,7 @@ export function PricingHook() {
             </div>
 
             {/* Deliverables List (Matches Image 3) */}
-            <div className="space-y-2 mb-4">
+          <div className="pricing-hook-deliverables space-y-2 mb-4">
               {DELIVERABLES.map(({ Icon, label, sub, accent, bg, border }) => (
                 <div
                   key={label}

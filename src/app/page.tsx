@@ -66,7 +66,7 @@ function StatCard({
   return (
     <div
       ref={ref}
-      className="card card-lift group"
+      className="card card-lift group home-stat-card"
       style={{
         padding: '1.25rem 1.125rem',
         textAlign: 'center',
@@ -293,6 +293,11 @@ export default function HomePage() {
           >
             <AiTopicExplorer />
           </motion.div>
+          <Link href="/blueprint" className="home-topic-quick-link">
+            <BookOpen aria-hidden="true" />
+            <span>Explore 1,078 free topic blueprints</span>
+            <ArrowRight aria-hidden="true" />
+          </Link>
 
           {/* University trust row */}
           <motion.div
