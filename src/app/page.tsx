@@ -308,7 +308,7 @@ export default function HomePage() {
             <p style={{ fontSize: '.6875rem', fontWeight: 800, color: 'var(--ink-4)', textTransform: 'uppercase', letterSpacing: '.14em', marginBottom: '1.125rem' }}>
               Trusted by 500+ students from top universities
             </p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '.625rem 1rem' }}>
+            <div className="home-university-list" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '.625rem 1rem' }}>
               {CONSTANTS.UNIVERSITIES.map(u => (
                 <span key={u}
                   style={{
@@ -334,7 +334,7 @@ export default function HomePage() {
       ════════════════════════════════════════════ */}
       <section className="home-stats" style={{ ...S.section(), borderTop: '1px solid var(--line)', borderBottom: '1px solid var(--line)', padding: '2.5rem 0' }}>
         <div className="shell">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(13rem, 1fr))', gap: '1.25rem', maxWidth: '66rem', margin: '0 auto' }}>
+          <div className="home-stat-track" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(13rem, 1fr))', gap: '1.25rem', maxWidth: '66rem', margin: '0 auto' }}>
             <StatCard icon={Package} val={59} suffix="" label="Ready Project Kits" accent="#0D9488" bg="#F0FDFA" border="rgba(13,148,136,0.2)" />
             <StatCard icon={BookOpen} val={CONSTANTS.TOTAL_TOPICS} suffix="+" label="Free Blueprints" accent="#0F766E" bg="#ECFDF5" border="rgba(5,150,105,0.2)" />
             <StatCard icon={ShieldCheck} customVal="₹1,20,000+" label="Saved vs Local Vendors" accent="#059669" bg="#F0FDF4" border="rgba(5,150,105,0.2)" />
@@ -420,7 +420,7 @@ export default function HomePage() {
               {/* 3D Blueprint showcase card */}
               <motion.div
                 initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: .42 }}
-                className="card card-lift relative overflow-hidden"
+                className="card card-lift home-blueprints-card relative overflow-hidden"
                 style={{
                   padding: '2rem 1.75rem',
                   background: 'var(--surface)',
@@ -444,7 +444,7 @@ export default function HomePage() {
               {/* 3D Custom build card */}
               <motion.div
                 initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: .42, delay: .1 }}
-            className="card card-lift home-final-panel"
+                className="card card-lift home-custom-card"
                 style={{
                   padding: '1.75rem',
                   borderRadius: 'var(--r-2xl)',
@@ -480,7 +480,7 @@ export default function HomePage() {
               <motion.div key={s.n}
                 initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
                 transition={{ duration: .38, delay: i * .1 }}
-                className="card card-lift"
+                className="card card-lift home-how-card"
                 style={{
                   padding: '1.75rem',
                   borderRadius: 'var(--r-xl)',
@@ -513,6 +513,7 @@ export default function HomePage() {
       <section className="home-final-cta defer" style={{ ...S.section(), padding: '4rem 1rem 5rem' }}>
         <div className="shell" style={{ maxWidth: '52rem' }}>
           <div
+            className="home-final-panel"
             className="relative overflow-hidden"
             style={{
               background: 'var(--surface)',
