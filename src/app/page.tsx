@@ -302,7 +302,7 @@ export default function HomePage() {
           {/* University trust row */}
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .4, delay: .3 }}
-            className="mt-8 sm:mt-12 pt-6 sm:pt-8 text-center pb-8 sm:pb-12"
+            className="home-university-trust mt-8 sm:mt-12 pt-6 sm:pt-8 text-center pb-8 sm:pb-12"
             style={{ borderTop: '1px solid var(--line)' }}
           >
             <p style={{ fontSize: '.6875rem', fontWeight: 800, color: 'var(--ink-4)', textTransform: 'uppercase', letterSpacing: '.14em', marginBottom: '1.125rem' }}>
@@ -415,7 +415,7 @@ export default function HomePage() {
             </div>
 
             {/* Right: 3D blueprint + custom cards */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <div className="home-secondary-track" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
 
               {/* 3D Blueprint showcase card */}
               <motion.div
@@ -444,7 +444,7 @@ export default function HomePage() {
               {/* 3D Custom build card */}
               <motion.div
                 initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: .42, delay: .1 }}
-                className="card card-lift"
+            className="card card-lift home-final-panel"
                 style={{
                   padding: '1.75rem',
                   borderRadius: 'var(--r-2xl)',

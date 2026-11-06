@@ -56,7 +56,7 @@ export function PricingHook() {
       >
         {/* Card body */}
         <div
-          className="relative rounded-[calc(1.5rem-1.5px)] overflow-hidden"
+          className="pricing-hook-body relative rounded-[calc(1.5rem-1.5px)] overflow-hidden"
           style={{
             background: 'var(--surface)',
           }}
@@ -70,7 +70,7 @@ export function PricingHook() {
             }}
           />
 
-          <div className="p-4 sm:p-5 lg:p-6">
+          <div className="pricing-hook-content p-4 sm:p-5 lg:p-6">
             {/* Executive Badges Row (Matches Image 3) */}
             <div className="flex items-center justify-between gap-2 mb-3">
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold text-teal-900 bg-teal-50 border border-teal-200/80 shadow-xs uppercase tracking-wide">
@@ -156,6 +156,7 @@ export function PricingHook() {
 
             {/* Major Project Upsell Drawer (Matches Top Right of Image 1) */}
               <div
+                className="pricing-hook-upsell"
                 className="mt-3.5 pt-2.5 rounded-xl p-3 border flex items-center justify-between gap-3"
                 style={{
                   background: 'var(--teal-50)',

@@ -46,10 +46,10 @@ export function Testimonials() {
                 <div style={{ display: 'flex', gap: '2px', marginBottom: '1rem' }}>
                   {[1,2,3,4,5].map(s => <Star key={s} style={{ width: '13px', height: '13px', fill: '#F59E0B', color: '#F59E0B' }} />)}
                 </div>
-                <p style={{ fontSize: '.9375rem', color: 'var(--ink-2)', lineHeight: 1.75, flex: 1, marginBottom: '1.125rem' }}>
+                <p className="home-review-quote" style={{ fontSize: '.9375rem', color: 'var(--ink-2)', lineHeight: 1.75, flex: 1, marginBottom: '1.125rem' }}>
                   &ldquo;{r.t}&rdquo;
                 </p>
-                <span className="tag tag-teal" style={{ fontSize: '.6rem', width: 'fit-content', marginBottom: '1rem' }}>{r.project}</span>
+                <span className="home-review-project tag tag-teal" style={{ fontSize: '.6rem', width: 'fit-content', marginBottom: '1rem' }}>{r.project}</span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '.75rem', paddingTop: '.875rem', borderTop: '1px solid var(--line)' }}>
                   <div style={{ width: '2.25rem', height: '2.25rem', borderRadius: '50%', flexShrink: 0, background: av.bg, color: av.c, border: `1.5px solid ${av.bg}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '.6875rem', fontWeight: 800 }}>
                     {r.av}
