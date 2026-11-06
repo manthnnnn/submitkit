@@ -81,9 +81,13 @@ function SuccessContent() {
             if (!cancelled) setVerificationError('Payment is still being confirmed. Check your order again in a moment.');
             return;
           }
-          if (response.status >= 500 && attempt < 5) {
-            await new Promise(resolve => window.setTimeout(resolve, 1200));
-            continue;
+          if (response.status >= 500) {
+            const body = await response.json().catch(() => ({}));
+            if (!cancelled) {
+              setVerificationError(body.error || 'Order verification is temporarily unavailable. Please look up your order or contact support.');
+              setCheckingOrder(false);
+            }
+            return;
           }
           if (!response.ok) {
             const body = await response.json().catch(() => ({}));
