@@ -15,4 +15,5 @@
 - [x] Replace the setup-video cover with a custom branded SVG poster; keep generated imagery out of the app
 - [x] Review the order-success page against the storefront UI, verify the demo video placement, and resolve payment-confirmation loading/error states
 - [x] Scan customer-facing pages for remaining outdated dark UI and identify the intentionally dark sections
+- [x] Shorten mobile homepage scrolling by hiding repeated kit/process sections on phones and condensing the final CTA; keep the main catalog and swipeable reviews
 - [ ] Verify a real paid order and download end-to-end (blocked until payment/database configuration is available in preview)

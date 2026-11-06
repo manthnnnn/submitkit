@@ -56,7 +56,7 @@ export function PricingHook() {
       >
         {/* Card body */}
         <div
-          className="relative rounded-[calc(1.5rem-1.5px)] overflow-hidden"
+          className="pricing-hook-body relative rounded-[calc(1.5rem-1.5px)] overflow-hidden"
           style={{
             background: 'var(--surface)',
           }}
@@ -70,9 +70,9 @@ export function PricingHook() {
             }}
           />
 
-          <div className="p-4 sm:p-5 lg:p-6">
+          <div className="pricing-hook-content p-4 sm:p-5 lg:p-6">
             {/* Executive Badges Row (Matches Image 3) */}
-            <div className="flex items-center justify-between gap-2 mb-3">
+            <div className="pricing-hook-badges flex items-center justify-between gap-2 mb-3">
               <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold text-teal-900 bg-teal-50 border border-teal-200/80 shadow-xs uppercase tracking-wide">
                 <Zap className="w-3 h-3 text-teal-600 fill-teal-600" />
                 Verified Kit
@@ -86,12 +86,12 @@ export function PricingHook() {
             <h3 className="font-display text-2xl sm:text-[1.65rem] font-black text-slate-900 tracking-tight leading-tight mb-1">
               Mini Project Kit
             </h3>
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-3.5">
+            <p className="pricing-hook-description text-xs sm:text-sm text-slate-600 leading-relaxed mb-3.5">
               5th &amp; 6th semester done right. Download, run, submit with confidence.
             </p>
 
             {/* Clean, Non-Wrapping Price Showcase (Matches Image 3) */}
-            <div className="flex items-baseline gap-3 mb-4 flex-wrap sm:flex-nowrap">
+            <div className="pricing-hook-price flex items-baseline gap-3 mb-4 flex-wrap sm:flex-nowrap">
               <span className="text-4xl sm:text-[2.75rem] font-black text-slate-900 tracking-tight font-display whitespace-nowrap leading-none select-none inline-block">
                 ₹{mini}
               </span>
@@ -104,7 +104,7 @@ export function PricingHook() {
             </div>
 
             {/* Deliverables List (Matches Image 3) */}
-            <div className="space-y-2 mb-4">
+          <div className="pricing-hook-deliverables space-y-2 mb-4">
               {DELIVERABLES.map(({ Icon, label, sub, accent, bg, border }) => (
                 <div
                   key={label}
@@ -135,7 +135,7 @@ export function PricingHook() {
             {/* High-Converting CTA Button (Matches Image 3) */}
             <Link
               href="/projects?tier=MINI"
-              className="group relative w-full flex items-center justify-center gap-2 rounded-xl text-sm sm:text-base font-bold text-white transition-all active:scale-[0.98] shadow-lg hover:shadow-xl overflow-hidden"
+              className="pricing-hook-cta group relative w-full flex items-center justify-center gap-2 rounded-xl text-sm sm:text-base font-bold text-white transition-all active:scale-[0.98] shadow-lg hover:shadow-xl overflow-hidden"
               style={{
                 minHeight: '48px',
                 background: 'var(--teal)',
@@ -149,14 +149,14 @@ export function PricingHook() {
             </Link>
 
             {/* Guarantee Footnote (Matches Image 3) */}
-            <p className="text-center text-[11px] text-slate-500 mt-2.5 flex items-center justify-center gap-1.5 font-medium flex-wrap">
+            <p className="pricing-hook-guarantee text-center text-[11px] text-slate-500 mt-2.5 flex items-center justify-center gap-1.5 font-medium flex-wrap">
               <ShieldCheck className="w-3.5 h-3.5 text-teal-600 shrink-0" />
               <span>Instant Download · 100% Bug-Free Guarantee</span>
             </p>
 
             {/* Major Project Upsell Drawer (Matches Top Right of Image 1) */}
               <div
-                className="mt-3.5 pt-2.5 rounded-xl p-3 border flex items-center justify-between gap-3"
+                className="pricing-hook-upsell mt-3.5 pt-2.5 rounded-xl p-3 border flex items-center justify-between gap-3"
                 style={{
                   background: 'var(--teal-50)',
                   borderColor: 'var(--teal-100)',

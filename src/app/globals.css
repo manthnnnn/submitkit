@@ -516,6 +516,9 @@
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 @media (max-width: 767px) {
+  /* These repeat projects and process details already available from the catalog and menu. */
+  .home-ready-kits, .home-how { display: none !important; }
+
   .adrawer {
     top: calc(4.5rem + env(safe-area-inset-top, 0px)) !important;
     right: .75rem !important;
@@ -807,6 +810,161 @@
   .home-stats .shell > div { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: .625rem !important; }
   .home-ready-kits, .home-how { padding: 2.5rem 0 !important; }
   .home-final-cta { padding: 2.5rem .75rem 3rem !important; }
+}
+
+/* Keep the mobile home feed concise: preserve choices, present repeated items as carousels. */
+.home-topic-quick-link { display: none; }
+@media (max-width: 767px) {
+  .home-hero > .shell > div:first-child { gap: .75rem !important; }
+  .home-topic-explorer, .home-university-trust { display: none !important; }
+  .home-topic-quick-link {
+    display: flex;
+    align-items: center;
+    gap: .65rem;
+    min-height: 3rem;
+    margin: .75rem 0 1rem;
+    padding: .625rem .75rem;
+    border: 1px solid var(--line-teal);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    color: var(--teal-dark);
+    font-size: .8125rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .home-topic-quick-link svg:first-child { width: 1rem; height: 1rem; flex: none; }
+  .home-topic-quick-link span { flex: 1; }
+  .home-topic-quick-link svg:last-child { width: .9rem; height: .9rem; flex: none; }
+
+  .home-hero-pricing .pricing-hook-content { padding: .875rem !important; }
+  .home-hero-pricing .pricing-hook-badges { margin-bottom: .5rem !important; }
+  .home-hero-pricing h3 { font-size: 1.25rem !important; }
+  .home-hero-pricing .pricing-hook-description { margin-bottom: .625rem !important; font-size: .75rem !important; }
+  .home-hero-pricing .pricing-hook-price { margin-bottom: .625rem !important; gap: .5rem !important; }
+  .home-hero-pricing .pricing-hook-deliverables {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .375rem !important;
+    margin-bottom: .625rem !important;
+  }
+  .home-hero-pricing .pricing-hook-deliverables > div { align-items: center !important; gap: .4rem !important; padding: .45rem !important; border-radius: var(--r-sm) !important; }
+  .home-hero-pricing .pricing-hook-deliverables > div > div:first-child { display: none !important; }
+  .home-hero-pricing .pricing-hook-deliverables > div > div:last-child > div:first-child { font-size: .6875rem !important; line-height: 1.2 !important; }
+  .home-hero-pricing .pricing-hook-deliverables > div > div:last-child > div:last-child { display: none !important; }
+  .home-hero-pricing .pricing-hook-cta { min-height: 2.75rem !important; }
+  .home-hero-pricing .pricing-hook-guarantee { margin-top: .375rem !important; font-size: .625rem !important; }
+  .home-hero-pricing .pricing-hook-upsell { margin-top: .5rem !important; padding: .5rem .625rem !important; }
+
+  .home-stats { padding: .75rem 0 !important; }
+  .home-stats .home-stat-track {
+    display: flex !important;
+    gap: .5rem !important;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .home-stats .home-stat-track::-webkit-scrollbar { display: none; }
+  .home-stat-card { flex: 0 0 9rem; min-height: 5.5rem; padding: .625rem !important; border-radius: var(--r-md) !important; scroll-snap-align: start; }
+  .home-stat-card > div:first-child { width: 1.5rem !important; height: 1.5rem !important; margin-bottom: .3rem !important; }
+  .home-stat-card > div:nth-child(2) { font-size: 1.25rem !important; }
+  .home-stat-card > div:nth-child(3) { margin-top: .25rem !important; font-size: .5625rem !important; }
+
+  .home-ready-kits, .home-how { padding: 1.5rem 0 !important; }
+  .home-ready-kits .shell > div { display: block !important; }
+  .home-ready-kits h2 { margin-bottom: .75rem !important; font-size: 1.5rem !important; }
+  .home-ready-track {
+    flex-direction: row !important;
+    gap: .625rem !important;
+    margin: 0 -1rem .75rem !important;
+    padding: 0 1rem .4rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .home-ready-track::-webkit-scrollbar { display: none; }
+  .home-ready-track > div { flex: 0 0 min(84vw, 21rem); scroll-snap-align: start; }
+  .home-ready-track > div > a { min-height: 4.5rem; gap: .625rem !important; padding: .625rem !important; }
+  .home-ready-track > div > a > div:first-child { width: 1.75rem; height: 1.75rem; }
+  .home-ready-track > div > a > div:nth-child(2) > div:first-child { font-size: .75rem; }
+  .home-secondary-track {
+    flex-direction: row !important;
+    gap: .625rem !important;
+    margin: .75rem -1rem 0;
+    padding: 0 1rem .4rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .home-secondary-track::-webkit-scrollbar { display: none; }
+  .home-secondary-track > * { flex: 0 0 min(84vw, 21rem); padding: 1rem !important; scroll-snap-align: start; }
+  .home-secondary-track > .home-blueprints-card > div:nth-child(2) { font-size: 2.25rem !important; }
+  .home-secondary-track > .home-blueprints-card > p { font-size: .75rem !important; }
+  .home-secondary-track > .home-blueprints-card > p:nth-of-type(2) { display: none; }
+  .home-secondary-track > .home-custom-card p { font-size: .75rem !important; margin-bottom: .625rem !important; }
+
+  .home-how > .shell > p { margin-bottom: .35rem !important; }
+  .home-how h2 { margin-bottom: .75rem !important; font-size: 1.5rem !important; }
+  .home-how-track {
+    display: flex !important;
+    gap: .625rem !important;
+    margin: 0 -1rem;
+    padding: 0 1rem .4rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .home-how-track::-webkit-scrollbar { display: none; }
+  .home-how-card { flex: 0 0 min(84vw, 21rem); padding: .875rem !important; gap: .625rem !important; scroll-snap-align: start; }
+  .home-how-card > div:first-child { width: 2rem !important; height: 2rem !important; font-size: .75rem !important; }
+  .home-how-card > div:last-child > div:first-child { font-size: .8125rem !important; }
+  .home-how-card > div:last-child > div:last-child { font-size: .75rem !important; }
+
+  .fleet-section { padding-top: 1.5rem !important; padding-bottom: 1.5rem !important; }
+  .fleet-section-heading > p { display: none; }
+  .fleet-category-track { display: none !important; }
+  .home-testimonials { padding: 1.5rem .875rem !important; }
+  .home-testimonials .shell > div:first-child { margin-bottom: .75rem !important; }
+  .home-testimonials h2 { font-size: 1.5rem !important; line-height: 1.2; }
+  .home-review-track {
+    display: flex !important;
+    gap: .625rem !important;
+    margin-right: -.875rem;
+    padding: 0 .875rem .5rem 0;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .home-review-track::-webkit-scrollbar { display: none; }
+  .home-review-card { flex: 0 0 min(84vw, 21rem); padding: .875rem !important; scroll-snap-align: start; }
+  .home-review-card > div:first-child { margin-bottom: .375rem !important; }
+  .home-review-quote { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; font-size: .8125rem !important; line-height: 1.5 !important; margin-bottom: .5rem !important; }
+  .home-review-project { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: .5rem !important; }
+  .home-review-card > div:last-child { padding-top: .5rem !important; }
+
+  .fleet-card-track > * { flex-basis: min(78vw, 19rem); }
+  .fleet-card-track .fleet-card-overview,
+  .fleet-card-track .fleet-card-deliverables { display: none !important; }
+  .fleet-card-track > * > h3 { margin-bottom: .5rem !important; }
+  .fleet-card-track > * > p { margin-bottom: .75rem !important; }
+  .fleet-card-track > * > .mt-auto { margin-top: auto; }
+  .fleet-card-track > * { min-height: 13rem; }
+
+  .home-final-cta { padding: 1rem .75rem 1.25rem !important; }
+  .home-final-panel { padding: 1rem !important; }
+  .home-final-panel h2 { font-size: 1.375rem !important; margin-bottom: .35rem !important; }
+  .home-final-panel p { margin-bottom: .625rem !important; font-size: .75rem !important; line-height: 1.5 !important; }
+  .home-final-panel > div:nth-of-type(1) { margin-bottom: .625rem !important; }
+  .home-final-panel > div:nth-of-type(2) { gap: .4rem .75rem !important; padding-top: .625rem !important; font-size: .625rem !important; }
 }
 
 

@@ -66,7 +66,7 @@ function StatCard({
   return (
     <div
       ref={ref}
-      className="card card-lift group"
+      className="card card-lift group home-stat-card"
       style={{
         padding: '1.25rem 1.125rem',
         textAlign: 'center',
@@ -293,17 +293,22 @@ export default function HomePage() {
           >
             <AiTopicExplorer />
           </motion.div>
+          <Link href="/blueprint" className="home-topic-quick-link">
+            <BookOpen aria-hidden="true" />
+            <span>Explore 1,078 free topic blueprints</span>
+            <ArrowRight aria-hidden="true" />
+          </Link>
 
           {/* University trust row */}
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .4, delay: .3 }}
-            className="mt-8 sm:mt-12 pt-6 sm:pt-8 text-center pb-8 sm:pb-12"
+            className="home-university-trust mt-8 sm:mt-12 pt-6 sm:pt-8 text-center pb-8 sm:pb-12"
             style={{ borderTop: '1px solid var(--line)' }}
           >
             <p style={{ fontSize: '.6875rem', fontWeight: 800, color: 'var(--ink-4)', textTransform: 'uppercase', letterSpacing: '.14em', marginBottom: '1.125rem' }}>
               Trusted by 500+ students from top universities
             </p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '.625rem 1rem' }}>
+            <div className="home-university-list" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '.625rem 1rem' }}>
               {CONSTANTS.UNIVERSITIES.map(u => (
                 <span key={u}
                   style={{
@@ -329,7 +334,7 @@ export default function HomePage() {
       ════════════════════════════════════════════ */}
       <section className="home-stats" style={{ ...S.section(), borderTop: '1px solid var(--line)', borderBottom: '1px solid var(--line)', padding: '2.5rem 0' }}>
         <div className="shell">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(13rem, 1fr))', gap: '1.25rem', maxWidth: '66rem', margin: '0 auto' }}>
+          <div className="home-stat-track" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(13rem, 1fr))', gap: '1.25rem', maxWidth: '66rem', margin: '0 auto' }}>
             <StatCard icon={Package} val={59} suffix="" label="Ready Project Kits" accent="#0D9488" bg="#F0FDFA" border="rgba(13,148,136,0.2)" />
             <StatCard icon={BookOpen} val={CONSTANTS.TOTAL_TOPICS} suffix="+" label="Free Blueprints" accent="#0F766E" bg="#ECFDF5" border="rgba(5,150,105,0.2)" />
             <StatCard icon={ShieldCheck} customVal="₹1,20,000+" label="Saved vs Local Vendors" accent="#059669" bg="#F0FDF4" border="rgba(5,150,105,0.2)" />
@@ -355,7 +360,7 @@ export default function HomePage() {
               </div>
               <h2 style={{ fontSize: 'clamp(1.75rem,4vw,2.5rem)', fontWeight: 900, letterSpacing: '-.04em', color: 'var(--navy)', marginBottom: '1.5rem' }}>Ready to Ship Kits</h2>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', marginBottom: '1.5rem' }}>
+              <div className="home-ready-track" style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', marginBottom: '1.5rem' }}>
                 {READY.map((item, i) => (
                   <motion.div key={item.n}
                     initial={{ opacity: 0, x: -10 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
@@ -410,12 +415,12 @@ export default function HomePage() {
             </div>
 
             {/* Right: 3D blueprint + custom cards */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <div className="home-secondary-track" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
 
               {/* 3D Blueprint showcase card */}
               <motion.div
                 initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: .42 }}
-                className="card card-lift relative overflow-hidden"
+                className="card card-lift home-blueprints-card relative overflow-hidden"
                 style={{
                   padding: '2rem 1.75rem',
                   background: 'var(--surface)',
@@ -439,7 +444,7 @@ export default function HomePage() {
               {/* 3D Custom build card */}
               <motion.div
                 initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: .42, delay: .1 }}
-                className="card card-lift"
+                className="card card-lift home-custom-card"
                 style={{
                   padding: '1.75rem',
                   borderRadius: 'var(--r-2xl)',
@@ -470,12 +475,12 @@ export default function HomePage() {
             Preview first. Always.
           </h2>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%,18rem), 1fr))', gap: '1.5rem' }}>
+          <div className="home-how-track" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%,18rem), 1fr))', gap: '1.5rem' }}>
             {HOW.map((s, i) => (
               <motion.div key={s.n}
                 initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
                 transition={{ duration: .38, delay: i * .1 }}
-                className="card card-lift"
+                className="card card-lift home-how-card"
                 style={{
                   padding: '1.75rem',
                   borderRadius: 'var(--r-xl)',
@@ -508,7 +513,7 @@ export default function HomePage() {
       <section className="home-final-cta defer" style={{ ...S.section(), padding: '4rem 1rem 5rem' }}>
         <div className="shell" style={{ maxWidth: '52rem' }}>
           <div
-            className="relative overflow-hidden"
+            className="home-final-panel relative overflow-hidden"
             style={{
               background: 'var(--surface)',
               border: '1px solid var(--teal-100)',

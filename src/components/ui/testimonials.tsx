@@ -22,7 +22,7 @@ const AVBG = [
 
 export function Testimonials() {
   return (
-    <section className="defer" style={{ background: 'transparent', borderTop: '1px solid var(--line)', padding: '4rem 1rem' }}>
+    <section className="defer home-testimonials" style={{ background: 'transparent', borderTop: '1px solid var(--line)', padding: '4rem 1rem' }}>
       <div className="shell">
         <motion.div initial={{ opacity:0, y:12 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }} transition={{ duration:.4 }}
           style={{ marginBottom: '2.5rem' }}
@@ -33,23 +33,23 @@ export function Testimonials() {
           </h2>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="home-review-track grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {R.map((r, i) => {
             const av = AVBG[r.i % AVBG.length];
             return (
               <motion.div key={r.name}
                 initial={{ opacity:0, y:16 }} whileInView={{ opacity:1, y:0 }} viewport={{ once:true }}
                 transition={{ duration:.35, delay:i*.06 }}
-                className="card card-lift"
+                className="card card-lift home-review-card"
                 style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}
               >
                 <div style={{ display: 'flex', gap: '2px', marginBottom: '1rem' }}>
                   {[1,2,3,4,5].map(s => <Star key={s} style={{ width: '13px', height: '13px', fill: '#F59E0B', color: '#F59E0B' }} />)}
                 </div>
-                <p style={{ fontSize: '.9375rem', color: 'var(--ink-2)', lineHeight: 1.75, flex: 1, marginBottom: '1.125rem' }}>
+                <p className="home-review-quote" style={{ fontSize: '.9375rem', color: 'var(--ink-2)', lineHeight: 1.75, flex: 1, marginBottom: '1.125rem' }}>
                   &ldquo;{r.t}&rdquo;
                 </p>
-                <span className="tag tag-teal" style={{ fontSize: '.6rem', width: 'fit-content', marginBottom: '1rem' }}>{r.project}</span>
+                <span className="home-review-project tag tag-teal" style={{ fontSize: '.6rem', width: 'fit-content', marginBottom: '1rem' }}>{r.project}</span>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '.75rem', paddingTop: '.875rem', borderTop: '1px solid var(--line)' }}>
                   <div style={{ width: '2.25rem', height: '2.25rem', borderRadius: '50%', flexShrink: 0, background: av.bg, color: av.c, border: `1.5px solid ${av.bg}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '.6875rem', fontWeight: 800 }}>
                     {r.av}
