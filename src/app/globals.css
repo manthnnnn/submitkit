@@ -511,6 +511,10 @@
 .adrawer { animation: drawerSlide .34s cubic-bezier(.32,.72,0,1) both; }
 
 /* Compact Android/iOS navigation panel and swipeable mobile kit rows. */
+@keyframes menuPopoverIn {
+  from { opacity: 0; transform: translateY(-8px) scale(.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
 @media (max-width: 767px) {
   .adrawer {
     top: calc(4.5rem + env(safe-area-inset-top, 0px)) !important;
@@ -520,13 +524,19 @@
     max-height: calc(100dvh - 8rem - env(safe-area-inset-top, 0px));
     border: 1px solid var(--line);
     border-radius: var(--r-xl);
+    box-shadow: var(--sh-xl);
+    transform-origin: top right;
+    animation: menuPopoverIn .28s var(--ease-ios) both;
   }
-  .adrawer > div:first-child { padding: .75rem 1rem !important; }
-  .adrawer > nav { flex: 0 0 auto !important; padding: .5rem .75rem !important; }
-  .adrawer .adrawer-link { min-height: 3.5rem !important; padding: .6rem .75rem !important; margin-bottom: .25rem !important; gap: .75rem !important; }
+  .adrawer-head { padding: .625rem .875rem !important; border-bottom-color: color-mix(in srgb, var(--line) 70%, transparent) !important; }
+  .adrawer-close { width: 2.5rem; height: 2.5rem; display: grid; place-items: center; transition: transform .2s var(--ease-ios), background .2s ease; }
+  .adrawer-close:active { transform: scale(.92); }
+  .adrawer-nav { flex: 0 0 auto !important; padding: .5rem .625rem !important; }
+  .adrawer .adrawer-link { min-height: 3.5rem !important; padding: .6rem .75rem !important; margin-bottom: .25rem !important; gap: .75rem !important; border-radius: var(--r-md) !important; transition: background-color .18s ease, transform .18s var(--ease-ios) !important; }
+  .adrawer .adrawer-link:not(.is-active):active { background: var(--surface-2) !important; transform: scale(.985); }
   .adrawer .adrawer-link > div:first-child { width: 2.125rem !important; height: 2.125rem !important; border-radius: .75rem !important; }
   .adrawer .adrawer-link p { font-size: .75rem !important; }
-  .adrawer .adrawer-footer { padding: .625rem .75rem calc(.625rem + env(safe-area-inset-bottom, 0px)) !important; }
+  .adrawer .adrawer-footer { padding: .625rem .75rem calc(.625rem + env(safe-area-inset-bottom, 0px)) !important; border-top-color: color-mix(in srgb, var(--line) 70%, transparent) !important; }
   .adrawer .adrawer-footer .btn { min-height: 2.75rem !important; font-size: .875rem !important; border-radius: var(--r-md) !important; }
 
   .fleet-section { padding-top: 2rem !important; padding-bottom: 2rem !important; }
@@ -549,6 +559,9 @@
   }
   .fleet-card-track::-webkit-scrollbar { display: none; }
   .fleet-card-track > * { flex: 0 0 min(84vw, 21rem); scroll-snap-align: start; padding: 1rem !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .adrawer { animation-duration: .01ms !important; }
 }
 @media (min-width: 768px) {
   .fleet-card-track > * { min-width: 0; }
