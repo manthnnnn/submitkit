@@ -149,7 +149,7 @@ export function Navbar() {
             {/* Links */}
             <nav style={{ flex: 1, padding: '.75rem 1rem' }}>
               {NAV.map(({ href, label, icon: Icon, sub, badge }) => (
-                <Link key={href} href={href} className="press"
+                <Link key={href} href={href} className="press adrawer-link"
                   style={{
                     display: 'flex', alignItems: 'center', gap: '1rem',
                     padding: '1rem', borderRadius: '14px', marginBottom: '.375rem',
@@ -180,7 +180,7 @@ export function Navbar() {
             </nav>
 
             {/* Footer action */}
-            <div style={{ padding: '1rem 1rem calc(1rem + env(safe-area-inset-bottom,0px))', borderTop: '1px solid var(--line)', display: 'flex', flexDirection: 'column', gap: '.625rem' }}>
+            <div className="adrawer-footer" style={{ padding: '1rem 1rem calc(1rem + env(safe-area-inset-bottom,0px))', borderTop: '1px solid var(--line)', display: 'flex', flexDirection: 'column', gap: '.625rem' }}>
               <Link href="/projects" className="btn btn-teal" style={{ width: '100%', minHeight: '52px', fontSize: '1rem', borderRadius: '14px' }}>
                 <Zap style={{ width: '1.125rem', height: '1.125rem', fill: 'white' }} />
                 Browse All Project Kits

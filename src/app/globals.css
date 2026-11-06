@@ -510,6 +510,50 @@
 }
 .adrawer { animation: drawerSlide .34s cubic-bezier(.32,.72,0,1) both; }
 
+/* Compact Android/iOS navigation panel and swipeable mobile kit rows. */
+@media (max-width: 767px) {
+  .adrawer {
+    top: calc(4.5rem + env(safe-area-inset-top, 0px)) !important;
+    right: .75rem !important;
+    bottom: auto !important;
+    height: auto !important;
+    max-height: calc(100dvh - 8rem - env(safe-area-inset-top, 0px));
+    border: 1px solid var(--line);
+    border-radius: var(--r-xl);
+  }
+  .adrawer > div:first-child { padding: .75rem 1rem !important; }
+  .adrawer > nav { flex: 0 0 auto !important; padding: .5rem .75rem !important; }
+  .adrawer .adrawer-link { min-height: 3.5rem !important; padding: .6rem .75rem !important; margin-bottom: .25rem !important; gap: .75rem !important; }
+  .adrawer .adrawer-link > div:first-child { width: 2.125rem !important; height: 2.125rem !important; border-radius: .75rem !important; }
+  .adrawer .adrawer-link p { font-size: .75rem !important; }
+  .adrawer .adrawer-footer { padding: .625rem .75rem calc(.625rem + env(safe-area-inset-bottom, 0px)) !important; }
+  .adrawer .adrawer-footer .btn { min-height: 2.75rem !important; font-size: .875rem !important; border-radius: var(--r-md) !important; }
+
+  .fleet-section { padding-top: 2rem !important; padding-bottom: 2rem !important; }
+  .fleet-section-heading { margin-bottom: 1.25rem !important; }
+  .fleet-section-heading h2 { font-size: 1.5rem !important; line-height: 1.2; }
+  .fleet-section-heading > p { font-size: .8125rem; }
+  .fleet-section-heading > div:last-child { margin-top: 1rem !important; }
+  .fleet-category-track { justify-content: flex-start !important; margin-bottom: 1rem !important; padding-bottom: .2rem; }
+  .fleet-card-track {
+    display: flex !important;
+    gap: .75rem !important;
+    max-width: none !important;
+    margin-right: -1rem;
+    padding: 0 1rem .75rem 0;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .fleet-card-track::-webkit-scrollbar { display: none; }
+  .fleet-card-track > * { flex: 0 0 min(84vw, 21rem); scroll-snap-align: start; padding: 1rem !important; }
+}
+@media (min-width: 768px) {
+  .fleet-card-track > * { min-width: 0; }
+}
+
 /* ── iOS-style motion curve + press feedback ── */
 :root { --ease-ios: cubic-bezier(.32,.72,0,1); }
 .btn {

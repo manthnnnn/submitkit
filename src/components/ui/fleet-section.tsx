@@ -128,11 +128,11 @@ export function FleetSection() {
   };
 
   return (
-    <section className="py-20 relative border-t border-[var(--line)] bg-transparent">
+    <section className="fleet-section py-20 relative border-t border-[var(--line)] bg-transparent">
       <div className="container mx-auto px-4 relative z-10">
 
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12">
+        <div className="fleet-section-heading text-center max-w-3xl mx-auto mb-12">
           <div className="section-label mb-3">Live Inventory</div>
           <h2 className="text-3xl md:text-5xl font-display font-black text-slate-900 mb-3 tracking-tight">
             Available Kits &amp; <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-emerald-600">Upcoming Drops</span>
@@ -190,7 +190,7 @@ export function FleetSection() {
               transition={{ duration: 0.18 }}
             >
               {/* Category Pills — Clean, Descent, No Emojis, 3D Tactile Filter */}
-              <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
+              <div className="fleet-category-track flex flex-nowrap md:flex-wrap items-center justify-start md:justify-center gap-2 mb-10 overflow-x-auto no-scrollbar">
                 {[
                   { id: 'ALL',          label: 'All 9 Kits' },
                   { id: 'Healthcare',   label: 'Healthcare' },
@@ -203,7 +203,7 @@ export function FleetSection() {
                   <button
                     key={cat.id}
                     onClick={() => setSelectedCategory(cat.id)}
-                    className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                    className={`shrink-0 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
                       selectedCategory === cat.id
                         ? 'bg-gradient-to-r from-teal-700 to-teal-800 text-white shadow-md shadow-teal-900/20'
                         : 'text-slate-600 hover:text-slate-900 bg-white border border-slate-200/90 shadow-2xs hover:border-teal-300 hover:bg-teal-50/40'
@@ -215,7 +215,7 @@ export function FleetSection() {
               </div>
 
               {/* Cards Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+              <div className="fleet-card-track grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
                 {filteredAvailable.map(project => {
                   const price = PRICE_MAP[project.slug] ?? CONSTANTS.PRICING.MINI_PROJECT;
                   const isMajor = price === CONSTANTS.PRICING.MAJOR_PROJECT;
@@ -338,7 +338,7 @@ export function FleetSection() {
                 <span className="font-bold text-teal-950">Batch 2 Release Pipeline:</span> These high-demand projects are undergoing final QA tests and documentation. Pre-order now to lock in launch discounts and get instant WhatsApp delivery the moment they drop!
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+              <div className="fleet-card-track grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
                 {UPCOMING_CATALOG.map(project => {
                   const tagClass = TAG_COLORS[project.tag] ?? 'text-slate-800 bg-slate-100 border-slate-200';
                   return (
