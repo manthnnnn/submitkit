@@ -12,4 +12,3 @@
 - [x] Hero rewritten & resized: concrete copy ("Final-year project kits, ready to submit"), smaller type on mobile (30px) and desktop (52px)
 - [x] Mobile-first refresh: shorten the home screen, clarify what SubmitKit sells, and simplify phone navigation with polished iOS-inspired motion; keep the existing no-image rule
 - [x] Restore the homepage's rotating main hook titles, compact the phone layout, and leave one persistent WhatsApp button
-- [ ] Optional next pass: blueprint detail page and order flow deep-check
