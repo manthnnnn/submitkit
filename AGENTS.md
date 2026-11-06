@@ -11,3 +11,4 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Payment success pages must derive confirmation and purchased add-ons from the paid order record server-side, never from URL claims, so only verified purchases see order actions.
 - Scope standalone-demo theme overrides to named outer-shell classes; keep IDE/editor surfaces dark for code readability and avoid leaking storefront styles into the demos.
 - Production build scripts strip only the unsupported `--use-openssl-ca` option and use Webpack because Turbopack currently panics resolving project modules in this workspace.
+- Use the Next.js 16 `proxy.ts` convention for request interception so middleware runs in the supported Node.js runtime.
