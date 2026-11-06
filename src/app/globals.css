@@ -516,6 +516,9 @@
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 @media (max-width: 767px) {
+  /* These repeat projects and process details already available from the catalog and menu. */
+  .home-ready-kits, .home-how { display: none !important; }
+
   .adrawer {
     top: calc(4.5rem + env(safe-area-inset-top, 0px)) !important;
     right: .75rem !important;
@@ -956,12 +959,12 @@
   .fleet-card-track > * > .mt-auto { margin-top: auto; }
   .fleet-card-track > * { min-height: 13rem; }
 
-  .home-final-cta { padding: 1.5rem .75rem 2rem !important; }
-  .home-final-panel { padding: 1.25rem !important; }
-  .home-final-panel h2 { font-size: 1.625rem !important; }
-  .home-final-panel p { margin-bottom: .875rem !important; font-size: .8125rem !important; }
-  .home-final-panel > div:nth-of-type(1) { margin-bottom: .875rem !important; }
-  .home-final-panel > div:nth-of-type(2) { gap: .5rem .875rem !important; padding-top: .75rem !important; font-size: .6875rem !important; }
+  .home-final-cta { padding: 1rem .75rem 1.25rem !important; }
+  .home-final-panel { padding: 1rem !important; }
+  .home-final-panel h2 { font-size: 1.375rem !important; margin-bottom: .35rem !important; }
+  .home-final-panel p { margin-bottom: .625rem !important; font-size: .75rem !important; line-height: 1.5 !important; }
+  .home-final-panel > div:nth-of-type(1) { margin-bottom: .625rem !important; }
+  .home-final-panel > div:nth-of-type(2) { gap: .4rem .75rem !important; padding-top: .625rem !important; font-size: .625rem !important; }
 }
 
 
