@@ -1,11 +1,9 @@
 'use client';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { CONSTANTS } from '@/lib/constants';
 import {
-  ArrowRight, CheckCircle2, Zap, ShieldCheck,
-  Search, ChevronRight, MessageCircle,
-  FileText, Presentation, Star, Eye,
+  ArrowRight, CheckCircle2, Zap, ShieldCheck, Star,
   Package, BookOpen, Award
 } from 'lucide-react';
 import { PricingHook } from '@/components/ui/pricing-hook';
@@ -117,6 +115,13 @@ const HOW = [
   { n: '03', t: 'Understand your project',          s: 'Docs and viva Q&A so you can defend your work' },
 ];
 
+const HERO_HOOKS = [
+  { lead: 'Final-year project kits,', accent: 'ready to submit.' },
+  { lead: 'Working code + IEEE report,', accent: 'one download.' },
+  { lead: 'Build a project', accent: 'you can actually explain.' },
+  { lead: 'Preview free. Pay ₹299.', accent: 'Submit with confidence.' },
+];
+
 const READY = [
   { n: '01', name: 'PhishGuard AI Threat Radar',    cat: 'AI / ML',     price: MINI,  slug: 'phishing-detector-ai' },
   { n: '02', name: 'QuickBite QR Ordering & KDS',   cat: 'Full Stack',  price: MINI,  slug: 'restaurant-qr-ordering' },
@@ -126,6 +131,17 @@ const READY = [
 
 /* ─── Main page ─── */
 export default function HomePage() {
+  const [activeHook, setActiveHook] = useState(0);
+  const prefersReducedMotion = useReducedMotion();
+
+  useEffect(() => {
+    if (prefersReducedMotion) return;
+    const timer = window.setInterval(() => {
+      setActiveHook(index => (index + 1) % HERO_HOOKS.length);
+    }, 4200);
+    return () => window.clearInterval(timer);
+  }, [prefersReducedMotion]);
+
   /* ─ inline style helpers ─ */
   const S = {
     section: (bg?: string): React.CSSProperties => ({
@@ -179,7 +195,18 @@ export default function HomePage() {
                   transition={{ duration: .42, ease: [.32, .72, 0, 1] }}
                   className="home-hero-title"
                 >
-                  Final-year projects, <em className="text-teal-grad">ready to submit.</em>
+                  <AnimatePresence mode="wait" initial={false}>
+                    <motion.span
+                      key={activeHook}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      transition={{ duration: .24, ease: [.32, .72, 0, 1] }}
+                    >
+                      {HERO_HOOKS[activeHook].lead}{' '}
+                      <em className="text-teal-grad">{HERO_HOOKS[activeHook].accent}</em>
+                    </motion.span>
+                  </AnimatePresence>
                 </motion.h1>
               </div>
 
@@ -268,7 +295,7 @@ export default function HomePage() {
           </motion.div>
 
           {/* University trust row */}
-          <motion.div className="home-university-trust"
+          <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .4, delay: .3 }}
             className="mt-8 sm:mt-12 pt-6 sm:pt-8 text-center pb-8 sm:pb-12"
             style={{ borderTop: '1px solid var(--line)' }}
@@ -300,7 +327,7 @@ export default function HomePage() {
       {/* ════════════════════════════════════════════
           STATS STRIP — 3D Tactile Metric Dock
       ════════════════════════════════════════════ */}
-      <section style={{ ...S.section(), borderTop: '1px solid var(--line)', borderBottom: '1px solid var(--line)', padding: '2.5rem 0' }}>
+      <section className="home-stats" style={{ ...S.section(), borderTop: '1px solid var(--line)', borderBottom: '1px solid var(--line)', padding: '2.5rem 0' }}>
         <div className="shell">
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(13rem, 1fr))', gap: '1.25rem', maxWidth: '66rem', margin: '0 auto' }}>
             <StatCard icon={Package} val={59} suffix="" label="Ready Project Kits" accent="#0D9488" bg="#F0FDFA" border="rgba(13,148,136,0.2)" />
@@ -314,7 +341,7 @@ export default function HomePage() {
       {/* ════════════════════════════════════════════
           READY KITS LIST
       ════════════════════════════════════════════ */}
-      <section className="defer" style={{ ...S.section(), padding: '3.75rem 0' }}>
+      <section className="home-ready-kits defer" style={{ ...S.section(), padding: '3.75rem 0' }}>
         <div className="shell">
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%,30rem), 1fr))', gap: '2.5rem 3rem', alignItems: 'start' }}>
 
@@ -424,15 +451,9 @@ export default function HomePage() {
                 <p style={{ fontSize: '.9rem', color: 'var(--ink-3)', lineHeight: 1.65, marginBottom: '1.25rem' }}>
                   We build custom projects with you, from topic selection and algorithm design to final IEEE documentation.
                 </p>
-                <a
-                  href={`https://wa.me/918799814256?text=${encodeURIComponent('Hi SubmitKit! I need a custom project. My idea:')}`}
-                  target="_blank" rel="noopener noreferrer"
-                  className="btn btn-navy"
-                  style={{ minHeight: '48px', fontSize: '.9375rem', gap: '.5rem', width: '100%', justifyContent: 'center' }}
-                >
-                  <WaIcon size={16} />
-                  Chat on WhatsApp
-                </a>
+                <Link href="/custom" className="btn btn-navy" style={{ minHeight: '48px', fontSize: '.9375rem', gap: '.5rem', width: '100%', justifyContent: 'center' }}>
+                  Request a custom project <ArrowRight style={{ width: '1rem', height: '1rem' }} />
+                </Link>
               </motion.div>
             </div>
           </div>
@@ -442,7 +463,7 @@ export default function HomePage() {
       {/* ════════════════════════════════════════════
           HOW IT WORKS — 3D Steps
       ════════════════════════════════════════════ */}
-      <section className="defer" style={{ ...S.section(), borderTop: '1px solid var(--line)', padding: '3.75rem 0' }}>
+      <section className="home-how defer" style={{ ...S.section(), borderTop: '1px solid var(--line)', padding: '3.75rem 0' }}>
         <div className="shell">
           <p style={{ fontSize: '.6875rem', fontWeight: 800, color: 'var(--ink-4)', textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: '1rem' }}>How It Works</p>
           <h2 style={{ fontSize: 'clamp(1.75rem,4vw,2.5rem)', fontWeight: 900, letterSpacing: '-.04em', color: 'var(--navy)', marginBottom: '2.25rem' }}>
@@ -484,7 +505,7 @@ export default function HomePage() {
       {/* ════════════════════════════════════════════
           FINAL CTA
       ════════════════════════════════════════════ */}
-      <section className="defer" style={{ ...S.section(), padding: '4rem 1rem 5rem' }}>
+      <section className="home-final-cta defer" style={{ ...S.section(), padding: '4rem 1rem 5rem' }}>
         <div className="shell" style={{ maxWidth: '52rem' }}>
           <div
             className="relative overflow-hidden"
@@ -509,12 +530,6 @@ export default function HomePage() {
               <Link href="/projects" className="btn btn-teal btn-lg">
                 Browse All Kits <ArrowRight style={{ width: '1.125rem', height: '1.125rem' }} />
               </Link>
-              <a href="https://wa.me/918799814256" target="_blank" rel="noopener noreferrer"
-                className="btn btn-wa btn-lg"
-              >
-                <WaIcon size={18} />
-                WhatsApp Support
-              </a>
             </div>
 
             {/* Trust badges */}
