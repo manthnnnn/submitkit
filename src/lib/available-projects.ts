@@ -611,6 +611,7 @@ export const AVAILABLE_CORE_SLUGS = [
   'restaurant-qr-ordering',
   'aerofuel-predictor',
   'smart-expense-tracker',
+  'fake-news-detector',
 ] as const;
 
 export type AvailableCoreSlug = (typeof AVAILABLE_CORE_SLUGS)[number];
