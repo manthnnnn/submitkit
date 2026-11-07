@@ -19,7 +19,6 @@ import { isProjectAvailable } from "@/lib/available-projects";
 import { SHOWCASE_DATA } from "@/lib/project-showcase";
 import { CONSTANTS } from "@/lib/constants";
 import { BreadcrumbsSchema, ProductSchema } from "@/components/seo/SeoSchema";
-import TruthLensDemo from "@/components/demos/TruthLensDemo";
 import {
   getStaticProjectBySlug,
   getAllStaticProjects,
@@ -240,19 +239,6 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                 </div>
               )}
             </section>
-
-            {/* Live Interactive Project Demo embedded directly on the project page */}
-            {slug === 'fake-news-detector' && (
-              <section>
-                <SectionTitle>
-                  <Sparkles style={{ width: '1.125rem', height: '1.125rem', color: 'var(--teal)' }} />
-                  Live Working Application (Test End-to-End)
-                </SectionTitle>
-                <div style={{ borderRadius: '16px', overflow: 'hidden', border: '1.5px solid var(--line)', background: 'var(--surface)', boxShadow: 'var(--sh-md)' }}>
-                  <TruthLensDemo />
-                </div>
-              </section>
-            )}
 
             {/* About */}
             <section>
