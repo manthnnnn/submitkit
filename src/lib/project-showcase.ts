@@ -40,5 +40,9 @@ export const SHOWCASE_DATA: Record<string, { title: string; desc: string; img: s
   "smart-expense-tracker": [
     { title: "Landing Page", desc: "The intelligent personal finance management tool overview.", img: "/projects/smart-expense-tracker/01-home.jpg" },
     { title: "Financial Overview", desc: "The user dashboard visualizing monthly spending habits and budget progress.", img: "/projects/smart-expense-tracker/02-dashboard.jpg" }
+  ],
+  "fake-news-detector": [
+    { title: "NLP Scanner & Classifier", desc: "Real-time disinformation detection interface with multi-vector lexical scoring.", img: "/projects/fake-news-detector/01-home.jpg" },
+    { title: "Explainability Heatmap & Metrics", desc: "Token-level attention highlighting and confusion matrix evaluation.", img: "/projects/fake-news-detector/02-dashboard.jpg" }
   ]
 };

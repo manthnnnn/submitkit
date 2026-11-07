@@ -287,6 +287,33 @@ export const VERIFIED_AVAILABLE_PROJECTS: Project[] = [
     is_active: true,
     created_at: '2024-01-26T00:00:00.000Z',
   },
+  {
+    id: 'proj_truthlens_fakenews',
+    slug: 'fake-news-detector',
+    title: 'TruthLens AI Fake News & Disinformation Classifier',
+    category: 'AIML',
+    tier: 'MINI',
+    price_inr: CONSTANTS.PRICING.MINI_PROJECT,
+    description: 'Real-time NLP disinformation detection engine that scans articles for sensationalism and classifies real vs fake news.',
+    problem_statement: 'Viral misinformation and fabricated news spread 6 times faster than factual journalism, triggering social panic, financial fraud, and health hazards. TruthLens deploys a multi-vector NLP pipeline combining N-gram TF-IDF feature extraction with a Passive-Aggressive classifier trained on 57,000+ benchmark articles to verify credibility in milliseconds.',
+    architecture_details: 'FastAPI and Python 3.11 NLP service executing TF-IDF vectorization and Passive-Aggressive classification, paired with a Next.js 14 real-time interactive evaluation dashboard.',
+    tech_stack: ['Python 3.11', 'scikit-learn', 'NLTK', 'TF-IDF', 'FastAPI', 'Next.js 14', 'Tailwind CSS'],
+    features: [
+      'Multi-Vector NLP Sensationalism & Hyperbole Detector',
+      'TF-IDF N-Gram Feature Extractor (5,000 Key Features)',
+      'High-Margin Passive-Aggressive Binary Classification Model',
+      'Token-Level Attention Heatmap & Manipulation Highlighting',
+      'Benchmark 94.2% F1-Score on LIAR + Kaggle ISOT Corpus',
+      'Instant One-Click Fact-Checking Forensic Audit Report',
+    ],
+    demo_video_id: null,
+    demo_screenshots: ['/projects/fake-news-detector/01-home.jpg', '/projects/fake-news-detector/02-dashboard.jpg'],
+    live_demo_url: null,
+    s3_storage_key: 'kits/fake-news-detector.zip',
+    report_template_key: 'reports/fake-news-detector.docx',
+    is_active: true,
+    created_at: '2024-01-28T00:00:00.000Z',
+  },
 ];
 
 /**
