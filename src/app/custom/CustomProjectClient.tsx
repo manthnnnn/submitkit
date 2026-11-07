@@ -13,8 +13,9 @@ const TIERS = [
   {
     id: "mini", name: "Mini Project", price: "₹299", tag: "Sem 5 / 6 Ready Kit",
     exploreHref: "/projects?tier=MINI",
-    exploreLabel: "Explore 25+ Mini Kits (₹299)",
+    exploreLabel: "Explore Ready Mini Kits (₹299)",
     tagBg: 'var(--teal-50)', tagColor: 'var(--teal-dark)', tagBorder: 'var(--teal-100)',
+    subtext: "Instant download · 1-click runnable code & IEEE report",
     features: [
       "Complete working source code (1-click runnable)",
       "20-page IEEE Black Book report (.docx)",
@@ -27,8 +28,9 @@ const TIERS = [
   {
     id: "major", name: "Major Project", price: "₹499", tag: "Sem 7 / 8 Final Year",
     exploreHref: "/projects?tier=MAJOR",
-    exploreLabel: "Explore 30+ Major Kits (₹499)",
+    exploreLabel: "Explore Ready Major Kits (₹499)",
     tagBg: 'var(--violet-50)', tagColor: 'var(--violet)', tagBorder: 'var(--violet-100)',
+    subtext: "Instant download · Complete 60-page IEEE report & PPT",
     features: [
       "Full working source code (AI/ML/Web logic included)",
       "60-page IEEE Black Book report (.docx)",
@@ -40,7 +42,7 @@ const TIERS = [
   },
   {
     id: "custom", name: "Custom Project", price: "₹1,999", tag: "Custom Built to Topic",
-    subtext: "*Starts ₹1,999 · Varies with complexity",
+    subtext: "*Starts ₹1,999 · Varies with topic complexity & scope",
     popular: true,
     tagBg: 'var(--amber-50)', tagColor: 'var(--amber)', tagBorder: 'var(--amber-100)',
     features: [
@@ -223,27 +225,41 @@ export function CustomProjectClient() {
             >
               <div>
                 {tier.popular && (
-                  <div style={{ position: 'absolute', top: '-1px', left: '50%', transform: 'translateX(-50%)' }}>
-                    <span style={{ display: 'block', padding: '.1875rem .75rem', borderRadius: '0 0 8px 8px', background: 'var(--teal)', color: '#fff', fontSize: '.6875rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.06em', whiteSpace: 'nowrap' }}>
+                  <div style={{ position: 'absolute', top: 0, right: 0 }}>
+                    <span style={{ display: 'inline-block', padding: '.25rem .875rem', borderRadius: '0 16px 0 12px', background: 'var(--teal)', color: '#fff', fontSize: '.6875rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.06em', whiteSpace: 'nowrap' }}>
                       Most Popular
                     </span>
                   </div>
                 )}
-                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '.625rem', marginBottom: '1rem', marginTop: tier.popular ? '.75rem' : 0 }}>
-                  <div style={{ minWidth: 0, flex: 1 }}>
-                    <p className="font-display" style={{ fontSize: '1.125rem', fontWeight: 800, color: 'var(--navy)', marginBottom: '.375rem', whiteSpace: 'nowrap' }}>{tier.name}</p>
-                    <span style={{ fontSize: '.6875rem', fontWeight: 700, padding: '.25rem .625rem', borderRadius: '9999px', background: tier.tagBg, color: tier.tagColor, border: `1px solid ${tier.tagBorder}`, whiteSpace: 'nowrap', display: 'inline-block' }}>{tier.tag}</span>
-                  </div>
-                  <div style={{ textAlign: 'right', flexShrink: 0, whiteSpace: 'nowrap' }}>
-                    <p className="font-display" style={{ fontSize: '1.4375rem', fontWeight: 900, color: 'var(--navy)', letterSpacing: '-.03em', lineHeight: 1.1, whiteSpace: 'nowrap' }}>{tier.price}</p>
-                    <p style={{ fontSize: '.6875rem', color: 'var(--ink-4)', fontWeight: 600, marginTop: '2px', whiteSpace: 'nowrap' }}>{tier.id === 'custom' ? 'starts onwards' : 'one-time'}</p>
-                    {tier.subtext && (
-                      <span style={{ display: 'block', fontSize: '.5625rem', color: '#B45309', fontWeight: 700, marginTop: '2px', whiteSpace: 'nowrap' }}>
-                        {tier.subtext}
-                      </span>
-                    )}
-                  </div>
+
+                {/* Tier Title & Sub-badge */}
+                <div style={{ marginBottom: '.75rem', marginTop: tier.popular ? '.5rem' : 0 }}>
+                  <p className="font-display" style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--navy)', marginBottom: '.375rem', lineHeight: 1.2 }}>
+                    {tier.name}
+                  </p>
+                  <span style={{ fontSize: '.6875rem', fontWeight: 700, padding: '.25rem .625rem', borderRadius: '9999px', background: tier.tagBg, color: tier.tagColor, border: `1px solid ${tier.tagBorder}`, display: 'inline-block' }}>
+                    {tier.tag}
+                  </span>
                 </div>
+
+                {/* Price Display Container — Full card width, guaranteed zero wrap */}
+                <div style={{ margin: '.875rem 0 1.25rem', padding: '.75rem .875rem', borderRadius: '12px', background: 'var(--surface-2)', border: '1px solid var(--line)' }}>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '.5rem', flexWrap: 'nowrap' }}>
+                    <span className="font-display" style={{ fontSize: '1.75rem', fontWeight: 900, color: 'var(--navy)', letterSpacing: '-.03em', lineHeight: 1, whiteSpace: 'nowrap', flexShrink: 0 }}>
+                      {tier.price}
+                    </span>
+                    <span style={{ fontSize: '.75rem', color: 'var(--ink-4)', fontWeight: 600, whiteSpace: 'nowrap', flexShrink: 0 }}>
+                      {tier.id === 'custom' ? 'starts onwards' : '/ one-time kit'}
+                    </span>
+                  </div>
+                  {tier.subtext && (
+                    <p style={{ fontSize: '.6875rem', color: tier.id === 'custom' ? '#B45309' : 'var(--ink-3)', fontWeight: 600, marginTop: '.375rem', marginBottom: 0, lineHeight: 1.35 }}>
+                      {tier.subtext}
+                    </p>
+                  )}
+                </div>
+
+                {/* Features list */}
                 <ul style={{ display: 'flex', flexDirection: 'column', gap: '.4375rem' }}>
                   {tier.features.map(f => (
                     <li key={f} style={{ display: 'flex', alignItems: 'flex-start', gap: '.5rem', fontSize: '.8125rem', color: 'var(--ink-2)' }}>
@@ -263,7 +279,7 @@ export function CustomProjectClient() {
                       className="btn btn-outline"
                       style={{
                         width: '100%',
-                        minHeight: '38px',
+                        minHeight: '40px',
                         fontSize: '.8125rem',
                         fontWeight: 700,
                         justifyContent: 'center',
@@ -281,9 +297,18 @@ export function CustomProjectClient() {
                   </div>
                 )}
 
-                {form.tier === tier.id && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '.375rem', marginTop: '.875rem', fontSize: '.8125rem', fontWeight: 700, color: 'var(--teal)' }}>
-                    <CheckCircle2 style={{ width: '.9375rem', height: '.9375rem' }} /> Selected Tier — Fill Details Below ↓
+                {tier.id === 'custom' && (
+                  <div style={{ marginTop: '1.25rem', paddingTop: '.875rem', borderTop: '1px dashed var(--line)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '.375rem', fontSize: '.8125rem', fontWeight: 700, color: form.tier === 'custom' ? 'var(--teal)' : 'var(--ink-4)', minHeight: '40px' }}>
+                      <CheckCircle2 style={{ width: '.9375rem', height: '.9375rem' }} />
+                      <span>{form.tier === 'custom' ? 'Selected — Fill Topic Below ↓' : 'Click to Request Custom Built Project'}</span>
+                    </div>
+                  </div>
+                )}
+
+                {form.tier === tier.id && tier.id !== 'custom' && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '.375rem', marginTop: '.75rem', fontSize: '.8125rem', fontWeight: 700, color: 'var(--teal)' }}>
+                    <CheckCircle2 style={{ width: '.9375rem', height: '.9375rem' }} /> Selected Custom Option
                   </div>
                 )}
               </div>
