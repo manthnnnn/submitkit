@@ -16,7 +16,7 @@ export function WhatsAppWidget() {
   const [open, setOpen] = useState(false);
   const pathname        = usePathname();
 
-  if (pathname?.startsWith('/admin')) return null;
+  if (pathname?.startsWith('/admin') || pathname?.startsWith('/demo')) return null;
 
   const waLink = `https://wa.me/918799814256?text=${encodeURIComponent('Hi! I need help with a project from SubmitKit.')}`;
 

@@ -48,5 +48,9 @@ export const SHOWCASE_DATA: Record<string, { title: string; desc: string; img: s
   "plant-disease-detection": [
     { title: "Diagnostic Scanner & Leaf Upload", desc: "Computer vision input canvas supporting field leaf photography and multi-crop sample benchmark testing.", img: "/projects/plant-disease-detection/01-home.jpg" },
     { title: "Grad-CAM Attention Heatmap & Treatment Prescriptions", desc: "Necrosis region localization with dual chemical and sustainable organic agronomic recommendations.", img: "/projects/plant-disease-detection/02-dashboard.jpg" }
+  ],
+  "crop-disease-detector": [
+    { title: "Diagnostic Scanner & Leaf Upload", desc: "Computer vision input canvas supporting field leaf photography and multi-crop sample benchmark testing.", img: "/projects/plant-disease-detection/01-home.jpg" },
+    { title: "Grad-CAM Attention Heatmap & Treatment Prescriptions", desc: "Necrosis region localization with dual chemical and sustainable organic agronomic recommendations.", img: "/projects/plant-disease-detection/02-dashboard.jpg" }
   ]
 };
