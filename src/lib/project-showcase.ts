@@ -44,5 +44,9 @@ export const SHOWCASE_DATA: Record<string, { title: string; desc: string; img: s
   "fake-news-detector": [
     { title: "NLP Scanner & Classifier", desc: "Real-time disinformation detection interface with multi-vector lexical scoring.", img: "/projects/fake-news-detector/01-home.jpg" },
     { title: "Explainability Heatmap & Metrics", desc: "Token-level attention highlighting and confusion matrix evaluation.", img: "/projects/fake-news-detector/02-dashboard.jpg" }
+  ],
+  "plant-disease-detection": [
+    { title: "Diagnostic Scanner & Leaf Upload", desc: "Computer vision input canvas supporting field leaf photography and multi-crop sample benchmark testing.", img: "/projects/plant-disease-detection/01-home.jpg" },
+    { title: "Grad-CAM Attention Heatmap & Treatment Prescriptions", desc: "Necrosis region localization with dual chemical and sustainable organic agronomic recommendations.", img: "/projects/plant-disease-detection/02-dashboard.jpg" }
   ]
 };

@@ -36,17 +36,6 @@ const TAG_COLORS: Record<string, string> = {
 
 const UPCOMING_CATALOG = [
   {
-    slug: 'crop-disease-detector',
-    name: 'Smart Crop Disease Detector AI',
-    category: 'AIML',
-    tier: 'MAJOR',
-    price: CONSTANTS.PRICING.MAJOR_PROJECT,
-    requests: '1,420+ students',
-    description: 'Snap a photo of any sick crop leaf. The AI detects the exact plant disease in seconds and prescribes the right treatment plan.',
-    tenthGradeExplainer: 'Works like a digital plant doctor on your phone. Farmers upload a photo of a sick leaf, and the AI instantly identifies the disease and tells them which spray or medicine will save their crop.',
-    tag: 'Dropping Friday',
-  },
-  {
     slug: 'skin-lesion-classifier',
     name: 'DermatoScan Skin Lesion & Cancer AI',
     category: 'AIML',

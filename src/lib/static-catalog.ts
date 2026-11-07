@@ -314,6 +314,33 @@ export const VERIFIED_AVAILABLE_PROJECTS: Project[] = [
     is_active: true,
     created_at: '2024-01-28T00:00:00.000Z',
   },
+  {
+    id: 'proj_cropguard_plant_disease',
+    slug: 'plant-disease-detection',
+    title: 'CropGuard AI: Deep Learning Plant Disease Detector',
+    category: 'AIML',
+    tier: 'MAJOR',
+    price_inr: CONSTANTS.PRICING.MAJOR_PROJECT,
+    description: 'Deep learning leaf pathology scanner trained on 54,000+ PlantVillage images with 97.8% diagnostic accuracy and organic treatment plans.',
+    problem_statement: 'Crop diseases cause over $220 billion in annual agricultural yield losses globally, severely threatening smallholder farming communities. Manual leaf diagnosis by scarce agricultural experts is slow and prone to catastrophic delay. CropGuard AI deploys a fine-tuned MobileNetV2 deep convolutional neural network trained across 54,305 leaf images from the PlantVillage dataset to classify 38 distinct crop pathogen conditions in 34ms with 97.8% validation accuracy, complete with Grad-CAM explainability heatmaps and dual chemical/organic treatment protocols.',
+    architecture_details: 'FastAPI and Python 3.11 deep learning inference engine executing fine-tuned MobileNetV2 with depthwise separable convolutions, paired with a Next.js 14 reactive agricultural diagnostic dashboard with Grad-CAM attention visualizer.',
+    tech_stack: ['Python 3.11', 'TensorFlow', 'MobileNetV2', 'OpenCV', 'FastAPI', 'Next.js 14', 'Tailwind CSS'],
+    features: [
+      'MobileNetV2 CNN Trained on 54,305 PlantVillage Images (97.8% Accuracy)',
+      '38 Distinct Crop Pathogen & Healthy Condition Classifiers',
+      'Grad-CAM Visual Attention Heatmap Projecting Lesion Necrosis Focus',
+      'Dual Treatment Protocol: Agronomic Chemical & Eco-Friendly Organic Remedies',
+      'Sub-50ms Inference Latency with Mobile-First Camera & Image Upload',
+      'Complete IEEE Black Book (.docx) & Defense Presentation (.pptx)',
+    ],
+    demo_video_id: null,
+    demo_screenshots: ['/projects/plant-disease-detection/01-home.jpg', '/projects/plant-disease-detection/02-dashboard.jpg'],
+    live_demo_url: null,
+    s3_storage_key: 'kits/plant-disease-detection.zip',
+    report_template_key: 'reports/plant-disease-detection.docx',
+    is_active: true,
+    created_at: '2024-02-01T00:00:00.000Z',
+  },
 ];
 
 /**

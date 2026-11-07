@@ -13,6 +13,7 @@ import SmartExpenseDemo from '@/components/demos/SmartExpenseDemo';
 import AeroFuelDemo from '@/components/demos/AeroFuelDemo';
 import PhishGuardDemo from '@/components/demos/PhishGuardDemo';
 import QuickBiteDemo from '@/components/demos/QuickBiteDemo';
+import CropGuardDemo from '@/components/demos/CropGuardDemo';
 
 interface DemoPageProps {
   params: Promise<{
@@ -66,6 +67,9 @@ export default async function DemoPage({ params }: DemoPageProps) {
         return <PhishGuardDemo />;
       case 'restaurant-qr-ordering':
         return <QuickBiteDemo />;
+      case 'plant-disease-detection':
+      case 'crop-disease-detector':
+        return <CropGuardDemo />;
       default:
         return (
           <div className="max-w-4xl mx-auto px-4 py-12">
