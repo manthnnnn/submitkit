@@ -180,44 +180,8 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
           {/* ── LEFT: Content ── */}
           <div className="lg:col-span-2 flex flex-col gap-8 w-full max-w-full min-w-0">
 
-            {/* Live Interactive App Callout for runnable demos */}
-            {slug === 'fake-news-detector' && (
-              <div style={{ padding: '1.375rem 1.5rem', borderRadius: '16px', background: 'var(--surface-teal)', border: '2px solid var(--teal)', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', boxShadow: 'var(--sh-teal)' }}>
-                <div style={{ flex: 1, minWidth: '16rem' }}>
-                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '.375rem', padding: '.2rem .625rem', borderRadius: '9999px', background: 'var(--teal)', color: '#fff', fontSize: '.6875rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.05em', marginBottom: '.5rem' }}>
-                    <Sparkles style={{ width: '.75rem', height: '.75rem' }} />
-                    End-to-End Live App Ready
-                  </div>
-                  <h3 style={{ fontSize: '1.125rem', fontWeight: 800, color: 'var(--navy)', margin: '0 0 .25rem' }}>
-                    TruthLens AI NLP Engine is Live &amp; Testable
-                  </h3>
-                  <p style={{ fontSize: '.875rem', color: 'var(--teal-dark)', margin: 0, lineHeight: 1.5 }}>
-                    Test the complete live NLP text scanner, token-level explainability heatmap, confusion matrix, and viva model answers right now in your browser.
-                  </p>
-                </div>
-                <Link
-                  href="/demo/fake-news-detector"
-                  className="btn btn-primary"
-                  style={{
-                    padding: '.75rem 1.5rem',
-                    fontSize: '.875rem',
-                    fontWeight: 700,
-                    borderRadius: '10px',
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '.5rem',
-                    textDecoration: 'none',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  <span>Launch Live Demo App</span>
-                  <ArrowRight style={{ width: '1rem', height: '1rem' }} />
-                </Link>
-              </div>
-            )}
-
             {/* Context Notice for Pipeline / Coming Soon projects */}
-            {!available && slug !== 'fake-news-detector' && (
+            {!available && (
               <div style={{ padding: '1.25rem 1.5rem', borderRadius: '16px', background: 'var(--amber-50)', border: '1.5px solid var(--amber-100)', display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
                 <Clock style={{ width: '1.5rem', height: '1.5rem', color: '#D97706', flexShrink: 0, marginTop: '.125rem' }} />
                 <div>
