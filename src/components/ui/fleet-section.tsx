@@ -218,8 +218,8 @@ export function FleetSection() {
               {/* Cards Grid */}
               <div className="fleet-card-track grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
                 {filteredAvailable.map(project => {
-                  const price = PRICE_MAP[project.slug] ?? CONSTANTS.PRICING.MINI_PROJECT;
-                  const isMajor = price === CONSTANTS.PRICING.MAJOR_PROJECT;
+                  const isMajor = project.tier === 'MAJOR' || PRICE_MAP[project.slug] === CONSTANTS.PRICING.MAJOR_PROJECT;
+                  const price = project.price ?? (isMajor ? CONSTANTS.PRICING.MAJOR_PROJECT : (PRICE_MAP[project.slug] ?? CONSTANTS.PRICING.MINI_PROJECT));
 
                   return (
                     <Link

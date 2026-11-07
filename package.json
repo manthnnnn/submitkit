@@ -7,7 +7,8 @@
     "build": "node scripts/next-build.mjs",
     "build:dev": "node scripts/next-build.mjs",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "add-kit": "node scripts/add-kit.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1124.0",

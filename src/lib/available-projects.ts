@@ -6,6 +6,8 @@ export interface AvailableProjectMeta {
   tenthGradeExplainer: string;
   badge: string;
   isReady: boolean;
+  tier?: 'MAJOR' | 'MINI';
+  price?: number;
 }
 
 export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
@@ -637,7 +639,8 @@ export function isProjectAvailable(slug: string): boolean {
   if (!slug) return false;
   const clean = slug.toLowerCase().trim();
   const resolved = SLUG_ALIASES_MAP[clean] || clean;
-  return AVAILABLE_PROJECT_SLUGS.has(resolved);
+  if (AVAILABLE_PROJECT_SLUGS.has(resolved)) return true;
+  return READY_PROJECTS[resolved]?.isReady === true;
 }
 
 /** @deprecated live URLs removed — use /projects/[slug] instead */

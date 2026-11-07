@@ -101,7 +101,13 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
   const isMajor = p.tier === 'MAJOR';
   const available = isProjectAvailable(p.slug);
   const hasVideo = !!p.demo_video_id;
-  const shots = SHOWCASE_DATA[p.slug] || [];
+  const shots = (SHOWCASE_DATA[p.slug] && SHOWCASE_DATA[p.slug].length > 0)
+    ? SHOWCASE_DATA[p.slug]
+    : (p.demo_screenshots || []).map((img, i) => ({
+        title: i === 0 ? "Application Overview" : i === 1 ? "System Dashboard" : `Module Screen ${i + 1}`,
+        desc: `${p.title} live interface and output visualization.`,
+        img,
+      }));
   const cleanDesc = (p.problem_statement || p.description || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 220);
   const availableAlternatives = getAvailableProjects().filter(alt => alt.slug !== p.slug).slice(0, 3);
 
