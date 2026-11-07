@@ -21,6 +21,7 @@ const PRICE_MAP: Record<string, number> = {
   'restaurant-qr-ordering': CONSTANTS.PRICING.MINI_PROJECT,
   'aerofuel-predictor':     CONSTANTS.PRICING.MAJOR_PROJECT,
   'smart-expense-tracker':  CONSTANTS.PRICING.MINI_PROJECT,
+  'fake-news-detector':     CONSTANTS.PRICING.MINI_PROJECT,
 };
 
 // Tag colours for upcoming cards (Clean Teal, Amber, Emerald, Slate palette — zero rogue purple)
@@ -138,7 +139,7 @@ export function FleetSection() {
             Available Kits &amp; <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-600 to-emerald-600">Upcoming Drops</span>
           </h2>
           <p className="text-slate-500 text-sm md:text-base leading-relaxed">
-            9 production-tested, execution-ready kits for instant checkout — or preview the next high-demand batch.
+            {availableProjects.length} production-tested, execution-ready kits for instant checkout — or preview the next high-demand batch.
           </p>
 
           {/* Tab Switcher */}
@@ -156,7 +157,7 @@ export function FleetSection() {
               <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                 activeTab === 'available' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-600'
               }`}>
-                9 Kits
+                {availableProjects.length} Kits
               </span>
             </button>
 
@@ -192,7 +193,7 @@ export function FleetSection() {
               {/* Category Pills — Clean, Descent, No Emojis, 3D Tactile Filter */}
               <div className="fleet-category-track flex flex-nowrap md:flex-wrap items-center justify-start md:justify-center gap-2 mb-10 overflow-x-auto no-scrollbar">
                 {[
-                  { id: 'ALL',          label: 'All 9 Kits' },
+                  { id: 'ALL',          label: `All ${availableProjects.length} Kits` },
                   { id: 'Healthcare',   label: 'Healthcare' },
                   { id: 'AIML',         label: 'AI / Machine Learning' },
                   { id: 'Cloud',        label: 'Cloud & DevTools' },
