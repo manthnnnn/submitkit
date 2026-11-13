@@ -94,13 +94,6 @@ const FAQS: FAQItem[] = [
     question: 'How do the Viva Voce preparation notes help me score top marks?',
     answer: 'Most students lose marks in Viva exams because they struggle to explain system flow or algorithms under pressure. Every SubmitKit kit includes Viva_Presentation_Notes.md, which gives you slide-by-slide speaker notes (telling you exactly what to say for each slide) and the Top 25 examiner Viva questions with clear, impressive, concept-first answers. You walk into your defense fully prepared.',
   },
-  {
-    id: 'pricing-blueprint-free',
-    category: 'college',
-    badge: '100% Free',
-    question: 'Are project blueprints free, or is there a ₹19 fee?',
-    answer: 'All 1,000+ software architecture blueprints, system designs, and topic roadmaps on SubmitKit are 100% FREE (₹0). While an early beta version had a nominal ₹19 download fee, that has been completely removed. There are no ₹19 products on SubmitKit. All blueprints are completely free to view and use. Full verified runnable code kits are ₹299 (Mini) and ₹499 (Major), and custom software builds start at ₹1,999.',
-  },
 ];
 
 type CategoryFilter = 'all' | 'non-coder' | 'college' | 'setup';

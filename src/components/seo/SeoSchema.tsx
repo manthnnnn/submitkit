@@ -234,14 +234,6 @@ export function HomeSchema() {
           },
           {
             '@type': 'Question',
-            name: 'Are project blueprints free or is there a ₹19 fee on SubmitKit?',
-            acceptedAnswer: {
-              '@type': 'Answer',
-              text: 'All 1,000+ project architecture blueprints on SubmitKit are 100% FREE (₹0). While an early beta version had a temporary ₹19 fee, that has been completely discontinued. There are no ₹19 fees or products on SubmitKit. All blueprints are completely free.',
-            },
-          },
-          {
-            '@type': 'Question',
             name: 'Can I get a custom project built for my specific topic?',
             acceptedAnswer: {
               '@type': 'Answer',
