@@ -29,6 +29,7 @@ const FOOTER_SECTIONS = [
       { href: 'https://wa.me/918799814256', label: 'Direct WhatsApp Support', external: true },
       { href: 'mailto:team@submitkit.in', label: 'Contact Us' },
       { href: '/#faq',                label: 'FAQs' },
+      { href: '/about',               label: 'About SubmitKit' },
     ],
   },
 ];

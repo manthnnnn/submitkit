@@ -8,7 +8,7 @@ import {
   CheckCircle2, ExternalLink, ChevronRight, FileText, Presentation, BookOpen,
   Play, Award, CheckCheck, Laptop, Cpu,
   Activity, Droplet, ShieldAlert, QrCode, Plane, Receipt, Leaf, Newspaper,
-  Rocket, GraduationCap, MessageCircle
+  Rocket, GraduationCap
 } from 'lucide-react';
 import { FaqSection } from '@/components/ui/faq-section';
 
@@ -716,112 +716,6 @@ export default function HomePage() {
 
       {/* ════ FREQUENTLY ASKED QUESTIONS (FAQ) ════ */}
       <FaqSection />
-
-      {/* ════ MEET THE FOUNDER / LEAD ARCHITECT ════ */}
-      <section style={{ position: 'relative', zIndex: 1, padding: 'clamp(2.5rem,5vw,4.5rem) 0' }}>
-        <div className="shell" style={{ maxWidth: '62rem' }}>
-          <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.18 }}>
-            <div style={{
-              borderRadius: '24px',
-              background: 'linear-gradient(165deg, #FFFFFF 0%, #FDFBF8 35%, #F5ECE0 100%)',
-              border: '1.5px solid rgba(220, 208, 188, 0.95)',
-              boxShadow: 'inset 0 1px 0 #FFFFFF, 0 12px 36px -6px rgba(180, 145, 100, 0.14)',
-              padding: 'clamp(1.75rem,4vw,3rem)',
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 18rem), 1fr))',
-              gap: '2rem',
-              alignItems: 'center',
-            }}>
-              <div>
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '.4rem', fontSize: '.6875rem', fontWeight: 800, color: 'var(--teal)', textTransform: 'uppercase', letterSpacing: '.12em', marginBottom: '.625rem', padding: '.25rem .75rem', borderRadius: '9999px', background: 'var(--teal-50)', border: '1px solid var(--teal-100)' }}>
-                  <Sparkles style={{ width: '13px', height: '13px' }} />
-                  Founder&apos;s Personal Guarantee
-                </div>
-                <h3 className="font-display font-black" style={{ fontSize: 'clamp(1.5rem, 3.5vw, 2.25rem)', letterSpacing: '-.03em', color: 'var(--navy)', lineHeight: 1.2, margin: '0 0 1rem' }}>
-                  &ldquo;Great ideas shouldn&apos;t be held back by code.&rdquo;
-                </h3>
-                <p style={{ fontSize: '.9375rem', color: 'var(--ink-2)', lineHeight: 1.75, marginBottom: '1rem' }}>
-                  Hi, I&apos;m <strong style={{ color: 'var(--navy)' }}>Manthan</strong>, Founder and Lead Architect of SubmitKit. I started this platform with a clear purpose: eliminate the technical barriers, broken web templates, and exorbitant $5,000+ agency retainers that stop students, creators, and non-coders from building real-world software.
-                </p>
-                <p style={{ fontSize: '.9375rem', color: 'var(--ink-3)', lineHeight: 1.75, marginBottom: '1.5rem' }}>
-                  Every project kit and custom build delivered by SubmitKit comes with 100% working unencrypted code, automated 1-click desktop launchers, university-standard IEEE reports, and a direct 1-on-1 walkthrough. You have my personal guarantee on quality and support.
-                </p>
-                <div style={{ display: 'flex', gap: '.75rem', flexWrap: 'wrap' }}>
-                  <a
-                    href="https://wa.me/918799814256?text=Hi%20Manthan!%20I%20have%20a%20question%20about%20SubmitKit."
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn btn-teal"
-                    style={{ gap: '.5rem', fontSize: '.875rem', minHeight: '44px', padding: '0 1.25rem' }}
-                  >
-                    <MessageCircle style={{ width: '1.125rem', height: '1.125rem' }} />
-                    Message Manthan Directly
-                  </a>
-                  <Link
-                    href="/custom"
-                    className="btn btn-outline"
-                    style={{ gap: '.4rem', fontSize: '.875rem', minHeight: '44px', padding: '0 1.25rem', textDecoration: 'none' }}
-                  >
-                    Custom Studio Details <ArrowRight style={{ width: '1rem', height: '1rem' }} />
-                  </Link>
-                </div>
-              </div>
-
-              {/* Founder Credential Card */}
-              <div style={{
-                padding: '1.75rem',
-                borderRadius: '18px',
-                background: 'var(--surface)',
-                border: '1.5px solid var(--line)',
-                boxShadow: 'var(--sh-sm)',
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.25rem', paddingBottom: '1.25rem', borderBottom: '1px solid var(--line)' }}>
-                  <div style={{
-                    width: '3.5rem',
-                    height: '3.5rem',
-                    borderRadius: '50%',
-                    background: 'linear-gradient(135deg, var(--teal) 0%, var(--teal-dark) 100%)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#FFFFFF',
-                    fontSize: '1.5rem',
-                    fontWeight: 900,
-                    boxShadow: '0 4px 14px rgba(13, 148, 136, 0.35)',
-                  }}>
-                    M
-                  </div>
-                  <div>
-                    <h4 style={{ fontSize: '1.125rem', fontWeight: 800, color: 'var(--navy)', margin: 0, letterSpacing: '-.02em' }}>
-                      Manthan
-                    </h4>
-                    <p style={{ fontSize: '.8125rem', color: 'var(--teal-dark)', fontWeight: 700, margin: '.15rem 0 0' }}>
-                      Founder &amp; Lead Architect · SubmitKit
-                    </p>
-                    <p style={{ fontSize: '.75rem', color: 'var(--ink-4)', margin: '.15rem 0 0' }}>
-                      Pune, Maharashtra, India
-                    </p>
-                  </div>
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '.75rem' }}>
-                  {[
-                    { label: 'Role', value: 'System Architecture & AI Engineering' },
-                    { label: 'Platform Focus', value: 'Non-Coder MVPs & Academic Kits' },
-                    { label: 'Core Guarantee', value: '100% Working Code or Full WhatsApp Debug' },
-                    { label: 'Delivery Standard', value: 'Windows/Mac 1-Click Run & Walkthrough' },
-                  ].map(item => (
-                    <div key={item.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '.8125rem', gap: '.5rem' }}>
-                      <span style={{ color: 'var(--ink-4)', fontWeight: 500 }}>{item.label}</span>
-                      <span style={{ color: 'var(--navy)', fontWeight: 700, textAlign: 'right' }}>{item.value}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
 
       {/* ════ FINAL TRUST & GUARANTEE STRIP ════ */}
       <section style={{ position: 'relative', zIndex: 1, borderTop: '1px solid var(--line)', padding: 'clamp(2rem,4vw,2.75rem) 0', background: 'linear-gradient(180deg, rgba(248, 242, 232, 0.7) 0%, rgba(243, 236, 222, 0.95) 100%)' }}>
