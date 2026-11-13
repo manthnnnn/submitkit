@@ -162,7 +162,7 @@ ON public.benchmark_runs FOR SELECT
 USING (true);
 
 -- ==========================================
--- DEFENSE SHIELD: ₹19 Micro-Transaction Schema
+-- DEFENSE SHIELD: Micro-Transaction Schema
 -- ==========================================
 
 CREATE TABLE IF NOT EXISTS public.benchmark_purchases (

@@ -615,7 +615,7 @@ async function main() {
   </div>
 
   <div class="back-footer">
-    <strong style="color: #1e3a8a; font-size: 9pt;">SUBMITKIT INTELLIGENCE  •  THE ₹19 ADVANTAGE</strong><br>
+    <strong style="color: #1e3a8a; font-size: 9pt;">SUBMITKIT INTELLIGENCE  •  VERIFIED ENGINEERING BLUEPRINT</strong><br>
     submitkit.in  •  Engineered exclusively for ${studentEmail}  •  All Rights Reserved.
   </div>
 

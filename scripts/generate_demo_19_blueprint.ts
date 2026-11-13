@@ -19,7 +19,7 @@ async function main() {
   console.log('Viva Q&A count:', blueprint.freeVivaQuestions?.length);
 
   const studentEmail = 'rahul.sharma@vtu.ac.in';
-  console.log('Generating official SubmitKit ₹19 Blueprint DOCX...');
+  console.log('Generating official SubmitKit Free Blueprint DOCX...');
   const buffer = await generateBlueprintDocx(blueprint, studentEmail);
 
   const outDir = path.join(process.cwd(), 'public');
