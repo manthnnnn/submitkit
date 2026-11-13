@@ -635,7 +635,7 @@ async function main() {
   });
 
   const page = await browser.newPage();
-  await page.setContent(htmlContent, { waitUntil: 'networkidle0' });
+  await page.setContent(htmlContent, { waitUntil: 'load' });
 
   const pdfPublicPath = path.join(process.cwd(), 'public', 'SubmitKit-Demo-Blueprint-Face-Recognition-Attendance.pdf');
   const pdfRootPath = path.join(process.cwd(), 'SubmitKit-Demo-Blueprint-Face-Recognition-Attendance.pdf');

@@ -12,8 +12,8 @@ import { Home, ChevronRight } from "lucide-react";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: { absolute: `Verified Engineering Projects with Source Code & IEEE Report | ${CONSTANTS.APP_NAME}` },
-  description: `Browse 9+ instant-download final year engineering project kits. Full working source code, 60-page IEEE Black Book, defense PPT, and top 25 Viva Q&A. Mini ₹${CONSTANTS.PRICING.MINI_PROJECT} / Major ₹${CONSTANTS.PRICING.MAJOR_PROJECT}.`,
+  title: { absolute: `Software Systems & Production Blueprints | ${CONSTANTS.APP_NAME}` },
+  description: `Explore fully engineered project systems and production codebases. Complete working source code, architecture specifications, presentation decks, and deployment scripts.`,
   alternates: { canonical: '/projects' },
 };
 
@@ -64,28 +64,25 @@ async function fetchProjects(): Promise<Project[]> {
       return (data as Project[]) || [];
     })();
 
-    // 500ms timeout prevents DNS or cold-start hangs from degrading UX
+    // 120ms max timeout so page transitions feel instantaneous without blocking UX
     const timeoutPromise = new Promise<Project[]>((_, reject) =>
-      setTimeout(() => reject(new Error('Timeout')), 500)
+      setTimeout(() => reject(new Error('Timeout')), 120)
     );
 
     const remote = await Promise.race([fetchPromise, timeoutPromise]);
     if (remote && remote.length > 0) return remote;
   } catch {
-    // Graceful fallback to static master catalog
+    // Instant fallback to static catalog
   }
 
   return getAllStaticProjects();
 }
 
-async function CatalogLoader() {
+export default async function ProjectsPage() {
   const projects = await fetchProjects();
-  return <ProjectsCatalog initialProjects={projects} />;
-}
 
-export default function ProjectsPage() {
   return (
-    <div style={{ background: 'var(--canvas)', minHeight: '100vh' }}>
+    <div style={{ background: 'transparent', minHeight: '100vh' }}>
       <BreadcrumbsSchema items={[{ name: 'Home', url: '/' }, { name: 'All Projects' }]} />
       <ProductSchema
         name={`SubmitKit Engineering Project Kit (Mini ₹${CONSTANTS.PRICING.MINI_PROJECT} / Major ₹${CONSTANTS.PRICING.MAJOR_PROJECT})`}
@@ -97,21 +94,19 @@ export default function ProjectsPage() {
       {/* ── Breadcrumb seamlessly on canvas ── */}
       <div className="shell" style={{ paddingTop: '1.25rem', paddingBottom: '.25rem' }}>
         <nav aria-label="Breadcrumb" style={{ display: 'flex', alignItems: 'center', gap: '.375rem', fontSize: '.8125rem', color: 'var(--ink-4)' }}>
-          <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '.25rem', color: 'var(--ink-4)', textDecoration: 'none', fontWeight: 500 }}
+          <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', gap: '.25rem', color: 'var(--ink-3)', textDecoration: 'none', fontWeight: 500 }}
             className="breadcrumb-link"
           >
             <Home style={{ width: '.875rem', height: '.875rem' }} />
             Home
           </Link>
-          <ChevronRight style={{ width: '.8125rem', height: '.8125rem', flexShrink: 0 }} />
+          <ChevronRight style={{ width: '.8125rem', height: '.8125rem', flexShrink: 0, opacity: 0.45 }} />
           <span style={{ color: 'var(--navy)', fontWeight: 600 }}>All Projects</span>
         </nav>
       </div>
 
-      <div className="shell" style={{ paddingTop: '2.5rem', paddingBottom: '4rem' }}>
-        <Suspense fallback={<Skeleton />}>
-          <CatalogLoader />
-        </Suspense>
+      <div className="shell" style={{ paddingTop: '1.5rem', paddingBottom: '4rem' }}>
+        <ProjectsCatalog initialProjects={projects} />
       </div>
     </div>
   );

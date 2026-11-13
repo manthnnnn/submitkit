@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
+import type { Variants } from 'framer-motion';
 import {
   Menu, X, Zap, ChevronRight, BookOpen,
   Package, Search, Sparkles, MessageCircle
@@ -20,16 +21,70 @@ interface NavItem {
 }
 
 const DESKTOP_NAV: NavItem[] = [
-  { href: '/projects',  label: 'Browse Projects', sub: '59+ verified runnable project kits', icon: Package, badge: '59+ Kits' },
-  { href: '/blueprint', label: 'Free Topics',     sub: '1,078 free topic blueprints',       icon: BookOpen, badge: 'Free' },
+  { href: '/projects',     label: 'College Projects',        sub: '11 verified runnable kits with IEEE report & PPT', icon: Package },
+  { href: '/custom',       label: 'Customize Project / Idea', sub: 'Custom college project or startup MVP built from scratch', icon: Zap, badge: 'CUSTOM' },
+  { href: '/blueprint',    label: 'Ideas & Blueprints',       sub: '1,000+ structured engineering blueprints', icon: BookOpen, badge: 'FREE' },
+  { href: '/order/lookup', label: 'Track Order',              sub: 'Access your purchased project downloads', icon: Search },
 ];
 
 const MOBILE_DRAWER_NAV: NavItem[] = [
-  { href: '/projects',    label: 'Browse Project Kits',   sub: '59+ kits with IEEE Black Book & PPT', icon: Package, badge: '59+ Kits' },
-  { href: '/blueprint',   label: 'Topic Blueprints',      sub: '1,078 IEEE abstracts & viva questions', icon: BookOpen, badge: 'Free' },
-  { href: '/order/lookup',label: 'Track Order & Vault',   sub: 'Recover your purchased project downloads', icon: Search },
-  { href: '/custom',      label: 'Custom Project Build',  sub: 'Built in 48 hrs with 1-on-1 viva coaching', icon: Sparkles, badge: 'Custom' },
+  { href: '/projects',     label: 'College Projects',        sub: '11 verified runnable kits with IEEE report & PPT', icon: Package },
+  { href: '/custom',       label: 'Customize Project / Idea', sub: 'Custom college project or startup MVP built from scratch', icon: Zap, badge: 'CUSTOM' },
+  { href: '/blueprint',    label: 'Ideas & Blueprints',       sub: '1,000+ structured engineering blueprints — free', icon: BookOpen, badge: 'Free' },
+  { href: '/order/lookup', label: 'Track Your Order',         sub: 'Access your purchased project downloads', icon: Search },
 ];
+
+/* ── 120 FPS Stagger Orchestration: Menu items cascade in one by one ── */
+const drawerContainerVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    y: -16,
+    scale: 0.95,
+  },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      type: 'spring',
+      damping: 24,
+      stiffness: 300,
+      mass: 0.8,
+      staggerChildren: 0.08,
+      delayChildren: 0.06,
+    },
+  },
+  exit: {
+    opacity: 0,
+    y: -12,
+    scale: 0.95,
+    transition: {
+      duration: 0.2,
+      ease: [0.32, 0.72, 0, 1],
+    },
+  },
+};
+
+const drawerItemVariants: Variants = {
+  hidden: {
+    opacity: 0,
+    x: -16,
+    y: 14,
+    scale: 0.94,
+  },
+  visible: {
+    opacity: 1,
+    x: 0,
+    y: 0,
+    scale: 1,
+    transition: {
+      type: 'spring',
+      damping: 22,
+      stiffness: 320,
+      mass: 0.7,
+    },
+  },
+};
 
 export function Navbar() {
   const [open, setOpen]         = useState(false);
@@ -67,12 +122,28 @@ export function Navbar() {
     return () => window.removeEventListener('keydown', closeOnEscape);
   }, [open]);
 
-  // Track scroll position for subtle acrylic navbar blur
+  // Track scroll position with requestAnimationFrame to prevent layout thrashing and maintain 120 FPS
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 8);
-    fn();
-    window.addEventListener('scroll', fn, { passive: true });
-    return () => window.removeEventListener('scroll', fn);
+    let ticking = false;
+    let lastScrolled = window.scrollY > 8;
+    setScrolled(lastScrolled);
+
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const isScrolled = window.scrollY > 8;
+          if (isScrolled !== lastScrolled) {
+            lastScrolled = isScrolled;
+            setScrolled(isScrolled);
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   // Instant touch-safe toggle handler
@@ -118,6 +189,7 @@ export function Navbar() {
           right: 0,
           zIndex: 125, // Always higher than backdrop (115) and drawer (120) so hamburger/close button is always clickable
           transition: 'background-color 200ms ease, border-color 200ms ease, box-shadow 200ms ease',
+          willChange: 'background-color, border-color',
           ...(scrolled
             ? {
                 background: 'rgba(253, 251, 247, 0.94)',
@@ -146,57 +218,158 @@ export function Navbar() {
         >
           <Logo size="sm" href="/" />
 
-          {/* Desktop nav: Browse Projects & Free Topics */}
-          <nav className="hidden lg:flex" style={{ alignItems: 'center', gap: '0.5rem' }}>
+          {/* Desktop nav: With iOS Fluid Spring Active Tab Slider */}
+          <nav className="hidden lg:flex" style={{ alignItems: 'center', gap: '0.25rem' }}>
             {DESKTOP_NAV.map(({ href, label, badge }) => {
               const active = isActive(href);
               return (
-                <Link
+                <motion.div
                   key={href}
-                  href={href}
-                  prefetch={true}
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '0.375rem',
-                    padding: '0.5rem 1rem',
-                    borderRadius: '10px',
-                    fontSize: '0.9375rem',
-                    fontWeight: active ? 700 : 500,
-                    textDecoration: 'none',
-                    transition: 'all 150ms ease',
-                    background: active ? 'var(--teal-50)' : 'transparent',
-                    color: active ? 'var(--teal-darker)' : 'var(--ink-2)',
-                    border: active ? '1px solid rgba(13, 148, 136, 0.25)' : '1px solid transparent',
-                  }}
-                  onMouseEnter={e => {
-                    if (!active) {
-                      e.currentTarget.style.background = 'var(--surface-2)';
-                      e.currentTarget.style.color = 'var(--ink)';
-                    }
-                  }}
-                  onMouseLeave={e => {
-                    if (!active) {
-                      e.currentTarget.style.background = 'transparent';
-                      e.currentTarget.style.color = 'var(--ink-2)';
-                    }
-                  }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ type: 'spring', stiffness: 500, damping: 28 }}
+                  style={{ position: 'relative', display: 'inline-flex' }}
                 >
-                  {label}
-                  {badge && (
-                    <span className="tag tag-teal" style={{ fontSize: '0.625rem', padding: '0.125rem 0.45rem', fontWeight: 800 }}>
-                      {badge}
-                    </span>
-                  )}
-                </Link>
+                  <Link
+                    href={href}
+                    prefetch={true}
+                    style={{
+                      position: 'relative',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.45rem',
+                      padding: '0.45rem 0.95rem',
+                      borderRadius: '12px',
+                      fontSize: '0.9rem',
+                      fontWeight: active ? 650 : 500,
+                      textDecoration: 'none',
+                      letterSpacing: '-0.01em',
+                      color: active ? 'var(--navy)' : 'var(--ink-3)',
+                      transition: 'color 140ms ease',
+                      zIndex: 1,
+                    }}
+                    onMouseEnter={e => {
+                      if (!active) {
+                        e.currentTarget.style.color = 'var(--navy)';
+                      }
+                    }}
+                    onMouseLeave={e => {
+                      if (!active) {
+                        e.currentTarget.style.color = 'var(--ink-3)';
+                      }
+                    }}
+                  >
+                    {/* Fluid sliding active pill across tabs */}
+                    {active && (
+                      <motion.div
+                        layoutId="desktop-active-nav-pill"
+                        transition={{
+                          type: 'spring',
+                          stiffness: 440,
+                          damping: 34,
+                          mass: 0.6,
+                        }}
+                        style={{
+                          position: 'absolute',
+                          inset: 0,
+                          borderRadius: '12px',
+                          background: 'linear-gradient(180deg, #FFFFFF 0%, #FAF8F5 100%)',
+                          border: '1.2px solid rgba(220, 212, 198, 0.95)',
+                          boxShadow: '0 2px 6px -1px rgba(60, 45, 20, 0.05), inset 0 1px 0 #FFFFFF',
+                          zIndex: -1,
+                        }}
+                      />
+                    )}
+
+                    {/* Active dot indicator with spring */}
+                    {active && (
+                      <motion.span
+                        layoutId="desktop-active-dot"
+                        transition={{ type: 'spring', stiffness: 480, damping: 32 }}
+                        style={{
+                          width: '5px',
+                          height: '5px',
+                          borderRadius: '50%',
+                          background: 'var(--teal)',
+                          boxShadow: '0 0 0 2px rgba(13, 148, 136, 0.22)',
+                          flexShrink: 0,
+                        }}
+                      />
+                    )}
+                    <span>{label}</span>
+                    {badge && (
+                      <span
+                        style={{
+                          fontSize: '0.625rem',
+                          padding: '0.1rem 0.45rem',
+                          fontWeight: 750,
+                          letterSpacing: '0.04em',
+                          borderRadius: '9999px',
+                          background: badge === 'FREE'
+                            ? 'rgba(217, 119, 6, 0.09)'
+                            : 'rgba(13, 148, 136, 0.09)',
+                          color: badge === 'FREE'
+                            ? '#B45309'
+                            : 'var(--teal-darker)',
+                          border: badge === 'FREE'
+                            ? '1px solid rgba(217, 119, 6, 0.25)'
+                            : '1px solid rgba(13, 148, 136, 0.22)',
+                        }}
+                      >
+                        {badge}
+                      </span>
+                    )}
+                  </Link>
+                </motion.div>
               );
             })}
           </nav>
 
-          {/* Mobile Hamburger / Close Toggle Button */}
+          {/* Desktop right-side CTA with tactile spring */}
+          <div className="hidden lg:flex" style={{ alignItems: 'center', gap: '.75rem' }}>
+            {pathname === '/custom' ? (
+              <motion.div whileTap={{ scale: 0.96 }} transition={{ type: 'spring', stiffness: 500, damping: 28 }}>
+                <Link
+                  href="/projects"
+                  className="btn btn-hero-secondary"
+                  style={{
+                    padding: '.45rem 1.125rem',
+                    fontSize: '.875rem',
+                    borderRadius: '12px',
+                    gap: '.4rem',
+                    fontWeight: 650,
+                    minHeight: '38px',
+                  }}
+                >
+                  <Package style={{ width: '14px', height: '14px', color: 'var(--teal)' }} />
+                  Browse 11 Kits
+                </Link>
+              </motion.div>
+            ) : (
+              <motion.div whileTap={{ scale: 0.96 }} transition={{ type: 'spring', stiffness: 500, damping: 28 }}>
+                <Link
+                  href="/custom"
+                  className="btn btn-hero-primary"
+                  style={{
+                    padding: '.45rem 1.125rem',
+                    fontSize: '.875rem',
+                    borderRadius: '12px',
+                    gap: '.375rem',
+                    fontWeight: 650,
+                    minHeight: '38px',
+                  }}
+                >
+                  Customize Idea <ChevronRight style={{ width: '14px', height: '14px' }} />
+                </Link>
+              </motion.div>
+            )}
+          </div>
+
+          {/* Mobile Hamburger / Close Toggle Button with tactile bounce */}
           <div className="flex lg:hidden" style={{ alignItems: 'center', gap: '0.625rem' }}>
-            <button
+            <motion.button
               type="button"
+              whileTap={{ scale: 0.88 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 25 }}
               onPointerDown={handleToggle}
               onClick={handleToggle}
               aria-expanded={open}
@@ -208,26 +381,44 @@ export function Navbar() {
                 display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                background: open ? 'var(--teal-100)' : 'var(--surface-2)',
-                border: open ? '1px solid rgba(13, 148, 136, 0.4)' : '1px solid var(--line)',
+                background: open ? 'linear-gradient(180deg, #FFFFFF 0%, #FAF8F5 100%)' : 'var(--surface-2)',
+                border: open ? '1.2px solid rgba(13, 148, 136, 0.4)' : '1px solid var(--line)',
                 color: open ? 'var(--teal-darker)' : 'var(--ink)',
-                transition: 'transform 150ms cubic-bezier(0.32, 0.72, 0, 1), background-color 150ms ease',
+                boxShadow: open ? '0 2px 8px -2px rgba(13, 148, 136, 0.2)' : 'none',
                 touchAction: 'manipulation',
                 userSelect: 'none',
                 WebkitUserSelect: 'none',
               }}
             >
-              {open ? (
-                <X className="pointer-events-none" style={{ width: '1.35rem', height: '1.35rem' }} />
-              ) : (
-                <Menu className="pointer-events-none" style={{ width: '1.35rem', height: '1.35rem' }} />
-              )}
-            </button>
+              <AnimatePresence mode="wait">
+                {open ? (
+                  <motion.div
+                    key="close-icon"
+                    initial={{ rotate: -90, opacity: 0, scale: 0.8 }}
+                    animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                    exit={{ rotate: 90, opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.14 }}
+                  >
+                    <X style={{ width: '1.35rem', height: '1.35rem' }} />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="menu-icon"
+                    initial={{ rotate: 90, opacity: 0, scale: 0.8 }}
+                    animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                    exit={{ rotate: -90, opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.14 }}
+                  >
+                    <Menu style={{ width: '1.35rem', height: '1.35rem' }} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.button>
           </div>
         </div>
       </header>
 
-      {/* Modern iOS Spring Mobile Drawer */}
+      {/* Modern iOS Spring Mobile Drawer with Cascading Stagger (One By One) */}
       <AnimatePresence>
         {open && (
           <>
@@ -257,21 +448,16 @@ export function Navbar() {
               aria-hidden="true"
             />
 
-            {/* iOS Floating Popover Drawer */}
+            {/* iOS Floating Popover Drawer with Staggered Container */}
             <motion.div
               key="nav-drawer"
               role="dialog"
               aria-modal="true"
               aria-label="Navigation Menu"
-              initial={{ opacity: 0, y: -14, scale: 0.98 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -10, scale: 0.98 }}
-              transition={{
-                type: 'spring',
-                damping: 28,
-                stiffness: 380,
-                mass: 0.7,
-              }}
+              variants={drawerContainerVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
               style={{
                 position: 'fixed',
                 top: 'calc(4.25rem + env(safe-area-inset-top, 0px))',
@@ -289,10 +475,12 @@ export function Navbar() {
                 display: 'flex',
                 flexDirection: 'column',
                 overflow: 'hidden',
+                willChange: 'transform, opacity',
               }}
             >
               {/* Header inside drawer */}
-              <div
+              <motion.div
+                variants={drawerItemVariants}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -306,10 +494,11 @@ export function Navbar() {
                     Menu
                   </span>
                   <span className="tag tag-emerald" style={{ fontSize: '0.625rem', padding: '0.1rem 0.45rem', fontWeight: 800 }}>
-                    ● 59+ Kits Ready
+                    ● 11 Verified Kits
                   </span>
                 </div>
-                <button
+                <motion.button
+                  whileTap={{ scale: 0.85 }}
                   type="button"
                   onPointerDown={handleClose}
                   onClick={handleClose}
@@ -327,68 +516,103 @@ export function Navbar() {
                   }}
                 >
                   <X style={{ width: '1rem', height: '1rem' }} />
-                </button>
-              </div>
+                </motion.button>
+              </motion.div>
 
-              {/* Navigation Items List */}
+              {/* Navigation Items List: Enters One By One */}
               <nav style={{ padding: '0.5rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                 {MOBILE_DRAWER_NAV.map(({ href, label, sub, icon: Icon, badge }) => {
                   const active = isActive(href);
                   return (
-                    <Link
+                    <motion.div
                       key={href}
-                      href={href}
-                      prefetch={true}
-                      onClick={() => setOpen(false)}
-                      className="press drawer-nav-item"
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.75rem',
-                        padding: '0.6875rem 0.75rem',
-                        borderRadius: '14px',
-                        textDecoration: 'none',
-                        transition: 'background-color 150ms ease, transform 150ms cubic-bezier(0.32, 0.72, 0, 1)',
-                        background: active ? 'var(--teal-50)' : 'transparent',
-                        color: active ? 'var(--teal-darker)' : 'var(--navy)',
-                      }}
+                      variants={drawerItemVariants}
+                      whileTap={{ scale: 0.97 }}
                     >
-                      <div
+                      <Link
+                        href={href}
+                        prefetch={true}
+                        onClick={() => setOpen(false)}
+                        className="press drawer-nav-item"
                         style={{
-                          width: '2.25rem',
-                          height: '2.25rem',
-                          borderRadius: '11px',
-                          flexShrink: 0,
-                          background: active ? 'var(--teal-100)' : 'var(--surface-2)',
-                          border: active ? '1px solid rgba(13, 148, 136, 0.25)' : '1px solid var(--line)',
                           display: 'flex',
                           alignItems: 'center',
-                          justifyContent: 'center',
+                          gap: '0.75rem',
+                          padding: '0.6875rem 0.75rem',
+                          borderRadius: '14px',
+                          textDecoration: 'none',
+                          transition: 'background-color 150ms ease, transform 150ms cubic-bezier(0.32, 0.72, 0, 1)',
+                          background: active
+                            ? 'linear-gradient(180deg, #FFFFFF 0%, #FAF8F5 100%)'
+                            : 'transparent',
+                          border: active
+                            ? '1.2px solid rgba(220, 212, 198, 0.95)'
+                            : '1.2px solid transparent',
+                          boxShadow: active
+                            ? '0 2px 6px -1px rgba(60, 45, 20, 0.05)'
+                            : 'none',
+                          color: 'var(--navy)',
                         }}
                       >
-                        <Icon style={{ width: '1.1rem', height: '1.1rem', color: active ? 'var(--teal)' : 'var(--ink-2)' }} />
-                      </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
-                          <span style={{ fontSize: '0.9375rem', fontWeight: 700, lineHeight: 1.25 }}>{label}</span>
-                          {badge && (
-                            <span className="tag tag-teal" style={{ fontSize: '0.625rem', padding: '0.1rem 0.4rem', fontWeight: 800 }}>
-                              {badge}
-                            </span>
-                          )}
+                        <div
+                          style={{
+                            width: '2.25rem',
+                            height: '2.25rem',
+                            borderRadius: '11px',
+                            flexShrink: 0,
+                            background: active
+                              ? 'rgba(13, 148, 136, 0.1)'
+                              : 'var(--surface-2)',
+                            border: active
+                              ? '1px solid rgba(13, 148, 136, 0.25)'
+                              : '1px solid var(--line)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <Icon style={{ width: '1.1rem', height: '1.1rem', color: active ? 'var(--teal)' : 'var(--ink-2)' }} />
                         </div>
-                        <p style={{ fontSize: '0.75rem', color: 'var(--ink-4)', margin: '0.125rem 0 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                          {sub}
-                        </p>
-                      </div>
-                      <ChevronRight style={{ width: '1rem', height: '1rem', color: 'var(--ink-5)', flexShrink: 0 }} />
-                    </Link>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
+                            <span style={{ fontSize: '0.9375rem', fontWeight: active ? 700 : 600, lineHeight: 1.25 }}>{label}</span>
+                            {badge && (
+                              <span
+                                style={{
+                                  fontSize: '0.625rem',
+                                  padding: '0.1rem 0.45rem',
+                                  fontWeight: 750,
+                                  letterSpacing: '0.04em',
+                                  borderRadius: '9999px',
+                                  background: badge.toUpperCase() === 'FREE'
+                                    ? 'rgba(217, 119, 6, 0.09)'
+                                    : 'rgba(13, 148, 136, 0.09)',
+                                  color: badge.toUpperCase() === 'FREE'
+                                    ? '#B45309'
+                                    : 'var(--teal-darker)',
+                                  border: badge.toUpperCase() === 'FREE'
+                                    ? '1px solid rgba(217, 119, 6, 0.25)'
+                                    : '1px solid rgba(13, 148, 136, 0.22)',
+                                }}
+                              >
+                                {badge}
+                              </span>
+                            )}
+                          </div>
+                          <p style={{ fontSize: '0.75rem', color: 'var(--ink-4)', margin: '0.125rem 0 0', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                            {sub}
+                          </p>
+                        </div>
+                        <ChevronRight style={{ width: '1rem', height: '1rem', color: 'var(--ink-5)', flexShrink: 0 }} />
+                      </Link>
+                    </motion.div>
                   );
                 })}
               </nav>
 
-              {/* Bottom Actions: Browse All Kits + WhatsApp Direct */}
-              <div
+              {/* Bottom Actions: Enters as Final Staggered Item */}
+              <motion.div
+                variants={drawerItemVariants}
                 style={{
                   padding: '0.625rem 0.75rem 0.75rem',
                   borderTop: '1px solid var(--line)',
@@ -398,27 +622,29 @@ export function Navbar() {
                   gap: '0.5rem',
                 }}
               >
-                <Link
-                  href="/projects"
-                  prefetch={true}
-                  onClick={() => setOpen(false)}
-                  className="btn btn-teal drawer-cta-btn"
-                  style={{
-                    width: '100%',
-                    minHeight: '44px',
-                    fontSize: '0.875rem',
-                    fontWeight: 700,
-                    borderRadius: '12px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '0.5rem',
-                    boxShadow: 'var(--sh-xs)',
-                  }}
-                >
-                  <Zap style={{ width: '0.9375rem', height: '0.9375rem', fill: 'white' }} />
-                  Browse All 59+ Kits
-                </Link>
+                <motion.div whileTap={{ scale: 0.98 }}>
+                  <Link
+                    href="/projects"
+                    prefetch={true}
+                    onClick={() => setOpen(false)}
+                    className="btn btn-teal drawer-cta-btn"
+                    style={{
+                      width: '100%',
+                      minHeight: '44px',
+                      fontSize: '0.875rem',
+                      fontWeight: 700,
+                      borderRadius: '12px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.5rem',
+                      boxShadow: 'var(--sh-xs)',
+                    }}
+                  >
+                    <Package style={{ width: '0.9375rem', height: '0.9375rem', color: '#FFFFFF' }} />
+                    Browse 11 College Kits (₹299)
+                  </Link>
+                </motion.div>
 
                 <a
                   href="https://wa.me/918799814256?text=Hi%20SubmitKit!%20I%20have%20a%20question%20about%20a%20project."
@@ -440,7 +666,7 @@ export function Navbar() {
                   <MessageCircle style={{ width: '0.875rem', height: '0.875rem' }} />
                   Need immediate help? WhatsApp us 24/7
                 </a>
-              </div>
+              </motion.div>
             </motion.div>
           </>
         )}

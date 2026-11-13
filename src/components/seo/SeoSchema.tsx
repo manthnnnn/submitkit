@@ -143,12 +143,55 @@ export function HomeSchema() {
         areaServed: { '@type': 'Country', name: 'India' },
         audience: {
           '@type': 'Audience',
-          audienceType: 'Engineering Students (BE / BTech / MCA / Diploma)',
+          audienceType: 'Non-Coders, Non-Technical Startup Founders, Engineering Students (BE / BTech / MCA), and Solo Innovators',
+        },
+      },
+      {
+        '@type': 'Service',
+        '@id': `${baseUrl}/#custom-studio`,
+        name: 'Done-For-You Custom Software Studio for Non-Coders & Founders',
+        serviceType: 'Custom Software Development & Startup MVP Prototyping',
+        provider: { '@id': `${baseUrl}/#organization` },
+        description: 'Complete done-for-you custom software, web app, and startup MVP development built by senior engineers for non-coders and non-technical founders. 100% working source code, database architecture, 1-click launchers, and 1-on-1 walkthrough in 48-72 hours with zero coding required.',
+        url: `${baseUrl}/custom`,
+        offers: {
+          '@type': 'Offer',
+          price: '1999',
+          priceCurrency: 'INR',
+          url: `${baseUrl}/custom`,
+        },
+        audience: {
+          '@type': 'Audience',
+          audienceType: 'Non-Coders, Non-Technical Founders, Students & Innovators',
         },
       },
       {
         '@type': 'FAQPage',
         mainEntity: [
+          {
+            '@type': 'Question',
+            name: 'Can a non-coder build software with SubmitKit?',
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: 'Yes. SubmitKit operates as a done-for-you custom software engineering studio specifically built for non-coders and non-technical founders. You describe your idea or required features in everyday words. Our senior software engineers build 100% of the working code, design the database and UI, and guide you through a 1-on-1 walkthrough on WhatsApp or Google Meet so you understand and run your software with zero programming knowledge.',
+            },
+          },
+          {
+            '@type': 'Question',
+            name: 'How do non-technical founders use SubmitKit to build a startup MVP?',
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: 'Non-technical founders use SubmitKit to turn their idea into a production-ready working MVP prototype in 48 to 72 hours starting at ₹1,999 (~$24 USD). SubmitKit delivers complete frontend UI, backend API, database, 1-click launchers, and full source code ownership without locking founders into expensive monthly no-code subscriptions or $5,000+ agency contracts.',
+            },
+          },
+          {
+            '@type': 'Question',
+            name: 'Do I need any programming knowledge or terminal experience to run the software?',
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: 'No. Every SubmitKit software project includes automated 1-click launchers (run.bat for Windows and run.sh for Mac/Linux). Non-coders simply double-click the file — the launcher automatically handles dependencies, starts the server, and opens the application in your web browser.',
+            },
+          },
           {
             '@type': 'Question',
             name: 'Are SubmitKit projects 100% working and runnable?',
@@ -196,6 +239,40 @@ export function HomeSchema() {
               '@type': 'Answer',
               text: 'Yes. SubmitKit builds custom projects from scratch to your exact problem statement, preferred tech stack, and college requirements. Delivery is guaranteed in 48 hours and includes a 1-on-1 code walkthrough on Google Meet. WhatsApp the team directly with your requirements to get a quote starting ₹1,999 (varies with complexity).',
             },
+          },
+        ],
+      },
+      {
+        '@type': 'HowTo',
+        name: 'How Non-Coders Build a Startup MVP with SubmitKit',
+        description: '3-step rapid engineering process for non-technical founders to launch a custom working software prototype without writing code.',
+        totalTime: 'P3D',
+        estimatedCost: {
+          '@type': 'MonetaryAmount',
+          currency: 'INR',
+          value: '1999',
+        },
+        step: [
+          {
+            '@type': 'HowToStep',
+            position: 1,
+            name: 'Describe Your Startup Idea in Plain Words',
+            text: 'Visit https://submitkit.in/custom and describe your application, required features, or problem statement without technical jargon or code.',
+            url: `${baseUrl}/custom`,
+          },
+          {
+            '@type': 'HowToStep',
+            position: 2,
+            name: 'Senior Engineers Build Complete Architecture in 48-72h',
+            text: 'SubmitKit engineers design the UI, build the frontend and backend APIs, configure the database, and write 100% production-ready code.',
+            url: `${baseUrl}/custom`,
+          },
+          {
+            '@type': 'HowToStep',
+            position: 3,
+            name: '1-Click Launch & 1-on-1 Walkthrough',
+            text: 'Receive your complete codebase with 1-click Windows (run.bat) and Mac (run.sh) desktop launchers plus a 1-on-1 video walkthrough call.',
+            url: `${baseUrl}/custom`,
           },
         ],
       },

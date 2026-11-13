@@ -160,15 +160,15 @@ export const READY_PROJECTS: Record<string, AvailableProjectMeta> = {
     isReady: true,
   },
   'crop-disease-detector': {
-    slug: 'plant-disease-detection',
+    slug: 'crop-disease-detector',
     name: 'CropGuard AI: Deep Learning Plant Disease Detector',
     category: 'AIML',
     tier: 'MAJOR',
     price: 499,
     oneLiner: 'Deep learning leaf pathology scanner trained on 54,000+ PlantVillage images with 97.8% diagnostic accuracy and organic treatment plans.',
     tenthGradeExplainer: 'Snap a photo of any sick crop leaf: the AI detects the exact plant disease in milliseconds and prescribes the right treatment plan.',
-    badge: '⚡ Instant Download',
-    isReady: true,
+    badge: '⏳ In QA Pipeline · Pre-Book',
+    isReady: false,
   },
   'sentiment-analysis-dashboard': {
     slug: 'sentiment-analysis-dashboard',
@@ -626,9 +626,8 @@ export const AVAILABLE_CORE_SLUGS = [
   'restaurant-qr-ordering',
   'aerofuel-predictor',
   'smart-expense-tracker',
-  'fake-news-detector',
   'plant-disease-detection',
-  'crop-disease-detector',
+  'fake-news-detector',
 ] as const;
 
 export type AvailableCoreSlug = (typeof AVAILABLE_CORE_SLUGS)[number];

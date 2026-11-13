@@ -29,6 +29,7 @@ export async function PATCH(
     'category', 'tier', 'price_inr', 'tech_stack', 'features',
     'is_active', 'demo_video_id', 'demo_screenshots', 'architecture_details',
     's3_storage_key', 'report_template_key',
+    'thumbnail_url', 'short_description', 'difficulty', 'ppt_key', 'viva_qa', 'report_outline',
   ] as const;
 
   const update: Record<string, unknown> = {};

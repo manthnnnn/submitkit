@@ -24,25 +24,35 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'title, slug, category, tier, price_inr are required' }, { status: 400 });
   }
 
+  const insertPayload: Record<string, unknown> = {
+    title,
+    slug,
+    description:        body.description ?? '',
+    problem_statement:  body.problem_statement ?? '',
+    architecture_details: body.architecture_details ?? '',
+    category,
+    tier,
+    price_inr:          Number(price_inr),
+    tech_stack:         body.tech_stack ?? [],
+    features:           body.features ?? [],
+    is_active:          body.is_active ?? false,
+    s3_storage_key:     body.s3_storage_key ?? '',
+    report_template_key: body.report_template_key ?? '',
+    demo_video_id:      body.demo_video_id ?? null,
+    demo_screenshots:   body.demo_screenshots ?? [],
+  };
+
+  if (body.thumbnail_url) insertPayload.thumbnail_url = body.thumbnail_url;
+  if (body.short_description) insertPayload.short_description = body.short_description;
+  if (body.difficulty) insertPayload.difficulty = body.difficulty;
+  if (body.ppt_key) insertPayload.ppt_key = body.ppt_key;
+  if (body.viva_qa) insertPayload.viva_qa = body.viva_qa;
+  if (body.report_outline) insertPayload.report_outline = body.report_outline;
+
   const supabase = createAdminClient();
   const { data, error } = await supabase
     .from('projects')
-    .insert({
-      title,
-      slug,
-      description:        body.description ?? '',
-      problem_statement:  body.problem_statement ?? '',
-      category,
-      tier,
-      price_inr:          Number(price_inr),
-      tech_stack:         body.tech_stack ?? [],
-      features:           body.features ?? [],
-      is_active:          body.is_active ?? false,
-      s3_storage_key:     body.s3_storage_key ?? '',
-      report_template_key: body.report_template_key ?? '',
-      demo_video_id:      body.demo_video_id ?? null,
-      demo_screenshots:   body.demo_screenshots ?? [],
-    })
+    .insert(insertPayload)
     .select()
     .single();
 

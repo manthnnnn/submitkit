@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { name, email, phone, college, tier, category, topic, techPreference, deadline, specialRequirements } = body;
+    const { name, email, phone, country, college, tier, price, category, topic, techPreference, deadline, specialRequirements } = body;
 
     // Validate required fields
     if (!name || !email || !phone || !topic || !category) {
@@ -23,8 +23,8 @@ export async function POST(req: NextRequest) {
         name: name.trim(),
         email: email.trim().toLowerCase(),
         phone: phone.trim(),
-        college: college?.trim() || null,
-        tier,
+        college: (country || college)?.trim() || null,
+        tier: tier || "standard",
         category,
         topic: topic.trim(),
         tech_preference: techPreference,
@@ -43,13 +43,7 @@ export async function POST(req: NextRequest) {
     const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
 
     if (TELEGRAM_BOT_TOKEN && TELEGRAM_CHAT_ID) {
-      const tierLabels: Record<string, string> = {
-        mini: "Mini Project (₹299)",
-        major: "Major Project (₹499)",
-        custom: "Custom Project (Starts ₹1,999 - Varies with complexity)",
-        enterprise: "Custom Project (Starts ₹1,999 - Varies with complexity)",
-      };
-      const message = `🚀 NEW CUSTOM PROJECT REQUEST\n\n👤 ${name}\n📧 ${email}\n📞 ${phone}\n🏫 ${college || "Not specified"}\n\n📋 Tier: ${tierLabels[tier] || tier}\n🗂️ Category: ${category}\n💡 Topic: ${topic}\n⚙️ Tech: ${techPreference}\n📅 Deadline: ${deadline || "Not specified"}\n\n📝 Notes: ${specialRequirements || "None"}`;
+      const message = `🚀 NEW PROJECT REQUEST\n\n👤 ${name}\n📧 ${email}\n📞 ${phone}\n🏫 ${college || country || "Not specified"}\n\n📋 Tier: ${tier} (${price || "Custom"})\n🗂️ Category: ${category}\n💡 Topic: ${topic}\n⚙️ Tech: ${techPreference}\n📅 Deadline: ${deadline || "Flexible"}\n\n📝 Notes: ${specialRequirements || "None"}`;
 
       fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
         method: "POST",

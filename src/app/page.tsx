@@ -1,512 +1,624 @@
 'use client';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
-import { CONSTANTS } from '@/lib/constants';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
-  ArrowRight, CheckCircle2, Zap, ShieldCheck, Star,
-  Package, BookOpen, Award
+  ArrowRight, ArrowUpRight, Zap, ShieldCheck, Globe, Code2,
+  Layers, BrainCircuit, Terminal, Package, Sparkles,
+  CheckCircle2, ExternalLink, ChevronRight, FileText, Presentation, BookOpen,
+  Play, Award, CheckCheck, Laptop, Cpu,
+  Activity, Droplet, ShieldAlert, QrCode, Plane, Receipt, Leaf, Newspaper,
+  Rocket, GraduationCap
 } from 'lucide-react';
-import { PricingHook } from '@/components/ui/pricing-hook';
-import { FleetSection } from '@/components/ui/fleet-section';
-import { Testimonials } from '@/components/ui/testimonials';
-import { LiveTicker } from '@/components/ui/live-ticker';
-import { AiTopicExplorer } from '@/components/ui/ai-topic-explorer';
-import { useEffect, useState, useRef } from 'react';
+import { FaqSection } from '@/components/ui/faq-section';
 
-/* ─── types ─── */
-interface SR { id: string; title: string; category: string; tagline: string; }
-
-const MINI  = CONSTANTS.PRICING.MINI_PROJECT;
-const MAJOR = CONSTANTS.PRICING.MAJOR_PROJECT;
-
-/* ─── animated counter ─── */
-function useCounter(target: number, dur = 1400) {
-  // Always initialize with target so it NEVER shows 0 or blank on initial load or mobile
-  const [n, setN] = useState(target);
-  const ref = useRef<HTMLDivElement>(null);
-  const done = useRef(false);
-  useEffect(() => {
-    if (typeof window === 'undefined' || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setN(target);
-      return;
-    }
-    const io = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting && !done.current) {
-        done.current = true;
-        setN(0);
-        const t0 = performance.now();
-        const frame = (now: number) => {
-          const p = Math.min((now - t0) / dur, 1);
-          setN(Math.floor((1 - (1 - p) ** 3) * target));
-          if (p < 1) requestAnimationFrame(frame);
-          else setN(target);
-        };
-        requestAnimationFrame(frame);
-      }
-    }, { threshold: 0.05 });
-    if (ref.current) io.observe(ref.current);
-    return () => io.disconnect();
-  }, [target, dur]);
-  return { n, ref };
-}
-
-function StatCard({
-  icon: Icon,
-  val,
-  suffix = '',
-  label,
-  accent = '#0D9488',
-  bg = 'rgba(13,148,136,0.08)',
-  border = 'rgba(13,148,136,0.18)',
-  customVal,
-}: {
-  icon: any;
-  val?: number;
-  suffix?: string;
-  label: string;
-  accent?: string;
-  bg?: string;
-  border?: string;
-  customVal?: string;
-}) {
-  const targetVal = val ?? 59;
-  const { n, ref } = useCounter(targetVal);
-  const displayVal = customVal || (n > 0 ? `${n.toLocaleString('en-IN')}${suffix}` : `${targetVal.toLocaleString('en-IN')}${suffix}`);
-  return (
-    <div
-      ref={ref}
-      className="card card-lift group home-stat-card"
-      style={{
-        padding: '1.25rem 1.125rem',
-        textAlign: 'center',
-        position: 'relative',
-        overflow: 'hidden',
-        background: 'var(--surface)',
-        border: '1px solid var(--line)',
-        borderRadius: 'var(--r-xl)',
-        boxShadow: 'var(--sh-xs)',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      {/* Top micro squircle */}
-      <div
-        className="w-8 h-8 rounded-xl mb-2.5 flex items-center justify-center shadow-2xs group-hover:scale-105 transition-transform"
-        style={{ background: bg, border: `1px solid ${border}` }}
-      >
-        <Icon className="w-4 h-4" style={{ color: accent }} />
-      </div>
-
-      {/* Main Metric Value — strictly non-wrapping */}
-      <div
-        className="font-display font-black tracking-tight leading-none whitespace-nowrap"
-        style={{
-          fontSize: 'clamp(1.75rem, 3.5vw, 2.25rem)',
-          color: customVal ? accent : 'var(--navy)',
-        }}
-      >
-        {displayVal}
-      </div>
-
-      {/* Metric Label */}
-      <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mt-1.5 whitespace-nowrap">
-        {label}
-      </div>
-    </div>
-  );
-}
-
-const HOW = [
-  { n: '01', t: 'Pick a kit and preview it free',  s: 'See the demo and sample pages before paying' },
-  { n: '02', t: 'Download and set up',              s: 'Step-by-step guide included with every kit' },
-  { n: '03', t: 'Understand your project',          s: 'Docs and viva Q&A so you can defend your work' },
-];
-
+/* ─── Addictive Dual-Concept Hooks: College Projects & Startup MVPs ─── */
 const HERO_HOOKS = [
-  { lead: 'Final-year project kits,', accent: 'ready to submit.' },
-  { lead: 'Working code + IEEE report,', accent: 'one download.' },
-  { lead: 'Build a project', accent: 'you can actually explain.' },
-  { lead: 'Preview free. Pay ₹299.', accent: 'Submit with confidence.' },
+  { lead: 'Final-year college project due?', accent: 'Get verified code, IEEE report & PPT.' },
+  { lead: 'Got a startup idea?', accent: 'Launch your working MVP in days.' },
+  { lead: 'Need a ready college kit?', accent: '1-click runnable systems from ₹299.' },
+  { lead: 'Turn any software concept', accent: 'into production-ready code.' },
+  { lead: 'Stuck on your Viva defense?', accent: 'Ace it with top examiner Q&A.' },
+  { lead: 'Custom project or MVP?', accent: 'Our engineers build it from scratch.' },
 ];
 
-const READY = [
-  { n: '01', name: 'PhishGuard AI Threat Radar',    cat: 'AI / ML',     price: MINI,  slug: 'phishing-detector-ai' },
-  { n: '02', name: 'QuickBite QR Ordering & KDS',   cat: 'Full Stack',  price: MINI,  slug: 'restaurant-qr-ordering' },
-  { n: '03', name: 'SentinelPay AI Fraud Radar',     cat: 'FinTech',     price: MINI,  slug: 'credit-card-fraud' },
-  { n: '04', name: 'HealthSync EHR Portal',          cat: 'Healthcare',  price: MAJOR, slug: 'healthcare-ehr-portal' },
+/* ─── 11 Real Flagship Project Kits ─── */
+const PROJECTS = [
+  {
+    slug: 'healthcare-ehr-portal',
+    shortName: 'HealthSync OS',
+    systemType: 'Real-Time Hospital Telemetry',
+    Icon: Activity,
+    metric: 'Sub-10ms Vital Stream',
+    name: 'HealthSync Hospital & Telehealth Portal',
+    category: 'Healthcare',
+    tech: ['React', 'Node.js', 'PostgreSQL'],
+    desc: 'Full hospital network with live patient vital monitors, doctor appointment scheduling, and automated medicine clash detection.',
+    price: 499,
+    tier: 'MAJOR',
+    color: '#0D9488',
+    bgGradient: 'linear-gradient(135deg, #F0FDFA 0%, #E6FFFA 50%, #CCFBF1 100%)',
+    border: '#99F6E4',
+  },
+  {
+    slug: 'blood-bank-management',
+    shortName: 'LifeDrop OS',
+    systemType: 'Emergency Blood Logistics',
+    Icon: Droplet,
+    metric: 'Live Donor Matching',
+    name: 'LifeDrop Emergency Blood OS',
+    category: 'Health IT',
+    tech: ['Next.js', 'Supabase', 'Tailwind'],
+    desc: 'Live blood inventory tracker that matches urgent patient requests with nearby donors and alerts staff before blood bags expire.',
+    price: 299,
+    tier: 'MINI',
+    color: '#E11D48',
+    bgGradient: 'linear-gradient(135deg, #FFF1F2 0%, #FFE4E6 50%, #FECDD3 100%)',
+    border: '#FECDD3',
+  },
+  {
+    slug: 'resume-parsing-engine',
+    shortName: 'TalentScan AI',
+    systemType: 'NLP Candidate Scoring & ATS',
+    Icon: FileText,
+    metric: '99.4% Skill Parse',
+    name: 'TalentScan AI Resume Scanner & ATS',
+    category: 'AI / HR Tech',
+    tech: ['Python', 'NLP', 'React'],
+    desc: 'Upload any resume PDF: AI extracts candidate skills, scores them against job requirements, and ranks top applicants automatically.',
+    price: 499,
+    tier: 'MAJOR',
+    color: '#087F75',
+    bgGradient: 'linear-gradient(135deg, #F0FDF9 0%, #E6FFFA 50%, #CCFBF1 100%)',
+    border: '#99F6E4',
+  },
+  {
+    slug: 'online-code-compiler',
+    shortName: 'DevForge IDE',
+    systemType: 'Isolated Cloud Code Sandbox',
+    Icon: Code2,
+    metric: 'Zero-Config Container Run',
+    name: 'DevForge In-Browser Code Sandbox',
+    category: 'Developer Tools',
+    tech: ['Docker', 'WebSockets', 'Node.js'],
+    desc: 'Run Python, JavaScript, and C++ directly in the browser. Safe container execution with instant speed analysis and Big-O runtime tips.',
+    price: 299,
+    tier: 'MINI',
+    color: '#0F766E',
+    bgGradient: 'linear-gradient(135deg, #ECFEFF 0%, #E0F2FE 50%, #CCFBF1 100%)',
+    border: '#A5F3FC',
+  },
+  {
+    slug: 'credit-card-fraud',
+    shortName: 'SentinelPay Radar',
+    systemType: 'Real-Time Fraud Detection',
+    Icon: ShieldAlert,
+    metric: '11.4ms Anomaly Latency',
+    name: 'SentinelPay Real-Time Fraud Radar',
+    category: 'FinTech / AI',
+    tech: ['Python', 'Scikit-learn', 'React'],
+    desc: 'Machine learning system that detects and blocks stolen cards and suspicious transactions in under 15 milliseconds.',
+    price: 299,
+    tier: 'MINI',
+    color: '#D97706',
+    bgGradient: 'linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 50%, #FDE68A 100%)',
+    border: '#FDE68A',
+  },
+  {
+    slug: 'phishing-detector-ai',
+    shortName: 'PhishGuard AI',
+    systemType: 'Zero-Day Cybersecurity Radar',
+    Icon: ShieldCheck,
+    metric: 'URL Feature Heuristics',
+    name: 'PhishGuard AI Threat Radar',
+    category: 'Cybersecurity',
+    tech: ['Python', 'TensorFlow', 'Flask'],
+    desc: 'Scans web links and lookalike domain names to protect users and businesses from fake login pages and stolen credentials.',
+    price: 299,
+    tier: 'MINI',
+    color: '#DC2626',
+    bgGradient: 'linear-gradient(135deg, #FEF2F2 0%, #FEE2E2 50%, #FECACA 100%)',
+    border: '#FECACA',
+  },
+  {
+    slug: 'restaurant-qr-ordering',
+    shortName: 'DineFlow KDS',
+    systemType: 'Contactless Food Ordering',
+    Icon: QrCode,
+    metric: 'Instant Kitchen Ticket Sync',
+    name: 'DineFlow QR Food Ordering & Kitchen Display',
+    category: 'SaaS / Full-Stack',
+    tech: ['Next.js', 'Stripe', 'Real-time DB'],
+    desc: 'Customers scan a table QR code to order food on their phone, sending live order tickets directly to the kitchen display.',
+    price: 299,
+    tier: 'MINI',
+    color: '#059669',
+    bgGradient: 'linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 50%, #A7F3D0 100%)',
+    border: '#A7F3D0',
+  },
+  {
+    slug: 'aerofuel-predictor',
+    shortName: 'AeroFuel AI',
+    systemType: 'Aviation Burn Forecasting',
+    Icon: Plane,
+    metric: '98.2% Jet Burn Accuracy',
+    name: 'AeroFuel AI Jet Fuel Burn Predictor',
+    category: 'AI / Aviation',
+    tech: ['Python', 'XGBoost', 'Streamlit'],
+    desc: 'Calculates the exact amount of fuel an airliner needs based on weather data and flight distance, saving airlines lakhs on wasted jet fuel.',
+    price: 499,
+    tier: 'MAJOR',
+    color: '#1D4ED8',
+    bgGradient: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 50%, #BFDBFE 100%)',
+    border: '#BFDBFE',
+  },
+  {
+    slug: 'smart-expense-tracker',
+    shortName: 'SpendWise AI',
+    systemType: 'Automated Receipt Auditor',
+    Icon: Receipt,
+    metric: 'OCR Receipt Vectorization',
+    name: 'SpendWise AI Receipt Scanner & Tracker',
+    category: 'FinTech',
+    tech: ['React', 'Node.js', 'MongoDB'],
+    desc: 'Snap a photo of any receipt: it extracts amounts, auto-groups your spending, and alerts you before you overspend.',
+    price: 299,
+    tier: 'MINI',
+    color: '#0D9488',
+    bgGradient: 'linear-gradient(135deg, #F0FDFA 0%, #CCFBF1 50%, #99F6E4 100%)',
+    border: '#99F6E4',
+  },
+  {
+    slug: 'plant-disease-detection',
+    shortName: 'CropGuard AI',
+    systemType: 'CNN Agricultural Pathology',
+    Icon: Leaf,
+    metric: '97.4% Crop Pathology Accuracy',
+    name: 'CropGuard AI Crop Disease Scanner',
+    category: 'AI / AgriTech',
+    tech: ['Python', 'CNN', 'FastAPI'],
+    desc: 'Upload a photo of a sick crop leaf — the AI spots the exact disease with 97% accuracy and recommends how to treat it.',
+    price: 499,
+    tier: 'MAJOR',
+    color: '#16A34A',
+    bgGradient: 'linear-gradient(135deg, #F0FDF4 0%, #DCFCE7 50%, #BBF7D0 100%)',
+    border: '#BBF7D0',
+  },
+  {
+    slug: 'fake-news-detector',
+    shortName: 'TruthLens AI',
+    systemType: 'BERT Misinformation Scanner',
+    Icon: Newspaper,
+    metric: 'Fine-Grained Truth Confidence',
+    name: 'TruthLens AI Fake News Scanner',
+    category: 'AI / NLP',
+    tech: ['Python', 'BERT', 'React'],
+    desc: 'Paste any news headline or message — the AI reads it and tells you if it is real or fabricated, complete with confidence scores.',
+    price: 499,
+    tier: 'MAJOR',
+    color: '#B45309',
+    bgGradient: 'linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 50%, #FDE68A 100%)',
+    border: '#FDE68A',
+  },
 ];
 
-/* ─── Main page ─── */
+const KIT_DELIVERABLES = [
+  { icon: Terminal, title: '1-Click Runnable Code', desc: 'Pre-configured run.bat & run.sh scripts' },
+  { icon: FileText, title: 'IEEE Report (.docx)', desc: 'Literature survey, UML, system design' },
+  { icon: Presentation, title: 'Defense PPT (.pptx)', desc: '15–20 slides with complete speaker notes' },
+  { icon: BookOpen, title: 'Top 25 Viva Q&A', desc: 'Examiner-level answers ready to memorize' },
+];
+
+const HOW_STEPS = [
+  {
+    n: '01',
+    title: 'Choose: College Kit or Startup Idea',
+    desc: 'Download 11 verified runnable college project kits (₹299/₹499) for instant submission, or submit any custom startup idea for rapid MVP build.',
+    icon: Globe,
+  },
+  {
+    n: '02',
+    title: 'Inspect Architecture & Blueprints',
+    desc: 'Review full system schematics, database schemas, tech stack tradeoffs, and complete academic or production deliverable specifications.',
+    icon: Layers,
+  },
+  {
+    n: '03',
+    title: 'Launch, Submit & Defend Confidently',
+    desc: 'Launch software in 1 click with zero-config launchers. Walk into your faculty review or investor pitch backed by full code & documentation.',
+    icon: Terminal,
+  },
+];
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 12 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.16, delay: i * 0.03, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
+  }),
+};
+
 export default function HomePage() {
   const [activeHook, setActiveHook] = useState(0);
-  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
-    if (prefersReducedMotion) return;
-    const timer = window.setInterval(() => {
-      setActiveHook(index => (index + 1) % HERO_HOOKS.length);
-    }, 4200);
-    return () => window.clearInterval(timer);
-  }, [prefersReducedMotion]);
-
-  /* ─ inline style helpers ─ */
-  const S = {
-    section: (bg?: string): React.CSSProperties => ({
-      position: 'relative',
-      zIndex: 1,
-      background: bg || 'transparent',
-      padding: '3rem 0',
-    }),
-    row: (gap?: string): React.CSSProperties => ({
-      display: 'flex',
-      flexWrap: 'wrap' as const,
-      gap: gap || '1rem',
-    }),
-  };
+    const timer = setInterval(() => {
+      setActiveHook((prev) => (prev + 1) % HERO_HOOKS.length);
+    }, 3500); // comfortable 3.5s reading cadence
+    return () => clearInterval(timer);
+  }, []);
 
   return (
-    <div className="home-page" style={{ background: 'var(--canvas)', overflowX: 'hidden', minHeight: '100vh' }}>
+    <div style={{ background: 'transparent', overflowX: 'hidden', minHeight: '100vh' }}>
 
-      {/* ── background decoration — soft atmospheric white & warm beige gradient orbs ── */}
-      <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }} aria-hidden>
-        <div className="aorb" style={{ position: 'absolute', width: '740px', height: '740px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(255, 255, 255, 0.85) 0%, rgba(248, 241, 230, 0.5) 45%, transparent 70%)', top: '-16%', right: '-8%', filter: 'blur(65px)' }} />
-        <div className="aorb" style={{ position: 'absolute', width: '580px', height: '580px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(245, 237, 222, 0.55) 0%, rgba(239, 229, 211, 0.3) 45%, transparent 70%)', top: '12%', left: '-10%', filter: 'blur(70px)', animationDelay: '4s' }} />
-        <div className="aorb" style={{ position: 'absolute', width: '520px', height: '520px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(255, 255, 255, 0.75) 0%, rgba(246, 239, 227, 0.45) 45%, transparent 70%)', top: '48%', right: '-6%', filter: 'blur(70px)', animationDelay: '6s' }} />
-        <div className="aorb" style={{ position: 'absolute', width: '540px', height: '540px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(243, 233, 216, 0.5) 0%, rgba(238, 226, 206, 0.25) 48%, transparent 70%)', bottom: '6%', left: '12%', filter: 'blur(75px)', animationDelay: '8s' }} />
-      </div>
+      {/* ════ HERO ════ */}
+      <section style={{ position: 'relative', zIndex: 1, padding: 'clamp(2.75rem,6vw,5.5rem) 0 clamp(2rem,4vw,3.5rem)', overflow: 'hidden' }}>
+        {/* Subtle hero-only ambient backdrop */}
+        <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 0, overflow: 'hidden' }} aria-hidden>
+          <div style={{ position: 'absolute', width: '700px', height: '700px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(245, 228, 202, 0.65) 0%, rgba(250, 240, 225, 0.3) 45%, transparent 70%)', top: '-18%', right: '-8%', filter: 'blur(70px)' }} />
+          <div style={{ position: 'absolute', width: '600px', height: '600px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(250, 235, 215, 0.7) 0%, rgba(245, 225, 200, 0.25) 50%, transparent 70%)', top: '8%', left: '-12%', filter: 'blur(60px)' }} />
+        </div>
 
-      {/* ════════════════════════════════════════════
-          HERO
-      ════════════════════════════════════════════ */}
-      <section className="home-hero" style={{ ...S.section(), paddingTop: '5.25rem', paddingBottom: '0' }}>
-        <div className="shell">
+        <div className="shell" style={{ maxWidth: '64rem', textAlign: 'center', position: 'relative', zIndex: 1 }}>
 
-          {/* Two-column on lg+, stacked on mobile */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 28rem), 1fr))', gap: '2.5rem 3rem', alignItems: 'center' }}>
+          {/* Eyebrow Hook Badge */}
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.16 }}
+            style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.25rem' }}>
+            <span style={{
+              display: 'inline-flex', alignItems: 'center', gap: '.4rem',
+              padding: '.35rem .875rem', borderRadius: '9999px',
+              background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(250,245,236,0.9) 100%)',
+              border: '1.2px solid rgba(226, 216, 201, 0.9)',
+              fontSize: 'clamp(.725rem, 2.5vw, .8125rem)', fontWeight: 700, color: 'var(--navy)',
+              boxShadow: '0 2px 8px rgba(180, 155, 120, 0.08)',
+            }}>
+              <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: 'var(--teal)', boxShadow: '0 0 8px rgba(13,148,136,0.6)', flexShrink: 0 }} className="apulse" />
+              <span>SubmitKit — College Projects &amp; Startup MVP Studio</span>
+              <span style={{ fontSize: '.6875rem', color: 'var(--ink-4)', borderLeft: '1px solid var(--line)', paddingLeft: '.45rem' }}>11 Kits + Custom Build</span>
+            </span>
+          </motion.div>
 
-            {/* ── LEFT ── */}
-            <div className="home-hero-copy" style={{ maxWidth: '36rem' }}>
-
-              {/* Label + ticker */}
-              <motion.div
-                initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: .4 }}
-                className="home-hero-eyebrow"
-                style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '.625rem', marginBottom: '1.5rem' }}
-              >
-                <span className="label-chip">Final-year project kits</span>
-                <span className="home-live-ticker"><LiveTicker /></span>
-              </motion.div>
-
-              <div className="home-hero-title-wrap">
-                <motion.h1
-                  initial={false} animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: .42, ease: [.32, .72, 0, 1] }}
-                  className="home-hero-title"
-                >
-                  <AnimatePresence mode="wait" initial={false}>
-                    <motion.span
-                      key={activeHook}
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -8 }}
-                      transition={{ duration: .24, ease: [.32, .72, 0, 1] }}
-                    >
-                      {HERO_HOOKS[activeHook].lead}{' '}
-                      <em className="text-teal-grad">{HERO_HOOKS[activeHook].accent}</em>
-                    </motion.span>
-                  </AnimatePresence>
-                </motion.h1>
-              </div>
-
-              {/* Sub */}
-              <motion.p
-                initial={false} animate={{ opacity: 1 }} transition={{ duration: .35, delay: .05 }}
-                className="home-hero-description"
-                style={{ fontSize: 'clamp(.9375rem,2vw,1.0625rem)', color: 'var(--ink-3)', lineHeight: 1.75, marginBottom: '1.875rem', maxWidth: '30rem' }}
-              >
-                Complete project kits with working code, an IEEE report, presentation slides and viva prep.{' '}
-                <strong style={{ color: 'var(--navy)', fontWeight: 700 }}>Preview free</strong> before you buy.
-              </motion.p>
-
-              {/* CTA buttons */}
-              <motion.div
-                initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: .35, delay: .1 }}
-                className="home-hero-actions"
-                style={{ display: 'flex', flexWrap: 'wrap', gap: '.75rem', marginBottom: '2rem' }}
-              >
-                <Link href="/projects" className="btn btn-navy btn-lg">
-                  Browse Projects
-                </Link>
-                <Link href="/blueprint" className="btn btn-outline btn-lg">
-                  Free Previews
-                </Link>
-              </motion.div>
-
-              {/* Deliverable pills */}
-              <motion.div
-                initial={false} animate={{ opacity: 1 }} transition={{ duration: .35, delay: .15 }}
-                className="home-deliverables"
-                style={{ display: 'flex', flexWrap: 'wrap', gap: '.625rem .875rem', marginBottom: '2rem' }}
-              >
-                {['Source code', 'IEEE Black Book', 'Defense PPT', 'Viva Q&A'].map(t => (
-                  <span key={t} className="pill-check">
-                    <span className="dot" />
-                    {t}
-                  </span>
-                ))}
-              </motion.div>
-
-              {/* Social proof */}
-              <motion.div
-                initial={false} animate={{ opacity: 1 }} transition={{ duration: .35, delay: .2 }}
-                className="home-social-proof"
-                style={{ display: 'flex', alignItems: 'center', gap: '.875rem', paddingTop: '1.375rem', borderTop: '1px solid var(--line)' }}
-              >
-                <div style={{ display: 'flex' }}>
-                  {['VK', 'RS', 'PN', 'AP'].map((init, i) => (
-                    <div key={i} style={{
-                      width: '2.125rem', height: '2.125rem', borderRadius: '50%',
-                      border: '2.5px solid var(--surface)',
-                      background: ['#E6F7F5', '#ECFDF5', '#F5F3FF', '#FFFBEB'][i],
-                      color: ['#0A7C72', '#059669', '#7C3AED', '#D97706'][i],
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: '.6rem', fontWeight: 800, marginLeft: i > 0 ? '-8px' : 0,
-                      boxShadow: 'var(--sh-xs)',
-                    }}>{init}</div>
-                  ))}
-                </div>
-                <div>
-                  <div style={{ display: 'flex', gap: '1px', marginBottom: '.125rem' }}>
-                    {[1, 2, 3, 4, 5].map(s => <Star key={s} style={{ width: '13px', height: '13px', fill: '#F59E0B', color: '#F59E0B' }} />)}
-                  </div>
-                  <span style={{ fontSize: '.875rem', color: 'var(--ink-3)' }}>
-                    Trusted by <strong style={{ color: 'var(--navy)', fontWeight: 700 }}>500+</strong> students across India
-                  </span>
-                </div>
-              </motion.div>
-            </div>
-
-            {/* ── RIGHT: Pricing card ── */}
-            <motion.div
-              initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: .45, delay: .1 }}
+          {/* Rapidly Rotating Hook Headline */}
+          <div style={{ minHeight: 'clamp(5.75rem, 14vw, 8.5rem)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.25rem' }}>
+            <h1
+              className="font-display font-black"
+              style={{
+                fontSize: 'clamp(1.85rem, 5.2vw, 3.85rem)',
+                letterSpacing: '-.045em',
+                lineHeight: 1.18,
+                color: 'var(--navy)',
+                margin: 0,
+              }}
             >
-              <div className="home-hero-pricing"><PricingHook /></div>
-            </motion.div>
-          </div>
-
-          {/* ── Focused AI Topic Explorer Hub ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .45, delay: .18 }}
-            className="home-topic-explorer mt-8 sm:mt-12 lg:mt-14 max-w-5xl mx-auto w-full"
-          >
-            <AiTopicExplorer />
-          </motion.div>
-          <Link href="/blueprint" className="home-topic-quick-link">
-            <BookOpen aria-hidden="true" />
-            <span>Explore 1,078 free topic blueprints</span>
-            <ArrowRight aria-hidden="true" />
-          </Link>
-
-          {/* University trust row */}
-          <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: .4, delay: .3 }}
-            className="home-university-trust mt-8 sm:mt-12 pt-6 sm:pt-8 text-center pb-8 sm:pb-12"
-            style={{ borderTop: '1px solid var(--line)' }}
-          >
-            <p style={{ fontSize: '.6875rem', fontWeight: 800, color: 'var(--ink-4)', textTransform: 'uppercase', letterSpacing: '.14em', marginBottom: '1.125rem' }}>
-              Trusted by 500+ students from top universities
-            </p>
-            <div className="home-university-list" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '.625rem 1rem' }}>
-              {CONSTANTS.UNIVERSITIES.map(u => (
-                <span key={u}
-                  style={{
-                    fontSize: '.875rem', fontWeight: 600, color: 'var(--ink-2)',
-                    background: 'var(--canvas-warm)', border: '1px solid var(--line)',
-                    borderRadius: '9999px', padding: '.375rem .875rem',
-                    boxShadow: 'var(--sh-xs)',
-                    display: 'inline-flex', alignItems: 'center', gap: '.375rem',
-                    transition: 'all 150ms ease'
-                  }}
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={activeHook}
+                  initial={{ opacity: 0, y: 12, filter: 'blur(4px)' }}
+                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  exit={{ opacity: 0, y: -10, filter: 'blur(4px)' }}
+                  transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                  style={{ display: 'inline-block' }}
                 >
-                  <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'var(--teal)', opacity: .7 }} />
-                  {u}
-                </span>
-              ))}
+                  {HERO_HOOKS[activeHook].lead}{' '}
+                  <em style={{ fontStyle: 'normal', color: 'var(--teal)' }}>
+                    {HERO_HOOKS[activeHook].accent}
+                  </em>
+                </motion.span>
+              </AnimatePresence>
+            </h1>
+          </div>
+
+          {/* Subtitle — Merging College Projects & Startup MVPs */}
+          <motion.p initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            style={{
+              fontSize: 'clamp(.9375rem, 2vw, 1.15rem)', color: 'var(--ink-3)',
+              lineHeight: 1.7, maxWidth: '46rem', margin: '0 auto 1.75rem',
+            }}>
+            Download verified <strong style={{ color: 'var(--navy)' }}>1-click college engineering projects</strong> (Code + IEEE Black Book + Viva PPT) or have our engineering team build your <strong style={{ color: 'var(--navy)' }}>startup MVP &amp; custom software idea</strong> from scratch in 48–72 hours.
+          </motion.p>
+
+          {/* Action CTAs — modern iOS squircle button pair */}
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.16 }}
+            style={{ display: 'flex', flexWrap: 'wrap', gap: '.75rem', justifyContent: 'center', marginBottom: '1.75rem' }}>
+            <Link
+              href="/projects"
+              className="btn-hero-primary w-full sm:w-auto"
+              style={{ minWidth: '13.5rem' }}
+            >
+              <GraduationCap style={{ width: '1.125rem', height: '1.125rem' }} />
+              Browse College Kits
+              <ArrowRight style={{ width: '1rem', height: '1rem' }} />
+            </Link>
+            <Link
+              href="/custom"
+              className="btn-hero-secondary w-full sm:w-auto"
+              style={{ minWidth: '13.5rem' }}
+            >
+              <Sparkles style={{ width: '1rem', height: '1rem', color: 'var(--teal)' }} />
+              Customize Project / Startup Idea
+              <ArrowUpRight style={{ width: '1rem', height: '1rem', color: 'var(--teal)' }} />
+            </Link>
+          </motion.div>
+
+          {/* Dual-Pillar Concept Strip: College Projects vs Startup MVPs */}
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18, delay: 0.06 }}
+            style={{ maxWidth: '58rem', margin: '0 auto', textAlign: 'left' }}>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 17.5rem), 1fr))',
+              gap: '.875rem',
+            }}>
+              {/* Pillar 1: College Projects */}
+              <div style={{
+                background: 'linear-gradient(175deg, #FFFFFF 0%, #FDFBF8 35%, #F7EFE3 75%, #F0E3CF 100%)',
+                border: '1.5px solid rgba(220, 208, 188, 0.95)',
+                borderRadius: '16px',
+                padding: '1.125rem 1.25rem',
+                boxShadow: 'inset 0 1px 0 #FFFFFF, 0 4px 20px -3px rgba(180, 145, 100, 0.12)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+              }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '.5rem' }}>
+                    <span style={{
+                      fontSize: '.625rem', fontWeight: 800, padding: '.2rem .55rem',
+                      borderRadius: '6px', background: 'var(--teal-50)', color: 'var(--teal-dark)',
+                      border: '1px solid var(--teal-100)', letterSpacing: '.06em', textTransform: 'uppercase',
+                    }}>
+                      🎓 Ready College Kits
+                    </span>
+                    <span style={{ fontSize: '.75rem', fontWeight: 800, color: 'var(--teal)' }}>₹299 / ₹499</span>
+                  </div>
+                  <h3 style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--navy)', letterSpacing: '-.02em', margin: '0 0 .35rem' }}>
+                    100% Working College Projects
+                  </h3>
+                  <p style={{ fontSize: '.8125rem', color: 'var(--ink-3)', lineHeight: 1.55, margin: '0 0 .75rem' }}>
+                    Download verified source code with 60-page IEEE Black Book, 20-slide Viva PPT &amp; top 25 examiner Q&amp;A.
+                  </p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.35rem', marginBottom: '.75rem' }}>
+                    {['1-Click run.bat', 'IEEE Report (.docx)', 'Defense PPT', 'Top 25 Viva Q&A'].map(t => (
+                      <span key={t} style={{
+                        fontSize: '.6875rem', fontWeight: 600, padding: '.15rem .45rem',
+                        borderRadius: '4px', background: 'var(--surface-2)', border: '1px solid var(--line)', color: 'var(--ink-3)',
+                      }}>{t}</span>
+                    ))}
+                  </div>
+                </div>
+                <Link href="/projects" style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '.35rem',
+                  fontSize: '.8125rem', fontWeight: 700, color: 'var(--teal)', textDecoration: 'none',
+                  paddingTop: '.5rem', borderTop: '1px solid var(--line)',
+                }}>
+                  Browse 11 Ready Kits <ArrowRight style={{ width: '.8125rem', height: '.8125rem' }} />
+                </Link>
+              </div>
+
+              {/* Pillar 2: Customize Your Project / Startup Idea (Built for Non-Coders & Founders) */}
+              <div style={{
+                background: 'linear-gradient(175deg, #FFFFFF 0%, #FDFBF8 35%, #F7EFE3 75%, #F0E3CF 100%)',
+                border: '1.5px solid rgba(220, 208, 188, 0.95)',
+                borderRadius: '16px',
+                padding: '1.125rem 1.25rem',
+                boxShadow: 'inset 0 1px 0 #FFFFFF, 0 4px 20px -3px rgba(180, 145, 100, 0.12)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+              }}>
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '.5rem' }}>
+                    <span style={{
+                      fontSize: '.625rem', fontWeight: 800, padding: '.2rem .55rem',
+                      borderRadius: '6px', background: 'rgba(217, 119, 6, 0.1)', color: '#B45309',
+                      border: '1px solid rgba(217, 119, 6, 0.25)', letterSpacing: '.06em', textTransform: 'uppercase',
+                    }}>
+                      ✨ Non-Coder Studio &amp; Custom Builds
+                    </span>
+                    <span style={{ fontSize: '.75rem', fontWeight: 800, color: '#B45309' }}>Starts ₹1,999</span>
+                  </div>
+                  <h3 style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--navy)', letterSpacing: '-.02em', margin: '0 0 .35rem' }}>
+                    Turn Any Concept into Live Software (Zero Code Required)
+                  </h3>
+                  <p style={{ fontSize: '.8125rem', color: 'var(--ink-3)', lineHeight: 1.55, margin: '0 0 .75rem' }}>
+                    Have an approved college topic or a startup MVP idea? Even without any programming skills, our senior engineers build 100% working code, database, UI &amp; documentation in 48–72h.
+                  </p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.35rem', marginBottom: '.75rem' }}>
+                    {['Zero Coding Needed', '100% Working MVP', 'Custom IEEE Report', '1-on-1 Walkthrough'].map(t => (
+                      <span key={t} style={{
+                        fontSize: '.6875rem', fontWeight: 600, padding: '.15rem .45rem',
+                        borderRadius: '4px', background: 'var(--surface-2)', border: '1px solid var(--line)', color: 'var(--ink-3)',
+                      }}>{t}</span>
+                    ))}
+                  </div>
+                </div>
+                <Link href="/custom" style={{
+                  display: 'inline-flex', alignItems: 'center', gap: '.35rem',
+                  fontSize: '.8125rem', fontWeight: 700, color: '#B45309', textDecoration: 'none',
+                  paddingTop: '.5rem', borderTop: '1px solid var(--line)',
+                }}>
+                  Customize Your Project / Startup Idea <ArrowUpRight style={{ width: '.8125rem', height: '.8125rem' }} />
+                </Link>
+              </div>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════
-          STATS STRIP — 3D Tactile Metric Dock
-      ════════════════════════════════════════════ */}
-      <section className="home-stats" style={{ ...S.section(), borderTop: '1px solid var(--line)', borderBottom: '1px solid var(--line)', padding: '2.5rem 0' }}>
+      {/* ════ LIVE FLAGSHIP PROJECT KITS (TOP 3 PREVIEW) ════ */}
+      <section style={{ position: 'relative', zIndex: 1, borderTop: '1px solid var(--line)', padding: 'clamp(2.5rem,5vw,4.5rem) 0' }}>
         <div className="shell">
-          <div className="home-stat-track" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(13rem, 1fr))', gap: '1.25rem', maxWidth: '66rem', margin: '0 auto' }}>
-            <StatCard icon={Package} val={CONSTANTS.TOTAL_PROJECTS || 59} suffix="+" label="Ready Project Kits" accent="#0D9488" bg="#F0FDFA" border="rgba(13,148,136,0.2)" />
-            <StatCard icon={BookOpen} val={CONSTANTS.TOTAL_TOPICS} suffix="+" label="Free Blueprints" accent="#0F766E" bg="#ECFDF5" border="rgba(5,150,105,0.2)" />
-            <StatCard icon={ShieldCheck} customVal="₹1,20,000+" label="Saved vs Local Vendors" accent="#059669" bg="#F0FDF4" border="rgba(5,150,105,0.2)" />
-            <StatCard icon={Award} val={512} suffix="+" label="Final Years Passed" accent="#D97706" bg="#FFFBEB" border="rgba(217,119,6,0.2)" />
-          </div>
-        </div>
-      </section>
-
-      {/* ════════════════════════════════════════════
-          READY KITS LIST
-      ════════════════════════════════════════════ */}
-      <section className="home-ready-kits defer" style={{ ...S.section(), padding: '3.75rem 0' }}>
-        <div className="shell">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%,30rem), 1fr))', gap: '2.5rem 3rem', alignItems: 'start' }}>
-
-            {/* Left: 3D interactive list */}
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.75rem 1rem', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '2rem' }}>
             <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '.625rem', marginBottom: '1rem' }}>
-                <span className="tag tag-teal" style={{ fontSize: '.6rem' }}>
-                  <span className="dot-live apulse" style={{ width: '5px', height: '5px' }} /> Ready to Ship
-                </span>
-                <p style={{ fontSize: '.6875rem', fontWeight: 800, color: 'var(--ink-4)', textTransform: 'uppercase', letterSpacing: '.1em', margin: 0 }}>Instant Download</p>
-              </div>
-              <h2 style={{ fontSize: 'clamp(1.75rem,4vw,2.5rem)', fontWeight: 900, letterSpacing: '-.04em', color: 'var(--navy)', marginBottom: '1.5rem' }}>Ready to Ship Kits</h2>
-
-              <div className="home-ready-track" style={{ display: 'flex', flexDirection: 'column', gap: '.75rem', marginBottom: '1.5rem' }}>
-                {READY.map((item, i) => (
-                  <motion.div key={item.n}
-                    initial={{ opacity: 0, x: -10 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
-                    transition={{ duration: .32, delay: i * .07 }}
-                  >
-                    <Link href={`/projects/${item.slug}`}
-                      className="card card-lift group"
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '1rem',
-                        padding: '1rem 1.25rem',
-                        borderRadius: 'var(--r-lg)',
-                        background: 'var(--surface)',
-                        border: '1px solid var(--line)',
-                        textDecoration: 'none',
-                        boxShadow: 'var(--sh-xs)',
-                      }}
-                    >
-                      <div className="w-8 h-8 rounded-xl flex items-center justify-center font-mono text-xs font-black text-teal-800 bg-teal-50 border border-teal-200/80 shrink-0 shadow-2xs">
-                        {item.n}
-                      </div>
-                      <div style={{ flex: 1, minWidth: 0 }}>
-                        <div className="text-sm sm:text-base font-bold text-slate-900 group-hover:text-teal-700 transition-colors leading-tight">
-                          {item.name}
-                        </div>
-                        <div className="text-xs text-slate-500 mt-0.5">
-                          {item.cat}
-                        </div>
-                      </div>
-                      <div className="text-right shrink-0">
-                        <div className="text-base font-black text-slate-900 font-display">
-                          ₹{item.price}
-                        </div>
-                        <div className="text-[10px] text-emerald-700 font-bold uppercase tracking-wider">
-                          Ready
-                        </div>
-                      </div>
-                      <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-slate-50 group-hover:bg-teal-50 text-slate-400 group-hover:text-teal-700 transition-all shrink-0">
-                        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-                      </div>
-                    </Link>
-                  </motion.div>
-                ))}
-              </div>
-
-              <Link href="/projects" className="btn btn-outline"
-                style={{ width: '100%', maxWidth: '24rem', justifyContent: 'center', borderRadius: '12px' }}
-              >
-                View all project kits <ArrowRight style={{ width: '.9375rem', height: '.9375rem' }} />
-              </Link>
+              <p style={{ fontSize: '.6875rem', fontWeight: 800, color: 'var(--teal)', textTransform: 'uppercase', letterSpacing: '.12em', marginBottom: '.5rem' }}>
+                Verified &amp; 1-Click Runnable
+              </p>
+              <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2.25rem)', fontWeight: 900, letterSpacing: '-.04em', color: 'var(--navy)', margin: 0 }}>
+                Featured Flagship Project Kits
+              </h2>
             </div>
+            <Link href="/projects" style={{
+              display: 'inline-flex', alignItems: 'center', gap: '.375rem',
+              fontSize: '.875rem', fontWeight: 700, color: 'var(--teal)',
+              textDecoration: 'none', whiteSpace: 'nowrap',
+            }}>
+              Browse all 11 kits <ChevronRight style={{ width: '1rem', height: '1rem' }} />
+            </Link>
+          </div>
 
-            {/* Right: 3D blueprint + custom cards */}
-            <div className="home-secondary-track" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          {/* 3 Main Flagship Cards — Clean, Minimal, Responsive Mobile Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {PROJECTS.slice(0, 3).map((p, i) => (
+              <motion.div key={p.slug} custom={i} initial="hidden" whileInView="visible"
+                viewport={{ once: true, margin: '-40px' }} variants={fadeUp} style={{ height: '100%' }}>
+                <Link href={`/projects/${p.slug}`} style={{ textDecoration: 'none', display: 'block', height: '100%' }}>
+                  <div className="card card-lift group" style={{
+                    borderRadius: '16px',
+                    background: 'linear-gradient(175deg, #FFFFFF 0%, #FDFBF8 35%, #F8EFE3 75%, #F0E3CF 100%)',
+                    border: '1.5px solid rgba(220, 208, 188, 0.95)',
+                    boxShadow: 'inset 0 1px 0 #FFFFFF, 0 4px 20px -3px rgba(180, 145, 100, 0.12)',
+                    height: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    overflow: 'hidden',
+                    padding: 'clamp(1.125rem, 3vw, 1.375rem) clamp(1rem, 2.5vw, 1.25rem)',
+                    transition: 'all 150ms cubic-bezier(.16, 1, .3, 1)',
+                  }}>
+                    {/* Top Row: Category + Tier + Ready to Ship */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '.5rem', marginBottom: '.875rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '.4rem' }}>
+                        <span style={{
+                          fontSize: '.625rem', fontWeight: 800, padding: '.2rem .55rem',
+                          borderRadius: '6px', color: 'var(--teal-dark)', background: 'var(--teal-50)',
+                          border: '1px solid var(--teal-100)', letterSpacing: '.05em', textTransform: 'uppercase',
+                        }}>
+                          {p.category}
+                        </span>
+                        <span style={{
+                          fontSize: '.625rem', fontWeight: 800, padding: '.2rem .5rem',
+                          borderRadius: '6px', color: p.tier === 'MAJOR' ? '#B45309' : '#0D9488',
+                          background: p.tier === 'MAJOR' ? '#FFFBEB' : '#F0FDFA',
+                          border: `1px solid ${p.tier === 'MAJOR' ? '#FDE68A' : '#CCFBF1'}`,
+                          letterSpacing: '.04em', textTransform: 'uppercase',
+                        }}>
+                          {p.tier}
+                        </span>
+                      </div>
 
-              {/* Blueprint showcase card with soft white & warm beige gradient */}
-              <motion.div
-                initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: .42 }}
-                className="card card-lift home-blueprints-card relative overflow-hidden"
-                style={{
-                  padding: '2rem 1.75rem',
-                  background: 'linear-gradient(145deg, #FFFFFF 0%, #FAF6EE 55%, #F4ECE0 100%)',
-                  border: '1px solid #E5DCCF',
-                  borderRadius: 'var(--r-2xl)',
-                  boxShadow: '0 4px 20px -2px rgba(220, 205, 185, 0.2)',
-                }}
-              >
-                <div style={{ position: 'absolute', right: '1rem', top: '50%', transform: 'translateY(-50%)', fontSize: '7.5rem', fontWeight: 900, color: 'rgba(217, 119, 6, 0.05)', lineHeight: 1, userSelect: 'none', pointerEvents: 'none', fontFamily: 'var(--font-display)' }}>1K</div>
-                <span className="label-chip" style={{ marginBottom: '1rem', display: 'inline-flex', position: 'relative', zIndex: 1 }}>Topic Blueprints</span>
-                <div style={{ fontSize: 'clamp(2.5rem,5vw,3.5rem)', fontWeight: 900, letterSpacing: '-.055em', color: 'var(--navy)', lineHeight: 1, marginBottom: '.5rem', position: 'relative', zIndex: 1 }}>1,078</div>
-                <p style={{ fontSize: '.9375rem', color: 'var(--ink-2)', fontWeight: 700, marginBottom: '.375rem', position: 'relative', zIndex: 1 }}>Topic Blueprints — 100% Free</p>
-                <p style={{ fontSize: '.875rem', color: 'var(--ink-3)', lineHeight: 1.7, marginBottom: '1.375rem', maxWidth: '22rem', position: 'relative', zIndex: 1 }}>
-                  Abstract, base paper, architecture and module breakdown. Completely free for all engineering students.
-                </p>
-                <Link href="/blueprint" className="btn btn-teal" style={{ minHeight: '46px', fontSize: '.9375rem', position: 'relative', zIndex: 1 }}>
-                  Browse Blueprints <ArrowRight style={{ width: '.9375rem', height: '.9375rem' }} />
+                      <span style={{
+                        fontSize: '.625rem', fontWeight: 700, padding: '.2rem .5rem',
+                        borderRadius: '9999px', color: '#065F46', background: '#ECFDF5',
+                        border: '1px solid #A7F3D0', letterSpacing: '.02em',
+                        display: 'inline-flex', alignItems: 'center', gap: '.3rem',
+                      }}>
+                        <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#10B981' }} />
+                        Ready to Ship
+                      </span>
+                    </div>
+
+                    {/* Title */}
+                    <h3 style={{
+                      fontSize: '1.0625rem', fontWeight: 800, color: 'var(--navy)',
+                      letterSpacing: '-.025em', lineHeight: 1.35, margin: '0 0 .5rem',
+                      display: 'flex', alignItems: 'center',
+                    }}>
+                      {p.name}
+                    </h3>
+
+                    {/* Description */}
+                    <p style={{
+                      fontSize: '.8375rem', color: 'var(--ink-3)', lineHeight: 1.6,
+                      margin: '0 0 1rem',
+                    }}>
+                      {p.desc}
+                    </p>
+
+                    {/* Tech stack pills */}
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.35rem', marginBottom: '1.25rem', alignItems: 'center' }}>
+                      {p.tech.map(t => (
+                        <span key={t} style={{
+                          fontSize: '.6875rem', fontWeight: 600, padding: '.15rem .45rem',
+                          borderRadius: '4px', background: 'var(--surface-2)',
+                          border: '1px solid var(--line)', color: 'var(--ink-3)',
+                          fontFamily: 'var(--font-mono)',
+                        }}>{t}</span>
+                      ))}
+                    </div>
+
+                    {/* Bottom Price & CTA */}
+                    <div style={{
+                      display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                      paddingTop: '.875rem', borderTop: '1px solid var(--line)', marginTop: 'auto', gap: '.5rem',
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'baseline', gap: '.35rem', whiteSpace: 'nowrap' }}>
+                        <span className="font-display font-black" style={{ fontSize: '1.35rem', color: 'var(--navy)' }}>
+                          ₹{p.price}
+                        </span>
+                        <span style={{ fontSize: '.75rem', color: 'var(--ink-4)', fontWeight: 600 }}>
+                          (~${p.tier === 'MAJOR' ? '6' : '4'} USD)
+                        </span>
+                      </div>
+                      <span className="btn btn-teal btn-sm" style={{ fontSize: '.75rem', padding: '0 .75rem', minHeight: '34px', whiteSpace: 'nowrap' }}>
+                        View Kit &amp; Demo →
+                      </span>
+                    </div>
+                  </div>
                 </Link>
               </motion.div>
+            ))}
+          </div>
 
-              {/* Custom build card with soft warm beige tint */}
-              <motion.div
-                initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: .42, delay: .1 }}
-                className="card card-lift home-custom-card"
-                style={{
-                  padding: '1.75rem',
-                  borderRadius: 'var(--r-2xl)',
-                  background: 'linear-gradient(145deg, #FFFFFF 0%, #FAF8F4 55%, #F5EFE4 100%)',
-                  border: '1px solid #E2D9CC',
-                  boxShadow: '0 4px 18px -2px rgba(220, 205, 185, 0.2)',
-                }}
-              >
-                <h3 style={{ fontSize: '1.125rem', fontWeight: 800, color: 'var(--navy)', letterSpacing: '-.025em', marginBottom: '.5rem' }}>Have your own project idea?</h3>
-                <p style={{ fontSize: '.9rem', color: 'var(--ink-3)', lineHeight: 1.65, marginBottom: '1.25rem' }}>
-                  We build custom projects with you, from topic selection and algorithm design to final IEEE documentation.
-                </p>
-                <Link href="/custom" className="btn btn-navy" style={{ minHeight: '48px', fontSize: '.9375rem', gap: '.5rem', width: '100%', justifyContent: 'center' }}>
-                  Request a custom project <ArrowRight style={{ width: '1rem', height: '1rem' }} />
-                </Link>
-              </motion.div>
+          {/* Explore All 11 Projects Banner Dock */}
+          <div style={{
+            marginTop: '2rem',
+            padding: 'clamp(1.25rem, 3.5vw, 2rem)',
+            borderRadius: '18px',
+            background: 'linear-gradient(155deg, #FFFFFF 0%, #FDFBF8 30%, #F6EDE0 65%, #EEE0C9 100%)',
+            border: '1.5px solid rgba(220, 208, 188, 0.95)',
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '1.25rem',
+            boxShadow: 'inset 0 1px 0 #FFFFFF, 0 8px 28px -4px rgba(180, 145, 100, 0.15)',
+          }}>
+            <div style={{ flex: '1 1 18rem' }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '.4rem', fontSize: '.6875rem', fontWeight: 800, color: 'var(--teal)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '.35rem' }}>
+                <Package style={{ width: '13px', height: '13px' }} /> Full Project Catalog
+              </div>
+              <h3 style={{ fontSize: 'clamp(1.0625rem, 2.5vw, 1.25rem)', fontWeight: 900, color: 'var(--navy)', letterSpacing: '-.025em', margin: '0 0 .35rem' }}>
+                Looking for more domains? Explore all 11 verified engineering kits
+              </h3>
+              <p style={{ fontSize: '.84375rem', color: 'var(--ink-3)', margin: 0, lineHeight: 1.55 }}>
+                FinTech, Computer Vision, IoT, NLP, Cloud Compilers &amp; Agriculture — all with 1-click runnable code, IEEE reports &amp; Viva decks.
+              </p>
             </div>
+            <Link href="/projects" className="btn-hero-primary w-full sm:w-auto" style={{ gap: '.5rem', justifyContent: 'center', whiteSpace: 'nowrap' }}>
+              Explore All 11 Kits <ArrowRight style={{ width: '1.0625rem', height: '1.0625rem' }} />
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* ════════════════════════════════════════════
-          HOW IT WORKS — 3D Steps
-      ════════════════════════════════════════════ */}
-      <section className="home-how defer" style={{ ...S.section(), borderTop: '1px solid var(--line)', padding: '3.75rem 0' }}>
+      {/* ════ HOW IT WORKS ════ */}
+      <section style={{ position: 'relative', zIndex: 1, background: 'linear-gradient(180deg, rgba(250, 246, 238, 0.75) 0%, rgba(245, 238, 226, 0.9) 100%)', borderTop: '1px solid var(--line)', borderBottom: '1px solid var(--line)', padding: 'clamp(2.5rem,5vw,4.5rem) 0' }}>
         <div className="shell">
-          <p style={{ fontSize: '.6875rem', fontWeight: 800, color: 'var(--ink-4)', textTransform: 'uppercase', letterSpacing: '.1em', marginBottom: '1rem' }}>How It Works</p>
-          <h2 style={{ fontSize: 'clamp(1.75rem,4vw,2.5rem)', fontWeight: 900, letterSpacing: '-.04em', color: 'var(--navy)', marginBottom: '2.25rem' }}>
-            Preview first. Always.
-          </h2>
-
-          <div className="home-how-track" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%,18rem), 1fr))', gap: '1.5rem' }}>
-            {HOW.map((s, i) => (
-              <motion.div key={s.n}
-                initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-                transition={{ duration: .38, delay: i * .1 }}
-                className="card card-lift home-how-card"
-                style={{
-                  padding: '1.75rem',
-                  borderRadius: 'var(--r-xl)',
-                  display: 'flex',
-                  gap: '1rem',
-                  alignItems: 'flex-start',
-                  background: 'var(--surface)',
-                }}
-              >
-                <div style={{ width: '2.75rem', height: '2.75rem', borderRadius: '14px', flexShrink: 0, background: 'var(--surface-teal)', border: '1px solid var(--teal-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--font-mono)', fontSize: '.9375rem', fontWeight: 900, color: 'var(--teal)', boxShadow: '0 2px 6px rgba(13,148,136,0.1)' }}>
-                  {s.n}
-                </div>
-                <div>
-                  <div style={{ fontSize: '1.0625rem', fontWeight: 800, color: 'var(--navy)', lineHeight: 1.35, marginBottom: '.375rem' }}>{s.t}</div>
-                  <div style={{ fontSize: '.875rem', color: 'var(--ink-3)', lineHeight: 1.6 }}>{s.s}</div>
+          <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+            <p style={{ fontSize: '.6875rem', fontWeight: 800, color: 'var(--teal)', textTransform: 'uppercase', letterSpacing: '.12em', marginBottom: '.625rem' }}>Simple 3-Step Process</p>
+            <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2.25rem)', fontWeight: 900, letterSpacing: '-.04em', color: 'var(--navy)', margin: '0 auto', maxWidth: '36rem' }}>
+              How SubmitKit Works
+            </h2>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 18rem), 1fr))', gap: '1.25rem' }}>
+            {HOW_STEPS.map((s, i) => (
+              <motion.div key={s.n} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
+                <div className="card card-lift" style={{ padding: 'clamp(1.25rem, 3vw, 1.75rem)', borderRadius: 'var(--r-xl)', border: '1.5px solid rgba(220, 208, 188, 0.95)', background: 'linear-gradient(175deg, #FFFFFF 0%, #FDFBF8 35%, #F7EEE0 100%)', boxShadow: 'inset 0 1px 0 #FFFFFF, 0 4px 18px -3px rgba(180, 145, 100, 0.1)', height: '100%' }}>
+                  <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: '12px', background: 'rgba(13,148,136,0.1)', border: '1px solid rgba(13,148,136,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem' }}>
+                    <s.icon style={{ width: '1.125rem', height: '1.125rem', color: 'var(--teal)' }} />
+                  </div>
+                  <div style={{ fontSize: '.6875rem', fontFamily: 'var(--font-mono)', fontWeight: 800, color: 'var(--ink-5)', letterSpacing: '.1em', marginBottom: '.5rem' }}>{s.n}</div>
+                  <h3 style={{ fontSize: '1.0625rem', fontWeight: 800, color: 'var(--navy)', letterSpacing: '-.025em', marginBottom: '.625rem' }}>{s.title}</h3>
+                  <p style={{ fontSize: '.875rem', color: 'var(--ink-3)', lineHeight: 1.7, margin: 0 }}>{s.desc}</p>
                 </div>
               </motion.div>
             ))}
@@ -514,50 +626,120 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Fleet section + Testimonials */}
-      <FleetSection />
-      <Testimonials />
-
-      {/* ════════════════════════════════════════════
-          FINAL CTA
-      ════════════════════════════════════════════ */}
-      <section className="home-final-cta defer" style={{ ...S.section(), padding: '1rem 1rem 3.5rem' }}>
-        <div className="shell" style={{ maxWidth: '52rem' }}>
-          <div
-            className="home-final-panel relative overflow-hidden"
-            style={{
-              background: 'radial-gradient(ellipse 95% 85% at 50% -15%, #FFFFFF 0%, #FAF8F4 50%, #F4ECE0 100%)',
-              border: '1px solid #E5DCCF',
+      {/* ════ PRICING & CUSTOM BUILDS (AUTHENTIC PRICING DOCK) ════ */}
+      <section style={{ position: 'relative', zIndex: 1, padding: 'clamp(2.5rem,5vw,4.5rem) 0' }}>
+        <div className="shell" style={{ maxWidth: '68rem' }}>
+          <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.18 }}>
+            <div style={{
               borderRadius: 'var(--r-2xl)',
-              boxShadow: '0 8px 30px -4px rgba(220, 205, 185, 0.28), 0 2px 8px -2px rgba(15, 23, 42, 0.04)',
-              padding: 'clamp(1.75rem, 4vw, 2.75rem) clamp(1.25rem, 3vw, 2.5rem)',
-              textAlign: 'center',
-            }}
-          >
-            <h2 style={{ fontSize: 'clamp(1.875rem,4.5vw,2.75rem)', fontWeight: 900, letterSpacing: '-.04em', color: 'var(--navy)', marginBottom: '.75rem', lineHeight: 1.15, position: 'relative', zIndex: 1 }}>
-              Your project kit is waiting.
-            </h2>
-            <p style={{ fontSize: 'clamp(.9375rem,2vw,1.0625rem)', color: 'var(--ink-3)', lineHeight: 1.7, marginBottom: '1.75rem', position: 'relative', zIndex: 1 }}>
-              Mini kits from ₹{MINI} · Major kits from ₹{MAJOR}.<br />
-              Preview free. Download instantly. Submit with confidence.
-            </p>
+              background: 'linear-gradient(160deg, #FFFFFF 0%, #FDFBF8 30%, #F7EFE3 65%, #EEE0C9 100%)',
+              border: '1.5px solid rgba(220, 208, 188, 0.95)',
+              boxShadow: 'inset 0 1px 0 #FFFFFF, 0 12px 36px -6px rgba(180, 145, 100, 0.16)',
+              padding: 'clamp(1.5rem,4vw,3rem) clamp(1rem,3vw,2.5rem)',
+              textAlign: 'center', position: 'relative', overflow: 'hidden',
+            }}>
+              <p style={{ fontSize: '.6875rem', fontWeight: 800, color: 'var(--teal)', textTransform: 'uppercase', letterSpacing: '.14em', marginBottom: '.625rem' }}>
+                Simple, Transparent Pricing
+              </p>
+              <h2 style={{ fontSize: 'clamp(1.5rem, 4vw, 2.5rem)', fontWeight: 900, letterSpacing: '-.04em', color: 'var(--navy)', marginBottom: '.75rem', lineHeight: 1.2 }}>
+                College Project Kits &amp; Startup MVP Builds
+              </h2>
+              <p style={{ fontSize: 'clamp(.875rem, 2vw, 1.0625rem)', color: 'var(--ink-3)', lineHeight: 1.7, marginBottom: '2rem', maxWidth: '38rem', margin: '0 auto 2rem' }}>
+                Instant download for ready college project kits, or commission our engineering team to build your startup MVP from scratch.
+              </p>
 
-            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '.875rem', marginBottom: '2rem', position: 'relative', zIndex: 1 }}>
-              <Link href="/projects" className="btn btn-teal btn-lg">
-                Browse All Kits <ArrowRight style={{ width: '1.125rem', height: '1.125rem' }} />
-              </Link>
-            </div>
-
-            {/* Trust badges */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '.75rem 2rem', paddingTop: '1.5rem', borderTop: '1px solid var(--line)', fontSize: '.875rem', color: 'var(--ink-4)', fontWeight: 600, position: 'relative', zIndex: 1 }}>
-              {[
-                { Icon: ShieldCheck, t: 'Razorpay Secured' },
-                { Icon: Zap,         t: 'Instant Download' },
-                { Icon: CheckCircle2,t: 'Bug-Free Guarantee' },
-              ].map(({ Icon, t }) => (
-                <div key={t} style={{ display: 'flex', alignItems: 'center', gap: '.375rem' }}>
-                  <Icon style={{ width: '.9375rem', height: '.9375rem', color: 'var(--teal)' }} />{t}
+              {/* 3 Real Matching Cards — Guaranteed Single Horizontal Row on md+ */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-left" style={{ marginBottom: 0 }}>
+                {/* Mini */}
+                <div style={{ padding: '1.375rem 1.25rem', borderRadius: '16px', background: 'linear-gradient(175deg, #FFFFFF 0%, #FDFBF8 40%, #F6EDE1 100%)', border: '1.2px solid rgba(220, 208, 188, 0.95)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%', boxShadow: 'inset 0 1px 0 #FFFFFF, 0 3px 12px -2px rgba(180, 145, 100, 0.08)' }}>
+                  <div>
+                    <span style={{ fontSize: '.6875rem', fontWeight: 800, color: 'var(--teal)', textTransform: 'uppercase', letterSpacing: '.06em' }}>Mini Project Kit</span>
+                    <div style={{ display: 'flex', alignItems: 'baseline', flexWrap: 'wrap', gap: '.35rem', margin: '.375rem 0 .625rem' }}>
+                      <span style={{ fontSize: '1.625rem', fontWeight: 900, color: 'var(--navy)', letterSpacing: '-.03em', whiteSpace: 'nowrap', lineHeight: 1 }}>₹299</span>
+                      <span style={{ fontSize: '.75rem', color: 'var(--ink-4)', fontWeight: 600, whiteSpace: 'nowrap' }}>(~$4 USD)</span>
+                    </div>
+                    <p style={{ fontSize: '.8125rem', color: 'var(--ink-3)', lineHeight: 1.55, marginBottom: '1.125rem' }}>
+                      Ready-to-run working code, 25-page report (.docx), and 10-slide Viva defense presentation.
+                    </p>
+                  </div>
+                  <Link href="/projects?tier=MINI" className="btn btn-outline" style={{ fontSize: '.8125rem', justifyContent: 'center', borderRadius: '10px', minHeight: '40px', width: '100%', marginTop: 'auto' }}>
+                    Browse Mini Kits (₹299)
+                  </Link>
                 </div>
+
+                {/* Major */}
+                <div style={{ padding: '1.375rem 1.25rem', borderRadius: '16px', background: 'linear-gradient(175deg, #FFFFFF 0%, #FEFAF4 40%, #F8EFE0 100%)', border: '1.2px solid rgba(220, 208, 188, 0.95)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%', boxShadow: 'inset 0 1px 0 #FFFFFF, 0 3px 12px -2px rgba(180, 145, 100, 0.08)' }}>
+                  <div>
+                    <span style={{ fontSize: '.6875rem', fontWeight: 800, color: '#B45309', textTransform: 'uppercase', letterSpacing: '.06em' }}>Major Capstone Kit</span>
+                    <div style={{ display: 'flex', alignItems: 'baseline', flexWrap: 'wrap', gap: '.35rem', margin: '.375rem 0 .625rem' }}>
+                      <span style={{ fontSize: '1.625rem', fontWeight: 900, color: 'var(--navy)', letterSpacing: '-.03em', whiteSpace: 'nowrap', lineHeight: 1 }}>₹499</span>
+                      <span style={{ fontSize: '.75rem', color: 'var(--ink-4)', fontWeight: 600, whiteSpace: 'nowrap' }}>(~$6 USD)</span>
+                    </div>
+                    <p style={{ fontSize: '.8125rem', color: 'var(--ink-3)', lineHeight: 1.55, marginBottom: '1.125rem' }}>
+                      Complete source code, 60-page IEEE Black Book report, 20-slide PPT, and top 25 Viva Q&amp;A.
+                    </p>
+                  </div>
+                  <Link href="/projects?tier=MAJOR" className="btn btn-outline" style={{ fontSize: '.8125rem', justifyContent: 'center', borderRadius: '10px', minHeight: '40px', width: '100%', marginTop: 'auto' }}>
+                    Browse Major Kits (₹499)
+                  </Link>
+                </div>
+
+                {/* Custom (Highlighted) */}
+                <div style={{ padding: '1.375rem 1.25rem', borderRadius: '16px', background: 'linear-gradient(175deg, #FFFFFF 0%, #F2FDF9 45%, #E1F6F0 100%)', border: '1.5px solid var(--teal-200)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%', position: 'relative', boxShadow: 'inset 0 1px 0 #FFFFFF, 0 4px 18px -2px rgba(13, 148, 136, 0.16)' }}>
+                  <div style={{ position: 'absolute', top: '-10px', right: '12px' }}>
+                    <span style={{ padding: '.2rem .625rem', borderRadius: '9999px', background: 'var(--teal)', color: '#FFF', fontSize: '.625rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '.06em' }}>
+                      Custom Built
+                    </span>
+                  </div>
+                  <div>
+                    <span style={{ fontSize: '.6875rem', fontWeight: 800, color: '#B45309', textTransform: 'uppercase', letterSpacing: '.06em' }}>Customize Project / Startup Idea</span>
+                    <div style={{ display: 'flex', alignItems: 'baseline', flexWrap: 'wrap', gap: '.35rem', margin: '.375rem 0 .625rem' }}>
+                      <span style={{ fontSize: '1.625rem', fontWeight: 900, color: 'var(--navy)', letterSpacing: '-.03em', whiteSpace: 'nowrap', lineHeight: 1 }}>₹1,999</span>
+                      <span style={{ fontSize: '.75rem', color: 'var(--ink-4)', fontWeight: 600, whiteSpace: 'nowrap' }}>(~$24 USD)</span>
+                      <span style={{ fontSize: '.625rem', fontWeight: 800, color: '#D97706', background: 'rgba(217,119,6,0.12)', border: '1px solid rgba(217,119,6,0.25)', padding: '.15rem .45rem', borderRadius: '4px', textTransform: 'uppercase', letterSpacing: '.04em', whiteSpace: 'nowrap' }}>
+                        Base Price
+                      </span>
+                    </div>
+                    <p style={{ fontSize: '.8125rem', color: 'var(--ink-2)', lineHeight: 1.55, marginBottom: '1.125rem' }}>
+                      Have a specific approved topic or startup concept? Complete custom working code, IEEE documentation, and 1-on-1 walkthrough.
+                    </p>
+                  </div>
+                  <Link href="/custom" className="btn btn-teal" style={{ fontSize: '.8125rem', justifyContent: 'center', borderRadius: '10px', minHeight: '40px', width: '100%', marginTop: 'auto' }}>
+                    Customize Your Project / Idea →
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ════ FREQUENTLY ASKED QUESTIONS (FAQ) ════ */}
+      <FaqSection />
+
+      {/* ════ FINAL TRUST & GUARANTEE STRIP ════ */}
+      <section style={{ position: 'relative', zIndex: 1, borderTop: '1px solid var(--line)', padding: 'clamp(2rem,4vw,2.75rem) 0', background: 'linear-gradient(180deg, rgba(248, 242, 232, 0.7) 0%, rgba(243, 236, 222, 0.95) 100%)' }}>
+        <div className="shell">
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem 2rem', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ maxWidth: '34rem' }}>
+              <div style={{ fontSize: 'clamp(1.05rem, 2.5vw, 1.25rem)', fontWeight: 800, color: 'var(--navy)', letterSpacing: '-.025em', marginBottom: '.25rem' }}>
+                Engineering-Grade Software &amp; Academic Standard Guarantee
+              </div>
+              <div style={{ fontSize: '.875rem', color: 'var(--ink-3)', lineHeight: 1.55 }}>
+                Every delivery includes verified runnable code, automated 1-click launchers, IEEE Black Book reports, and direct engineer support.
+              </div>
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.625rem 1.25rem', alignItems: 'center' }}>
+              {[
+                { Icon: ShieldCheck, t: '100% Working Code' },
+                { Icon: Zap, t: 'Instant 1-Click Run' },
+                { Icon: FileText, t: 'IEEE Black Book (.docx)' },
+                { Icon: Presentation, t: 'Viva PPT & Notes' },
+              ].map(({ Icon, t }) => (
+                <span key={t} style={{ display: 'inline-flex', alignItems: 'center', gap: '.4rem', fontSize: '.8125rem', fontWeight: 650, color: 'var(--navy)', background: 'var(--surface)', padding: '.35rem .75rem', borderRadius: '8px', border: '1px solid var(--line)' }}>
+                  <Icon style={{ width: '.9375rem', height: '.9375rem', color: 'var(--teal)' }} />
+                  {t}
+                </span>
               ))}
             </div>
           </div>
@@ -565,14 +747,5 @@ export default function HomePage() {
       </section>
 
     </div>
-  );
-}
-
-/* ─── inline WhatsApp icon ─── */
-function WaIcon({ size = 16 }: { size?: number }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-    </svg>
   );
 }

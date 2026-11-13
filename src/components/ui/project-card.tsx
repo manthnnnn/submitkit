@@ -52,9 +52,9 @@ export function ProjectCard({ project, onReserve }: { project: Project; onReserv
         flexDirection: 'column',
         overflow: 'hidden',
         borderRadius: '20px',
-        background: 'var(--surface)',
-        border: '1px solid rgba(226, 232, 240, 0.85)',
-        boxShadow: '0 2px 8px -2px rgba(15, 23, 42, 0.05), 0 8px 24px -4px rgba(15, 23, 42, 0.06)',
+        background: 'linear-gradient(175deg, #FFFFFF 0%, #FDFBF8 35%, #F7EFE3 75%, #F0E3CF 100%)',
+        border: '1.5px solid rgba(220, 208, 188, 0.95)',
+        boxShadow: 'inset 0 1px 0 #FFFFFF, 0 4px 20px -3px rgba(180, 145, 100, 0.12)',
         willChange: 'transform',
       }}
     >
@@ -79,7 +79,7 @@ export function ProjectCard({ project, onReserve }: { project: Project; onReserv
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem', marginBottom: '.75rem', paddingRight: '6rem' }}>
-          <span className={`tag ${isMajor ? 'tag-violet' : 'tag-teal'}`} style={{ fontSize: '.6rem' }}>{project.tier}</span>
+          <span className={`tag ${isMajor ? 'tag-amber' : 'tag-teal'}`} style={{ fontSize: '.6rem' }}>{project.tier}</span>
           <span style={{ fontSize: '.6875rem', fontWeight: 600, color: 'var(--ink-4)', textTransform: 'uppercase', letterSpacing: '.05em' }}>{project.category}</span>
         </div>
 
@@ -118,7 +118,7 @@ export function ProjectCard({ project, onReserve }: { project: Project; onReserv
             }}
           >
             <Icon style={{ width: '.8125rem', height: '.8125rem' }} />
-            <span className="hidden sm:inline">{label}</span>
+            <span style={{ fontSize: '.75rem', fontWeight: tab===id ? 700 : 500 }}>{label}</span>
           </button>
         ))}
       </div>

@@ -21,6 +21,13 @@ export interface Project {
   report_template_key: string;
   is_active: boolean;
   created_at: string;
+  // Project Builder fields
+  thumbnail_url?: string | null;
+  short_description?: string | null;
+  difficulty?: 'Beginner' | 'Intermediate' | 'Advanced';
+  ppt_key?: string | null;
+  viva_qa?: Array<{ q: string; a: string }>;
+  report_outline?: Array<{ section: string; title: string; subsections: string[]; pages: number }>;
 }
 
 export interface Order {

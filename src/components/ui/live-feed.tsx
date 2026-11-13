@@ -49,17 +49,17 @@ export function LiveFeed() {
   const currentPurchase = mockPurchases[currentIndex];
 
   return (
-    <div className={`fixed bottom-4 right-4 z-50 transition-all duration-500 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0 pointer-events-none'}`}>
+    <div className={`fixed bottom-4 right-4 z-50 transition-all duration-200 transform ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0 pointer-events-none'}`}>
       <div className="bg-white/95 backdrop-blur-md border border-slate-200/90 rounded-2xl p-4 shadow-xl flex items-start gap-3.5 max-w-sm relative overflow-hidden group">
-        <div className="absolute top-0 left-0 w-1.5 h-full bg-emerald-500"></div>
+        <div className="absolute top-0 left-0 w-1.5 h-full bg-teal-500"></div>
         
-        <div className="bg-emerald-50 p-2 rounded-xl shrink-0 border border-emerald-100">
-          <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+        <div className="bg-teal-50 p-2 rounded-xl shrink-0 border border-teal-100">
+          <CheckCircle2 className="w-4 h-4 text-teal-600" />
         </div>
         
         <div className="flex-grow pr-5">
           <p className="text-xs text-slate-700 leading-snug">
-            <span className="font-semibold text-slate-900">{currentPurchase.name}</span> from {currentPurchase.city} just bought <span className="font-semibold text-indigo-600">{currentPurchase.project}</span>
+            <span className="font-semibold text-slate-900">{currentPurchase.name}</span> from {currentPurchase.city} just bought <span className="font-semibold text-teal-700">{currentPurchase.project}</span>
           </p>
           <p className="text-[11px] text-slate-400 mt-1 font-medium">{currentPurchase.time}</p>
         </div>

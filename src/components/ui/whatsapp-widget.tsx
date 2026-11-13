@@ -18,7 +18,7 @@ export function WhatsAppWidget() {
 
   if (pathname?.startsWith('/admin') || pathname?.startsWith('/demo')) return null;
 
-  const waLink = `https://wa.me/918799814256?text=${encodeURIComponent('Hi! I need help with a project from SubmitKit.')}`;
+  const waLink = `https://wa.me/918799814256?text=${encodeURIComponent('Hi SubmitKit Team! I would like to discuss a project requirement.')}`;
 
   return (
     <div style={{ position: 'fixed', bottom: 'calc(5.5rem + env(safe-area-inset-bottom,0px))', right: '1rem', zIndex: 50 }}
@@ -34,6 +34,7 @@ export function WhatsAppWidget() {
             style={{
               position: 'absolute', bottom: '4.5rem', right: 0,
               width: '17rem',
+              maxWidth: 'calc(100vw - 2rem)',
               background: 'var(--surface)',
               border: '1px solid var(--line)',
               borderRadius: '18px',

@@ -48,10 +48,11 @@ export default function AdminLogin() {
   const handleQuickFill = () => {
     setError('');
     if (authMode === 'master') {
-      setPassword('9DtsXVfFGTu@4I');
+      // Auto-fill from environment variable for local dev only
+      setPassword(process.env.NEXT_PUBLIC_DEV_AUTOFILL_KEY || '');
     } else {
       setEmail('manthan@submitkit.in');
-      setPassword('9DtsXVfFGTu@4I');
+      setPassword(process.env.NEXT_PUBLIC_DEV_AUTOFILL_KEY || '');
     }
     passwordRef.current?.focus();
   };

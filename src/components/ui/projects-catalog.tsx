@@ -8,6 +8,7 @@ import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { CONSTANTS } from '@/lib/constants';
+import { motion } from 'framer-motion';
 
 type StatusFilter = 'ALL' | 'AVAILABLE' | 'UPCOMING';
 type TierFilter   = 'ALL' | 'MINI' | 'MAJOR';
@@ -145,35 +146,56 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
         </p>
       </div>
 
-      {/* ── Custom Project Banner ── */}
-      <div className="card-teal" style={{ padding: '1.25rem 1.5rem', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', marginBottom: '2rem' }}>
+      {/* ── Customize Project / Startup Idea Banner ── */}
+      <div style={{
+        padding: 'clamp(1rem, 3vw, 1.375rem) clamp(1rem, 3vw, 1.5rem)',
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: '1rem',
+        marginBottom: '2rem',
+        borderRadius: '16px',
+        background: 'linear-gradient(160deg, #FFFFFF 0%, #FDFBF8 30%, #F6EDE0 65%, #EFE1CC 100%)',
+        border: '1.5px solid rgba(220, 208, 188, 0.95)',
+        boxShadow: 'inset 0 1px 0 #FFFFFF, 0 6px 24px -4px rgba(180, 145, 100, 0.14)',
+      }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: '.875rem' }}>
-          <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: '12px', flexShrink: 0, background: 'var(--teal-100)', border: '1px solid var(--line-teal)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Sparkles style={{ width: '1.125rem', height: '1.125rem', color: 'var(--teal-dark)' }} />
+          <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: '12px', flexShrink: 0, background: 'var(--teal-50)', border: '1px solid var(--teal-100)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Sparkles style={{ width: '1.125rem', height: '1.125rem', color: 'var(--teal)' }} />
           </div>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '.625rem', flexWrap: 'wrap', marginBottom: '.3125rem' }}>
-              <h3 style={{ fontSize: '.9375rem', fontWeight: 700, color: 'var(--navy)', margin: 0 }}>
-                Need a Custom Project? Built in 48 Hours.
+              <h3 style={{ fontSize: '.9375rem', fontWeight: 800, color: 'var(--navy)', margin: 0, letterSpacing: '-.02em' }}>
+                Customize Your Project or Build a Startup Idea
               </h3>
-              <span className="tag tag-teal" style={{ fontSize: '.6rem' }}>100% Custom</span>
+              <span className="tag tag-teal" style={{ fontSize: '.6rem' }}>100% From Scratch</span>
             </div>
             <p style={{ fontSize: '.8125rem', color: 'var(--ink-3)', margin: 0 }}>
-              Working code · IEEE Black Book &amp; PPT · 1-on-1 walkthrough ·{' '}
-              <strong style={{ color: 'var(--teal-dark)' }}>Starts ₹1,999 (varies with complexity)</strong>
+              Custom college topic or startup MVP · Working code · Full IEEE report · 1-on-1 walkthrough ·{' '}
+              <strong style={{ color: '#B45309' }}>Starts ₹1,999 (48–72h delivery)</strong>
             </p>
           </div>
         </div>
-        <a
-          href={`https://wa.me/918799814256?text=${encodeURIComponent('Hi SubmitKit! I want a custom project.\n\nTopic:\nTech Stack:\nFeatures:\nDeadline:')}`}
-          target="_blank" rel="noopener noreferrer"
-          className="btn btn-teal btn-sm"
-          style={{ flexShrink: 0 }}
-        >
-          <WaIcon />
-          Chat on WhatsApp
-          <ArrowRight style={{ width: '.8125rem', height: '.8125rem' }} />
-        </a>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem', flexWrap: 'wrap' }}>
+          <Link
+            href="/custom"
+            className="btn btn-teal btn-sm"
+            style={{ justifyContent: 'center' }}
+          >
+            Customize Now
+            <ArrowRight style={{ width: '.8125rem', height: '.8125rem' }} />
+          </Link>
+          <a
+            href={`https://wa.me/918799814256?text=${encodeURIComponent('Hi SubmitKit! I want to customize a project or startup idea.\n\nTopic:\nTech Stack:\nFeatures:\nDeadline:')}`}
+            target="_blank" rel="noopener noreferrer"
+            className="btn btn-outline btn-sm"
+            style={{ justifyContent: 'center' }}
+          >
+            <WaIcon />
+            WhatsApp
+          </a>
+        </div>
       </div>
 
       {/* ── Search ── */}
@@ -189,8 +211,8 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
         />
       </div>
 
-      {/* ── Status Tabs (Aesthetic Segmented Control) ── */}
-      <div className="scroll-x no-scrollbar" style={{ display: 'inline-flex', alignItems: 'center', gap: '.25rem', padding: '.25rem', borderRadius: '12px', background: 'var(--surface-2)', border: '1px solid var(--line)', marginBottom: '1.25rem', maxWidth: '100%' }}>
+      {/* ── Status Tabs (Aesthetic Segmented Control with Fluid Slide) ── */}
+      <div className="scroll-x no-scrollbar" style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', gap: '.25rem', padding: '.25rem', borderRadius: '12px', background: 'var(--surface-2)', border: '1px solid var(--line)', marginBottom: '1.25rem', maxWidth: '100%' }}>
         {([
           { v: 'AVAILABLE', label: 'Ready to Ship',      n: availCount,             live: true },
           { v: 'UPCOMING',  label: 'Pre-Order Pipeline', n: upCount,                live: false },
@@ -198,11 +220,14 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
         ] as const).map(({ v, label, n, live }) => {
           const active = status === v;
           return (
-            <button
+            <motion.button
               key={v}
               onClick={() => setStatus(v)}
-              className="shrink-0 whitespace-nowrap active:scale-95"
+              whileTap={{ scale: 0.96 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 28 }}
+              className="shrink-0 whitespace-nowrap"
               style={{
+                position: 'relative',
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '.5rem',
@@ -212,12 +237,25 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
                 fontSize: '.8125rem',
                 fontWeight: active ? 700 : 500,
                 cursor: 'pointer',
-                background: active ? 'var(--surface)' : 'transparent',
+                background: 'transparent',
                 color: active ? 'var(--navy)' : 'var(--ink-4)',
-                boxShadow: active ? '0 2px 6px rgba(60,40,10,0.07), 0 1px 2px rgba(0,0,0,0.04)' : 'none',
-                transition: 'all 150ms ease',
+                zIndex: 1,
               }}
             >
+              {active && (
+                <motion.div
+                  layoutId="catalog-status-pill"
+                  transition={{ type: 'spring', stiffness: 440, damping: 32 }}
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    borderRadius: '9px',
+                    background: 'var(--surface)',
+                    boxShadow: '0 2px 6px rgba(60,40,10,0.07), 0 1px 2px rgba(0,0,0,0.04)',
+                    zIndex: -1,
+                  }}
+                />
+              )}
               {live && (
                 <span className="dot-live apulse" style={{ width: '6px', height: '6px' }} />
               )}
@@ -231,11 +269,12 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
                   background: active ? 'var(--teal-50)' : 'var(--surface-3)',
                   color: active ? 'var(--teal-dark)' : 'var(--ink-4)',
                   border: active ? '1px solid var(--teal-100)' : '1px solid transparent',
+                  transition: 'all 150ms ease',
                 }}
               >
                 {n}
               </span>
-            </button>
+            </motion.button>
           );
         })}
       </div>
@@ -243,36 +282,54 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
       {/* ── Unified Filter Toolbar: Tier & Domain ── */}
       <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '.875rem', marginBottom: '2rem' }}>
         {/* Tier filter segmented track */}
-        <div className="scroll-x no-scrollbar max-w-full" style={{ display: 'inline-flex', alignItems: 'center', gap: '.25rem', padding: '.25rem', background: 'var(--surface-2)', border: '1px solid var(--line)', borderRadius: '10px' }}>
+        <div className="scroll-x no-scrollbar max-w-full" style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', gap: '.25rem', padding: '.25rem', background: 'var(--surface-2)', border: '1px solid var(--line)', borderRadius: '10px' }}>
           {(['ALL', 'MINI', 'MAJOR'] as TierFilter[]).map(t => {
             const active = tier === t;
             return (
-              <button
+              <motion.button
                 key={t}
                 onClick={() => handleTierChange(t)}
-                className="shrink-0 whitespace-nowrap active:scale-95"
+                whileTap={{ scale: 0.96 }}
+                transition={{ type: 'spring', stiffness: 500, damping: 28 }}
+                className="shrink-0 whitespace-nowrap"
                 style={{
+                  position: 'relative',
                   padding: '.375rem .75rem',
                   borderRadius: '7px',
                   border: 'none',
                   fontSize: '.8125rem',
                   fontWeight: active ? 700 : 500,
                   cursor: 'pointer',
-                  background: active ? 'var(--surface)' : 'transparent',
+                  background: 'transparent',
                   color: active ? 'var(--navy)' : 'var(--ink-4)',
-                  boxShadow: active ? '0 1px 3px rgba(60,40,10,0.07)' : 'none',
-                  transition: 'all 140ms ease',
+                  zIndex: 1,
                 }}
               >
-                {t === 'ALL' ? 'All Tiers' : t === 'MINI' ? `Mini (₹${CONSTANTS.PRICING.MINI_PROJECT})` : `Major (₹${CONSTANTS.PRICING.MAJOR_PROJECT})`}
-              </button>
+                {active && (
+                  <motion.div
+                    layoutId="catalog-tier-pill"
+                    transition={{ type: 'spring', stiffness: 440, damping: 32 }}
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      borderRadius: '7px',
+                      background: 'var(--surface)',
+                      boxShadow: '0 1px 3px rgba(60,40,10,0.07)',
+                      zIndex: -1,
+                    }}
+                  />
+                )}
+                <span>{t === 'ALL' ? 'All Tiers' : t === 'MINI' ? `Mini (₹${CONSTANTS.PRICING.MINI_PROJECT})` : `Major (₹${CONSTANTS.PRICING.MAJOR_PROJECT})`}</span>
+              </motion.button>
             );
           })}
         </div>
 
         {/* Category domain pills */}
         <div className="scroll-x" style={{ display: 'flex', alignItems: 'center', gap: '.375rem', flex: 1, minWidth: 'min(100%, 18rem)', paddingBottom: '2px' }}>
-          <button
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            transition={{ type: 'spring', stiffness: 500, damping: 28 }}
             onClick={() => handleCatChange('ALL')}
             style={{
               padding: '.375rem .8125rem',
@@ -288,12 +345,14 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
             }}
           >
             All Domains
-          </button>
+          </motion.button>
           {categories.map(c => {
             const active = cat === c;
             return (
-              <button
+              <motion.button
                 key={c}
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: 'spring', stiffness: 500, damping: 28 }}
                 onClick={() => handleCatChange(c)}
                 style={{
                   padding: '.375rem .8125rem',
@@ -309,7 +368,7 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
                 }}
               >
                 {c}
-              </button>
+              </motion.button>
             );
           })}
         </div>
@@ -320,7 +379,7 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
         <div style={{ display: 'flex', gap: '.875rem', padding: '1rem 1.25rem', borderRadius: '14px', background: 'var(--emerald-50)', border: '1px solid var(--emerald-100)', marginBottom: '2rem' }}>
           <CheckCircle2 style={{ width: '1.25rem', height: '1.25rem', color: 'var(--emerald)', flexShrink: 0, marginTop: '.125rem' }} />
           <div>
-            <h4 style={{ fontSize: '.9375rem', fontWeight: 700, color: 'var(--emerald)', margin: '0 0 .25rem' }}>9 Verified Kits Ready for Instant Submission</h4>
+            <h4 style={{ fontSize: '.9375rem', fontWeight: 700, color: 'var(--emerald)', margin: '0 0 .25rem' }}>11 Verified Kits Ready for Instant Submission</h4>
             <p style={{ fontSize: '.875rem', color: 'var(--ink-3)', margin: 0, lineHeight: 1.65 }}>100% execution-tested code, 60-page IEEE Black Book (.docx), defense presentation slides, and top 25 Viva Q&amp;A. Checkout → instant download.</p>
           </div>
         </div>

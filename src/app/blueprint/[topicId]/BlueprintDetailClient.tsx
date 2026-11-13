@@ -229,158 +229,224 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
 
       <div className="shell" style={{ paddingTop: '2rem', paddingBottom: '4rem', display: 'flex', flexDirection: 'column', gap: '2rem', position: 'relative', zIndex: 1 }}>
 
-        {/* ── FREE ACCESS BANNER ── */}
-        <div style={{ background: 'var(--emerald-50)', border: '1px solid var(--emerald-100)', borderRadius: '16px', padding: '1.25rem 1.5rem', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '1rem' }}>
+        {/* ── FREE ACCESS BANNER (Sleek iOS Frosted Card) ── */}
+        <div style={{
+          background: 'linear-gradient(180deg, #FFFFFF 0%, #FAF6EE 100%)',
+          border: '1.2px solid rgba(226, 218, 205, 0.95)',
+          borderRadius: '16px',
+          padding: '1rem 1.25rem',
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '1rem',
+          boxShadow: '0 2px 10px rgba(180, 155, 120, 0.08)',
+        }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '.875rem' }}>
-            <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: '10px', background: 'var(--emerald-100)', border: '1px solid var(--emerald-200)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <CheckCircle className="w-5 h-5 text-emerald-700" />
+            <div style={{ width: '2.375rem', height: '2.375rem', borderRadius: '10px', background: 'var(--teal-50)', border: '1px solid var(--teal-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <CheckCircle style={{ width: '1.1875rem', height: '1.1875rem', color: 'var(--teal)' }} />
             </div>
             <div>
-              <p className="text-sm font-bold text-slate-900">🎉 Full Blueprint — 100% Free</p>
-              <p className="text-xs text-slate-600">Architecture • Build steps • Dataset guide • Viva Q&amp;A • AI master prompts — everything unlocked.</p>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '.875rem', fontWeight: 800, color: 'var(--navy)', letterSpacing: '-.02em' }}>
+                  Full Engineering Blueprint
+                </span>
+                <span style={{ fontSize: '.625rem', fontWeight: 800, padding: '.15rem .5rem', borderRadius: '9999px', background: 'var(--teal-50)', color: 'var(--teal-dark)', border: '1px solid var(--teal-100)' }}>
+                  100% Free Access
+                </span>
+              </div>
+              <p style={{ fontSize: '.78125rem', color: 'var(--ink-3)', margin: 0, lineHeight: 1.5 }}>
+                Architecture • Build steps • Dataset guide • Viva Q&amp;A • Master prompts — all unlocked.
+              </p>
             </div>
           </div>
-          <div className="flex items-center gap-2 shrink-0">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem', flexWrap: 'wrap' }}>
             <button
               onClick={handleDownloadPdf}
               disabled={pdfLoading}
-              className="inline-flex items-center gap-1.5 px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs transition-all shadow-md shadow-emerald-600/20 disabled:opacity-60"
+              className="btn btn-teal btn-sm"
+              style={{ gap: '.375rem', fontSize: '.78125rem', borderRadius: '10px', padding: '0 .875rem', minHeight: '36px' }}
             >
               {pdfLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FileDown className="w-3.5 h-3.5" />}
               {pdfLoading ? "Generating..." : "Download PDF"}
             </button>
             <button
               onClick={handleShare}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-100/70 border border-emerald-200 text-emerald-800 text-xs font-semibold hover:bg-emerald-100 transition-colors"
+              className="btn btn-outline btn-sm"
+              style={{ gap: '.375rem', fontSize: '.78125rem', borderRadius: '10px', padding: '0 .875rem', minHeight: '36px' }}
             >
               <Share2 className="w-3.5 h-3.5" /> Share
             </button>
           </div>
         </div>
 
-
-
-
         {/* ── HEADER HERO ── */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.625rem', alignItems: 'center' }}>
-            <span className="px-3 py-1 text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-full uppercase tracking-wider">
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.5rem', alignItems: 'center' }}>
+            <span style={{
+              fontSize: '.6875rem', fontWeight: 800, padding: '.25rem .65rem',
+              borderRadius: '9999px', background: 'var(--surface-2)', color: 'var(--navy)',
+              border: '1px solid var(--line)', textTransform: 'uppercase', letterSpacing: '.06em',
+            }}>
               {topic.category}
             </span>
             {topic.trending && (
-              <span className="flex items-center gap-1 px-3 py-1 text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200 rounded-full">
-                <Flame className="w-3.5 h-3.5 text-amber-600" /> Trending Project
+              <span style={{
+                fontSize: '.6875rem', fontWeight: 700, padding: '.25rem .65rem',
+                borderRadius: '9999px', background: '#FFFBEB', color: '#92400E',
+                border: '1px solid #FDE68A', display: 'inline-flex', alignItems: 'center', gap: '.3rem',
+              }}>
+                <Flame style={{ width: '12px', height: '12px', color: '#D97706' }} /> Trending Topic
               </span>
             )}
-            <span className="text-xs text-emerald-800 font-semibold px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200">
+            <span style={{
+              fontSize: '.6875rem', fontWeight: 700, padding: '.25rem .65rem',
+              borderRadius: '9999px', background: '#ECFDF5', color: '#065F46',
+              border: '1px solid #A7F3D0', display: 'inline-flex', alignItems: 'center', gap: '.3rem',
+            }}>
+              <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#10B981' }} />
               Approved by Examiners
             </span>
-            {buildInfo.canBuild ? (
-              <span className="flex items-center gap-1.5 px-3 py-1 text-xs font-bold bg-indigo-50 text-indigo-800 border border-indigo-200 rounded-full shadow-xs">
-                <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
-                ⚡ 100% BUILDABLE IN ANTIGRAVITY WITHOUT CODING
-              </span>
-            ) : (
-              <span className="flex items-center gap-1.5 px-3 py-1 text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200 rounded-full">
-                {buildInfo.badgeText}
-              </span>
-            )}
+            <span style={{
+              fontSize: '.6875rem', fontWeight: 700, padding: '.25rem .65rem',
+              borderRadius: '9999px', background: 'var(--teal-50)', color: 'var(--teal-darker)',
+              border: '1px solid var(--teal-100)', display: 'inline-flex', alignItems: 'center', gap: '.35rem',
+            }}>
+              <Sparkles style={{ width: '12px', height: '12px', color: 'var(--teal)' }} />
+              Engineering Blueprint
+            </span>
           </div>
 
-          <h1 className="font-display" style={{ fontSize: 'clamp(1.875rem, 5vw, 3rem)', fontWeight: 900, letterSpacing: '-.04em', color: 'var(--navy)', lineHeight: 1.15 }}>
+          <h1 className="font-display font-black" style={{ fontSize: 'clamp(1.875rem, 5vw, 2.75rem)', letterSpacing: '-.04em', color: 'var(--navy)', lineHeight: 1.2, margin: 0 }}>
             {topic.title}
           </h1>
-          <p style={{ fontSize: 'clamp(.9375rem, 2vw, 1.0625rem)', color: 'var(--ink-3)', maxWidth: '48rem', lineHeight: 1.75 }}>
+          <p style={{ fontSize: 'clamp(.9375rem, 2vw, 1.0625rem)', color: 'var(--ink-3)', maxWidth: '48rem', lineHeight: 1.7, margin: 0 }}>
             {topic.tagline}
           </p>
 
-          <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-2 text-xs text-slate-500 border-t border-slate-200/80 font-medium">
-            <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-indigo-600" />
-              <span>Build time: <strong className="text-slate-900 font-bold">{topic.buildTimeDays}</strong></span>
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '.5rem 1.5rem', paddingTop: '.75rem', borderTop: '1px solid var(--line)', fontSize: '.8125rem', color: 'var(--ink-4)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '.4rem' }}>
+              <Clock style={{ width: '14px', height: '14px', color: 'var(--teal)' }} />
+              <span>Build time: <strong style={{ color: 'var(--navy)' }}>{topic.buildTimeDays}</strong></span>
             </div>
-            <div className="flex items-center gap-1.5">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '.4rem' }}>
               <span>Examiner Difficulty:</span>
-              <span className="flex gap-0.5">
+              <span style={{ display: 'flex', gap: '2px' }}>
                 {difficultyStars.map((filled, i) => (
                   <Star
                     key={i}
-                    className={`w-3.5 h-3.5 ${filled ? "text-amber-400 fill-amber-400" : "text-slate-200"}`}
+                    style={{
+                      width: '13px', height: '13px',
+                      fill: filled ? '#F59E0B' : '#E2E8F0',
+                      color: filled ? '#F59E0B' : '#CBD5E1',
+                    }}
                   />
                 ))}
               </span>
             </div>
-            <button
-              onClick={handleShare}
-              className="ml-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold hover:bg-emerald-100 transition-colors"
-            >
-              <Share2 className="w-3.5 h-3.5" /> Share
-            </button>
           </div>
         </div>
 
-        {/* ── TIME-SAVER HOOK BANNER: MAKE THIS COMPLETE PROJECT IN ONE PROMPT ── */}
-        <div className="relative rounded-3xl overflow-hidden border border-teal-200 bg-gradient-to-r from-teal-50/90 via-emerald-50/70 to-slate-50 p-6 md:p-8 shadow-sm">
-          <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-            <div className="space-y-3 max-w-2xl">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-indigo-100 border border-indigo-200 text-indigo-800 text-xs font-bold tracking-wider uppercase">
-                  <Sparkles className="w-4 h-4 text-indigo-600" />
-                  {buildInfo.canBuild ? "🚀 MAKE THIS COMPLETE PROJECT IN ONE PROMPT" : `🛠️ ${buildInfo.badgeText.toUpperCase()}`}
-                </span>
-                <span className="px-3 py-1 text-xs font-bold text-emerald-800 bg-emerald-100 border border-emerald-200 rounded-full flex items-center gap-1">
-                  <CheckCircle className="w-3.5 h-3.5 text-emerald-600" />
-                  {buildInfo.pillBadgeText}
-                </span>
+        {/* ── TIME-SAVER HOOK BANNER (Refined Modern Linear-Style Architecture Card) ── */}
+        <div style={{
+          background: 'linear-gradient(160deg, #FFFFFF 0%, #FDFBF8 30%, #F6ECE0 65%, #EFE0C8 100%)',
+          borderRadius: '20px',
+          border: '1.5px solid rgba(220, 208, 188, 0.95)',
+          padding: 'clamp(1.5rem, 4vw, 2.25rem)',
+          boxShadow: 'inset 0 1px 0 #FFFFFF, 0 8px 30px -4px rgba(180, 145, 100, 0.16)',
+          position: 'relative',
+          overflow: 'hidden',
+        }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1.5rem' }}>
+              <div style={{ maxWidth: '42rem' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '.5rem', marginBottom: '.75rem' }}>
+                  <span style={{
+                    fontSize: '.6875rem', fontWeight: 800, padding: '.25rem .65rem',
+                    borderRadius: '9999px', background: 'var(--teal-50)', color: 'var(--teal-dark)',
+                    border: '1px solid var(--teal-100)', letterSpacing: '.06em', textTransform: 'uppercase',
+                    display: 'inline-flex', alignItems: 'center', gap: '.35rem',
+                  }}>
+                    <Sparkles style={{ width: '12px', height: '12px', color: 'var(--teal)' }} />
+                    Architecture &amp; Implementation Blueprint
+                  </span>
+                  <span style={{
+                    fontSize: '.6875rem', fontWeight: 700, padding: '.25rem .6rem',
+                    borderRadius: '9999px', background: '#ECFDF5', color: '#065F46',
+                    border: '1px solid #A7F3D0', display: 'inline-flex', alignItems: 'center', gap: '.3rem',
+                  }}>
+                    <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#10B981' }} />
+                    Multi-Tier System
+                  </span>
+                </div>
+
+                <h2 className="font-display font-black" style={{ fontSize: 'clamp(1.35rem, 3.5vw, 1.875rem)', letterSpacing: '-.035em', color: 'var(--navy)', lineHeight: 1.25, margin: '0 0 .625rem' }}>
+                  Production-Grade System Architecture &amp; Implementation
+                </h2>
+
+                <p style={{ fontSize: '.9rem', color: 'var(--ink-3)', lineHeight: 1.65, margin: 0 }}>
+                  Includes multi-tier architectural schematics, clean separation of concerns, synthetic validation pipelines, and evaluator scoring defense.
+                </p>
+
+                {/* 3 Quick Benefit Pills */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5" style={{ marginTop: '1.25rem' }}>
+                  {buildInfo.benefitPills.map((pill, idx) => (
+                    <div key={idx} style={{
+                      background: '#FFFFFF',
+                      border: '1px solid var(--line)',
+                      borderRadius: '12px',
+                      padding: '.625rem .75rem',
+                      fontSize: '.75rem',
+                      color: 'var(--ink-2)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '.5rem',
+                      boxShadow: 'var(--sh-xs)',
+                    }}>
+                      <CheckCircle style={{ width: '14px', height: '14px', color: 'var(--teal)', flexShrink: 0 }} />
+                      <span><strong>{pill.title}:</strong> {pill.text}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              <h2 className="text-2xl md:text-3xl font-display font-extrabold text-slate-900 tracking-tight leading-snug">
-                {buildInfo.hookHeadline}
-              </h2>
-
-              <p className="text-sm md:text-base text-slate-600 leading-relaxed font-normal">
-                {buildInfo.hookSubtext}
-              </p>
-
-              {/* 3 Quick Benefit Pills so user understands everything */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2">
-                {buildInfo.benefitPills.map((pill, idx) => (
-                  <div key={idx} className="bg-white border border-slate-200/90 rounded-xl p-2.5 text-xs text-slate-700 flex items-center gap-2 shadow-xs">
-                    <CheckCircle className={`w-4 h-4 shrink-0 ${pill.color}`} />
-                    <span><strong>{pill.title}:</strong> {pill.text}</span>
-                  </div>
-                ))}
+              {/* Action Column — No Ugly Yellow Buttons */}
+              <div style={{ minWidth: '16rem', flex: '0 0 auto', display: 'flex', flexDirection: 'column', gap: '.625rem' }}>
+                {topic.id && isProjectAvailable(topic.id) ? (
+                  <>
+                    <Link
+                      href={`/projects/${topic.id}`}
+                      className="btn btn-teal btn-lg w-full"
+                      style={{ gap: '.5rem', justifyContent: 'center', boxShadow: '0 6px 20px -4px rgba(13,148,136,0.4)' }}
+                    >
+                      <Zap style={{ width: '1.125rem', height: '1.125rem' }} /> Get Full Project Kit
+                    </Link>
+                    <p style={{ fontSize: '.6875rem', color: 'var(--ink-4)', textAlign: 'center', margin: 0, fontWeight: 600 }}>
+                      ⚡ Working code + IEEE Report + PPT • Instant download
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <Link
+                      href={`/custom?topic=${encodeURIComponent(topic.title)}`}
+                      className="btn btn-teal btn-lg w-full"
+                      style={{ gap: '.5rem', justifyContent: 'center', boxShadow: '0 6px 20px -4px rgba(13,148,136,0.4)' }}
+                    >
+                      <Sparkles style={{ width: '1.0625rem', height: '1.0625rem' }} /> Request Custom Build →
+                    </Link>
+                    <Link
+                      href="/projects"
+                      className="btn btn-outline btn-sm w-full"
+                      style={{ justifyContent: 'center', fontSize: '.78125rem', borderRadius: '10px', minHeight: '38px' }}
+                    >
+                      Browse 11 Ready Kits
+                    </Link>
+                    <p style={{ fontSize: '.6875rem', color: 'var(--ink-4)', textAlign: 'center', margin: 0 }}>
+                      Delivered in 48h with working code &amp; report
+                    </p>
+                  </>
+                )}
               </div>
-            </div>
-
-            <div className="shrink-0 w-full lg:w-auto flex flex-col sm:flex-row lg:flex-col gap-3">
-              {topic.id && isProjectAvailable(topic.id) ? (
-                /* Project exists & is ready — link directly to it */
-                <>
-                  <Link
-                    href={`/projects/${topic.id}`}
-                    className="w-full inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-gradient-to-r from-emerald-600 via-indigo-600 to-indigo-700 hover:brightness-105 text-white font-bold text-sm rounded-2xl shadow-md shadow-indigo-600/25 transition-all hover:scale-[1.01] uppercase tracking-wider"
-                  >
-                    <Zap className="w-5 h-5" /> Get Full Project Kit
-                  </Link>
-                  <p className="text-[11px] text-slate-500 text-center font-medium">
-                    ⚡ Working code + IEEE Report + PPT + Viva Q&amp;A • Instant download
-                  </p>
-                </>
-              ) : (
-                /* Project not ready yet — show coming soon, link to waitlist on project page */
-                <>
-                  <Link
-                    href={topic.id ? `/projects/${topic.id}` : '/projects'}
-                    className="w-full inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold text-sm rounded-2xl transition-all hover:scale-[1.01] shadow-md shadow-amber-500/20 uppercase tracking-wider"
-                  >
-                    🚧 Coming Soon — Join Waitlist
-                  </Link>
-                  <p className="text-[11px] text-slate-500 text-center font-medium">
-                    🔔 Get notified when this project kit is ready — free to join
-                  </p>
-                </>
-              )}
             </div>
           </div>
         </div>
@@ -400,7 +466,11 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
               <div className="space-y-8">
                 
                 {/* Navigation Pills — horizontally scrollable on mobile */}
-                <div className="scroll-x" style={{ display: 'flex', gap: '.375rem', padding: '.25rem', background: 'var(--surface-2)', border: '1px solid var(--line)', borderRadius: '13px' }}>
+                <div className="scroll-x" style={{
+                  display: 'flex', gap: '.25rem', padding: '.3125rem',
+                  background: 'rgba(238, 230, 218, 0.65)', border: '1px solid rgba(222, 212, 196, 0.85)', borderRadius: '14px',
+                  boxShadow: 'inset 0 1px 2px rgba(60, 45, 20, 0.04)'
+                }}>
                   {[
                     { id: "antigravity", label: buildInfo.tab0Label, icon: buildInfo.canBuild ? Sparkles : Cpu },
                     { id: "steps", label: "Step-by-Step Guide", icon: Wrench },
@@ -412,25 +482,26 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                     { id: "deliverables", label: "Black Book & PPT", icon: Presentation },
                   ].map((tab) => {
                     const Icon = tab.icon;
+                    const isActive = activeTab === tab.id;
                     return (
                       <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id as ActiveTab)}
                         style={{
-                          flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: '.375rem',
-                          padding: '.4375rem .875rem', borderRadius: '10px', border: 'none',
+                          flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: '.4rem',
+                          padding: '.4375rem .875rem', borderRadius: '10px',
                           fontSize: '.8125rem', cursor: 'pointer', whiteSpace: 'nowrap',
-                          fontWeight: activeTab === tab.id ? 700 : 500,
-                          background: activeTab === tab.id ? 'var(--surface)' : 'transparent',
-                          color: activeTab === tab.id ? 'var(--teal-dark)' : 'var(--ink-3)',
-                          boxShadow: activeTab === tab.id ? 'var(--sh-xs)' : 'none',
-                          borderBottom: activeTab === tab.id ? '2px solid var(--teal)' : '2px solid transparent',
-                          transition: 'all 150ms',
+                          fontWeight: isActive ? 700 : 500,
+                          background: isActive ? '#FAF7F2' : 'transparent',
+                          color: isActive ? 'var(--navy)' : 'var(--ink-4)',
+                          boxShadow: isActive ? '0 1px 3px rgba(60,45,20,0.08), 0 1px 2px rgba(60,45,20,0.04)' : 'none',
+                          border: isActive ? '1px solid rgba(215, 204, 185, 0.9)' : '1px solid transparent',
+                          transition: 'all 120ms cubic-bezier(.16, 1, .3, 1)',
                           WebkitTapHighlightColor: 'transparent',
                           fontFamily: 'var(--font-sans)',
                         }}
                       >
-                        <Icon className="w-3.5 h-3.5" />
+                        <Icon className="w-3.5 h-3.5" style={{ color: isActive ? 'var(--teal)' : '#94A3B8' }} />
                         {tab.label}
                       </button>
                     );
@@ -445,9 +516,9 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                         <div>
                           <h2 className="text-xl font-display font-bold text-slate-900 flex items-center gap-2">
                             {buildInfo.canBuild ? (
-                              <Sparkles className="w-5 h-5 text-indigo-600" />
+                              <Sparkles className="w-5 h-5 text-teal-600" />
                             ) : (
-                              <Cpu className="w-5 h-5 text-indigo-600" />
+                              <Cpu className="w-5 h-5 text-teal-600" />
                             )}
                             {buildInfo.tab0Title}
                           </h2>
@@ -457,10 +528,11 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                         </div>
                         <button
                           onClick={() => copyToClipboard(masterPrompt, 9999)}
-                          className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white font-bold text-xs rounded-xl shadow-md shadow-indigo-600/20 transition-all"
+                          className="btn btn-teal btn-sm"
+                          style={{ gap: '.4rem', fontWeight: 700, borderRadius: '10px', boxShadow: '0 4px 14px -2px rgba(13,148,136,0.35)' }}
                         >
                           {copiedIndex === 9999 ? (
-                            <><Check className="w-3.5 h-3.5 text-emerald-300" /> Copied!</>
+                            <><Check className="w-3.5 h-3.5" /> Copied!</>
                           ) : (
                             <><Copy className="w-3.5 h-3.5" /> {buildInfo.copyButtonText}</>
                           )}
@@ -471,9 +543,9 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                     {/* 3-Step Baby-Step Workflow */}
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 14rem), 1fr))', gap: '.875rem' }}>
                       {buildInfo.workflowSteps.map((step) => (
-                        <div key={step.step} style={{ background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: '12px', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '.5rem', boxShadow: 'var(--sh-xs)' }}>
-                          <div className={`flex items-center gap-2 font-bold text-xs ${step.color}`}>
-                            <span className="w-6 h-6 rounded-md bg-slate-100 border border-slate-200 flex items-center justify-center font-mono text-xs">{step.step}</span>
+                        <div key={step.step} style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '14px', padding: '1.125rem', display: 'flex', flexDirection: 'column', gap: '.5rem', boxShadow: '0 1px 3px rgba(0,0,0,0.03)' }}>
+                          <div className="flex items-center gap-2 font-bold text-xs text-slate-900">
+                            <span className="w-6 h-6 rounded-md bg-slate-100 border border-slate-200 flex items-center justify-center font-mono text-xs text-slate-800">{step.step}</span>
                             {step.title}
                           </div>
                           <p className="text-xs text-slate-600 leading-relaxed">
@@ -486,8 +558,8 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                     {/* Master Prompt Box */}
                     <div className="space-y-2">
                       <div className="flex items-center justify-between">
-                        <span className="text-xs font-mono font-bold text-slate-600 uppercase tracking-wider flex items-center gap-1.5">
-                          <Terminal className="w-3.5 h-3.5 text-indigo-600" />
+                        <span className="text-xs font-mono font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+                          <Terminal className="w-3.5 h-3.5 text-teal-600" />
                           {buildInfo.promptBoxTitle}
                         </span>
                         <span className="text-[11px] text-slate-400 font-mono">
@@ -515,42 +587,42 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                     </div>
 
                     {/* Creative Freedom & Base MVP Callout */}
-                    <div style={{ borderRadius: '14px', border: '1px solid var(--amber-100)', background: 'var(--amber-50)', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '.625rem' }}>
-                      <div className="flex items-center gap-2 font-bold text-amber-900 text-sm">
-                        <Sparkles className="w-4 h-4 text-amber-600 shrink-0" />
-                        Base MVP Foundation & Complete Creative Freedom
+                    <div style={{ borderRadius: '14px', border: '1px solid #E2E8F0', background: '#F8FAFC', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '.625rem' }}>
+                      <div className="flex items-center gap-2 font-bold text-slate-900 text-sm">
+                        <Sparkles className="w-4 h-4 text-teal-600 shrink-0" />
+                        Base MVP Foundation &amp; Complete Creative Freedom
                       </div>
-                      <p className="text-slate-700 leading-relaxed text-xs">
+                      <p className="text-slate-600 leading-relaxed text-xs">
                         <strong>Important Note:</strong> This Master Prompt generates a complete, fully working <strong>Base MVP (Minimum Viable Product)</strong> of your project right out of the box. Use this as your solid operational foundation! As per your personal creativity and college project guidelines, you can freely update, refine, and customize the system whenever you want simply by asking the AI (e.g. <em>&ldquo;Add dark/light theme switch&rdquo;</em>, <em>&ldquo;Export records as Excel / PDF&rdquo;</em>, or <em>&ldquo;Integrate email alerts&rdquo;</em>). You have complete freedom to make it uniquely yours!
                       </p>
                     </div>
 
                     {/* Why this master prompt works */}
-                    <div style={{ background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: '16px', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', boxShadow: 'var(--sh-sm)' }}>
+                    <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
                       <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
                         <CheckCircle className="w-4 h-4 text-emerald-600" />
                         Why This Master Prompt Produces Working Code On First Try:
                       </h3>
                       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 14rem), 1fr))', gap: '.875rem', fontSize: '.8125rem' }}>
-                        <div style={{ background: 'var(--surface-2)', border: '1px solid var(--line)', borderRadius: '12px', padding: '.875rem', display: 'flex', flexDirection: 'column', gap: '.375rem' }}>
-                          <strong style={{ color: 'var(--navy)', display: 'block', fontWeight: 600 }}>Includes Synthetic Data Generator</strong>
-                          <p className="text-zinc-400 leading-relaxed">
+                        <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '.875rem', display: 'flex', flexDirection: 'column', gap: '.375rem' }}>
+                          <strong style={{ color: '#0F172A', display: 'block', fontWeight: 600 }}>Includes Synthetic Data Generator</strong>
+                          <p className="text-slate-600 leading-relaxed">
                             Instructs the AI to generate a standalone data script so your project works right out of the box without needing 2GB dataset downloads.
                           </p>
                         </div>
-                        <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 space-y-1">
+                        <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '.875rem', display: 'flex', flexDirection: 'column', gap: '.375rem' }}>
                           <strong className="text-slate-900 block font-semibold">Strict No-Placeholder Rule</strong>
                           <p className="text-slate-600 leading-relaxed">
                             Forbids lazy comments like &ldquo;// implement here&rdquo;. Demands complete, line-by-line execution logic.
                           </p>
                         </div>
-                        <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 space-y-1">
+                        <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '.875rem', display: 'flex', flexDirection: 'column', gap: '.375rem' }}>
                           <strong className="text-slate-900 block font-semibold">Modern Responsive Dashboard</strong>
                           <p className="text-slate-600 leading-relaxed">
                             Mandates an intuitive modern interactive UI with live metrics and real-time visualization that impresses college evaluators.
                           </p>
                         </div>
-                        <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 space-y-1">
+                        <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '.875rem', display: 'flex', flexDirection: 'column', gap: '.375rem' }}>
                           <strong className="text-slate-900 block font-semibold">Built-in Automated Tests</strong>
                           <p className="text-slate-600 leading-relaxed">
                             Forces unit tests verifying accuracy and error handling, giving you tangible proof to show in Chapter 5 of your Black Book.
@@ -567,15 +639,15 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                     <div className="flex flex-wrap items-center justify-between border-b border-slate-200/80 pb-3 gap-2">
                       <div>
                         <h2 className="text-xl font-display font-bold text-slate-900 flex items-center gap-2">
-                          <Wrench className="w-5 h-5 text-indigo-600" />
+                          <Wrench className="w-5 h-5 text-teal-600" />
                           Step-by-Step Implementation Guide
                         </h2>
                         <p className="text-xs text-slate-500 mt-0.5">
                           Follow these {topic.buildSteps?.length || 0} clear conceptual baby steps from environment setup to live demo.
                         </p>
                       </div>
-                      <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700">
-                        100% Theory & Architecture • Zero Code Clutter
+                      <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700">
+                        100% Theory &amp; Architecture • Zero Code Clutter
                       </span>
                     </div>
 
@@ -587,7 +659,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                             <div key={idx} className="bg-white border border-slate-200/90 rounded-2xl p-5 md:p-6 space-y-4 shadow-sm">
                               <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
                                 <div className="flex items-center gap-2.5">
-                                  <span className="w-7 h-7 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-700 font-bold text-xs flex items-center justify-center font-mono">
+                                  <span className="w-7 h-7 rounded-lg bg-slate-100 border border-slate-200 text-slate-800 font-bold text-xs flex items-center justify-center font-mono">
                                     {step.step}
                                   </span>
                                   <h3 className="text-base font-display font-bold text-slate-900">
@@ -605,13 +677,13 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
 
                               {/* Conceptual Baby Steps Breakdown */}
                               <div className="space-y-2 bg-slate-50 border border-slate-200/80 rounded-xl p-4">
-                                <span className="text-[11px] font-bold text-indigo-600 uppercase tracking-wider block">
+                                <span className="text-[11px] font-bold text-slate-700 uppercase tracking-wider block">
                                   Detailed Implementation Mechanics:
                                 </span>
                                 <ul className="space-y-2 text-xs text-slate-700">
                                   {babySteps.map((bStep, bIdx) => (
                                     <li key={bIdx} className="flex items-start gap-2.5">
-                                      <span className="w-4 h-4 rounded-full bg-indigo-100 text-indigo-700 font-mono text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+                                      <span className="w-4 h-4 rounded-full bg-teal-100 text-teal-800 font-mono text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
                                         {bIdx + 1}
                                       </span>
                                       <span className="leading-relaxed">{bStep}</span>
@@ -646,21 +718,21 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                                 <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-3 text-xs text-slate-700 flex items-start gap-2">
                                   <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                                   <div>
-                                    <strong className="text-emerald-800 font-bold block">Expected Output & Verification:</strong>
+                                    <strong className="text-emerald-800 font-bold block">Expected Output &amp; Verification:</strong>
                                     <span>{step.expectedOutput}</span>
                                   </div>
                                 </div>
                               )}
 
                               {/* Zero-Code Antigravity Callout */}
-                              <div className="flex items-center justify-between p-3 rounded-xl bg-indigo-50 border border-indigo-200 text-xs text-indigo-900">
+                              <div className="flex items-center justify-between p-3.5 rounded-xl bg-teal-50/60 border border-teal-200/80 text-xs text-teal-950">
                                 <span className="flex items-center gap-2">
-                                  <Sparkles className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
+                                  <Sparkles className="w-3.5 h-3.5 text-teal-600 shrink-0" />
                                   <span>Build this step without code in seconds using the Antigravity Master Prompt.</span>
                                 </span>
                                 <button
                                   onClick={() => setActiveTab("antigravity")}
-                                  className="text-xs font-bold text-indigo-700 hover:text-indigo-900 underline shrink-0 ml-2"
+                                  className="text-xs font-bold text-teal-700 hover:text-teal-900 underline shrink-0 ml-2"
                                 >
                                   View Master Prompt →
                                 </button>
@@ -681,7 +753,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                     <div className="border-b border-slate-200/80 pb-3">
                       <h2 className="text-xl font-display font-bold text-slate-900 flex items-center gap-2">
                         <Database className="w-5 h-5 text-emerald-600" />
-                        Dataset & Data Collection Master Guide
+                        Dataset &amp; Data Collection Master Guide
                       </h2>
                       <p className="text-xs text-slate-500 mt-0.5">
                         Where to get clean training data, how to structure it, and how to preprocess it.
@@ -702,7 +774,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                               href={topic.dataset.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-xs font-bold text-indigo-600 hover:text-indigo-800 inline-flex items-center gap-1 break-all"
+                              className="text-xs font-bold text-teal-700 hover:text-teal-900 inline-flex items-center gap-1 break-all"
                             >
                               Direct Dataset Source <ExternalLink className="w-3 h-3 shrink-0" />
                             </a>
@@ -713,22 +785,22 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                       </div>
 
                       <div className="space-y-2">
-                        <h4 className="text-sm font-bold text-slate-900">How to Collect & Set Up the Data:</h4>
+                        <h4 className="text-sm font-bold text-slate-900">How to Collect &amp; Set Up the Data:</h4>
                         <p className="text-sm text-slate-600 leading-relaxed">
                           {topic.dataset?.description || "Collect data into the designated raw data folder and ensure consistent file naming."}
                         </p>
                       </div>
 
                       {topic.dataset?.backupDataset && (
-                        <div className="rounded-xl bg-blue-50 border border-blue-200 p-4 text-xs space-y-1">
-                          <strong className="text-blue-800 font-bold block">Backup / Alternative Dataset:</strong>
+                        <div className="rounded-xl bg-slate-50 border border-slate-200 p-4 text-xs space-y-1">
+                          <strong className="text-slate-900 font-bold block">Backup / Alternative Dataset:</strong>
                           <p className="text-slate-700">{topic.dataset.backupDataset}</p>
                           {topic.dataset.backupUrl && (
                             <a
                               href={topic.dataset.backupUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-indigo-600 font-semibold hover:underline inline-flex items-center gap-1 mt-1"
+                              className="text-teal-700 font-semibold hover:underline inline-flex items-center gap-1 mt-1"
                             >
                               Alternative Link <ExternalLink className="w-3 h-3" />
                             </a>
@@ -759,8 +831,8 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                   <div className="space-y-6 tab-panel-enter">
                     <div className="border-b border-slate-200/80 pb-3">
                       <h2 className="text-xl font-display font-bold text-slate-900 flex items-center gap-2">
-                        <Mic className="w-5 h-5 text-indigo-600" />
-                        System Understanding & Defense Mastery (Easy to Understand)
+                        <Mic className="w-5 h-5 text-teal-600" />
+                        System Understanding &amp; Defense Mastery (Easy to Understand)
                       </h2>
                       <p className="text-xs text-slate-500 mt-0.5">
                         Key engineering decisions explained in simple English so you can explain your system to any evaluator with total confidence.
@@ -779,7 +851,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                           return (
                             <div key={qIdx} className="bg-white border border-slate-200/90 rounded-2xl p-5 md:p-6 space-y-4 shadow-sm">
                               <div className="flex items-start gap-3">
-                                <span className="w-7 h-7 rounded-lg bg-indigo-50 border border-indigo-200 text-indigo-700 font-mono text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
+                                <span className="w-7 h-7 rounded-lg bg-slate-100 border border-slate-200 text-slate-800 font-mono text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
                                   0{qIdx + 1}
                                 </span>
                                 <div>
@@ -791,21 +863,21 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                               </div>
 
                               {/* Plain English explanation */}
-                              <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-4 text-xs space-y-1.5">
+                              <div className="rounded-xl bg-teal-50/60 border border-teal-200/80 p-4 text-xs space-y-1.5">
                                 <div className="flex items-center justify-between">
-                                  <span className="text-emerald-800 font-bold flex items-center gap-1.5 uppercase tracking-wider text-[11px]">
-                                    <CheckCircle className="w-3.5 h-3.5 text-emerald-600" /> Plain-English Explanation:
+                                  <span className="text-teal-900 font-bold flex items-center gap-1.5 uppercase tracking-wider text-[11px]">
+                                    <CheckCircle className="w-3.5 h-3.5 text-teal-600" /> Plain-English Explanation:
                                   </span>
                                   <button
                                     onClick={() => copyToClipboard(qa.perfectAnswer, 500 + qIdx)}
                                     className="text-slate-400 hover:text-slate-700 p-1"
                                     title="Copy explanation"
                                   >
-                                    {copiedIndex === 500 + qIdx ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                                    {copiedIndex === 500 + qIdx ? <Check className="w-3.5 h-3.5 text-teal-600" /> : <Copy className="w-3.5 h-3.5" />}
                                   </button>
                                 </div>
-                                <p className="text-slate-700 leading-relaxed text-sm font-medium">
-                                  "{qa.perfectAnswer}"
+                                <p className="text-slate-800 leading-relaxed text-sm font-medium">
+                                  &ldquo;{qa.perfectAnswer}&rdquo;
                                 </p>
                               </div>
 
@@ -817,10 +889,10 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
 
                               {/* Evaluator Scoring Edge / Pro Tip */}
                               {qa.avoidSaying && (
-                                <div className="rounded-xl bg-amber-50 border border-amber-200 p-3.5 text-xs text-amber-900 flex items-start gap-2.5">
+                                <div className="rounded-xl bg-amber-50/70 border border-amber-200/80 p-3.5 text-xs text-amber-950 flex items-start gap-2.5">
                                   <Sparkles className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                                   <div>
-                                    <strong className="text-amber-900 font-bold block">💡 Evaluator Scoring Edge & Key Insight:</strong>
+                                    <strong className="text-amber-900 font-bold block">💡 Evaluator Scoring Edge &amp; Key Insight:</strong>
                                     <span className="text-slate-700 leading-relaxed">
                                       {qa.avoidSaying.replace(/^(Do not say\s*"?|Trap:\s*"?)/i, "Always highlight that: ")}
                                     </span>
@@ -842,8 +914,8 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                   <div className="space-y-6 tab-panel-enter">
                     <div className="border-b border-slate-200/80 pb-3">
                       <h2 className="text-xl font-display font-bold text-slate-900 flex items-center gap-2">
-                        <Cpu className="w-5 h-5 text-indigo-600" />
-                        System Architecture & Stack
+                        <Cpu className="w-5 h-5 text-teal-600" />
+                        System Architecture &amp; Stack
                       </h2>
                       <p className="text-xs text-slate-500 mt-0.5">
                         How all components connect and the exact justification for each library.
@@ -870,11 +942,11 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
 
                       {/* Tech Stack Table */}
                       <div className="space-y-3">
-                        <h4 className="text-sm font-bold text-slate-900">Technology Stack & Reasoning:</h4>
+                        <h4 className="text-sm font-bold text-slate-900">Technology Stack &amp; Reasoning:</h4>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                           {topic.techStack?.map((tech, idx) => (
                             <div key={idx} className="bg-slate-50 border border-slate-200/80 rounded-xl p-4 space-y-1">
-                              <span className="text-xs font-mono text-indigo-600 font-bold uppercase tracking-wider">{tech.component}</span>
+                              <span className="text-xs font-mono text-teal-700 font-bold uppercase tracking-wider">{tech.component}</span>
                               <p className="text-sm font-bold text-slate-900">{tech.tool}</p>
                               <p className="text-xs text-slate-600 leading-relaxed pt-1">{tech.reason}</p>
                             </div>
@@ -890,8 +962,8 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                   <div className="space-y-6 tab-panel-enter">
                     <div className="border-b border-slate-200/80 pb-3">
                       <h2 className="text-xl font-display font-bold text-slate-900 flex items-center gap-2">
-                        <Terminal className="w-5 h-5 text-blue-600" />
-                        Deployment & Demo Setup
+                        <Terminal className="w-5 h-5 text-teal-600" />
+                        Deployment &amp; Demo Setup
                       </h2>
                       <p className="text-xs text-slate-500 mt-0.5">
                         Step-by-step instructions to run locally on your laptop and host on free cloud servers.
@@ -907,7 +979,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                       </div>
 
                       <div className="rounded-xl bg-slate-50 border border-slate-200/80 p-4 space-y-3">
-                        <h4 className="text-xs font-bold text-indigo-700 uppercase tracking-wider">Free Cloud Deployment Options:</h4>
+                        <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">Free Cloud Deployment Options:</h4>
                         <ul className="text-xs text-slate-600 space-y-2 list-disc pl-5">
                           <li><strong className="text-slate-900">Render.com:</strong> 100% free web service hosting for Python (Flask/FastAPI) and Node.js. Push code to GitHub and connect repository.</li>
                           <li><strong className="text-slate-900">HuggingFace Spaces:</strong> Best free platform for AI/ML and Streamlit apps with free CPU/GPU tier.</li>
@@ -923,8 +995,8 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                   <div className="space-y-6 tab-panel-enter">
                     <div className="border-b border-slate-200/80 pb-3">
                       <h2 className="text-xl font-display font-bold text-slate-900 flex items-center gap-2">
-                        <ShieldAlert className="w-5 h-5 text-amber-600" />
-                        Common Errors & 1-Minute Fixes
+                        <ShieldAlert className="w-5 h-5 text-teal-600" />
+                        Common Errors &amp; 1-Minute Fixes
                       </h2>
                       <p className="text-xs text-slate-500 mt-0.5">
                         The top errors students hit when building this project and how to solve them instantly.
@@ -955,8 +1027,8 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                   <div className="space-y-6 tab-panel-enter">
                     <div className="border-b border-slate-200/80 pb-3">
                       <h2 className="text-xl font-display font-bold text-slate-900 flex items-center gap-2">
-                        <Presentation className="w-5 h-5 text-indigo-600" />
-                        College Submission Deliverables (Black Book & PPT)
+                        <Presentation className="w-5 h-5 text-teal-600" />
+                        College Submission Deliverables (Black Book &amp; PPT)
                       </h2>
                       <p className="text-xs text-slate-500 mt-0.5">
                         Recommended chapter structure for your project report and slide-by-slide presentation breakdown.
@@ -966,7 +1038,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                     <div className="bg-white border border-slate-200/90 rounded-2xl p-6 space-y-6 shadow-sm">
                       <div className="space-y-3">
                         <h4 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                          <FileText className="w-4 h-4 text-indigo-600" />
+                          <FileText className="w-4 h-4 text-teal-600" />
                           6-Chapter Black Book (Project Report) Structure:
                         </h4>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
@@ -979,7 +1051,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                             { ch: "Chapter 6", title: "Conclusion & Future Scope", pages: "4–6 pages", desc: "Summary of achievements and next enhancements." },
                           ].map((c, i) => (
                             <div key={i} className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 space-y-1">
-                              <div className="flex justify-between text-indigo-700 font-mono font-bold">
+                              <div className="flex justify-between text-teal-800 font-mono font-bold">
                                 <span>{c.ch}</span>
                                 <span className="text-slate-500 font-normal">{c.pages}</span>
                               </div>
@@ -1024,7 +1096,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                 {/* Section: What this project does */}
                 <section className="bg-white border border-slate-200/90 rounded-2xl p-6 space-y-3 shadow-sm">
                   <h2 className="text-lg font-display font-bold text-slate-900 flex items-center gap-2">
-                    <BookOpen className="w-4 h-4 text-indigo-600" /> What This Project Does
+                    <BookOpen className="w-4 h-4 text-teal-600" /> What This Project Does
                   </h2>
                   <p className="text-sm text-slate-600 leading-relaxed">{topic.whatItDoes}</p>
                 </section>
@@ -1032,7 +1104,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                 {/* Section: Real-World Use */}
                 <section className="bg-white border border-slate-200/90 rounded-2xl p-6 space-y-3 shadow-sm">
                   <h2 className="text-lg font-display font-bold text-slate-900 flex items-center gap-2">
-                    <Sparkles className="w-4 h-4 text-amber-600" /> Where This Is Used in Real Life
+                    <Sparkles className="w-4 h-4 text-teal-600" /> Where This Is Used in Real Life
                   </h2>
                   <p className="text-sm text-slate-600 leading-relaxed">{topic.realWorldUse}</p>
                 </section>
@@ -1041,10 +1113,10 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                 <section className="bg-white border border-slate-200/90 rounded-2xl p-6 space-y-4 shadow-sm">
                   <div className="flex items-center justify-between">
                     <h2 className="text-lg font-display font-bold text-slate-900 flex items-center gap-2">
-                      <Sparkles className="w-4 h-4 text-emerald-600" />
+                      <Sparkles className="w-4 h-4 text-teal-600" />
                       Why This Project is Surprisingly Easy to Build
                     </h2>
-                    <span className="text-[11px] text-emerald-800 font-bold px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200">
+                    <span className="text-[11px] text-teal-800 font-bold px-2.5 py-0.5 rounded-full bg-teal-50 border border-teal-200">
                       Beginner Friendly
                     </span>
                   </div>
@@ -1064,8 +1136,8 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                     </div>
 
                     <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-4 space-y-1.5">
-                      <div className="flex items-center gap-2 text-indigo-700 text-xs font-bold">
-                        <Terminal className="w-3.5 h-3.5" /> Under 200 Lines of Core Logic
+                      <div className="flex items-center gap-2 text-slate-800 text-xs font-bold">
+                        <Terminal className="w-3.5 h-3.5 text-teal-600" /> Under 200 Lines of Core Logic
                       </div>
                       <p className="text-xs text-slate-600 leading-relaxed">
                         The actual decision-making engine is compact and clean. It is structured into 3 modular files, making it easy to explain line-by-line in front of your project guide.
@@ -1073,8 +1145,8 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                     </div>
 
                     <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-4 space-y-1.5">
-                      <div className="flex items-center gap-2 text-teal-700 text-xs font-bold">
-                        <Cpu className="w-3.5 h-3.5" /> Runs on Basic Student Laptops
+                      <div className="flex items-center gap-2 text-teal-800 text-xs font-bold">
+                        <Cpu className="w-3.5 h-3.5 text-teal-600" /> Runs on Basic Student Laptops
                       </div>
                       <p className="text-xs text-slate-600 leading-relaxed">
                         No expensive cloud GPU or Nvidia graphics card required. The entire workflow is optimized to train and run smoothly on any standard laptop with 4GB to 8GB of RAM.
@@ -1082,8 +1154,8 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                     </div>
 
                     <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-4 space-y-1.5">
-                      <div className="flex items-center gap-2 text-amber-800 text-xs font-bold">
-                        <Layers className="w-3.5 h-3.5 text-amber-600" /> Zero Complex Calculus Needed
+                      <div className="flex items-center gap-2 text-slate-800 text-xs font-bold">
+                        <Layers className="w-3.5 h-3.5 text-teal-600" /> Zero Complex Calculus Needed
                       </div>
                       <p className="text-xs text-slate-600 leading-relaxed">
                         You only need standard Python programming (functions, conditionals, and dictionaries). The mathematical matrix operations are handled internally by the libraries.
@@ -1096,10 +1168,10 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                 <section className="bg-white border border-slate-200/90 rounded-2xl p-6 space-y-4 shadow-sm">
                   <div className="flex items-center justify-between">
                     <h2 className="text-lg font-display font-bold text-slate-900 flex items-center gap-2">
-                      <Layers className="w-4 h-4 text-indigo-600" />
-                      Complete Project Data Flow & Modules
+                      <Layers className="w-4 h-4 text-teal-600" />
+                      Complete Project Data Flow &amp; Modules
                     </h2>
-                    <span className="text-[11px] text-indigo-700 font-mono font-bold bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded-full">End-to-End Pipeline</span>
+                    <span className="text-[11px] text-slate-700 font-mono font-bold bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full">End-to-End Pipeline</span>
                   </div>
 
                   <p className="text-xs text-slate-500 leading-relaxed">
@@ -1130,7 +1202,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                       }
                     ].map((phase, pIdx) => (
                       <div key={pIdx} className="bg-slate-50 rounded-xl border border-slate-200/80 p-3.5 flex items-start gap-3">
-                        <span className="w-6 h-6 rounded-md bg-indigo-100 text-indigo-700 font-mono text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
+                        <span className="w-6 h-6 rounded-md bg-slate-100 border border-slate-200 text-slate-800 font-mono text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">
                           0{pIdx + 1}
                         </span>
                         <div className="flex-1 min-w-0">
@@ -1150,7 +1222,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                   <div className="flex items-center justify-between">
                     <h2 className="text-lg font-display font-bold text-slate-900 flex items-center gap-2">
                       <CheckCircle className="w-4 h-4 text-emerald-600" />
-                      Expected Performance & Results
+                      Expected Performance &amp; Results
                     </h2>
                     <span className="text-[11px] text-slate-500 font-medium">Evaluation Targets</span>
                   </div>
@@ -1174,14 +1246,14 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                 <section className="bg-white border border-slate-200/90 rounded-2xl p-6 space-y-4 shadow-sm">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <Wrench className="w-4 h-4 text-indigo-600" />
+                      <Wrench className="w-4 h-4 text-teal-600" />
                       <h2 className="text-lg font-display font-bold text-slate-900">Step-by-Step Build Guide</h2>
                     </div>
-                    <span className="text-[11px] text-indigo-700 font-mono font-bold bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded-full">Complete Roadmap</span>
+                    <span className="text-[11px] text-slate-700 font-mono font-bold bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full">Complete Roadmap</span>
                   </div>
 
                   <div className="bg-slate-50 rounded-xl border border-slate-200/80 p-4 space-y-1.5">
-                    <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider font-mono">Step 1 of 8</span>
+                    <span className="text-[10px] font-bold text-slate-600 uppercase tracking-wider font-mono">Step 1 of 8</span>
                     <p className="font-bold text-slate-900 text-sm">{topic.freeStep1Title}</p>
                   </div>
 
@@ -1199,7 +1271,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
 
                   <div className="text-center pt-2">
                     <p className="text-xs text-slate-500 font-medium">
-                      🔓 All 8+ steps with {buildInfo.canBuild ? "Antigravity Master Prompt" : "verified implementation code"}, architecture flow, and evaluator Q&A — free to access
+                      🔓 All 8+ steps with {buildInfo.canBuild ? "Antigravity Master Prompt" : "verified implementation code"}, architecture flow, and evaluator Q&amp;A — free to access
                     </p>
                   </div>
                 </section>
@@ -1223,9 +1295,9 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                 </section>
 
                 {/* Urgency Hook */}
-                <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5 flex gap-3.5 shadow-xs">
-                  <span className="text-amber-600 text-xl shrink-0">⏰</span>
-                  <p className="text-amber-900 text-xs sm:text-sm leading-relaxed font-medium">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 flex gap-3.5 shadow-xs">
+                  <span className="text-teal-600 text-xl shrink-0">⏰</span>
+                  <p className="text-slate-700 text-xs sm:text-sm leading-relaxed font-medium">
                     Final year deadlines are approaching fast. Every day you wait is one less day to test your project, fix bugs, and master your evaluator defense.
                   </p>
                 </div>
@@ -1239,17 +1311,17 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
           <div className="lg:col-span-1">
             <div className="sticky top-28 space-y-4">
 
-                <div className="bg-white border border-emerald-300 rounded-2xl p-6 space-y-4 shadow-sm">
+                <div className="bg-white border border-slate-200/90 rounded-2xl p-6 space-y-4 shadow-sm">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-emerald-800 font-bold text-sm">
-                      <CheckCircle className="w-4 h-4 text-emerald-600" />
+                    <div className="flex items-center gap-2 text-teal-800 font-bold text-sm">
+                      <CheckCircle className="w-4 h-4 text-teal-600" />
                       Blueprint Free Access
                     </div>
                   </div>
                   <button
                     onClick={handleDownloadPdf}
                     disabled={pdfLoading}
-                    className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition-all shadow-sm disabled:opacity-60 flex items-center justify-center gap-2 text-sm"
+                    className="w-full py-3.5 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl transition-all shadow-md shadow-teal-600/20 disabled:opacity-60 flex items-center justify-center gap-2 text-sm"
                   >
                     {pdfLoading ? (
                       <><Loader2 className="w-4 h-4 animate-spin" /> Generating Document…</>
@@ -1271,9 +1343,9 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                   </a>
 
                   {/* Cross-Sell Card to Full Projects */}
-                  <div className="rounded-xl border border-indigo-200 bg-indigo-50/50 p-4 space-y-2.5 mt-2">
+                  <div className="rounded-xl border border-slate-200 bg-slate-50/80 p-4 space-y-2.5 mt-2">
                     <div className="flex items-center gap-1.5 text-xs font-bold text-slate-900">
-                      <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+                      <Sparkles className="w-3.5 h-3.5 text-teal-600" />
                       Want the full working project?
                     </div>
                     <p className="text-[11px] text-slate-600 leading-relaxed">
@@ -1281,9 +1353,15 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                     </p>
                     <Link
                       href={isProjectAvailable(topic.id) ? `/projects/${topic.id}` : "/projects"}
-                      className="block w-full text-center py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg transition-colors shadow-sm"
+                      className="block w-full text-center py-2 bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold rounded-lg transition-colors shadow-sm"
                     >
-                      {isProjectAvailable(topic.id) ? "Get Full Project Kit (Mini ₹299 / Major ₹499) →" : "Pre-Book Project Kit (Mini ₹299 / Major ₹499) →"}
+                      {isProjectAvailable(topic.id) ? "Get Full Project Kit (Mini ₹299 / Major ₹499) →" : "Explore Ready Kits (₹299 / ₹499) →"}
+                    </Link>
+                    <Link
+                      href={`/custom?topic=${encodeURIComponent(topic.title)}`}
+                      className="block w-full text-center py-2 mt-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-lg transition-colors shadow-sm"
+                    >
+                      Build This Idea With Us (Starts ₹1,999) ↗
                     </Link>
                   </div>
                 </div>
@@ -1299,7 +1377,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-xl font-display font-bold text-slate-900 flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-indigo-600" />
+                  <Sparkles className="w-4 h-4 text-teal-600" />
                   Related {topic.category} Project Blueprints
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">
@@ -1308,7 +1386,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
               </div>
               <Link
                 href={`/blueprint`}
-                className="text-xs text-indigo-600 hover:text-indigo-700 font-semibold flex items-center gap-1"
+                className="text-xs text-teal-600 hover:text-teal-700 font-semibold flex items-center gap-1"
               >
                 View all topics <ChevronRight className="w-3.5 h-3.5" />
               </Link>
@@ -1321,11 +1399,11 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                   <Link
                     key={rel.id}
                     href={`/blueprint/${rel.id}`}
-                    className="group bg-white hover:bg-slate-50/80 border border-slate-200/90 hover:border-indigo-300 rounded-2xl p-5 transition-all duration-200 flex flex-col justify-between space-y-4 shadow-sm hover:shadow-md"
+                    className="group bg-white hover:bg-slate-50/80 border border-slate-200/90 hover:border-teal-300 rounded-2xl p-5 transition-all duration-150 flex flex-col justify-between space-y-4 shadow-sm hover:shadow-md"
                   >
                     <div className="space-y-2">
                       <div className="flex items-center justify-between gap-2">
-                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border border-indigo-200 bg-indigo-50 text-indigo-700 uppercase tracking-wider">
+                        <span className="text-[10px] font-bold px-2 py-0.5 rounded-full border border-slate-200 bg-slate-100 text-slate-700 uppercase tracking-wider">
                           {rel.category}
                         </span>
                         {rel.trending && (
@@ -1334,7 +1412,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                           </span>
                         )}
                       </div>
-                      <h4 className="text-sm font-bold text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-2">
+                      <h4 className="text-sm font-bold text-slate-900 group-hover:text-teal-600 transition-colors line-clamp-2">
                         {rel.title}
                       </h4>
                       <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
@@ -1346,7 +1424,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                       <span className="flex items-center gap-1 text-emerald-700 font-semibold">
                         <CheckCircle className="w-3 h-3 text-emerald-600" /> {relBuild.canBuild ? "1-Prompt AI" : "Full Guide"}
                       </span>
-                      <span className="text-indigo-600 font-medium group-hover:translate-x-0.5 transition-transform inline-flex items-center gap-0.5">
+                      <span className="text-teal-600 font-medium group-hover:translate-x-0.5 transition-transform inline-flex items-center gap-0.5">
                         View Blueprint →
                       </span>
                     </div>

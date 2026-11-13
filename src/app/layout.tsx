@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(CONSTANTS.APP_URL),
   title: {
     template: `%s | ${CONSTANTS.APP_NAME}`,
-    default: `Final Year CSE Projects with Source Code & IEEE Report (₹299) | ${CONSTANTS.APP_NAME}`,
+    default: `SubmitKit — Turn Your Ideas Into Working Software`,
   },
   description: CONSTANTS.TAGLINE_LONG,
   keywords: CONSTANTS.SEO_KEYWORDS,
@@ -55,27 +55,27 @@ export const metadata: Metadata = {
       'max-video-preview': -1,
     },
   },
-  category: 'education, engineering, final year projects, academic projects',
-  classification: 'Education, Engineering, Academic Project Marketplace',
+  category: 'software engineering, ai platforms, developer tools, system prototypes',
+  classification: 'Software Engineering Platform',
   openGraph: {
     type: 'website',
-    locale: 'en_IN',
+    locale: 'en_US',
     url: CONSTANTS.APP_URL,
     siteName: CONSTANTS.APP_NAME,
-    title: `Final Year CSE Projects with Source Code & IEEE Report (₹299) | ${CONSTANTS.APP_NAME}`,
+    title: `SubmitKit — Turn Your Ideas Into Working Software`,
     description: CONSTANTS.TAGLINE_LONG,
     images: [
       {
         url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: `${CONSTANTS.APP_NAME} - Engineering Final Year Project Kits with Source Code`,
+        alt: `${CONSTANTS.APP_NAME} — Turn Your Ideas Into Working Software`,
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: `Final Year CSE Projects with Source Code & IEEE Report (₹299) | ${CONSTANTS.APP_NAME}`,
+    title: `SubmitKit — Turn Your Ideas Into Working Software`,
     description: CONSTANTS.TAGLINE_LONG,
     images: ['/og-image.jpg'],
     creator: '@submitkit',
@@ -107,7 +107,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en-IN">
+    <html lang="en" data-scroll-behavior="smooth">
       <head>
         {/* Fonts are self-hosted via next/font (Inter, Space Grotesk, JetBrains Mono) —
             no external stylesheet request, so the page paints faster. */}

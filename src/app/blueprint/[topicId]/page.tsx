@@ -50,23 +50,21 @@ export default async function BlueprintTopicPage({ params }: { params: Promise<{
         keywords={[topic.title, `${topic.title} project`, `${topic.category} final year project`]}
       />
 
-      <div style={{ background: 'var(--canvas)', minHeight: '100vh' }}>
-        {/* Breadcrumb bar — warm glassmorphic blend */}
-        <div style={{ background: 'rgba(253, 251, 247, 0.85)', backdropFilter: 'blur(16px)', borderBottom: '1px solid var(--line)', position: 'sticky', top: '64px', zIndex: 40 }}>
-          <div className="shell" style={{ padding: '.875rem 0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <nav aria-label="Breadcrumb" style={{ display: 'flex', alignItems: 'center', gap: '.375rem', fontSize: '.8125rem', color: 'var(--ink-4)', minWidth: 0 }}>
-              <Link href="/" style={{ color: 'var(--ink-4)', textDecoration: 'none', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '.25rem' }}>
-                <Home style={{ width: '.8125rem', height: '.8125rem' }} /> Home
-              </Link>
-              <ChevronRight style={{ width: '.75rem', height: '.75rem', flexShrink: 0 }} />
-              <Link href="/blueprint" style={{ color: 'var(--ink-4)', textDecoration: 'none', fontWeight: 500 }}>Blueprints</Link>
-              <ChevronRight style={{ width: '.75rem', height: '.75rem', flexShrink: 0 }} />
-              <span style={{ color: 'var(--navy)', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '16rem' }}>{topic.title}</span>
-            </nav>
-            <Link href="/blueprint" style={{ display: 'inline-flex', alignItems: 'center', gap: '.375rem', fontSize: '.8125rem', fontWeight: 600, color: 'var(--teal-dark)', textDecoration: 'none', flexShrink: 0, marginLeft: '1rem' }}>
-              <ArrowLeft style={{ width: '.875rem', height: '.875rem' }} /> All Topics
+      <div style={{ background: 'transparent', minHeight: '100vh' }}>
+        {/* Breadcrumb bar seamlessly on canvas */}
+        <div className="shell" style={{ paddingTop: '1.25rem', paddingBottom: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <nav aria-label="Breadcrumb" style={{ display: 'flex', alignItems: 'center', gap: '.375rem', fontSize: '.8125rem', color: 'var(--ink-4)', minWidth: 0 }}>
+            <Link href="/" style={{ color: 'var(--ink-3)', textDecoration: 'none', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '.25rem' }}>
+              <Home style={{ width: '.8125rem', height: '.8125rem' }} /> Home
             </Link>
-          </div>
+            <ChevronRight style={{ width: '.75rem', height: '.75rem', flexShrink: 0, opacity: 0.45 }} />
+            <Link href="/blueprint" style={{ color: 'var(--ink-3)', textDecoration: 'none', fontWeight: 500 }}>Blueprints</Link>
+            <ChevronRight style={{ width: '.75rem', height: '.75rem', flexShrink: 0, opacity: 0.45 }} />
+            <span style={{ color: 'var(--navy)', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '16rem' }}>{topic.title}</span>
+          </nav>
+          <Link href="/blueprint" style={{ display: 'inline-flex', alignItems: 'center', gap: '.375rem', fontSize: '.8125rem', fontWeight: 600, color: 'var(--teal-darker)', textDecoration: 'none', flexShrink: 0, marginLeft: '1rem' }}>
+            <ArrowLeft style={{ width: '.875rem', height: '.875rem' }} /> All Topics
+          </Link>
         </div>
 
         <BlueprintDetailClient topic={topic} />

@@ -153,17 +153,17 @@ export default function BlueprintClient() {
       <div className="shell" style={{ paddingTop: '2.5rem' }}>
 
         {/* ── Hero section ── */}
-        <div style={{ textAlign: 'center', maxWidth: '44rem', margin: '0 auto 3rem' }}>
+        <div style={{ textAlign: 'center', maxWidth: '46rem', margin: '0 auto 3rem' }}>
           <span className="label-chip" style={{ marginBottom: '1rem', display: 'inline-flex' }}>
-            Project Blueprint Generator · 1,078+ Topics
+            Ideas &amp; Blueprints · 1,078+ Verified Topics
           </span>
-          <h1 className="font-display font-black" style={{ fontSize: 'clamp(2rem, 5vw, 3.25rem)', letterSpacing: '-.04em', color: 'var(--navy)', marginTop: '.875rem', marginBottom: '1rem', lineHeight: 1.1 }}>
-            Find your topic.{' '}
-            <em className="text-teal-grad" style={{ fontStyle: 'italic' }}>Build it in one prompt.</em>
+          <h1 className="font-display font-black" style={{ fontSize: 'clamp(2rem, 5vw, 3.25rem)', letterSpacing: '-.04em', color: 'var(--navy)', marginTop: '.875rem', marginBottom: '1rem', lineHeight: 1.15 }}>
+            Good ideas{' '}
+            <span style={{ color: 'var(--teal)' }}>deserve to be built.</span>
           </h1>
           <p style={{ fontSize: 'clamp(.9375rem, 2vw, 1.0625rem)', color: 'var(--ink-3)', lineHeight: 1.75 }}>
-            Browse 1,078 verified engineering topics. Get the complete IEEE roadmap, architecture, mock dataset, and 1-prompt AI build guide —{' '}
-            <strong style={{ color: 'var(--teal-dark)', fontWeight: 700 }}>completely free</strong>.
+            Browse 1,078 verified engineering topics across AI, Full-Stack, IoT, and Cloud. Get the complete IEEE roadmap, architecture, mock dataset, and AI build guide —{' '}
+            <strong style={{ color: 'var(--teal-dark)', fontWeight: 700 }}>100% free</strong>.
           </p>
         </div>
 
@@ -519,7 +519,7 @@ function TopicCard({ topic, featured = false }: { topic: TopicCard; featured?: b
     ? { bg: 'var(--teal-50)', color: 'var(--teal-dark)', border: 'var(--teal-100)', dot: 'var(--teal)', label: 'Mini (2–3d)' }
     : size === "Mid"
     ? { bg: 'var(--amber-50)', color: 'var(--amber)', border: 'var(--amber-100)', dot: 'var(--amber)', label: 'Mid (3–5d)' }
-    : { bg: 'var(--violet-50)', color: 'var(--violet)', border: 'var(--violet-100)', dot: 'var(--violet)', label: 'Major Capstone' };
+    : { bg: 'var(--amber-50)', color: 'var(--amber)', border: 'var(--amber-100)', dot: 'var(--amber)', label: 'Major Capstone' };
 
   return (
     <Link href={`/blueprint/${topic.id}`}
@@ -527,13 +527,13 @@ function TopicCard({ topic, featured = false }: { topic: TopicCard; featured?: b
       style={{ display: 'flex', flexDirection: 'column', padding: '1.25rem', textDecoration: 'none', overflow: 'hidden', position: 'relative' }}
     >
       {/* Top accent line */}
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: isNC ? 'linear-gradient(90deg, var(--teal), #2DD4BF)' : featured ? 'linear-gradient(90deg, var(--amber), #F97316)' : 'linear-gradient(90deg, var(--navy), var(--navy-2))' }} />
+      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: isNC ? 'linear-gradient(90deg, var(--teal), #2DD4BF)' : featured ? 'linear-gradient(90deg, #D97706, #F59E0B)' : 'linear-gradient(90deg, rgba(13,148,136,0.6), rgba(226,218,205,0.8))' }} />
 
       {/* Badges row */}
       <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'flex-start', gap: '.5rem', marginBottom: '.875rem', marginTop: '.125rem' }}>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.375rem' }}>
           {/* Category */}
-          <span className="tag tag-navy" style={{ fontSize: '.6rem' }}>{topic.category}</span>
+          <span className="tag tag-slate" style={{ fontSize: '.6rem' }}>{topic.category}</span>
           {/* Size */}
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: '.25rem', padding: '.1875rem .625rem', borderRadius: '9999px', fontSize: '.625rem', fontWeight: 700, background: sizeTag.bg, color: sizeTag.color, border: `1px solid ${sizeTag.border}` }}>
             <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: sizeTag.dot, display: 'inline-block' }} />

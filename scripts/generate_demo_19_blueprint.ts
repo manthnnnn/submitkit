@@ -16,7 +16,7 @@ async function main() {
   console.log('Found blueprint:', blueprint.title);
   console.log('Category:', blueprint.category);
   console.log('Build steps count:', blueprint.buildSteps?.length);
-  console.log('Viva Q&A count:', blueprint.vivaQuestions?.length);
+  console.log('Viva Q&A count:', blueprint.freeVivaQuestions?.length);
 
   const studentEmail = 'rahul.sharma@vtu.ac.in';
   console.log('Generating official SubmitKit ₹19 Blueprint DOCX...');

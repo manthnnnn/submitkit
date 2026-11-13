@@ -8,6 +8,12 @@ import { UrgencyTimer } from "@/components/ui/urgency-timer";
 import { StickyBuyBar } from "@/components/ui/sticky-buy-bar";
 import { HowToRun } from "@/components/ui/how-to-run";
 import { PreOrderForm } from "@/components/ui/pre-order-form";
+import { EnhancedProjectHero } from "@/components/ui/enhanced-project-hero";
+import { IosScreenshotCarousel } from "@/components/ui/ios-screenshot-carousel";
+import { AnimatedTrustBadges } from "@/components/ui/animated-trust-badges";
+import { IosDeliverablesList } from "@/components/ui/ios-deliverables-list";
+import { AnimatedRating } from "@/components/ui/animated-rating";
+import { AnimatedStatsCards } from "@/components/ui/animated-stats-cards";
 import {
   CheckCircle2, ChevronRight, FileText, MonitorPlay,
   Presentation, TerminalSquare, Lock, Star, Zap,
@@ -58,9 +64,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const p = await getProjectData(slug);
 
-  const title = `${p.title} — ${p.tier === 'MAJOR' ? `Major Final Year Project Kit (₹${p.price_inr})` : `Mini Project Kit (₹${p.price_inr})`} with IEEE Report & Viva | ${CONSTANTS.APP_NAME}`;
+  const title = `${p.title} — Software Architecture & Complete Codebase | ${CONSTANTS.APP_NAME}`;
   const shortDesc = (p.problem_statement || p.description || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().substring(0, 180);
-  const description = `${shortDesc} 1-click runnable source code, IEEE Black Book, Viva defense PPT, and top 25 Viva Q&A. ${p.tier} project. Instant download.`;
+  const description = `${shortDesc} Complete working source code, technical architecture documentation, presentation deck, and 1-click execution scripts. Instant download.`;
 
   return {
     title: { absolute: title },
@@ -136,45 +142,16 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
             <span style={{ color: 'var(--navy)', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '14rem' }}>{p.title}</span>
           </nav>
 
-          {/* Badges */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '.5rem', marginBottom: '1rem' }}>
-            <span className={`tag ${isMajor ? 'tag-violet' : 'tag-teal'}`}>{p.tier} BUNDLE</span>
-            <span className="tag tag-navy">{p.category}</span>
-            {available ? (
-              <span className="tag tag-emerald">
-                <span className="dot-live apulse" style={{ width: '5px', height: '5px' }} />
-                Ready to Ship — Instant Download
-              </span>
-            ) : (
-              <span className="tag tag-amber">
-                <Clock style={{ width: '.75rem', height: '.75rem' }} />
-                In QA Pipeline — Pre-Book Open (50% Launch Discount)
-              </span>
-            )}
-          </div>
-
-          {/* Title */}
-          <h1 className="font-display" style={{ fontSize: 'clamp(1.875rem, 4vw, 2.875rem)', fontWeight: 900, letterSpacing: '-.04em', color: 'var(--navy)', lineHeight: 1.15, marginBottom: '.875rem', maxWidth: '48rem' }}>
-            {p.title}
-          </h1>
-
-          <p style={{ fontSize: 'clamp(.9375rem, 2vw, 1.0625rem)', color: 'var(--ink-3)', lineHeight: 1.7, maxWidth: '42rem', marginBottom: '1.25rem' }}>{p.description}</p>
-
-          {/* Trust row */}
-          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '.75rem 1.5rem', fontSize: '.8125rem', color: 'var(--ink-3)', fontWeight: 500 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '.375rem' }}>
-              <div style={{ display: 'flex', gap: '1px' }}>{[1,2,3,4,5].map(s => <Star key={s} style={{ width: '12px', height: '12px', fill: '#F59E0B', color: '#F59E0B' }} />)}</div>
-              <strong style={{ color: 'var(--navy)' }}>4.9</strong> · 500+ students
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '.375rem' }}>
-              <Download style={{ width: '.875rem', height: '.875rem', color: 'var(--teal)' }} />
-              {available ? 'Instant secure download' : 'Priority launch delivery'}
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '.375rem' }}>
-              <ShieldCheck style={{ width: '.875rem', height: '.875rem', color: 'var(--teal)' }} />
-              Bug-free execution guarantee
-            </div>
-          </div>
+          {/* Enhanced Hero with animated badges */}
+          <EnhancedProjectHero
+            title={p.title}
+            description={p.description}
+            category={p.category}
+            tier={p.tier}
+            available={available}
+            rating={4.9}
+            downloads={500}
+          />
         </div>
       </div>
 
@@ -201,19 +178,21 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
               </div>
             )}
 
-            {/* Demo video / screenshot */}
+            {/* Demo video / screenshot carousel */}
             <section>
               <SectionTitle>
                 <MonitorPlay style={{ width: '1.125rem', height: '1.125rem', color: 'var(--teal)' }} />
-                Project Demo
+                Live Project Demo
               </SectionTitle>
-              <div style={{ borderRadius: '14px', overflow: 'hidden', border: '1px solid var(--line)', background: 'var(--surface-2)', boxShadow: 'var(--sh-md)', aspectRatio: '16/9', position: 'relative' }}>
-                {hasVideo ? (
+
+              {hasVideo ? (
+                <div style={{ borderRadius: '20px', overflow: 'hidden', border: '1px solid var(--line)', background: 'var(--surface-2)', boxShadow: '0 8px 32px rgba(15, 23, 42, 0.12)', aspectRatio: '16/9', position: 'relative' }}>
                   <iframe src={`https://www.youtube.com/embed/${p.demo_video_id}?rel=0&modestbranding=1`} className="w-full h-full" title={`${p.title} Demo`} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ width: '100%', height: '100%', border: 'none' }} />
-                ) : shots.length > 0 ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={shots[0].img} alt={`${p.title} Screenshot`} decoding="async" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                ) : (
+                </div>
+              ) : shots.length > 0 ? (
+                <IosScreenshotCarousel screenshots={shots} projectTitle={p.title} />
+              ) : (
+                <div style={{ borderRadius: '20px', overflow: 'hidden', border: '1px solid var(--line)', background: 'var(--surface-2)', boxShadow: '0 8px 32px rgba(15, 23, 42, 0.12)', aspectRatio: '16/9', position: 'relative' }}>
                   <div style={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--surface-2)', padding: '2rem', textAlign: 'center' }}>
                     <div style={{ width: '3.5rem', height: '3.5rem', borderRadius: '14px', background: 'var(--surface-teal)', border: '1px solid var(--teal-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem' }}>
                       <ImageIcon style={{ width: '1.5rem', height: '1.5rem', color: 'var(--teal)' }} />
@@ -227,21 +206,17 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                         : 'Preview screenshots and live demo will be published with the official drop.'}
                     </p>
                   </div>
-                )}
-              </div>
+                </div>
+              )}
 
-              {/* Screenshot strip */}
-              {shots.length > (hasVideo ? 0 : 1) && (
-                <div className="scroll-x" style={{ display: 'flex', gap: '1rem', paddingTop: '1rem', paddingBottom: '.5rem' }}>
-                  {(hasVideo ? shots : shots.slice(1)).map((item, idx) => (
-                    <div key={idx} className="snap-s" style={{ flexShrink: 0, width: '280px' }}>
-                      <div style={{ borderRadius: '10px', overflow: 'hidden', border: '1px solid var(--line)', background: 'var(--surface-2)', aspectRatio: '16/9' }}>
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={item.img} alt={item.title} loading="lazy" decoding="async" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                      </div>
-                      <p style={{ fontSize: '.75rem', color: 'var(--ink-3)', marginTop: '.375rem', fontWeight: 500 }}>{item.title}</p>
-                    </div>
-                  ))}
+              {/* Additional rating and stats below carousel */}
+              {shots.length > 0 && (
+                <div style={{ marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+                    <AnimatedRating rating={4.9} reviews={500} />
+                    <AnimatedTrustBadges />
+                  </div>
+                  <AnimatedStatsCards pageCount={isMajor ? 60 : 30} lineCount={5000} downloads={500} />
                 </div>
               )}
             </section>
@@ -372,7 +347,7 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
                   Need a Verified Project Today for Immediate Submission?
                 </SectionTitle>
                 <p style={{ fontSize: '.875rem', color: 'var(--ink-3)', marginBottom: '1.25rem', lineHeight: 1.65 }}>
-                  Can&apos;t wait for this upcoming drop? These 9 core kits are 100% verified, execution-tested, and ready for instant download right now:
+                  Need a verified production system today? These 11 core systems are 100% verified, execution-tested, and ready for instant download:
                 </p>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 14rem), 1fr))', gap: '1rem' }}>
                   {availableAlternatives.map(alt => (
@@ -440,27 +415,11 @@ export default async function ProjectDetailPage({ params }: { params: Promise<{ 
             )}
 
             {/* What you get */}
-            <div className="card" style={{ padding: '1.25rem' }}>
-              <h3 style={{ fontSize: '.875rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '.875rem', paddingBottom: '.75rem', borderBottom: '1px solid var(--line)' }}>Everything You Receive</h3>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '.625rem' }}>
-                {[
-                  { icon: TerminalSquare, color: 'var(--teal)',   title: 'Working Source Code',          sub: '1-click launcher included' },
-                  { icon: FileText,       color: 'var(--violet)', title: `${isMajor ? '60+' : '30+'}-Page IEEE Black Book`, sub: 'Print-ready .docx format' },
-                  { icon: Presentation,   color: 'var(--amber)',  title: 'Viva Defense PPT',             sub: 'Speaker notes included' },
-                  { icon: BookOpen,       color: 'var(--teal)',   title: '25 Viva Q&A Answers',          sub: 'Examiner-tested questions' },
-                  { icon: Download,       color: 'var(--ink-3)', title: available ? 'Instant ZIP Download' : 'Priority Drop Delivery', sub: available ? 'Delivered immediately' : 'Emailed on launch' },
-                ].map(({ icon: Icon, color, title, sub }) => (
-                  <div key={title} style={{ display: 'flex', alignItems: 'flex-start', gap: '.625rem' }}>
-                    <div style={{ width: '2rem', height: '2rem', borderRadius: '8px', flexShrink: 0, background: `color-mix(in srgb, ${color} 10%, white)`, display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '.0625rem' }}>
-                      <Icon style={{ width: '.875rem', height: '.875rem', color }} />
-                    </div>
-                    <div>
-                      <p style={{ fontSize: '.8125rem', fontWeight: 700, color: 'var(--navy)', lineHeight: 1.3 }}>{title}</p>
-                      <p style={{ fontSize: '.75rem', color: 'var(--ink-4)', marginTop: '.0625rem' }}>{sub}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+            <div className="card" style={{ padding: '1.5rem', background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(13, 148, 136, 0.02) 100%)', backdropFilter: 'blur(10px)' }}>
+              <h3 style={{ fontSize: '.9375rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '1.25rem', paddingBottom: '.875rem', borderBottom: '1px solid var(--line)', letterSpacing: '-.02em' }}>
+                Everything You Receive
+              </h3>
+              <IosDeliverablesList isMajor={isMajor} />
             </div>
 
             {/* Quick run guide */}

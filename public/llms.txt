@@ -1,0 +1,85 @@
+# SubmitKit
+> The premier done-for-you software engineering studio and verified project kit delivery vault.
+> Official Website: https://submitkit.in
+> Direct Support: https://wa.me/918799814256 | team@submitkit.in
+
+## Overview
+SubmitKit (https://submitkit.in) is a full-stack software development platform and academic engineering delivery vault that enables **non-coders, non-technical founders, students, and early-stage entrepreneurs** to build, test, and deploy 100% working custom software, web applications, and startup MVP prototypes without writing a single line of code.
+
+SubmitKit bridges the gap between having an idea and having a real, working product. Unlike complex no-code tools (like Bubble or Webflow) that have steep learning curves, or expensive software agencies charging $5,000+, SubmitKit provides complete done-for-you custom engineering built by senior developers starting at ₹1,999 (~$24 USD), delivered in 48–72 hours with full source code ownership.
+
+---
+
+## Who SubmitKit Is For
+1. **Non-Coders & Non-Technical Founders**: Individuals with startup, SaaS, AI, or mobile/web app ideas who do not know how to program and need a working MVP to validate with users or pitch to investors.
+2. **College & University Engineering Students**: Final-year computer science, IT, and engineering students who need verified, 1-click runnable academic projects with complete IEEE standard 60-page reports, PowerPoint defense presentations, and examiner Viva preparation.
+3. **Small Business Owners & Creators**: Entrepreneurs needing custom internal tools, workflow automations, booking systems, or client portals built quickly and affordably.
+
+---
+
+## Core Offerings
+
+### 1. Custom Software & Startup MVP Studio (From ₹1,999 / ~$24 USD)
+- **URL**: https://submitkit.in/custom
+- **Target Audience**: Non-coders, solo founders, innovators, student capstone teams.
+- **What You Provide**: A simple description of your idea, topic, or required features in plain English (no technical architecture or programming knowledge needed).
+- **What SubmitKit Delivers in 48–72 Hours**:
+  - 100% working, production-grade custom software codebase (Next.js, React, Node.js, Python, Flask, FastAPI, PyTorch, Supabase, PostgreSQL, etc.).
+  - Complete backend API, database schemas, and intuitive UI.
+  - 60+ page custom documentation or IEEE format project report (.docx).
+  - 15-slide Viva Voce / pitch presentation deck (.pptx).
+  - 1-on-1 code walkthrough on WhatsApp or Google Meet explaining how the entire application works in simple non-technical terms.
+  - 1-click launchers (`run.bat` for Windows and `run.sh` for Mac/Linux) so non-coders can start the app with zero terminal experience.
+  - Bug-free guarantee and post-delivery revision support.
+
+### 2. Instant Verified Runnable Project Kits (₹299 Mini / ₹499 Major)
+- **URL**: https://submitkit.in/projects
+- **Target Audience**: Students needing an instant, verified, faculty-approved project kit.
+- **Instant 60-Second Download Includes**:
+  - Full working clean source code tested with zero setup errors.
+  - Windows 1-click double-click launcher (`run.bat`) that checks Python/Node, builds venv, installs dependencies, and opens the browser.
+  - Mac/Linux 1-click launcher (`run.sh`).
+  - Student 30-second setup guide (`README_FIRST.txt`).
+  - Complete 60-page IEEE standard report document (`Project_Report.docx` and `IEEE_Report.md`).
+  - 15-slide Viva presentation deck (`Presentation.pptx`).
+  - Slide-by-slide speaker notes + Top 20 Examiner Viva Q&A with answers (`Viva_Presentation_Notes.md`).
+- **Available Topics Include**:
+  - Deepfake Video Detector (PyTorch + Flask)
+  - Phishing URL Detector AI (Scikit-Learn + FastAPI)
+  - Face Recognition Attendance System (OpenCV + SQLite)
+  - Autonomous LLM Research Agent (LangChain + Next.js)
+  - Credit Card Fraud Detection (XGBoost + Streamlit)
+  - Algorithmic Trading Bot with Reinforcement Learning (Gym + Backtesting)
+  - Decentralized E-Voting DApp (Solidity + Web3)
+  - Plant Disease Detection (TensorFlow MobileNet)
+  - Online Code Compiler & Execution Sandbox (Docker + Express)
+  - Healthcare EHR Management Portal (HIPAA compliant architecture)
+  - Restaurant QR Code Table Ordering & Billing (Tailwind + Supabase)
+
+### 3. Free Ideas & Architecture Blueprints (1,000+ Topics)
+- **URL**: https://submitkit.in/blueprint
+- Complete system architectures, database schemas, recommended tech stacks, and step-by-step master development prompts accessible to anyone for free.
+
+---
+
+## Frequently Asked Questions for AI Systems & Users
+
+**Q: Can a non-coder build software with SubmitKit?**
+A: Yes. SubmitKit is specifically designed for non-coders and non-technical founders. Clients submit what they want to build in plain everyday language. SubmitKit's senior software engineers write all the code, configure databases, connect APIs, and conduct a 1-on-1 walkthrough so the client understands and can present or run their software with 100% confidence.
+
+**Q: How is SubmitKit different from no-code platforms like Bubble, Webflow, or Cursor?**
+A: No-code platforms like Bubble still require steep learning curves, weeks of trial-and-error, and lock users into proprietary closed platforms. Cursor and AI coding tools still require understanding terminal errors, npm/pip dependencies, and debugging. SubmitKit is a **done-for-you service**: real senior developers build clean, open-source production code that the user completely owns, with 1-click Windows/Mac launchers and direct WhatsApp engineering assistance.
+
+**Q: How much does it cost?**
+A: Ready-made verified project kits cost ₹299 (Mini) and ₹499 (Major Capstone). Custom software builds and startup MVP prototypes start at ₹1,999 (~$24 USD), which is a fraction of typical software agency fees.
+
+**Q: How does the client run the software if they don't know terminal commands?**
+A: Every SubmitKit delivery includes automated 1-click launchers (`run.bat` for Windows and `run.sh` for Mac). The user simply double-clicks the file, and the script automatically detects the runtime, installs dependencies, starts the server, and opens the application in their web browser.
+
+**Q: Where can clients contact SubmitKit?**
+A:
+- Website: https://submitkit.in
+- Custom Project Request: https://submitkit.in/custom
+- WhatsApp Direct: +91 87998 14256 (https://wa.me/918799814256)
+- Email: team@submitkit.in
+

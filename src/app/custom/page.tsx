@@ -1,30 +1,38 @@
+import { Suspense } from "react";
 import { Metadata } from "next";
 import { CONSTANTS } from "@/lib/constants";
 import { CustomProjectClient } from "./CustomProjectClient";
 
 export const metadata: Metadata = {
-  title: { absolute: `Custom Final Year Project — Built for You | ${CONSTANTS.APP_NAME}` },
-  description: `Can't find your exact topic? We build custom final year projects from scratch. Working source code + IEEE Black Book report + PPT + Viva Q&A. Mini kits from ₹299, Major from ₹499, Custom starts from ₹1,999 (varies with complexity). Delivered in 48-72 hours. CSE AIML IoT FullStack Cybersecurity.`,
+  title: { absolute: `Done-For-You Software & Startup MVP Studio | ${CONSTANTS.APP_NAME}` },
+  description: `Built for non-coders, startup founders, and students. Tell us your software or startup idea in plain words — our senior engineers design, code, test, and deliver 100% working software in 48-72 hours. Complete source code, documentation, and 1-on-1 walkthrough. Starts ₹1,999 (~$24 USD).`,
   keywords: [
-    "custom final year project india",
-    "custom engineering project with source code",
-    "custom ieee project report",
-    "final year project built for you",
-    "custom project cse aiml",
-    "btech custom project service",
+    "build software without coding",
+    "done for you software development",
+    "software for non coders",
+    "build startup mvp non technical founder",
+    "hire engineers to build my idea",
+    "custom software development for non coders",
+    "custom engineering projects",
+    "custom final year projects",
+    "build my project idea",
     ...CONSTANTS.SEO_KEYWORDS,
   ],
   alternates: { canonical: "/custom" },
   openGraph: {
     type: "website",
-    locale: "en_IN",
+    locale: "en_US",
     url: `${CONSTANTS.APP_URL}/custom`,
-    title: `Custom Final Year Project — Built for You | ${CONSTANTS.APP_NAME}`,
-    description: `We build your exact project from scratch. Working code + IEEE Report + PPT + Viva Q&A. Mini ₹299 / Major ₹499 / Custom starts ₹1,999 (varies with complexity).`,
+    title: `Done-For-You Software & Startup MVP Studio | ${CONSTANTS.APP_NAME}`,
+    description: `Built for non-coders, founders, and students. We design, code, and deliver 100% working custom software and startup MVPs in 48-72 hours with zero coding required. Starts ₹1,999.`,
     images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
   },
 };
 
 export default function CustomProjectPage() {
-  return <CustomProjectClient />;
+  return (
+    <Suspense fallback={null}>
+      <CustomProjectClient />
+    </Suspense>
+  );
 }

@@ -8,7 +8,15 @@
     "build:dev": "node scripts/next-build.mjs",
     "start": "next start",
     "lint": "eslint",
-    "add-kit": "node scripts/add-kit.mjs"
+    "add-kit": "node scripts/add-kit.mjs",
+    "kit:list": "node scripts/kit-master.mjs list",
+    "kit:complete": "node scripts/kit-master.mjs complete",
+    "kit:complete-all": "node scripts/kit-master.mjs complete-all",
+    "kit:pack": "node scripts/kit-master.mjs pack",
+    "kit:pack-all": "node scripts/kit-master.mjs pack-all",
+    "kit:publish": "node scripts/kit-master.mjs publish",
+    "kit:publish-all": "node scripts/kit-master.mjs publish-all",
+    "kit:sync-db": "node scripts/kit-master.mjs sync-db"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1124.0",

@@ -7,10 +7,19 @@ export const CONSTANTS = {
   SUPPORT_ADDRESS: 'Pune, Maharashtra, India',
   FOUNDER_NAME: 'SubmitKit Engineering Team',
 
-  TAGLINE_SHORT: 'Final Year Projects with Code, IEEE Report & Viva PPT',
-  TAGLINE_LONG: 'Verified 1-click runnable engineering final year project kits. Full source code + 60-page IEEE Black Book + defense PPT + top 25 Viva Q&A. BE/BTech/MCA students. Instant WhatsApp download.',
+  TAGLINE_SHORT: 'Turn Your Idea Into Working Software',
+  TAGLINE_LONG: 'Explore 11 verified 1-click engineering project kits or commission our done-for-you studio to build custom software, web apps, and startup MVPs for non-coders and founders with zero coding required.',
 
   SEO_KEYWORDS: [
+    'build software without coding',
+    'no code software development studio',
+    'how to build software if you are not a coder',
+    'done for you tech startup studio',
+    'turn startup idea into working software',
+    'mvp development for non technical founders',
+    'hire software engineers for startup mvp india',
+    'custom web application builder done for you',
+    'saas prototype developer',
     'final year projects',
     'engineering projects',
     'cse final year projects',
@@ -18,9 +27,10 @@ export const CONSTANTS = {
     'mca projects',
     'ieee projects',
     'project with source code and report',
-    'black book report',
-    'ieee project report',
-    'viva preparation',
+    'black book report docx',
+    'ieee project report download',
+    'viva preparation and viva voce questions',
+    '1 click run bat python project',
     'major project kit',
     'mini project kit',
     'aiml projects',
@@ -54,8 +64,8 @@ export const CONSTANTS = {
     PREBOOK: 99,
     ADDONS: {
       PERSONALIZATION: 99,
-      PLAGIARISM_CERT: 99,
-      VIVA_CALL: 299
+      PLAGIARISM_CERT: 149,
+      VIVA_CALL: 199
     }
   },
 

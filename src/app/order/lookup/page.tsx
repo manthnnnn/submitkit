@@ -53,22 +53,22 @@ export default function OrderLookupPage() {
         </div>
 
         {/* Header */}
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .4 }}
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .16 }}
           style={{ textAlign: 'center', marginBottom: '2rem' }}
         >
           <div style={{ width: '3.5rem', height: '3.5rem', borderRadius: '16px', background: 'var(--surface-teal)', border: '1px solid var(--teal-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem' }}>
             <Package style={{ width: '1.625rem', height: '1.625rem', color: 'var(--teal)' }} />
           </div>
           <h1 className="font-display" style={{ fontSize: '1.625rem', fontWeight: 800, color: 'var(--navy)', letterSpacing: '-.035em', marginBottom: '.5rem' }}>
-            Find My Order &amp; Download
+            Your project, one step closer.
           </h1>
           <p style={{ fontSize: '.9375rem', color: 'var(--ink-3)', lineHeight: 1.65 }}>
-            Enter your Order ID, Email, or Phone to re-access your project kit.
+            Enter your Order ID, Email, or Phone to track status and download your project kit.
           </p>
         </motion.div>
 
         {/* Card */}
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .4, delay: .08 }}
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .16 }}
           className="card"
           style={{ padding: '1.75rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}
         >

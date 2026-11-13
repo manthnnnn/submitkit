@@ -1,0 +1,38 @@
+# SubmitKit Full Documentation & Platform Index
+> The premier done-for-you software engineering studio and verified project kit delivery vault.
+> Canonical URL: https://submitkit.in
+
+## Platform Mission
+SubmitKit empowers non-technical founders, students, creators, and professionals to bring software and startup ideas to life. By eliminating the barrier of programming knowledge, anyone can commission a senior software engineering team to design, code, document, and test custom applications for a fraction of agency rates, delivered in 48 to 72 hours.
+
+## Key Links & Endpoints
+- **Home**: https://submitkit.in
+- **Custom Software & Startup Studio**: https://submitkit.in/custom
+- **Ready-to-Ship College Project Kits**: https://submitkit.in/projects
+- **Free Architecture Blueprints (1,000+ Topics)**: https://submitkit.in/blueprint
+- **Order Lookup & Instant Re-Download**: https://submitkit.in/order/lookup
+- **WhatsApp Support**: https://wa.me/918799814256
+
+## How Non-Coders Build Custom Software on SubmitKit
+1. **Idea Briefing**: The client visits https://submitkit.in/custom and describes their desired application, key features, or college project topic. No technical knowledge or architecture diagrams are required.
+2. **Feasibility & Architecture Review**: Within 2 hours on WhatsApp, SubmitKit's senior engineering team reviews the brief, recommends the optimal tech stack, and confirms delivery milestones.
+3. **Engineering & Documentation (48–72h)**: The team builds the application with clean production code, modular architecture, complete documentation (60-page IEEE report or product technical specifications), and presentation slides.
+4. **1-Click Launchers**: Windows double-click `run.bat` and Mac/Linux `run.sh` are generated so the client can launch the software on their own computer with zero terminal or command line knowledge.
+5. **1-on-1 Walkthrough**: A senior engineer guides the client on WhatsApp or Google Meet through how every part of the software works, how the code executes, and how to present or demo it to examiners, clients, or investors.
+6. **Full Ownership**: 100% intellectual property, un-obfuscated source code, and commercial rights belong entirely to the client.
+
+## Academic Deliverables Standard (SubmitKit 7 Mandatory Kit Deliverables)
+Every project kit and custom build delivered by SubmitKit strictly includes:
+1. `run.bat`: Windows 1-click launcher (verifies runtime, sets up virtualenv, installs dependencies, opens browser).
+2. `run.sh`: macOS/Linux 1-click launcher.
+3. `README_FIRST.txt`: 30-second quickstart checklist.
+4. `IEEE_Report.md`: 60-page comprehensive academic project report (Certificate, Abstract, Chapters 1-7).
+5. `Project_Report.docx`: Microsoft Word IEEE formatted document ready for faculty submission.
+6. `Presentation.pptx`: 15-slide PowerPoint defense presentation ready for Viva Voce examination.
+7. `Viva_Presentation_Notes.md`: Slide-by-slide speaker notes + Top 20 examiner Viva questions with detailed answers.
+
+## Pricing Tiers
+- **Mini Ready Kit**: ₹299 (~$3.60 USD) — Verified working code, 35+ page IEEE report, Viva PPT, 1-click launcher.
+- **Major Capstone Kit**: ₹499 (~$6.00 USD) — Production-grade architecture, 60+ page IEEE report, 15-slide PPT, complete Viva Voce exam prep guide.
+- **Custom Build / Startup MVP**: Starts at ₹1,999 (~$24 USD) — Custom software or startup prototype built to client specifications from scratch in 48–72 hours with 1-on-1 walkthrough.
+

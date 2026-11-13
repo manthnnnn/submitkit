@@ -18,14 +18,13 @@ export default async function EditProjectPage({ params }: { params: Promise<{ id
       <div className="flex items-center gap-3">
         <Link
           href="/admin/projects"
-          className="w-8 h-8 rounded-xl flex items-center justify-center text-zinc-500 hover:text-white transition-all"
-          style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+          className="w-9 h-9 rounded-xl flex items-center justify-center text-slate-500 hover:text-slate-900 bg-white border border-slate-200 shadow-xs transition-all"
         >
           <ChevronLeft className="w-4 h-4" />
         </Link>
         <div>
-          <h1 className="text-2xl font-display font-bold text-white tracking-tight">Edit Project</h1>
-          <p className="text-zinc-500 text-sm mt-0.5 font-mono">{project.slug}</p>
+          <h1 className="text-2xl font-display font-bold text-slate-900 tracking-tight">Edit Project Kit</h1>
+          <p className="text-slate-500 text-sm mt-0.5 font-mono">{project.slug}</p>
         </div>
       </div>
 

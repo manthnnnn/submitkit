@@ -8,7 +8,7 @@ import { Home, Package, BookOpen, Search } from 'lucide-react';
 const ITEMS = [
   { href: '/',            label: 'Home',       Icon: Home,          match: (p: string) => p === '/' },
   { href: '/projects',    label: 'Projects',   Icon: Package,       match: (p: string) => p.startsWith('/projects') },
-  { href: '/blueprint',   label: 'Free Topics',Icon: BookOpen,      match: (p: string) => p.startsWith('/blueprint') },
+  { href: '/blueprint',   label: 'Blueprints', Icon: BookOpen,      match: (p: string) => p.startsWith('/blueprint') },
   { href: '/order/lookup',label: 'Track',      Icon: Search,        match: (p: string) => p.startsWith('/order') },
 ] as const;
 
@@ -39,18 +39,24 @@ export function BottomNav() {
           const inner = (
             <>
               <Icon
-                style={{ width: '1.3rem', height: '1.3rem', color: active ? 'var(--teal)' : 'var(--ink-3)', transition: 'color 180ms ease' }}
-                strokeWidth={active ? 2.2 : 1.8}
+                style={{
+                  width: '1.25rem',
+                  height: '1.25rem',
+                  color: active ? 'var(--teal)' : 'var(--ink-4)',
+                  transition: 'color 120ms ease, transform 120ms ease',
+                  transform: active ? 'scale(1.06)' : 'scale(1)',
+                }}
+                strokeWidth={active ? 2.3 : 1.75}
               />
               <span style={{
                 fontSize: '.625rem', fontWeight: active ? 700 : 500,
-                color: active ? 'var(--teal-darker)' : 'var(--ink-3)',
-                letterSpacing: '.01em', transition: 'color 180ms ease',
+                color: active ? 'var(--teal-darker)' : 'var(--ink-4)',
+                letterSpacing: '.01em', transition: 'color 120ms ease',
               }}>{label}</span>
               <span aria-hidden style={{
                 position: 'absolute', top: 0, left: '50%', transform: 'translateX(-50%)',
-                width: '1.75rem', height: '2px', borderRadius: '2px',
-                background: active ? 'var(--teal)' : 'transparent', transition: 'background 180ms ease',
+                width: '1.75rem', height: '2.5px', borderRadius: '2px',
+                background: active ? 'var(--teal)' : 'transparent', transition: 'background 120ms ease',
               }} />
             </>
           );
@@ -59,6 +65,7 @@ export function BottomNav() {
             alignItems: 'center', justifyContent: 'center', gap: '.1875rem',
             background: 'none', border: 'none', textDecoration: 'none',
             cursor: 'pointer', WebkitTapHighlightColor: 'transparent',
+            touchAction: 'manipulation', userSelect: 'none',
           };
           const cls = 'bn-tab';
           return 'external' in rest && rest.external ? (
