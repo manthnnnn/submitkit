@@ -231,7 +231,7 @@ const HOW_STEPS = [
 ];
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 12 },
+  hidden: { opacity: 1, y: 0 },
   visible: (i = 0) => ({
     opacity: 1,
     y: 0,
@@ -263,7 +263,7 @@ export default function HomePage() {
         <div className="shell" style={{ maxWidth: '64rem', textAlign: 'center', position: 'relative', zIndex: 1 }}>
 
           {/* Eyebrow Hook Badge */}
-          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.16 }}
+          <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.16 }}
             style={{ display: 'flex', justifyContent: 'center', marginBottom: '1.25rem' }}>
             <span style={{
               display: 'inline-flex', alignItems: 'center', gap: '.4rem',
@@ -279,38 +279,54 @@ export default function HomePage() {
             </span>
           </motion.div>
 
-          {/* Rapidly Rotating Hook Headline */}
-          <div style={{ minHeight: 'clamp(5.75rem, 14vw, 8.5rem)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.25rem' }}>
+          {/* SEO Master Primary H1 — Perfectly Aligned with Meta Title & Fully Visible in SSR */}
+          <div style={{ marginBottom: '1.25rem' }}>
             <h1
               className="font-display font-black"
               style={{
-                fontSize: 'clamp(1.85rem, 5.2vw, 3.85rem)',
+                fontSize: 'clamp(2rem, 5.5vw, 3.85rem)',
                 letterSpacing: '-.045em',
-                lineHeight: 1.18,
+                lineHeight: 1.15,
                 color: 'var(--navy)',
-                margin: 0,
+                margin: '0 0 .875rem',
               }}
             >
-              <AnimatePresence mode="wait">
-                <motion.span
-                  key={activeHook}
-                  initial={{ opacity: 0, y: 12, filter: 'blur(4px)' }}
-                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                  exit={{ opacity: 0, y: -10, filter: 'blur(4px)' }}
-                  transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-                  style={{ display: 'inline-block' }}
-                >
-                  {HERO_HOOKS[activeHook].lead}{' '}
-                  <em style={{ fontStyle: 'normal', color: 'var(--teal)' }}>
-                    {HERO_HOOKS[activeHook].accent}
-                  </em>
-                </motion.span>
-              </AnimatePresence>
+              Turn Your Ideas Into{' '}
+              <span style={{ color: 'var(--teal)' }}>Working Software</span>
             </h1>
+
+            {/* Dynamic Rotating Hook Sub-ticker */}
+            <div style={{ minHeight: '2.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeHook}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.22 }}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '.5rem',
+                    padding: '.35rem 1rem',
+                    borderRadius: '9999px',
+                    background: 'rgba(255, 255, 255, 0.92)',
+                    border: '1.2px solid rgba(220, 208, 188, 0.95)',
+                    boxShadow: '0 2px 10px rgba(180, 155, 120, 0.1)',
+                    fontSize: 'clamp(.875rem, 2vw, 1.0625rem)',
+                    fontWeight: 700,
+                    color: 'var(--navy)',
+                  }}
+                >
+                  <span>{HERO_HOOKS[activeHook].lead}</span>
+                  <span style={{ color: 'var(--teal)' }}>{HERO_HOOKS[activeHook].accent}</span>
+                </motion.div>
+              </AnimatePresence>
+            </div>
           </div>
 
           {/* Subtitle — Merging College Projects & Startup MVPs */}
-          <motion.p initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          <motion.p initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
             style={{
               fontSize: 'clamp(.9375rem, 2vw, 1.15rem)', color: 'var(--ink-3)',
               lineHeight: 1.7, maxWidth: '46rem', margin: '0 auto 1.75rem',
@@ -319,7 +335,7 @@ export default function HomePage() {
           </motion.p>
 
           {/* Action CTAs — modern iOS squircle button pair */}
-          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.16 }}
+          <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.16 }}
             style={{ display: 'flex', flexWrap: 'wrap', gap: '.75rem', justifyContent: 'center', marginBottom: '1.75rem' }}>
             <Link
               href="/projects"
@@ -342,7 +358,7 @@ export default function HomePage() {
           </motion.div>
 
           {/* Dual-Pillar Concept Strip: College Projects vs Startup MVPs */}
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18, delay: 0.06 }}
+          <motion.div initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.18, delay: 0.06 }}
             style={{ maxWidth: '58rem', margin: '0 auto', textAlign: 'left' }}>
             <div style={{
               display: 'grid',
@@ -371,9 +387,9 @@ export default function HomePage() {
                     </span>
                     <span style={{ fontSize: '.75rem', fontWeight: 800, color: 'var(--teal)' }}>₹299 / ₹499</span>
                   </div>
-                  <h3 style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--navy)', letterSpacing: '-.02em', margin: '0 0 .35rem' }}>
+                  <h2 style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--navy)', letterSpacing: '-.02em', margin: '0 0 .35rem' }}>
                     100% Working College Projects
-                  </h3>
+                  </h2>
                   <p style={{ fontSize: '.8125rem', color: 'var(--ink-3)', lineHeight: 1.55, margin: '0 0 .75rem' }}>
                     Download verified source code with 60-page IEEE Black Book, 20-slide Viva PPT &amp; top 25 examiner Q&amp;A.
                   </p>
@@ -417,9 +433,9 @@ export default function HomePage() {
                     </span>
                     <span style={{ fontSize: '.75rem', fontWeight: 800, color: '#B45309' }}>Starts ₹1,999</span>
                   </div>
-                  <h3 style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--navy)', letterSpacing: '-.02em', margin: '0 0 .35rem' }}>
+                  <h2 style={{ fontSize: '1rem', fontWeight: 800, color: 'var(--navy)', letterSpacing: '-.02em', margin: '0 0 .35rem' }}>
                     Turn Any Concept into Live Software (Zero Code Required)
-                  </h3>
+                  </h2>
                   <p style={{ fontSize: '.8125rem', color: 'var(--ink-3)', lineHeight: 1.55, margin: '0 0 .75rem' }}>
                     Have an approved college topic or a startup MVP idea? Even without any programming skills, our senior engineers build 100% working code, database, UI &amp; documentation in 48–72h.
                   </p>
@@ -469,7 +485,7 @@ export default function HomePage() {
           {/* 3 Main Flagship Cards — Clean, Minimal, Responsive Mobile Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {PROJECTS.slice(0, 3).map((p, i) => (
-              <motion.div key={p.slug} custom={i} initial="hidden" whileInView="visible"
+              <motion.div key={p.slug} custom={i} initial={false} whileInView="visible"
                 viewport={{ once: true, margin: '-40px' }} variants={fadeUp} style={{ height: '100%' }}>
                 <Link href={`/projects/${p.slug}`} style={{ textDecoration: 'none', display: 'block', height: '100%' }}>
                   <div className="card card-lift group" style={{
@@ -611,7 +627,7 @@ export default function HomePage() {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 18rem), 1fr))', gap: '1.25rem' }}>
             {HOW_STEPS.map((s, i) => (
-              <motion.div key={s.n} custom={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
+              <motion.div key={s.n} custom={i} initial={false} whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
                 <div className="card card-lift" style={{ padding: 'clamp(1.25rem, 3vw, 1.75rem)', borderRadius: 'var(--r-xl)', border: '1.5px solid rgba(220, 208, 188, 0.95)', background: 'linear-gradient(175deg, #FFFFFF 0%, #FDFBF8 35%, #F7EEE0 100%)', boxShadow: 'inset 0 1px 0 #FFFFFF, 0 4px 18px -3px rgba(180, 145, 100, 0.1)', height: '100%' }}>
                   <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: '12px', background: 'rgba(13,148,136,0.1)', border: '1px solid rgba(13,148,136,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem' }}>
                     <s.icon style={{ width: '1.125rem', height: '1.125rem', color: 'var(--teal)' }} />
@@ -629,7 +645,7 @@ export default function HomePage() {
       {/* ════ PRICING & CUSTOM BUILDS (AUTHENTIC PRICING DOCK) ════ */}
       <section style={{ position: 'relative', zIndex: 1, padding: 'clamp(2.5rem,5vw,4.5rem) 0' }}>
         <div className="shell" style={{ maxWidth: '68rem' }}>
-          <motion.div initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.18 }}>
+          <motion.div initial={false} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.18 }}>
             <div style={{
               borderRadius: 'var(--r-2xl)',
               background: 'linear-gradient(160deg, #FFFFFF 0%, #FDFBF8 30%, #F7EFE3 65%, #EEE0C9 100%)',
