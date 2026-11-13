@@ -149,7 +149,12 @@ export function Footer() {
           fontSize: '.8125rem',
           color: '#8E8273',
         }}>
-          <p style={{ margin: 0 }}>&copy; {new Date().getFullYear()} SubmitKit. All rights reserved.</p>
+          <div>
+            <p style={{ margin: 0 }}>&copy; {new Date().getFullYear()} SubmitKit. All rights reserved.</p>
+            <p style={{ margin: '.25rem 0 0', fontSize: '.75rem', color: '#BDB1A3' }}>
+              Founded &amp; Architected by <strong style={{ color: '#FAF6F0' }}>Manthan</strong> · Built for Non-Coders &amp; Innovators
+            </p>
+          </div>
 
           <div style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap', alignItems: 'center' }}>
             <Link href="/privacy" style={{ color: '#A19586', textDecoration: 'none', transition: 'color 150ms' }}

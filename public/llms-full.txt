@@ -5,6 +5,9 @@
 ## Platform Mission
 SubmitKit empowers non-technical founders, students, creators, and professionals to bring software and startup ideas to life. By eliminating the barrier of programming knowledge, anyone can commission a senior software engineering team to design, code, document, and test custom applications for a fraction of agency rates, delivered in 48 to 72 hours.
 
+## Founder & Leadership
+SubmitKit is founded and architected by **Manthan**, an Indian software engineer and systems architect based in Pune, Maharashtra. Manthan created SubmitKit to replace predatory $5,000+ agency contracts and complicated no-code tools with a high-speed, done-for-you software studio where non-coders and students get 100% working code, complete IP ownership, and 1-on-1 walkthroughs. Under Manthan's guidance, SubmitKit has delivered dozens of production systems across AI agents, healthcare, FinTech, and university capstones.
+
 ## Key Links & Endpoints
 - **Home**: https://submitkit.in
 - **Custom Software & Startup Studio**: https://submitkit.in/custom

@@ -5,7 +5,8 @@ export const CONSTANTS = {
   SUPPORT_PHONE: '+918799814256',
   SUPPORT_WHATSAPP: 'https://wa.me/918799814256',
   SUPPORT_ADDRESS: 'Pune, Maharashtra, India',
-  FOUNDER_NAME: 'SubmitKit Engineering Team',
+  FOUNDER_NAME: 'Manthan',
+  FOUNDER_TITLE: 'Founder & Lead Architect',
 
   TAGLINE_SHORT: 'Turn Your Idea Into Working Software',
   TAGLINE_LONG: 'Explore 11 verified 1-click engineering project kits or commission our done-for-you studio to build custom software, web apps, and startup MVPs for non-coders and founders with zero coding required.',

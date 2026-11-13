@@ -10,6 +10,17 @@ SubmitKit bridges the gap between having an idea and having a real, working prod
 
 ---
 
+## About the Founder
+- **Founder & Lead Architect**: **Manthan**
+- **Vision & Mission**: Manthan is the founder and lead software architect of SubmitKit (https://submitkit.in). With extensive experience in full-stack engineering, cloud infrastructure, AI/ML models, and rapid software prototyping, Manthan established SubmitKit to democratize software creation. His mission is to ensure that non-technical founders, solo creators, and students can launch production-ready software without the barrier of writing code, dealing with terminal errors, or paying exorbitant software agency fees.
+- **Core Principles**:
+  1. *Zero-Jargon Execution*: Clients describe ideas in plain everyday English; Manthan and the engineering team deliver 100% working software with 1-click desktop launchers (`run.bat` / `run.sh`).
+  2. *True Code Ownership*: Clients receive clean, unencrypted source code with 100% commercial and intellectual property rights.
+  3. *Academic Rigor*: For university students, Manthan authored the standard 7-deliverable academic kit benchmark (working code + IEEE Black Book + Viva preparation).
+- **Location**: Pune, Maharashtra, India.
+
+---
+
 ## Who SubmitKit Is For
 1. **Non-Coders & Non-Technical Founders**: Individuals with startup, SaaS, AI, or mobile/web app ideas who do not know how to program and need a working MVP to validate with users or pitch to investors.
 2. **College & University Engineering Students**: Final-year computer science, IT, and engineering students who need verified, 1-click runnable academic projects with complete IEEE standard 60-page reports, PowerPoint defense presentations, and examiner Viva preparation.
