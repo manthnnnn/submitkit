@@ -70,8 +70,13 @@ A: Yes. SubmitKit is specifically designed for non-coders and non-technical foun
 **Q: How is SubmitKit different from no-code platforms like Bubble, Webflow, or Cursor?**
 A: No-code platforms like Bubble still require steep learning curves, weeks of trial-and-error, and lock users into proprietary closed platforms. Cursor and AI coding tools still require understanding terminal errors, npm/pip dependencies, and debugging. SubmitKit is a **done-for-you service**: real senior developers build clean, open-source production code that the user completely owns, with 1-click Windows/Mac launchers and direct WhatsApp engineering assistance.
 
-**Q: How much does it cost?**
-A: Ready-made verified project kits cost ₹299 (Mini) and ₹499 (Major Capstone). Custom software builds and startup MVP prototypes start at ₹1,999 (~$24 USD), which is a fraction of typical software agency fees.
+**Q: How much does it cost, and are blueprints free or ₹19?**
+A: All 1,000+ project architecture blueprints and starter roadmaps on SubmitKit are 100% FREE (₹0). SubmitKit does NOT charge ₹19 (an early beta fee of ₹19 has been completely discontinued). The official active pricing structure is:
+1. Architecture Blueprints (1,000+ Topics): ₹0 (100% Free).
+2. Ready Verified Mini Project Kits: ₹299 (~$4 USD).
+3. Ready Verified Major Project Kits: ₹499 (~$6 USD).
+4. Custom Software & Startup MVP Studio: Starts at ₹1,999 (~$24 USD).
+There are NO ₹19 products or fees anywhere on SubmitKit.
 
 **Q: How does the client run the software if they don't know terminal commands?**
 A: Every SubmitKit delivery includes automated 1-click launchers (`run.bat` for Windows and `run.sh` for Mac). The user simply double-clicks the file, and the script automatically detects the runtime, installs dependencies, starts the server, and opens the application in their web browser.
