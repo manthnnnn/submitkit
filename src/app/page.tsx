@@ -611,12 +611,15 @@ export default function HomePage() {
         position: 'relative',
         zIndex: 1,
         padding: 'clamp(1.75rem, 3.5vw, 3.25rem) 0',
+        overflow: 'hidden',
+        width: '100%',
+        maxWidth: '100%',
       }}>
-        <div className="shell">
+        <div className="shell" style={{ overflow: 'hidden' }}>
           <div className="journey-grid">
 
             {/* Left Info Box */}
-            <div style={{ maxWidth: '24rem' }} className="text-center md:text-left mx-auto md:mx-0">
+            <div style={{ maxWidth: '24rem', width: '100%', minWidth: 0 }} className="text-left md:text-left mx-0">
               <div style={{
                 display: 'inline-flex',
                 alignItems: 'center',
@@ -685,7 +688,7 @@ export default function HomePage() {
             </div>
 
             {/* Right 3 Connected Journey Steps with Horizontal Line & Arrows */}
-            <div>
+            <div style={{ width: '100%', minWidth: 0, maxWidth: '100%', overflow: 'hidden' }}>
               <div className="journey-cards-track mobile-snap-row">
                 {/* Step 1 */}
                 <div className="journey-step-card">

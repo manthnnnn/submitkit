@@ -2239,16 +2239,26 @@
    PROJECT JOURNEY HORIZONTAL PIPELINE (FIGMA SPEC)
 ═══════════════════════════════════════════════════ */
 .journey-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2.25rem;
-  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.journey-grid > * {
+  min-width: 0;
+  max-width: 100%;
 }
 
 @media (min-width: 1024px) {
   .journey-grid {
-    grid-template-columns: minmax(250px, 290px) 1fr;
+    display: grid;
+    grid-template-columns: minmax(250px, 300px) minmax(0, 1fr);
     gap: 3rem;
+    align-items: center;
   }
 }
 
@@ -2450,6 +2460,8 @@
     padding: 0.35rem 1rem 0.85rem !important;
     margin-left: -1rem !important;
     margin-right: -1rem !important;
+    width: calc(100% + 2rem) !important;
+    max-width: none !important;
     scrollbar-width: none !important;
   }
   .mobile-snap-row::-webkit-scrollbar {
@@ -2496,6 +2508,9 @@
     padding: 0.35rem 0.5rem 0.65rem !important;
     margin-left: -0.5rem !important;
     margin-right: -0.5rem !important;
+    width: calc(100% + 1rem) !important;
+    max-width: none !important;
+    min-width: 0 !important;
   }
   .journey-cards-track.mobile-snap-row .journey-connector {
     display: none !important;
