@@ -31,8 +31,22 @@ export default function OrderLookupPage() {
   const handleDownload = async () => {
     if (!result || downloading) return;
     setDownloading(true);
-    window.location.href = `/api/downloads/${result.orderId}`;
-    setTimeout(() => setDownloading(false), 4000);
+    setError(null);
+    try {
+      const res = await fetch(`/api/downloads/${result.orderId}`);
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.url) {
+        setError(data.error || 'Failed to prepare download link. Please contact support.');
+        setDownloading(false);
+        return;
+      }
+      setResult(prev => prev ? { ...prev, downloadCount: Math.min(prev.downloadCount + 1, prev.downloadLimit) } : prev);
+      window.location.href = data.url;
+    } catch {
+      setError('Network error. Check connection and try again.');
+    } finally {
+      setTimeout(() => setDownloading(false), 2000);
+    }
   };
 
   const waLink = `https://wa.me/918799814256?text=${encodeURIComponent(`Hi! I need help with my SubmitKit order. My Order ID is: ${query.trim().toUpperCase()}`)}`;

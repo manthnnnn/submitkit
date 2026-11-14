@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { checkRateLimit, getClientIP } from '@/lib/rate-limit';
 import { getOrderConfirmationState } from '@/lib/order-confirmation';
+import { getAllStaticProjects } from '@/lib/static-catalog';
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -24,7 +25,7 @@ export async function GET(
     const supabase = createAdminClient();
     const { data: order, error } = await supabase
       .from('orders')
-      .select('id, status, amount_paid, created_at, download_count, download_limit, has_personalization, has_plagiarism_cert, has_viva_call, projects(title)')
+      .select('id, status, project_id, amount_paid, created_at, download_count, download_limit, has_personalization, has_plagiarism_cert, has_viva_call, projects(title)')
       .eq('id', orderId)
       .maybeSingle();
 
@@ -43,9 +44,16 @@ export async function GET(
       return NextResponse.json({ error: 'This order is not confirmed as paid.' }, { status: 409 });
     }
 
+    let projectTitle = (order.projects as { title?: string } | null)?.title;
+    if (!projectTitle && (order as any).project_id) {
+      const allStatic = getAllStaticProjects();
+      const match = allStatic.find(p => p.id === (order as any).project_id || p.slug === (order as any).project_id);
+      if (match) projectTitle = match.title;
+    }
+
     return NextResponse.json({
       orderId: order.id,
-      projectTitle: (order.projects as { title?: string } | null)?.title ?? 'Your Project Bundle',
+      projectTitle: projectTitle ?? 'Your Project Bundle',
       amountPaid: Number(order.amount_paid) || 0,
       createdAt: order.created_at,
       downloadCount: Number(order.download_count ?? 0),

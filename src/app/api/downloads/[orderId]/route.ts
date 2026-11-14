@@ -2,6 +2,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { generateDownloadUrl } from '@/lib/s3';
 import { checkRateLimit, getClientIP } from '@/lib/rate-limit';
+import { getAllStaticProjects } from '@/lib/static-catalog';
+import fs from 'fs';
+import path from 'path';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(
   req: NextRequest,
@@ -39,48 +44,73 @@ export async function GET(
       }, { status: 403 });
     }
 
-    // ── Validate that the project has a storage key configured ───────────
-    const storageKey = order.projects?.s3_storage_key;
-    if (!storageKey || storageKey.trim() === '') {
-      console.error(`[download] Missing s3_storage_key for project ${order.projects?.slug} (order ${order.id})`);
-      return NextResponse.json({
-        error: `Your project bundle is being prepared. Please email team@submitkit.in with your Order ID ${order.id.split('-')[0].toUpperCase()} and we will send you the download link within 30 minutes.`,
-        code: 'STORAGE_KEY_MISSING',
-      }, { status: 503 });
+    // ── Resolve project slug and storage key ───────────
+    let projectSlug = order.projects?.slug;
+    let storageKey = order.projects?.s3_storage_key;
+
+    if (!projectSlug || !storageKey) {
+      const allStatic = getAllStaticProjects();
+      const matched = allStatic.find(p => p.id === order.project_id || p.slug === order.project_id);
+      if (matched) {
+        projectSlug = projectSlug || matched.slug;
+        storageKey = storageKey || `bundles/${matched.slug}.zip`;
+      }
     }
+
+    if (!projectSlug) projectSlug = 'project';
+    if (!storageKey) storageKey = `bundles/${projectSlug}.zip`;
 
     // Log the download attempt
     const userAgent = req.headers.get('user-agent') || 'unknown';
-    await supabase.from('download_logs').insert({
-      order_id: order.id,
-      ip_address: ip,
-      user_agent: userAgent,
-    });
+    try {
+      await supabase.from('download_logs').insert({
+        order_id: order.id,
+        ip_address: ip,
+        user_agent: userAgent,
+      });
+      // Increment download count atomically
+      await supabase.rpc('increment_download_count', { row_id: order.id });
+    } catch {
+      // Non-blocking log
+    }
 
-    // Increment download count atomically
-    await supabase.rpc('increment_download_count', { row_id: order.id });
+    // Check if local bundle exists on disk (for localhost development / fallback)
+    const localCandidates = [
+      path.join(process.cwd(), `${projectSlug}.zip`),
+      path.join(process.cwd(), 'bundles', `${projectSlug}.zip`),
+      path.join(process.cwd(), 'project-factory', projectSlug, `${projectSlug}.zip`),
+    ];
+    const localBundlePath = localCandidates.find(p => fs.existsSync(p));
 
     // Generate pre-signed R2 URL
-    const filename = `${order.projects.slug}-complete-bundle.zip`;
-    let downloadUrl: string;
+    const filename = `${projectSlug}-complete-bundle.zip`;
+    let downloadUrl: string | null = null;
     try {
       downloadUrl = await generateDownloadUrl(storageKey, filename);
     } catch (s3Error: any) {
-      console.error('[download] S3/R2 URL generation failed:', s3Error);
+      console.warn('[download] S3/R2 URL generation skipped or failed:', s3Error?.message);
 
-      // R2 not configured at all
-      if (s3Error.message?.includes('not configured')) {
+      // If local bundle exists, fallback smoothly to local bundle route
+      if (localBundlePath) {
+        downloadUrl = `/api/downloads/local/${projectSlug}?orderId=${order.id}`;
+      } else {
+        if (s3Error.message?.includes('not configured')) {
+          return NextResponse.json({
+            error: 'File delivery is temporarily unavailable. Please email team@submitkit.in with your Order ID and we will send the file directly.',
+            code: 'R2_NOT_CONFIGURED',
+          }, { status: 503 });
+        }
         return NextResponse.json({
-          error: 'File delivery is temporarily unavailable. Please email team@submitkit.in with your Order ID and we will send the file directly.',
-          code: 'R2_NOT_CONFIGURED',
+          error: 'Could not generate download link. Please try again in a moment. If the problem persists, email team@submitkit.in with your Order ID.',
+          code: 'S3_ERROR',
         }, { status: 503 });
       }
+    }
 
-      // Key exists but other S3 error
-      return NextResponse.json({
-        error: 'Could not generate download link. Please try again in a moment. If the problem persists, email team@submitkit.in with your Order ID.',
-        code: 'S3_ERROR',
-      }, { status: 503 });
+    // Direct browser navigation support
+    const acceptHeader = req.headers.get('accept') || '';
+    if (acceptHeader.includes('text/html') && downloadUrl) {
+      return NextResponse.redirect(new URL(downloadUrl, req.url), 307);
     }
 
     return NextResponse.json({ url: downloadUrl });

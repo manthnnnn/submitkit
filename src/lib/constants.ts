@@ -1,6 +1,9 @@
+const rawAppUrl = process.env.NEXT_PUBLIC_BASE_URL?.trim();
+const resolvedAppUrl = (rawAppUrl && !rawAppUrl.includes('localhost') ? rawAppUrl : 'https://submitkit.in').replace(/\/$/, '');
+
 export const CONSTANTS = {
   APP_NAME: 'SubmitKit',
-  APP_URL: process.env.NEXT_PUBLIC_BASE_URL || 'https://submitkit.in',
+  APP_URL: resolvedAppUrl,
   SUPPORT_EMAIL: 'team@submitkit.in',
   SUPPORT_PHONE: '+918799814256',
   SUPPORT_WHATSAPP: 'https://wa.me/918799814256',

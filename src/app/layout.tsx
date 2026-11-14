@@ -83,11 +83,9 @@ export const metadata: Metadata = {
   facebook: {
     appId: 'submitkit',
   },
-  verification: {
-    // TODO: Replace with real code from Google Search Console > Ownership Verification > HTML tag
-    // Go to: https://search.google.com/search-console → Add Property → HTML tag → copy content value
-    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || 'REPLACE_WITH_REAL_GSC_CODE',
-  },
+  verification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ? {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+  } : undefined,
   icons: {
     icon: [
       { url: '/icon.svg', type: 'image/svg+xml' },

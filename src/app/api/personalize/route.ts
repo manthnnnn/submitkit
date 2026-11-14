@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { generateIEEEReport, type ReportSize } from '@/lib/ieee-report-generator';
+import { getAllStaticProjects } from '@/lib/static-catalog';
 
 /**
  * POST /api/personalize
@@ -63,9 +64,16 @@ export async function POST(req: NextRequest) {
       ? (size as ReportSize)
       : 'full';
 
+    let projectSlug = order.projects?.slug;
+    if (!projectSlug) {
+      const allStatic = getAllStaticProjects();
+      const match = allStatic.find(p => p.id === order.project_id || p.slug === order.project_id);
+      projectSlug = match?.slug ?? '__default__';
+    }
+
     // Generate the full IEEE report in memory — no R2 template needed
     const docxBuffer = await generateIEEEReport({
-      projectSlug:  order.projects?.slug ?? 'default',
+      projectSlug,
       size:         reportSize,
       studentName:  sanitize(studentName || order.customer_name, 100) || undefined,
       rollNumber:   sanitize(rollNumber, 30)  || undefined,
@@ -75,7 +83,7 @@ export async function POST(req: NextRequest) {
     });
 
     // Stream directly to client — no R2 upload needed
-    const slug       = order.projects?.slug ?? 'project';
+    const slug       = projectSlug !== '__default__' ? projectSlug : 'project';
     const nameSlug   = (sanitize(studentName || order.customer_name, 40)).replace(/\s+/g, '_') || 'Personalised';
     const sizeLabel  = { mini: '15pg', standard: '20pg', full: '60pg' }[reportSize];
     const filename   = `${slug}-IEEE-Report-${sizeLabel}-${nameSlug}.docx`;

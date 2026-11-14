@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 import { generateIEEEReport, type ReportSize } from '@/lib/ieee-report-generator';
+import { getAllStaticProjects } from '@/lib/static-catalog';
+
+export const dynamic = 'force-dynamic';
 
 export async function GET(
   req: NextRequest,
@@ -27,7 +30,12 @@ export async function GET(
       return NextResponse.json({ error: 'Order not found or not paid' }, { status: 404 });
     }
 
-    const projectSlug = order.projects?.slug ?? 'default';
+    let projectSlug = order.projects?.slug;
+    if (!projectSlug) {
+      const allStatic = getAllStaticProjects();
+      const match = allStatic.find(p => p.id === order.project_id || p.slug === order.project_id);
+      projectSlug = match?.slug ?? '__default__';
+    }
 
     // Personalization data — only inject if they purchased the add-on
     const hasPersonalization = !!order.has_personalization;

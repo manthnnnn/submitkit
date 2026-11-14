@@ -7,7 +7,7 @@ import {
   Mic, Wrench, Database, Cpu, FileDown, CheckCircle, Loader2,
   Copy, Check, ExternalLink, Terminal, ShieldAlert, BookOpen, Layers,
   Presentation, FileText, Sparkles, HelpCircle, Flame,
-  Share2, MessageCircle, Zap, Lock, AlertTriangle
+  Share2, MessageCircle, Zap, Lock, AlertTriangle, Printer
 } from "lucide-react";
 import { FullBlueprint, generateAntigravityMasterPrompt, getAntigravityBuildInfo, getRelatedTopics } from "@/lib/blueprint-engine";
 import { isProjectAvailable } from "@/lib/available-projects";
@@ -197,25 +197,37 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
     window.open(`https://wa.me/?text=${encodeURIComponent(text + "\n" + url)}`, "_blank");
   };
 
-  const handleDownloadPdf = async () => {
+  const isFaceRecognition = topic.id.includes("face-recognition");
+
+  const handleDownloadPdf = async (preferredFormat?: "pdf" | "docx") => {
     setPdfLoading(true);
     try {
+      const targetFormat = preferredFormat || (isFaceRecognition ? "pdf" : "docx");
       const res = await fetch(
-        `/api/blueprint/pdf?topicId=${topic.id}&email=free`,
+        `/api/blueprint/pdf?topicId=${encodeURIComponent(topic.id)}&email=free&format=${targetFormat}`,
         { method: "GET" }
       );
-      if (!res.ok) throw new Error("PDF generation failed");
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "Blueprint download failed");
+      }
+      const contentType = res.headers.get("content-type") || "";
+      const isPdf = contentType.includes("application/pdf");
+      const ext = isPdf ? "pdf" : "docx";
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `SubmitKit-Blueprint-${topic.id}.pdf`;
+      a.download = `SubmitKit-Blueprint-${topic.id}.${ext}`;
+      document.body.appendChild(a);
       a.click();
+      document.body.removeChild(a);
       URL.revokeObjectURL(url);
-    } catch {
-      alert("PDF generation failed. Please try again.");
+    } catch (err: any) {
+      alert(err.message || "Failed to download blueprint. Please try again.");
+    } finally {
+      setPdfLoading(false);
     }
-    setPdfLoading(false);
   };
 
 
@@ -262,17 +274,25 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem', flexWrap: 'wrap' }}>
             <button
-              onClick={handleDownloadPdf}
+              onClick={() => handleDownloadPdf()}
               disabled={pdfLoading}
               className="btn btn-teal btn-sm"
               style={{ gap: '.375rem', fontSize: '.78125rem', borderRadius: '10px', padding: '0 .875rem', minHeight: '36px' }}
             >
               {pdfLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <FileDown className="w-3.5 h-3.5" />}
-              {pdfLoading ? "Generating..." : "Download PDF"}
+              {pdfLoading ? "Preparing..." : isFaceRecognition ? "Download Blueprint (PDF)" : "Download Blueprint (.docx)"}
+            </button>
+            <button
+              onClick={() => window.print()}
+              className="btn btn-outline btn-sm no-print"
+              style={{ gap: '.375rem', fontSize: '.78125rem', borderRadius: '10px', padding: '0 .875rem', minHeight: '36px' }}
+              title="Print or Save complete blueprint as PDF"
+            >
+              <Printer className="w-3.5 h-3.5" /> Save as PDF / Print
             </button>
             <button
               onClick={handleShare}
-              className="btn btn-outline btn-sm"
+              className="btn btn-outline btn-sm no-print"
               style={{ gap: '.375rem', fontSize: '.78125rem', borderRadius: '10px', padding: '0 .875rem', minHeight: '36px' }}
             >
               <Share2 className="w-3.5 h-3.5" /> Share
@@ -1319,15 +1339,22 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                     </div>
                   </div>
                   <button
-                    onClick={handleDownloadPdf}
+                    onClick={() => handleDownloadPdf()}
                     disabled={pdfLoading}
                     className="w-full py-3.5 bg-[#18181B] hover:bg-[#27272A] text-white font-bold rounded-xl transition-all shadow-md shadow-zinc-900/10 disabled:opacity-60 flex items-center justify-center gap-2 text-sm"
                   >
                     {pdfLoading ? (
-                      <><Loader2 className="w-4 h-4 animate-spin" /> Generating Document…</>
+                      <><Loader2 className="w-4 h-4 animate-spin" /> Preparing Document…</>
                     ) : (
-                      <><FileDown className="w-4 h-4" /> Download DOCX / PDF</>
+                      <><FileDown className="w-4 h-4" /> {isFaceRecognition ? "Download Blueprint (PDF)" : "Download Blueprint (.docx)"}</>
                     )}
+                  </button>
+                  <button
+                    onClick={() => window.print()}
+                    className="w-full py-2.5 bg-white hover:bg-[#FAF6EE] text-[#18181B] font-bold rounded-xl border border-slate-300 transition-all flex items-center justify-center gap-2 text-xs no-print"
+                    title="Print or Save complete blueprint as PDF"
+                  >
+                    <Printer className="w-3.5 h-3.5 text-[#E55729]" /> Save as PDF / Print View
                   </button>
                   <p className="text-xs text-slate-500 text-center leading-relaxed">
                     Document includes {buildInfo.canBuild ? "Antigravity Master Prompt" : "verified source code guide"}, conceptual baby steps, architecture diagrams, evaluator scoring pack, and Black Book template.

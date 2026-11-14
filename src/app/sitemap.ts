@@ -8,7 +8,8 @@ import { TOPICS_EXTRA4 } from '@/lib/blueprint-catalog-extra4';
 import { TOPICS_MODERN_2025 } from '@/lib/blueprint-catalog-modern2025';
 import type { TopicCard } from '@/lib/blueprint-engine';
 
-const BASE_URL = (process.env.NEXT_PUBLIC_BASE_URL || 'https://submitkit.in').replace(/\/$/, '');
+const rawBase = process.env.NEXT_PUBLIC_BASE_URL?.trim();
+const BASE_URL = (rawBase && !rawBase.includes('localhost') ? rawBase : 'https://submitkit.in').replace(/\/$/, '');
 
 const ALL_BLUEPRINT_TOPICS: TopicCard[] = [
   ...TOPICS_555,
