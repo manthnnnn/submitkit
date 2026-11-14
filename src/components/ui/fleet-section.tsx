@@ -225,8 +225,8 @@ export function FleetSection() {
                         className="absolute top-0 left-0 right-0 h-[2.5px] opacity-70 group-hover:opacity-100 transition-opacity"
                         style={{
                           background: isMajor
-                            ? 'linear-gradient(90deg, #0D9488 0%, #14B8A6 60%, #059669 100%)'
-                            : 'linear-gradient(90deg, #14B8A6 0%, #2DD4BF 60%, #10B981 100%)',
+                            ? 'linear-gradient(90deg, #EE6E44 0%, #E55729 60%, #CB451A 100%)'
+                            : 'linear-gradient(90deg, #F48B65 0%, #EE6E44 60%, #E55729 100%)',
                         }}
                       />
                       {/* Tier badge top-right */}

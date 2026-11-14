@@ -63,7 +63,7 @@ export function HomeSchema() {
         jobTitle: 'Founder & Lead Architect',
         worksFor: { '@id': `${baseUrl}/#organization` },
         url: baseUrl,
-        description: 'Founder and Lead Architect of SubmitKit, building done-for-you custom software, startup MVPs, and academic engineering kits for non-coders and students.',
+        description: 'Founder and Lead Architect of SubmitKit, building done-for-you custom software, end-to-end startups, and academic engineering kits for non-coders and students.',
       },
       {
         '@type': 'WebSite',
@@ -90,8 +90,8 @@ export function HomeSchema() {
         '@type': 'WebPage',
         '@id': `${baseUrl}/#webpage`,
         url: baseUrl,
-        name: `${CONSTANTS.APP_NAME} - Final Year CSE Projects with Source Code & IEEE Report (₹299)`,
-        description: CONSTANTS.TAGLINE_LONG,
+        name: `${CONSTANTS.APP_NAME} — Custom College Projects, Resume Software Systems & Startup Ideas Execution`,
+        description: 'Engineering platform tailored for college students, developers, and startup founders. Get pre-made systems (₹299/₹499) with IEEE reports, resume booster production software, and custom startup ideas executed into reality.',
         inLanguage: 'en-IN',
         isPartOf: { '@id': `${baseUrl}/#website` },
         about: { '@id': `${baseUrl}/#organization` },
@@ -167,9 +167,9 @@ export function HomeSchema() {
         '@type': 'Service',
         '@id': `${baseUrl}/#custom-studio`,
         name: 'Done-For-You Custom Software Studio for Non-Coders & Founders',
-        serviceType: 'Custom Software Development & Startup MVP Prototyping',
+        serviceType: 'Custom Software Development & End-to-End Startup Engineering',
         provider: { '@id': `${baseUrl}/#organization` },
-        description: 'Complete done-for-you custom software, web app, and startup MVP development built by senior engineers for non-coders and non-technical founders. 100% working source code, database architecture, 1-click launchers, and 1-on-1 walkthrough in 48-72 hours with zero coding required.',
+        description: 'Complete done-for-you custom software, web app, and end-to-end startup development built by senior engineers for non-coders and non-technical founders. 100% working source code, database architecture, 1-click launchers, and 1-on-1 walkthrough in 48-72 hours with zero coding required.',
         url: `${baseUrl}/custom`,
         offers: {
           '@type': 'Offer',
@@ -180,6 +180,25 @@ export function HomeSchema() {
         audience: {
           '@type': 'Audience',
           audienceType: 'Non-Coders, Non-Technical Founders, Students & Innovators',
+        },
+      },
+      {
+        '@type': 'Service',
+        '@id': `${baseUrl}/#startup-execution`,
+        name: 'Execute Startup Ideas into Software Studio',
+        serviceType: 'Startup Software Engineering & Custom SaaS Development',
+        provider: { '@id': `${baseUrl}/#organization` },
+        description: 'End-to-end full-stack software, mobile-friendly web apps, and SaaS platforms built from scratch for non-technical founders. 100% intellectual property ownership, modern UI, backend APIs, and database in 48-72 hours with zero coding needed.',
+        url: `${baseUrl}/startup`,
+        offers: {
+          '@type': 'Offer',
+          price: '1999',
+          priceCurrency: 'INR',
+          url: `${baseUrl}/startup`,
+        },
+        audience: {
+          '@type': 'Audience',
+          audienceType: 'Startup Founders, Non-Coders, Entrepreneurs, and Solo Innovators',
         },
       },
       {
@@ -195,10 +214,10 @@ export function HomeSchema() {
           },
           {
             '@type': 'Question',
-            name: 'How do non-technical founders use SubmitKit to build a startup MVP?',
+            name: 'How do non-technical founders use SubmitKit to build a startup?',
             acceptedAnswer: {
               '@type': 'Answer',
-              text: 'Non-technical founders use SubmitKit to turn their idea into a production-ready working MVP prototype in 48 to 72 hours starting at ₹1,999 (~$24 USD). SubmitKit delivers complete frontend UI, backend API, database, 1-click launchers, and full source code ownership without locking founders into expensive monthly no-code subscriptions or $5,000+ agency contracts.',
+              text: 'Non-technical founders use SubmitKit to turn their idea into production-ready working software and an end-to-end startup in 48 to 72 hours starting at ₹1,999 (~$24 USD). SubmitKit delivers complete frontend UI, backend API, database, 1-click launchers, and full source code ownership without locking founders into expensive monthly no-code subscriptions or $5,000+ agency contracts.',
             },
           },
           {
@@ -261,8 +280,8 @@ export function HomeSchema() {
       },
       {
         '@type': 'HowTo',
-        name: 'How Non-Coders Build a Startup MVP with SubmitKit',
-        description: '3-step rapid engineering process for non-technical founders to launch a custom working software prototype without writing code.',
+        name: 'How Non-Coders Build a Startup with SubmitKit',
+        description: '3-step rapid engineering process for non-technical founders to launch custom working software and turn ideas into reality without writing code.',
         totalTime: 'P3D',
         estimatedCost: {
           '@type': 'MonetaryAmount',

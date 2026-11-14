@@ -9,12 +9,12 @@ export function TechBadge({ tech, className }: TechBadgeProps) {
   // Soft, readable modern badge colors for light SaaS palette
   const getColorClasses = (t: string) => {
     const l = t.toLowerCase();
-    if (l.includes('python') || l.includes('django') || l.includes('fastapi')) return 'bg-blue-50 text-blue-700 border-blue-200/80';
-    if (l.includes('react') || l.includes('next')) return 'bg-sky-50 text-sky-700 border-sky-200/80';
-    if (l.includes('node') || l.includes('express')) return 'bg-emerald-50 text-emerald-700 border-emerald-200/80';
+    if (l.includes('python') || l.includes('django') || l.includes('fastapi')) return 'bg-amber-50 text-amber-800 border-amber-200/80';
+    if (l.includes('react') || l.includes('next')) return 'bg-[#FDF6F2] text-[#E55729] border-[#F3CFBF]';
+    if (l.includes('node') || l.includes('express')) return 'bg-[#FAF5EE] text-[#18181B] border-[#EFE6DC]';
     if (l.includes('tensor') || l.includes('ml') || l.includes('scikit') || l.includes('pandas')) return 'bg-orange-50 text-orange-700 border-orange-200/80';
-    if (l.includes('sql') || l.includes('mongo') || l.includes('db')) return 'bg-teal-50 text-teal-800 border-teal-200/80';
-    return 'bg-slate-100 text-slate-700 border-slate-200/80';
+    if (l.includes('sql') || l.includes('mongo') || l.includes('db')) return 'bg-stone-100 text-stone-800 border-stone-200';
+    return 'bg-[#FAF5EE] text-[#52525B] border-[#EFE6DC]';
   };
 
   return (

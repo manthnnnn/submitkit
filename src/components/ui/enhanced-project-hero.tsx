@@ -35,43 +35,28 @@ export function EnhancedProjectHero({
       aria-label="Project overview and key information"
       className={`transition-all duration-200 ${mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}`}
       style={{
-        background: 'linear-gradient(135deg, rgba(20, 184, 166, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%)',
+        background: 'linear-gradient(135deg, #FFFFFF 0%, #FFF8F3 100%)',
         borderRadius: '20px',
         padding: 'clamp(1.125rem, 3.5vw, 2rem)',
         marginBottom: '2rem',
-        border: '1px solid rgba(20, 184, 166, 0.1)',
+        border: '1px solid #F3CFBF',
         position: 'relative',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        boxShadow: '0 4px 20px rgba(229, 87, 41, 0.04)'
       }}
     >
-      {/* Animated background gradient orbs */}
+      {/* Subtle warm glow orb */}
       <div
         aria-hidden="true"
         style={{
           position: 'absolute',
-          top: '-50%',
-          right: '-20%',
-          width: '600px',
-          height: '600px',
-          background: 'radial-gradient(circle, rgba(20, 184, 166, 0.15) 0%, transparent 70%)',
-          borderRadius: '50%',
-          filter: 'blur(60px)',
-          animation: 'float 8s ease-in-out infinite',
-          pointerEvents: 'none'
-        }}
-      />
-      <div
-        aria-hidden="true"
-        style={{
-          position: 'absolute',
-          bottom: '-30%',
-          left: '-10%',
-          width: '500px',
-          height: '500px',
-          background: 'radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%)',
+          top: '-30%',
+          right: '-10%',
+          width: '400px',
+          height: '400px',
+          background: 'radial-gradient(circle, rgba(229, 87, 41, 0.08) 0%, transparent 70%)',
           borderRadius: '50%',
           filter: 'blur(50px)',
-          animation: 'float 6s ease-in-out infinite reverse',
           pointerEvents: 'none'
         }}
       />
@@ -111,14 +96,14 @@ export function EnhancedProjectHero({
               gap: '.5rem',
               padding: '.375rem .75rem',
               borderRadius: '9999px',
-              background: available ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)',
-              border: `1px solid ${available ? 'rgba(16, 185, 129, 0.2)' : 'rgba(245, 158, 11, 0.2)'}`
+              background: available ? '#FDF6F2' : 'rgba(245, 158, 11, 0.1)',
+              border: `1px solid ${available ? '#F3CFBF' : 'rgba(245, 158, 11, 0.2)'}`
             }}
           >
             {available ? (
               <>
-                <Zap style={{ width: '.875rem', height: '.875rem', color: '#10B981' }} aria-hidden="true" />
-                <span style={{ fontSize: '.8125rem', fontWeight: 600, color: '#047857' }}>
+                <Zap style={{ width: '.875rem', height: '.875rem', color: '#E55729' }} aria-hidden="true" />
+                <span style={{ fontSize: '.8125rem', fontWeight: 600, color: '#CB451A' }}>
                   Instant Download
                 </span>
               </>

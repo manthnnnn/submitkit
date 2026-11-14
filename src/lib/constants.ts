@@ -9,7 +9,7 @@ export const CONSTANTS = {
   FOUNDER_TITLE: 'Founder & Lead Architect',
 
   TAGLINE_SHORT: 'Turn Your Idea Into Working Software',
-  TAGLINE_LONG: 'Explore 11 verified 1-click engineering project kits or commission our done-for-you studio to build custom software, web apps, and startup MVPs for non-coders and founders with zero coding required.',
+  TAGLINE_LONG: 'Explore 11 verified 1-click engineering project kits or commission our done-for-you studio to build custom software, web apps, and end-to-end startups for non-coders and founders with zero coding required.',
 
   SEO_KEYWORDS: [
     'build software without coding',
@@ -17,8 +17,8 @@ export const CONSTANTS = {
     'how to build software if you are not a coder',
     'done for you tech startup studio',
     'turn startup idea into working software',
-    'mvp development for non technical founders',
-    'hire software engineers for startup mvp india',
+    'startup development for non technical founders',
+    'hire software engineers for startup india',
     'custom web application builder done for you',
     'saas prototype developer',
     'final year projects',

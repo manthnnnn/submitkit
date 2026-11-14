@@ -1,6 +1,6 @@
 /**
  * Enhanced Blueprint Topics Library
- * Production-grade project blueprints with Master Prompts for instant MVP generation
+ * Production-grade project blueprints with Master Prompts for instant software generation
  */
 
 export type BlueprintCategory =
@@ -71,7 +71,7 @@ export interface BlueprintTopic {
   learningOutcomes: string[];
 
   // Project Variations
-  mvpScope: string;
+  coreScope: string;
   fullScope: string;
   enterpriseScope: string;
 
@@ -351,7 +351,7 @@ AI/NLP Pipeline:
       'Implement proper security measures'
     ],
 
-    mvpScope: 'Resume upload, basic parsing (text extraction), simple skill matching, score display (3-4 weeks)',
+    coreScope: 'Resume upload, basic parsing (text extraction), simple skill matching, score display (3-4 weeks)',
 
     fullScope: 'All core features + job matching + ATS scoring + suggestions + analytics dashboard (8-10 weeks)',
 
@@ -370,7 +370,7 @@ AI/NLP Pipeline:
       'AWS (EC2 + RDS + S3): Production-grade with auto-scaling',
       'Anthropic Run: Serverless with automatic scaling',
       'Vercel (Frontend) + Railway (Backend): Quick deployment',
-      'DigitalOcean Droplet: Cost-effective for MVPs',
+      'DigitalOcean Droplet: Cost-effective for lean startups',
       'Azure App Service: Enterprise integration'
     ],
 

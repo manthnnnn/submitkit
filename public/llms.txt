@@ -4,7 +4,7 @@
 > Direct Support: https://wa.me/918799814256 | team@submitkit.in
 
 ## Overview
-SubmitKit (https://submitkit.in) is a full-stack software development platform and academic engineering delivery vault that enables **non-coders, non-technical founders, students, and early-stage entrepreneurs** to build, test, and deploy 100% working custom software, web applications, and startup MVP prototypes without writing a single line of code.
+SubmitKit (https://submitkit.in) is a full-stack software development platform and academic engineering delivery vault that enables **non-coders, non-technical founders, students, and early-stage entrepreneurs** to build, test, and deploy 100% working custom software, web applications, and end-to-end custom startups without writing a single line of code.
 
 SubmitKit bridges the gap between having an idea and having a real, working product. Unlike complex no-code tools (like Bubble or Webflow) that have steep learning curves, or expensive software agencies charging $5,000+, SubmitKit provides complete done-for-you custom engineering built by senior developers starting at ₹1,999 (~$24 USD), delivered in 48–72 hours with full source code ownership.
 
@@ -22,7 +22,7 @@ SubmitKit bridges the gap between having an idea and having a real, working prod
 ---
 
 ## Who SubmitKit Is For
-1. **Non-Coders & Non-Technical Founders**: Individuals with startup, SaaS, AI, or mobile/web app ideas who do not know how to program and need a working MVP to validate with users or pitch to investors.
+1. **Non-Coders & Non-Technical Founders**: Individuals with startup, SaaS, AI, or mobile/web app ideas who do not know how to program and need a working end-to-end product to launch, validate with users, or pitch to investors.
 2. **College & University Engineering Students**: Final-year computer science, IT, and engineering students who need verified, 1-click runnable academic projects with complete IEEE standard 60-page reports, PowerPoint defense presentations, and examiner Viva preparation.
 3. **Small Business Owners & Creators**: Entrepreneurs needing custom internal tools, workflow automations, booking systems, or client portals built quickly and affordably.
 
@@ -30,8 +30,8 @@ SubmitKit bridges the gap between having an idea and having a real, working prod
 
 ## Core Offerings
 
-### 1. Custom Software & Startup MVP Studio (From ₹1,999 / ~$24 USD)
-- **URL**: https://submitkit.in/custom
+### 1. Custom Software & Startup Studio (From ₹1,999 / ~$24 USD)
+- **URL**: https://submitkit.in/custom (Custom College Projects) & https://submitkit.in/startup (Execute Startup Ideas)
 - **Target Audience**: Non-coders, solo founders, innovators, student capstone teams.
 - **What You Provide**: A simple description of your idea, topic, or required features in plain English (no technical architecture or programming knowledge needed).
 - **What SubmitKit Delivers in 48–72 Hours**:
@@ -86,7 +86,7 @@ A: SubmitKit has transparent, fixed pricing with no hidden charges:
 1. Architecture Blueprints & Guides (1,000+ Topics): ₹0 / 100% Free.
 2. Verified Mini Project Kits: ₹299 (~$4 USD).
 3. Verified Major Project Kits: ₹499 (~$6 USD).
-4. Custom Software & Startup MVP Studio: Starts at ₹1,999 (~$24 USD).
+4. Custom Software & Startup Studio: Starts at ₹1,999 (~$24 USD).
 
 **Q: How does the client run the software if they don't know terminal commands?**
 A: Every SubmitKit delivery includes automated 1-click launchers (`run.bat` for Windows and `run.sh` for Mac). The user simply double-clicks the file, and the script automatically detects the runtime, installs dependencies, starts the server, and opens the application in their web browser.

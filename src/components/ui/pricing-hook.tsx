@@ -9,17 +9,17 @@ const DELIVERABLES = [
     Icon: Code2,
     label: '1-Click Runnable Code',
     sub: 'Double-click run.bat — zero errors, 2 min setup',
-    accent: '#0D9488',
-    bg: 'linear-gradient(135deg, #CCFBF1 0%, #E6FFFA 100%)',
-    border: 'rgba(13, 148, 136, 0.25)',
+    accent: '#E55729',
+    bg: 'linear-gradient(135deg, #FDF6F2 0%, #FAEDE5 100%)',
+    border: 'rgba(229, 87, 41, 0.25)',
   },
   {
     Icon: FileText,
     label: '30-Page IEEE Black Book (.docx)',
     sub: 'Pre-formatted, fill in your name & submit',
-    accent: '#0F766E',
-    bg: 'linear-gradient(135deg, #D1FAE5 0%, #ECFDF5 100%)',
-    border: 'rgba(5, 150, 105, 0.25)',
+    accent: '#18181B',
+    bg: 'linear-gradient(135deg, #F4F4F5 0%, #E4E4E7 100%)',
+    border: 'rgba(24, 24, 27, 0.2)',
   },
   {
     Icon: Presentation,
@@ -33,9 +33,9 @@ const DELIVERABLES = [
     Icon: CheckCircle2,
     label: 'Top 15 Viva Q&A with Answers',
     sub: 'Every question examiners typically ask',
-    accent: '#059669',
-    bg: 'linear-gradient(135deg, #D1FAE5 0%, #F0FDF4 100%)',
-    border: 'rgba(16, 185, 129, 0.25)',
+    accent: '#CB451A',
+    bg: 'linear-gradient(135deg, #FDF6F2 0%, #FAEDE5 100%)',
+    border: 'rgba(203, 69, 26, 0.25)',
   },
 ];
 
@@ -67,28 +67,28 @@ export function PricingHook() {
           <div
             style={{
               height: '3px',
-              background: 'linear-gradient(90deg, #0D9488 0%, #14B8A6 40%, #F59E0B 75%, #10B981 100%)',
+              background: 'linear-gradient(90deg, #EE6E44 0%, #E55729 40%, #CB451A 100%)',
             }}
           />
 
           <div className="pricing-hook-content p-4 sm:p-5 lg:p-6">
             {/* Executive Badges Row */}
             <div className="pricing-hook-badges flex items-center justify-between gap-2 mb-3">
-              <span className="tag tag-teal text-[11px] font-bold">
-                <Zap className="w-3 h-3 text-teal-600 fill-teal-600" />
-                Verified Kit
+              <span style={{ fontSize: '11px', fontWeight: 700, padding: '2px 8px', borderRadius: '9999px', background: '#FDF6F2', color: '#E55729', border: '1px solid #F3CFBF', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                <Zap style={{ width: '12px', height: '12px', color: '#E55729', fill: '#E55729' }} />
+                Pre-Made College Kit
               </span>
               <span className="tag tag-amber text-[11px] font-bold">
-                Mini Bundle
+                Resume Booster
               </span>
             </div>
 
             {/* Title & Tagline */}
             <h3 className="font-display text-2xl sm:text-[1.65rem] font-black text-slate-900 tracking-tight leading-tight mb-1">
-              Mini Project Kit
+              Software System (Mini Kit)
             </h3>
             <p className="pricing-hook-description text-xs sm:text-sm text-slate-600 leading-relaxed mb-3.5">
-              5th &amp; 6th semester done right. Download, run, submit with confidence.
+              Need a ready-made project for your resume? Want to enhance your developer profile for placements? Download, run, and submit with confidence.
             </p>
 
             {/* Clean, Non-Wrapping Price Showcase */}
@@ -99,7 +99,7 @@ export function PricingHook() {
               <span className="text-base sm:text-lg font-semibold text-slate-400 line-through whitespace-nowrap select-none inline-block">
                 ₹1499
               </span>
-              <span className="tag tag-teal text-[11px] sm:text-xs font-bold whitespace-nowrap">
+              <span style={{ fontSize: '11px', fontWeight: 800, padding: '2px 8px', borderRadius: '9999px', background: '#FDF6F2', color: '#E55729', border: '1px solid #F3CFBF' }}>
                 SAVE ₹1,200
               </span>
             </div>
@@ -136,21 +136,30 @@ export function PricingHook() {
             {/* High-Converting Minimal CTA Button */}
             <Link
               href="/projects?tier=MINI"
-              className="btn btn-teal w-full text-sm sm:text-base font-bold text-white group overflow-hidden"
+              className="w-full text-sm sm:text-base font-bold text-white group overflow-hidden"
               style={{
                 minHeight: '48px',
                 borderRadius: '12px',
+                background: '#18181B',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem',
+                boxShadow: '0 4px 14px rgba(24, 24, 27, 0.25)',
+                position: 'relative',
+                transition: 'all 180ms ease',
               }}
+              onMouseEnter={e => (e.currentTarget.style.background = '#27272A')}
+              onMouseLeave={e => (e.currentTarget.style.background = '#18181B')}
             >
-              <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
-              <Zap className="w-4 h-4 text-teal-200 fill-teal-200 shrink-0" />
+              <Zap className="w-4 h-4 text-white fill-white shrink-0" />
               <span className="whitespace-nowrap font-bold">Get Mini Kit — ₹{mini}</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform shrink-0" />
             </Link>
 
             {/* Guarantee Footnote */}
             <p className="pricing-hook-guarantee text-center text-[11px] text-slate-500 mt-2.5 flex items-center justify-center gap-1.5 font-medium flex-wrap">
-              <ShieldCheck className="w-3.5 h-3.5 text-teal-600 shrink-0" />
+              <ShieldCheck className="w-3.5 h-3.5 text-[#E55729] shrink-0" />
               <span>Instant Download · 100% Bug-Free Guarantee</span>
             </p>
 
@@ -163,11 +172,11 @@ export function PricingHook() {
               }}
             >
               <div className="min-w-0">
-                <div className="text-[10px] font-black text-teal-800 uppercase tracking-wider">
-                  Need Major Project?
+                <div style={{ fontSize: '10px', fontWeight: 900, color: '#E55729', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                  Need Production System? (Major Kit)
                 </div>
                 <div className="text-xs sm:text-sm font-bold text-slate-900 mt-0.5 whitespace-nowrap">
-                  ₹{major} <span className="text-[11px] font-normal text-slate-500">/ 60-pg Report</span>
+                  ₹{major} <span className="text-[11px] font-normal text-slate-500">/ 60-pg IEEE Report &amp; PPT</span>
                 </div>
               </div>
               <Link
@@ -176,7 +185,7 @@ export function PricingHook() {
                 style={{ minHeight: '32px', padding: '0 0.75rem', fontSize: '0.75rem', borderRadius: '8px', fontWeight: 700 }}
               >
                 <span>View</span>
-                <ArrowRight className="w-3.5 h-3.5 text-teal-700" />
+                <ArrowRight style={{ width: '14px', height: '14px', color: '#18181B' }} />
               </Link>
             </div>
           </div>

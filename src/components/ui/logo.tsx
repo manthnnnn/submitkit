@@ -11,11 +11,7 @@ interface LogoProps {
 }
 
 /**
- * SubmitKit Premier Brand Emblem
- *
- * Decent, Soft, Minimalist S-Monogram:
- * Soft dual-interlocking ribbons forming an S and a verified delivery kit fold.
- * Rendered inside a soft, warm cream-mint squircle with delicate border.
+ * SubmitKit Brand Emblem — Matte Orange Aerodynamic Airplane Logo
  */
 export function BrandMark({
   size = 'md',
@@ -31,7 +27,7 @@ export function BrandMark({
   style?: React.CSSProperties;
 }) {
   const uid = useId().replace(/:/g, 'x');
-  const dim = { xs: 24, sm: 30, md: 36, lg: 44 }[size];
+  const dim = { xs: 26, sm: 32, md: 38, lg: 48 }[size];
 
   return (
     <svg
@@ -45,94 +41,48 @@ export function BrandMark({
       style={{ flexShrink: 0, display: 'block', ...(style ?? {}) }}
     >
       <defs>
-        {/* Soft squircle background */}
-        <linearGradient id={`${uid}-bg`} x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-          {light ? (
-            <>
-              <stop offset="0%" stopColor="#1E293B" />
-              <stop offset="100%" stopColor="#0F172A" />
-            </>
-          ) : (
-            <>
-              <stop offset="0%" stopColor="#FFFFFF" />
-              <stop offset="55%" stopColor="#FAF7F2" />
-              <stop offset="100%" stopColor="#EEF8F5" />
-            </>
-          )}
+        <linearGradient id={`${uid}-bg`} x1="2" y1="2" x2="38" y2="38" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#EE6E44" />
+          <stop offset="55%" stopColor="#E55729" />
+          <stop offset="100%" stopColor="#CB451A" />
         </linearGradient>
-
-        {/* Soft delicate perimeter rim */}
-        <linearGradient id={`${uid}-rim`} x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-          {light ? (
-            <>
-              <stop offset="0%" stopColor="#2DD4BF" stopOpacity="0.4" />
-              <stop offset="100%" stopColor="#0D9488" stopOpacity="0.1" />
-            </>
-          ) : (
-            <>
-              <stop offset="0%" stopColor="rgba(255,255,255,0.9)" />
-              <stop offset="100%" stopColor="rgba(13,148,136,0.22)" />
-            </>
-          )}
-        </linearGradient>
-
-        {/* Upper S ribbon: Radiant Mint to Brand Teal */}
-        <linearGradient id={`${uid}-upper`} x1="14" y1="10" x2="27" y2="20" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor={light ? "#5EEAD4" : "#2DD4BF"} />
-          <stop offset="100%" stopColor="#0D9488" />
-        </linearGradient>
-
-        {/* Lower S ribbon: Brand Teal to Deep Forest Sage */}
-        <linearGradient id={`${uid}-lower`} x1="13" y1="20" x2="26" y2="30" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#0D9488" />
-          <stop offset="100%" stopColor={light ? "#0D9488" : "#0A7C72"} />
-        </linearGradient>
-
-        {/* Soft ambient drop shadow for the squircle */}
-        <filter id={`${uid}-sh`} x="-10%" y="-10%" width="120%" height="120%">
-          <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" floodColor={light ? "rgba(0,0,0,0.3)" : "rgba(13,148,136,0.08)"} />
+        <filter id={`${uid}-glow`} x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="2" stdDeviation="2.5" floodColor="rgba(229, 87, 41, 0.28)" />
         </filter>
       </defs>
 
-      {/* Soft Pebble/Squircle Base */}
-      <rect
-        width="40"
-        height="40"
-        rx="11"
-        fill={`url(#${uid}-bg)`}
-        stroke={`url(#${uid}-rim)`}
-        strokeWidth="1.2"
-        filter={`url(#${uid}-sh)`}
-      />
+      {/* Aerodynamic Squircle Badge with Matte Orange Airplane Logo */}
+      <g filter={`url(#${uid}-glow)`}>
+        <rect x="2" y="2" width="36" height="36" rx="10" fill={`url(#${uid}-bg)`} />
+        <rect x="2.5" y="2.5" width="35" height="35" rx="9.5" stroke="rgba(255,255,255,0.32)" strokeWidth="1" />
 
-      {/* Upper S ribbon (Forward / Submit momentum) */}
-      <path
-        d="M 14.5 17.5 C 14.5 13 17.2 10.5 21.5 10.5 C 25.5 10.5 27 13 27 15.5 C 27 18.2 24.5 19.5 20.8 20.2"
-        stroke={`url(#${uid}-upper)`}
-        strokeWidth="3.2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        fill="none"
-      />
-
-      {/* Lower S ribbon (Foundation / Kit container) */}
-      <path
-        d="M 25.5 22.5 C 25.5 27 22.8 29.5 18.5 29.5 C 14.5 29.5 13 27 13 24.5 C 13 21.8 15.5 20.5 19.2 19.8"
-        stroke={`url(#${uid}-lower)`}
-        strokeWidth="3.2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        fill="none"
-      />
-
-      {/* Subtle apex mint accent dot */}
-      <circle cx="21.5" cy="10.5" r="1.3" fill={light ? "#5EEAD4" : "#2DD4BF"} />
+        {/* Supersonic Aerodynamic Airplane (Ivory & Faceted Wings) */}
+        <path
+          d="M30 10L26 28L19 23L30 10Z"
+          fill="#FFFFFF"
+          fillOpacity="0.98"
+        />
+        <path
+          d="M30 10L19 23L11 21L30 10Z"
+          fill="#FAF5EE"
+          fillOpacity="0.82"
+        />
+        <path
+          d="M30 10L19 23"
+          stroke="#CB451A"
+          strokeWidth="1"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+        <circle cx="13" cy="27" r="1.2" fill="#FFFFFF" fillOpacity="0.75" />
+        <circle cx="9" cy="30" r="0.8" fill="#FFFFFF" fillOpacity="0.5" />
+      </g>
     </svg>
   );
 }
 
 /**
- * BrandIcon: Clean typographic SK monogram badge for Certificates & Avatars
+ * BrandIcon: Typographic SK monogram badge for Certificates & Avatars
  */
 export function BrandIcon({
   size = 'md',
@@ -149,7 +99,7 @@ export function BrandIcon({
 
   return (
     <div
-      className={`relative inline-flex items-center justify-center font-black font-sans bg-teal-50 border border-teal-200/80 text-teal-800 shadow-xs shrink-0 select-none ${dim} ${className}`}
+      className={`relative inline-flex items-center justify-center font-black font-sans bg-[#FFF5F2] border border-[#FFD4C8] text-[#EA4820] shadow-xs shrink-0 select-none ${dim} ${className}`}
       style={{ letterSpacing: '-0.02em' }}
     >
       SK
@@ -158,8 +108,8 @@ export function BrandIcon({
 }
 
 /**
- * SubmitKit Pure Typographic Wordmark Logo
- * Clean, executive, modern typography without distracting icon shapes.
+ * SubmitKit Pure Brand Logo — Minimalist Typographic Wordmark
+ * Displays pure, clean "SubmitKit.in" with zero icon clutter
  */
 export function Logo({
   size = 'md',
@@ -169,10 +119,10 @@ export function Logo({
   light = false,
 }: LogoProps) {
   const sz = {
-    xs: { name: '1.0625rem', dot: '4px' },
-    sm: { name: '1.25rem',   dot: '4.5px' },
-    md: { name: '1.4375rem', dot: '5px' },
-    lg: { name: '1.875rem',  dot: '6px' },
+    xs: { name: '1.0625rem', tld: '0.9375rem' },
+    sm: { name: '1.2rem',    tld: '1.05rem' },
+    md: { name: '1.375rem',  tld: '1.2rem' },
+    lg: { name: '1.75rem',   tld: '1.5rem' },
   }[size];
 
   const inner = (
@@ -180,10 +130,9 @@ export function Logo({
       className={className}
       style={{
         display: 'inline-flex',
-        flexDirection: 'column',
-        justifyContent: 'center',
+        alignItems: 'center',
         flexShrink: 0,
-        transition: 'opacity 150ms ease, transform 150ms ease',
+        transition: 'transform 180ms cubic-bezier(.16, 1, .3, 1), opacity 150ms ease',
         cursor: 'pointer',
         userSelect: 'none',
       }}
@@ -193,48 +142,53 @@ export function Logo({
       <div
         style={{
           display: 'inline-flex',
-          alignItems: 'baseline',
-          fontSize: sz.name,
-          fontWeight: 800,
-          letterSpacing: '-0.04em',
-          lineHeight: 1,
-          fontFamily: 'var(--font-sans)',
+          flexDirection: 'column',
+          justifyContent: 'center',
         }}
       >
-        <span style={{ color: light ? '#FAF8F5' : '#0F172A', fontWeight: 800 }}>
-          Submit
-        </span>
-        <span style={{ color: 'var(--teal)', fontWeight: 800 }}>
-          Kit
-        </span>
-        <span
-          style={{
-            display: 'inline-block',
-            width: sz.dot,
-            height: sz.dot,
-            borderRadius: '50%',
-            background: 'var(--teal)',
-            marginLeft: '2.5px',
-            marginBottom: '2px',
-            opacity: 0.9,
-          }}
-        />
-      </div>
-      {showSub && (
         <div
           style={{
-            fontSize: '.625rem',
-            fontWeight: 700,
-            color: light ? '#8A8278' : 'var(--ink-4)',
-            letterSpacing: '.09em',
-            textTransform: 'uppercase',
+            display: 'inline-flex',
+            alignItems: 'baseline',
+            fontSize: sz.name,
+            fontWeight: 850,
+            letterSpacing: '-0.04em',
             lineHeight: 1,
-            marginTop: '.25rem',
+            fontFamily: 'var(--font-sans)',
           }}
         >
-          Verified Project Vault
+          <span style={{ color: light ? '#FAF8F5' : '#18181B', fontWeight: 850, letterSpacing: '-0.04em' }}>
+            SubmitKit
+          </span>
+          <span
+            style={{
+              color: '#E55729',
+              fontWeight: 800,
+              fontSize: sz.tld,
+              letterSpacing: '-0.02em',
+              marginLeft: '1px',
+              transition: 'color 150ms ease',
+            }}
+          >
+            .in
+          </span>
         </div>
-      )}
+        {showSub && (
+          <div
+            style={{
+              fontSize: '.625rem',
+              fontWeight: 700,
+              color: light ? '#A1A1AA' : '#71717A',
+              letterSpacing: '.09em',
+              textTransform: 'uppercase',
+              lineHeight: 1,
+              marginTop: '.25rem',
+            }}
+          >
+            Verified Project Vault
+          </div>
+        )}
+      </div>
     </div>
   );
 
@@ -250,5 +204,89 @@ export function Logo({
     >
       {inner}
     </Link>
+  );
+}
+
+/**
+ * AirplaneLogo — Matte Orange Premium Aerospace / Launch Emblem
+ * Clean geometric vector airplane designed for high-end international SaaS
+ */
+export function AirplaneLogo({
+  size = 20,
+  className = '',
+  color = '#E55729',
+  style,
+}: {
+  size?: number;
+  className?: string;
+  color?: string;
+  style?: React.CSSProperties;
+}) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      style={{ display: 'inline-block', verticalAlign: 'middle', flexShrink: 0, ...style }}
+      aria-hidden="true"
+    >
+      <path
+        d="M22 2L11 13"
+        stroke={color}
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M22 2L15 22L11 13L2 9L22 2Z"
+        fill={color}
+        fillOpacity="0.18"
+        stroke={color}
+        strokeWidth="2"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+export function SupersonicPlane({
+  size = 22,
+  className = '',
+  style,
+}: {
+  size?: number;
+  className?: string;
+  style?: React.CSSProperties;
+}) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      style={{ display: 'inline-block', verticalAlign: 'middle', flexShrink: 0, ...style }}
+      aria-hidden="true"
+    >
+      <path
+        d="M21.5 2.5L10 14"
+        stroke="#E55729"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M21.5 2.5L14.5 21.5L10 14L2.5 9.5L21.5 2.5Z"
+        fill="#E55729"
+        fillOpacity="0.18"
+        stroke="#E55729"
+        strokeWidth="1.8"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }

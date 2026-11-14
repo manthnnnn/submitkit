@@ -21,7 +21,7 @@ export default function robots(): MetadataRoute.Robots {
           'Applebot-Extended',
           'cohere-ai',
         ],
-        allow: ['/', '/custom', '/projects', '/blueprint', '/llms.txt', '/llms-full.txt'],
+        allow: ['/', '/custom', '/startup', '/projects', '/blueprint', '/llms.txt', '/llms-full.txt'],
         disallow: ['/admin/', '/api/'],
       },
     ],

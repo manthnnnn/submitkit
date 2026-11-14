@@ -1,33 +1,43 @@
 <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- Folder Base Outline (Solid Bright Emerald) -->
-  <path
-    d="M6 14C6 11.7909 7.79086 10 10 10H18L24 16H38C40.2091 16 42 17.7909 42 20V24"
-    stroke="#10b981"
-    stroke-width="6"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  />
-  <path
-    d="M6 14V38C6 40.2091 7.79086 42 10 42H30"
-    stroke="#10b981"
-    stroke-width="6"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  />
-  
-  <!-- The Launch Checkmark Arrow (Solid Bright Mint) -->
-  <path
-    d="M16 28L24 36L42 12"
-    stroke="#34d399"
-    stroke-width="6"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  />
-  <path
-    d="M30 12H42V24"
-    stroke="#34d399"
-    stroke-width="6"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  />
+  <defs>
+    <linearGradient id="bgGrad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#EE6E44" />
+      <stop offset="55%" stop-color="#E55729" />
+      <stop offset="100%" stop-color="#CB451A" />
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="rgba(24, 24, 27, 0.25)" />
+    </filter>
+  </defs>
+
+  <!-- Premium Matte Terracotta Squircle Background -->
+  <rect x="2" y="2" width="44" height="44" rx="12" fill="url(#bgGrad)" />
+  <rect x="2.5" y="2.5" width="43" height="43" rx="11.5" stroke="rgba(255,255,255,0.28)" stroke-width="1" />
+
+  <!-- Supersonic Aerodynamic Airplane (Ivory & Faceted Wings) -->
+  <g filter="url(#shadow)">
+    <!-- Right Wing (Direct Light) -->
+    <path
+      d="M36 12L31 34L23 28L36 12Z"
+      fill="#FFFFFF"
+      fill-opacity="0.98"
+    />
+    <!-- Left Wing (Ambient Shade) -->
+    <path
+      d="M36 12L23 28L13 25L36 12Z"
+      fill="#FAF5EE"
+      fill-opacity="0.82"
+    />
+    <!-- Center Fuselage Keel Fold -->
+    <path
+      d="M36 12L23 28"
+      stroke="#CB451A"
+      stroke-width="1.2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <!-- Subtle Dynamic Speed Spark -->
+    <circle cx="16" cy="33" r="1.5" fill="#FFFFFF" fill-opacity="0.7" />
+    <circle cx="11" cy="36" r="1" fill="#FFFFFF" fill-opacity="0.45" />
+  </g>
 </svg>

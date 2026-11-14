@@ -53,36 +53,41 @@ export default function OrderLookupPage() {
         </div>
 
         {/* Header */}
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .16 }}
+        <motion.div
+          initial={{ opacity: 0, y: 20, rotateX: 2.5 }}
+          animate={{ opacity: 1, y: 0, rotateX: 0 }}
+          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
           style={{ textAlign: 'center', marginBottom: '2rem' }}
         >
-          <div style={{ width: '3.5rem', height: '3.5rem', borderRadius: '16px', background: 'var(--surface-teal)', border: '1px solid var(--teal-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1rem' }}>
-            <Package style={{ width: '1.625rem', height: '1.625rem', color: 'var(--teal)' }} />
+          <div style={{ width: '3.75rem', height: '3.75rem', borderRadius: '18px', background: '#FDF6F2', border: '1px solid #F3CFBF', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 1.25rem', boxShadow: '0 4px 14px rgba(229, 87, 41, 0.15)' }}>
+            <Package style={{ width: '1.75rem', height: '1.75rem', color: '#E55729' }} />
           </div>
-          <h1 className="font-display" style={{ fontSize: '1.625rem', fontWeight: 800, color: 'var(--navy)', letterSpacing: '-.035em', marginBottom: '.5rem' }}>
+          <h1 className="font-display font-black" style={{ fontSize: '1.875rem', color: '#18181B', letterSpacing: '-.035em', marginBottom: '.5rem', lineHeight: 1.2 }}>
             Your project, one step closer.
           </h1>
-          <p style={{ fontSize: '.9375rem', color: 'var(--ink-3)', lineHeight: 1.65 }}>
+          <p style={{ fontSize: '.9375rem', color: '#52525B', lineHeight: 1.65 }}>
             Enter your Order ID, Email, or Phone to track status and download your project kit.
           </p>
         </motion.div>
 
         {/* Card */}
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .16 }}
-          className="card"
-          style={{ padding: '1.75rem', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}
+        <motion.div
+          initial={{ opacity: 0, y: 24, rotateX: 2.5, scale: 0.99 }}
+          animate={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
+          transition={{ duration: 0.55, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
+          style={{ padding: '2rem', borderRadius: '24px', background: '#FFFFFF', border: '1.5px solid #EFE6DC', boxShadow: '0 12px 36px -4px rgba(24, 24, 27, 0.08)', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}
         >
           {/* Hint */}
-          <div style={{ padding: '.875rem', borderRadius: '12px', background: 'var(--surface-teal)', border: '1px solid var(--teal-100)', fontSize: '.8125rem', color: 'var(--teal-dark)', lineHeight: 1.65 }}>
-            <strong>Tip:</strong> Enter your 8-digit Order ID (e.g.{' '}
-            <code style={{ background: 'var(--teal-100)', padding: '.125rem .375rem', borderRadius: '4px', fontFamily: 'var(--font-mono)', fontSize: '.8125rem' }}>A3F9B2C1</code>
+          <div style={{ padding: '.875rem 1rem', borderRadius: '14px', background: '#FDF6F2', border: '1px solid #F3CFBF', fontSize: '.8125rem', color: '#18181B', lineHeight: 1.65 }}>
+            <strong style={{ color: '#E55729' }}>Tip:</strong> Enter your 8-digit Order ID (e.g.{' '}
+            <code style={{ background: '#FAECE5', color: '#E55729', padding: '.125rem .375rem', borderRadius: '6px', fontFamily: 'var(--font-mono)', fontSize: '.8125rem', fontWeight: 700 }}>A3F9B2C1</code>
             ), email address, or phone number.
           </div>
 
           {/* Form */}
-          <form onSubmit={handleLookup} style={{ display: 'flex', flexDirection: 'column', gap: '.875rem' }}>
+          <form onSubmit={handleLookup} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
             <div>
-              <label style={{ display: 'block', fontSize: '.75rem', fontWeight: 700, color: 'var(--ink-3)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: '.5rem' }}>
+              <label style={{ display: 'block', fontSize: '.75rem', fontWeight: 700, color: '#71717A', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: '.5rem' }}>
                 Order ID, Email, or Phone
               </label>
               <input
@@ -91,7 +96,16 @@ export default function OrderLookupPage() {
                 value={query}
                 onChange={e => { setQuery(e.target.value); if (state === 'error') { setState('idle'); setError(null); } if (state === 'found') { setState('idle'); setResult(null); } }}
                 autoComplete="off" spellCheck={false}
-                className="input"
+                style={{
+                  width: '100%',
+                  padding: '.75rem 1rem',
+                  borderRadius: '12px',
+                  border: '1.5px solid #EFE6DC',
+                  background: '#FFFFFF',
+                  color: '#18181B',
+                  fontSize: '1rem',
+                  outline: 'none',
+                }}
               />
             </div>
 
@@ -103,7 +117,7 @@ export default function OrderLookupPage() {
                   <p style={{ fontSize: '.875rem', color: 'var(--rose)', lineHeight: 1.55 }}>{error}</p>
                   {limitReached && (
                     <a href={waLink} target="_blank" rel="noopener noreferrer"
-                      style={{ display: 'inline-flex', alignItems: 'center', gap: '.375rem', marginTop: '.5rem', fontSize: '.8125rem', fontWeight: 700, color: 'var(--teal)', textDecoration: 'none' }}
+                      style={{ display: 'inline-flex', alignItems: 'center', gap: '.375rem', marginTop: '.5rem', fontSize: '.8125rem', fontWeight: 700, color: '#E55729', textDecoration: 'none' }}
                     >
                       <MessageCircle style={{ width: '.875rem', height: '.875rem' }} /> WhatsApp us for a reset
                     </a>
@@ -114,35 +128,50 @@ export default function OrderLookupPage() {
 
             {/* Found */}
             {state === 'found' && result && (
-              <div style={{ padding: '1.125rem', borderRadius: '12px', background: 'var(--emerald-50)', border: '1px solid var(--emerald-100)', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div style={{ padding: '1.125rem', borderRadius: '14px', background: '#FDF6F2', border: '1px solid #F3CFBF', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem' }}>
-                  <CheckCircle2 style={{ width: '1rem', height: '1rem', color: 'var(--emerald)', flexShrink: 0 }} />
-                  <p style={{ fontSize: '.9rem', fontWeight: 700, color: 'var(--emerald)' }}>Order found!</p>
+                  <CheckCircle2 style={{ width: '1.125rem', height: '1.125rem', color: '#E55729', flexShrink: 0 }} />
+                  <p style={{ fontSize: '.9375rem', fontWeight: 800, color: '#E55729' }}>Order verified!</p>
                 </div>
 
-                <div style={{ padding: '.75rem', borderRadius: '10px', background: 'var(--surface)', border: '1px solid var(--line)' }}>
-                  <p style={{ fontSize: '.625rem', fontWeight: 700, color: 'var(--ink-4)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: '.25rem' }}>Project</p>
-                  <p style={{ fontSize: '.9375rem', fontWeight: 700, color: 'var(--navy)' }}>{result.projectTitle}</p>
-                  <p style={{ fontSize: '.75rem', color: 'var(--ink-4)', marginTop: '.25rem', fontFamily: 'var(--font-mono)' }}>
+                <div style={{ padding: '.875rem', borderRadius: '12px', background: '#FFFFFF', border: '1px solid #F3CFBF' }}>
+                  <p style={{ fontSize: '.6875rem', fontWeight: 700, color: '#71717A', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: '.25rem' }}>Project</p>
+                  <p style={{ fontSize: '1rem', fontWeight: 800, color: '#18181B' }}>{result.projectTitle}</p>
+                  <p style={{ fontSize: '.75rem', color: '#71717A', marginTop: '.25rem', fontFamily: 'var(--font-mono)' }}>
                     Downloads: {result.downloadCount} / {result.downloadLimit}
                   </p>
                 </div>
 
                 <button type="button" onClick={handleDownload} disabled={downloading}
-                  className="btn btn-teal"
-                  style={{ width: '100%', justifyContent: 'center', borderRadius: '12px', minHeight: '52px', fontSize: '1rem', opacity: downloading ? .7 : 1 }}
+                  style={{
+                    width: '100%',
+                    justifyContent: 'center',
+                    borderRadius: '9999px',
+                    minHeight: '50px',
+                    fontSize: '1rem',
+                    fontWeight: 700,
+                    background: 'linear-gradient(180deg, #EE6E44 0%, #E55729 100%)',
+                    color: '#FFFFFF',
+                    border: 'none',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '.5rem',
+                    boxShadow: '0 4px 14px rgba(229, 87, 41, 0.28)',
+                    opacity: downloading ? .7 : 1,
+                  }}
                 >
                   {downloading ? <><Loader2 style={{ width: '1rem', height: '1rem', animation: 'spin .7s linear infinite' }} /> Preparing…</> : <><Download style={{ width: '1rem', height: '1rem' }} /> Download Bundle (.zip)</>}
                 </button>
 
-                <div style={{ display: 'flex', gap: '.75rem', justifyContent: 'center' }}>
+                <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
                   <Link href={`/viva/${result.orderId}`}
-                    style={{ display: 'inline-flex', alignItems: 'center', gap: '.25rem', fontSize: '.8125rem', fontWeight: 600, color: 'var(--violet)', textDecoration: 'none' }}
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: '.25rem', fontSize: '.8125rem', fontWeight: 700, color: '#E55729', textDecoration: 'none' }}
                   >
                     Viva Q&amp;A <ArrowRight style={{ width: '.8125rem', height: '.8125rem' }} />
                   </Link>
                   <Link href={`/certificate/${result.orderId}`} target="_blank"
-                    style={{ display: 'inline-flex', alignItems: 'center', gap: '.25rem', fontSize: '.8125rem', fontWeight: 600, color: 'var(--amber)', textDecoration: 'none' }}
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: '.25rem', fontSize: '.8125rem', fontWeight: 700, color: '#B45309', textDecoration: 'none' }}
                   >
                     Certificate <ArrowRight style={{ width: '.8125rem', height: '.8125rem' }} />
                   </Link>
@@ -152,14 +181,34 @@ export default function OrderLookupPage() {
 
             {/* Submit */}
             {state !== 'found' && (
-              <button type="submit" disabled={state === 'loading' || !query.trim()} className="btn btn-teal" style={{ width: '100%', justifyContent: 'center', borderRadius: '12px', minHeight: '52px', fontSize: '1rem', opacity: (state === 'loading' || !query.trim()) ? .6 : 1 }}>
+              <button
+                type="submit"
+                disabled={state === 'loading' || !query.trim()}
+                style={{
+                  width: '100%',
+                  justifyContent: 'center',
+                  borderRadius: '9999px',
+                  minHeight: '50px',
+                  fontSize: '1rem',
+                  fontWeight: 700,
+                  background: '#18181B',
+                  color: '#FFFFFF',
+                  border: 'none',
+                  cursor: (state === 'loading' || !query.trim()) ? 'not-allowed' : 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '.5rem',
+                  boxShadow: '0 2px 8px rgba(24, 24, 27, 0.25)',
+                  opacity: (state === 'loading' || !query.trim()) ? .6 : 1,
+                }}
+              >
                 {state === 'loading' ? <><Loader2 style={{ width: '1rem', height: '1rem', animation: 'spin .7s linear infinite' }} /> Looking up…</> : <><Search style={{ width: '1rem', height: '1rem' }} /> Find My Order</>}
               </button>
             )}
 
             {state === 'found' && (
               <button type="button" onClick={() => { setState('idle'); setResult(null); setQuery(''); }}
-                style={{ width: '100%', padding: '.625rem', borderRadius: '10px', background: 'none', border: '1px solid var(--line)', cursor: 'pointer', fontSize: '.875rem', color: 'var(--ink-3)', fontWeight: 500, fontFamily: 'var(--font-sans)' }}
+                style={{ width: '100%', padding: '.625rem', borderRadius: '9999px', background: '#FAF5EE', border: '1px solid #EFE6DC', cursor: 'pointer', fontSize: '.875rem', color: '#18181B', fontWeight: 600, fontFamily: 'var(--font-sans)' }}
               >
                 Look up a different order
               </button>
@@ -178,7 +227,7 @@ export default function OrderLookupPage() {
               <span style={{ color: 'var(--navy)' }}>team@submitkit.in</span> — the subject line contains your Order ID. Check your spam folder too.
             </p>
             <a href={waLink} target="_blank" rel="noopener noreferrer"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '.375rem', marginTop: '.625rem', fontSize: '.875rem', fontWeight: 700, color: 'var(--teal)', textDecoration: 'none' }}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '.375rem', marginTop: '.625rem', fontSize: '.875rem', fontWeight: 700, color: '#E55729', textDecoration: 'none' }}
             >
               <MessageCircle style={{ width: '.9375rem', height: '.9375rem' }} /> WhatsApp +91 87998 14256
             </a>

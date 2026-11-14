@@ -5,10 +5,12 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import {
-  CheckCircle2, ArrowRight, Sparkles, Code2,
-  Terminal, Clock, ShieldCheck, Star, MessageCircle,
-  Loader2, Home, ChevronRight, Zap
+  CheckCircle2, ArrowRight, ArrowDown, Sparkles, Code2,
+  Terminal, Clock, ShieldCheck, Star, MessageCircle, MessageSquare,
+  Loader2, Home, ChevronRight, Zap, Rocket, GraduationCap,
+  User, Mail, Phone, Building2, Calendar, FileText, Send, Lock
 } from "lucide-react";
+import { AirplaneLogo } from "@/components/ui/logo";
 
 const TECH_OPTIONS = [
   "Python + Streamlit / FastAPI (AI/ML)",
@@ -36,87 +38,133 @@ const CATEGORY_OPTIONS = [
   "Other Custom Topic",
 ];
 
-const TIERS = [
+interface TierOption {
+  id: string;
+  name: string;
+  price: string;
+  usdPrice: string;
+  tag: string;
+  tagBg: string;
+  tagColor: string;
+  tagBorder: string;
+  subtext: string;
+  features: string[];
+  popular?: boolean;
+  exploreHref?: string;
+  exploreLabel?: string;
+}
+
+const COLLEGE_TIERS: TierOption[] = [
   {
     id: "mini",
-    name: "Mini Project",
+    name: "Software System (Mini Kit)",
     price: "₹299",
     usdPrice: "(~$4 USD)",
-    tag: "Ready Kit",
+    tag: "Pre-Made · ₹299",
     exploreHref: "/projects?tier=MINI",
-    exploreLabel: "Explore Ready Mini Kits (₹299)",
-    tagBg: "var(--teal-50)",
-    tagColor: "var(--teal-dark)",
-    tagBorder: "var(--teal-100)",
-    subtext: "Instant download · 1-click runnable code & IEEE report",
+    exploreLabel: "Explore Systems (₹299)",
+    tagBg: "#FDF6F2",
+    tagColor: "#E55729",
+    tagBorder: "#F3CFBF",
+    subtext: "Instant pre-made kit for college submissions & resume",
     features: [
-      "Complete working source code (1-click runnable)",
-      "25+ page IEEE-format report (.docx)",
-      "10-slide defense presentation (.pptx)",
-      "Top 15 Viva Q&A with examiner answers",
-      "README with step-by-step setup guide",
-      "Instant download & direct support",
+      "1-click runnable complete source code (run.bat / run.sh)",
+      "30+ page IEEE format report (.docx)",
+      "10-slide defense PPT with Top 15 Viva Q&A",
     ],
   },
   {
     id: "major",
-    name: "Major Project",
+    name: "Production System (Major Kit)",
     price: "₹499",
     usdPrice: "(~$6 USD)",
-    tag: "Final Year Capstone",
+    tag: "Production Capstone · ₹499",
     exploreHref: "/projects?tier=MAJOR",
-    exploreLabel: "Explore Ready Major Kits (₹499)",
+    exploreLabel: "Explore Systems (₹499)",
     tagBg: "var(--amber-50)",
     tagColor: "var(--amber)",
     tagBorder: "var(--amber-100)",
-    subtext: "Instant download · Full 60-page IEEE report & PPT",
+    subtext: "Complete capstone for university & high-impact portfolio",
     features: [
-      "Full working source code (AI/ML/Web logic included)",
+      "Full production source code with AI/ML/Web logic",
       "60+ page IEEE Black Book report (.docx)",
-      "15–20 slide defense PPT with speaker notes",
-      "Top 25 Viva Q&A with detailed answers",
-      "System architecture diagram & deployment guide",
-      "Instant download & direct support",
+      "15–20 slide defense PPT with Top 25 Viva Q&A",
     ],
   },
   {
     id: "custom",
-    name: "Customize Project / Startup Idea",
+    name: "Custom College Project",
     price: "₹1,999",
     usdPrice: "(~$24 USD)",
-    tag: "Custom Built from Scratch",
+    tag: "Custom University Capstone",
     popular: true,
-    tagBg: "rgba(217,119,6,0.08)",
-    tagColor: "#D97706",
-    tagBorder: "rgba(217,119,6,0.2)",
-    subtext: "*Starting base price · Built to your topic or startup idea",
+    tagBg: "rgba(229,87,41,0.08)",
+    tagColor: "#E55729",
+    tagBorder: "rgba(229,87,41,0.25)",
+    subtext: "*Starting base price · Built to your approved topic & syllabus",
     features: [
-      "Custom college project topic or startup MVP prototype",
-      "Tailored algorithm, custom dataset & clean production code",
-      "Complete 60+ page custom IEEE-format report (.docx)",
-      "Custom defense PPT + Viva Q&A examiner prep",
-      "1-on-1 code walkthrough on WhatsApp / Google Meet",
-      "Delivered in 48–72 hours with bug-free guarantee",
+      "Approved topic built from scratch by senior engineers",
+      "Complete 60+ page custom IEEE Black Book report (.docx)",
+      "Custom defense PPT + 1-on-1 walkthrough call",
+    ],
+  },
+];
+
+const STARTUP_TIERS: TierOption[] = [
+  {
+    id: "custom",
+    name: "Execute Startup Idea",
+    price: "₹1,999",
+    usdPrice: "(~$24 USD)",
+    tag: "End-to-End Startup Build",
+    popular: true,
+    tagBg: "rgba(229,87,41,0.08)",
+    tagColor: "#E55729",
+    tagBorder: "rgba(229,87,41,0.25)",
+    subtext: "*Starting base price · Built to your custom specification",
+    features: [
+      "End-to-end full-stack web app or SaaS built from scratch",
+      "Database models, authentication & backend REST APIs",
+      "100% intellectual property & commercial rights transfer",
+    ],
+  },
+  {
+    id: "enterprise",
+    name: "Full-Scale SaaS Platform",
+    price: "Custom",
+    usdPrice: "Tailored Quote",
+    tag: "Dedicated Studio Desk",
+    tagBg: "rgba(24,24,27,0.06)",
+    tagColor: "#18181B",
+    tagBorder: "rgba(24,24,27,0.18)",
+    subtext: "For complex multi-tenant SaaS & high-scale systems",
+    features: [
+      "Custom multi-tenant architecture & cloud deployment",
+      "AI LLM agent pipelines / computer vision workflows",
+      "Priority senior engineer support channel & full NDA",
     ],
   },
 ];
 
 const inputSty = (extra?: React.CSSProperties): React.CSSProperties => ({
   width: "100%",
-  background: "var(--surface-2)",
-  border: "1.5px solid var(--line)",
+  background: "#FAF7F2",
+  border: "1px solid #E5DCD1",
   borderRadius: "10px",
-  padding: ".6875rem .875rem",
-  fontSize: "16px", /* 16px prevents iOS Safari viewport auto-zoom */
-  color: "var(--ink)",
+  padding: "0.45rem 0.65rem",
+  fontSize: "0.8125rem",
+  color: "#18181B",
   outline: "none",
   fontFamily: "var(--font-sans)",
-  transition: "border-color 150ms, background 150ms",
+  transition: "all 150ms ease",
   ...extra,
 });
 
-export function CustomProjectClient() {
+export function CustomProjectClient({ initialMode }: { initialMode?: 'college' | 'startup' } = {}) {
   const sp = useSearchParams();
+  const [mode, setMode] = useState<'college' | 'startup'>(
+    initialMode || (sp?.get("type") === "startup" ? "startup" : "college")
+  );
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -126,18 +174,24 @@ export function CustomProjectClient() {
     topic: "",
     techPreference: "No Preference (Engineering Team Decides)",
     deadline: "",
+    timeline: "48h",
     specialRequirements: "",
     tier: "custom",
   });
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   useEffect(() => {
+    const urlType = sp?.get("type")?.toLowerCase();
+    if (urlType === "startup") setMode("startup");
+    else if (urlType === "college") setMode("college");
+
     const urlTopic = sp?.get("topic");
     const urlTier = sp?.get("tier")?.toLowerCase();
     if (urlTopic || urlTier) {
       setForm((prev) => ({
         ...prev,
         topic: urlTopic || prev.topic,
-        tier: urlTier && ["mini", "major", "custom"].includes(urlTier) ? urlTier : prev.tier,
+        tier: urlTier && ["mini", "major", "custom", "enterprise"].includes(urlTier) ? urlTier : prev.tier,
       }));
     }
   }, [sp]);
@@ -145,7 +199,8 @@ export function CustomProjectClient() {
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const selectedTier = TIERS.find((t) => t.id === form.tier) || TIERS[2]!;
+  const currentTiers = mode === "college" ? COLLEGE_TIERS : STARTUP_TIERS;
+  const selectedTier = currentTiers.find((t) => t.id === form.tier) || currentTiers[1] || currentTiers[0]!;
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -154,37 +209,71 @@ export function CustomProjectClient() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
+    const topicStr = form.topic.trim();
+    const phoneStr = form.phone.trim();
+    const nameStr = form.name.trim() || "Visitor";
+
+    if (!topicStr) {
+      setError("Please describe your project topic or startup idea.");
+      return;
+    }
+    if (!phoneStr) {
+      setError("Please enter your WhatsApp phone number so engineers can send your roadmap & quote.");
+      return;
+    }
+
     setSubmitting(true);
 
+    const isCollege = mode === "college";
+    const projectScope = isCollege ? "🎓 Custom College Project" : "🚀 Custom Startup Idea Execution";
     const priceLabel = selectedTier.id === "custom" ? "Starts ₹1,999" : selectedTier.price;
-    const nameStr = form.name.trim() || "Visitor";
-    const phoneStr = form.phone.trim() || "Direct on WhatsApp";
-    const emailStr = form.email.trim() || "Not provided";
-    const collegeStr = form.college.trim() || "Not specified";
-    const catStr = form.category || "General Software / Engineering";
-    const topicStr = form.topic.trim() || "Custom Software / Academic Project Request";
-    const notesStr = form.specialRequirements.trim() || "None";
+    const timelineLabel =
+      form.timeline === "48h" ? "⚡ Express (48–72 Hours)" :
+      form.timeline === "3-5d" ? "📅 3–5 Days" : "⏳ Flexible Timeline";
 
-    const waText = `Hi SubmitKit! I want to request a project / MVP build.
+    const waLines = [
+      `Hi SubmitKit! I want to request a ${projectScope}.`,
+      "",
+      `💡 ${isCollege ? "Project Topic / Problem Statement" : "Startup Idea / Concept"}:`,
+      topicStr,
+      "",
+      `👤 Name: ${nameStr}`,
+      `📞 WhatsApp: ${phoneStr}`,
+      `⚡ Delivery Timeline: ${timelineLabel}`,
+    ];
 
-👤 Name: ${nameStr}
-📞 Contact: ${phoneStr}
-📧 Email: ${emailStr}
-🏫 College / Org: ${collegeStr}
-📦 Selected Tier: ${selectedTier.name} (${priceLabel})
-🗂️ Category: ${catStr}
-💡 Topic / Idea: ${topicStr}
-⚙️ Tech Preference: ${form.techPreference || "Engineering Team Decides"}
-📅 Deadline: ${form.deadline || "Flexible"}
-📝 Notes: ${notesStr}`;
+    if (form.college.trim()) {
+      waLines.push(`${isCollege ? "🏫 College / University" : "🏢 Company / Startup"}: ${form.college.trim()}`);
+    }
+    if (form.email.trim()) {
+      waLines.push(`📧 Email: ${form.email.trim()}`);
+    }
+    if (form.techPreference && form.techPreference !== "No Preference (Engineering Team Decides)") {
+      waLines.push(`⚙️ Preferred Tech Stack: ${form.techPreference}`);
+    }
+    if (form.specialRequirements.trim()) {
+      waLines.push(`📝 Special Notes / Guidelines: ${form.specialRequirements.trim()}`);
+    }
+    waLines.push(`📦 Target Tier: ${selectedTier.name} (${priceLabel})`);
+    waLines.push("");
+    waLines.push("Please review feasibility, technical roadmap, and fixed quote within 2 hours.");
 
+    const waText = waLines.join("\n");
     const waUrl = `https://wa.me/918799814256?text=${encodeURIComponent(waText)}`;
 
     try {
       fetch("/api/custom-project", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, name: nameStr, phone: phoneStr, email: emailStr, topic: topicStr, category: catStr, price: priceLabel }),
+        body: JSON.stringify({
+          ...form,
+          name: nameStr,
+          phone: phoneStr,
+          topic: topicStr,
+          price: priceLabel,
+          timeline: timelineLabel,
+        }),
       }).catch(() => {});
     } catch (_) {}
 
@@ -208,8 +297,8 @@ export function CustomProjectClient() {
           className="card"
           style={{ maxWidth: "32rem", width: "100%", padding: "2.5rem 2rem", textAlign: "center", borderRadius: "22px", boxShadow: "var(--sh-xl)", background: "var(--surface)" }}
         >
-          <div style={{ width: "4rem", height: "4rem", borderRadius: "18px", background: "var(--emerald-50)", border: "1px solid var(--emerald-100)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 1.25rem" }}>
-            <CheckCircle2 style={{ width: "2rem", height: "2rem", color: "var(--emerald)" }} />
+          <div style={{ width: "4rem", height: "4rem", borderRadius: "18px", background: "#FDF6F2", border: "1.5px solid #F3CFBF", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 1.25rem", boxShadow: "0 4px 14px rgba(229, 87, 41, 0.12)" }}>
+            <AirplaneLogo size={24} color="#E55729" />
           </div>
           <h2 className="font-display" style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--navy)", letterSpacing: "-.03em", marginBottom: ".5rem" }}>
             Request Submitted!
@@ -236,7 +325,7 @@ export function CustomProjectClient() {
               href={`https://wa.me/918799814256?text=${encodeURIComponent(waText)}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn btn-teal"
+              className="btn btn-orange"
               style={{ justifyContent: "center", borderRadius: "12px", minHeight: "50px", fontSize: ".9375rem" }}
             >
               <MessageCircle style={{ width: "1.125rem", height: "1.125rem" }} />
@@ -261,33 +350,170 @@ export function CustomProjectClient() {
             Home
           </Link>
           <ChevronRight style={{ width: ".75rem", height: ".75rem", flexShrink: 0, opacity: 0.45 }} />
-          <span style={{ color: "var(--navy)", fontWeight: 600 }}>Customize Project / Startup Idea</span>
+          <span style={{ color: "var(--navy)", fontWeight: 600 }}>
+            {mode === "college" ? "Custom College Project" : "Execute Startup Idea"}
+          </span>
         </nav>
       </div>
 
-      <div className="shell" style={{ paddingTop: "1.5rem", position: "relative", zIndex: 1 }}>
+      <div className="shell" style={{ paddingTop: "1.25rem", position: "relative", zIndex: 1 }}>
+        {/* Figma Interactive Segmented Mode Switcher */}
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: "clamp(1.25rem, 3vw, 2rem)" }}>
+          <div
+            className="custom-mode-switcher"
+            style={{
+              padding: "0.25rem",
+              borderRadius: "9999px",
+              background: "#F2EBE1",
+              border: "1.5px solid #E2D7C8",
+              boxShadow: "inset 0 1px 3px rgba(24, 24, 27, 0.05)",
+              gap: "0.25rem",
+            }}
+          >
+            <button
+              type="button"
+              onClick={() => {
+                setMode("college");
+                setForm((p) => ({ ...p, tier: "custom" }));
+              }}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.45rem",
+                padding: "0.55rem 1.25rem",
+                borderRadius: "9999px",
+                fontSize: "0.8125rem",
+                fontWeight: mode === "college" ? 850 : 650,
+                color: mode === "college" ? "#18181B" : "#71717A",
+                background: mode === "college" ? "#FFFFFF" : "transparent",
+                border: mode === "college" ? "1px solid #EFE6DC" : "1px solid transparent",
+                boxShadow: mode === "college" ? "0 2px 8px rgba(24, 24, 27, 0.08)" : "none",
+                cursor: "pointer",
+                transition: "all 160ms ease",
+              }}
+            >
+              <GraduationCap style={{ width: "1rem", height: "1rem", color: mode === "college" ? "#E55729" : "#8A8A93" }} />
+              <span>Custom College Project</span>
+              <span
+                className="role-badge"
+                style={{
+                  fontSize: "0.625rem",
+                  fontWeight: 800,
+                  padding: "0.12rem 0.5rem",
+                  borderRadius: "9999px",
+                  background: mode === "college" ? "#FDF6F2" : "rgba(0,0,0,0.05)",
+                  color: mode === "college" ? "#E55729" : "#71717A",
+                }}
+              >
+                Students
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setMode("startup");
+                setForm((p) => ({ ...p, tier: "custom" }));
+              }}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "0.45rem",
+                padding: "0.55rem 1.25rem",
+                borderRadius: "9999px",
+                fontSize: "0.8125rem",
+                fontWeight: mode === "startup" ? 850 : 650,
+                color: mode === "startup" ? "#18181B" : "#71717A",
+                background: mode === "startup" ? "#FFFFFF" : "transparent",
+                border: mode === "startup" ? "1px solid #EFE6DC" : "1px solid transparent",
+                boxShadow: mode === "startup" ? "0 2px 8px rgba(24, 24, 27, 0.08)" : "none",
+                cursor: "pointer",
+                transition: "all 160ms ease",
+              }}
+            >
+              <Rocket style={{ width: "1rem", height: "1rem", color: mode === "startup" ? "#E55729" : "#8A8A93" }} />
+              <span>Execute Startup Idea</span>
+              <span
+                className="role-badge"
+                style={{
+                  fontSize: "0.625rem",
+                  fontWeight: 800,
+                  padding: "0.12rem 0.5rem",
+                  borderRadius: "9999px",
+                  background: mode === "startup" ? "#FDF6F2" : "rgba(0,0,0,0.05)",
+                  color: mode === "startup" ? "#E55729" : "#71717A",
+                }}
+              >
+                Founders
+              </span>
+            </button>
+          </div>
+        </div>
+
         {/* Hero */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.16 }} style={{ textAlign: "center", marginBottom: "2.5rem", maxWidth: "50rem", margin: "0 auto 2.5rem" }}>
+        <motion.div
+          key={mode}
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          style={{ textAlign: "center", marginBottom: "2.5rem", maxWidth: "50rem", margin: "0 auto 2.5rem" }}
+        >
           <span className="label-chip" style={{ marginBottom: "1rem", display: "inline-flex" }}>
-            Startup MVP Studio &amp; Custom Software · Built for Non-Coders &amp; Innovators
+            {mode === "college"
+              ? "🎓 Custom College Projects & Capstones · Built for Engineering Students"
+              : "🚀 Startup Ideas & Software Execution · Built for Founders & Non-Coders"}
           </span>
           <h1 className="font-display font-black" style={{ fontSize: "clamp(2rem, 5vw, 3.25rem)", letterSpacing: "-.04em", color: "var(--navy)", lineHeight: 1.15, marginTop: ".875rem", marginBottom: "1rem" }}>
-            Customize your project or{' '}
-            <span className="text-teal-grad">build your startup idea.</span>
+            {mode === "college" ? (
+              <>
+                Build your custom college project with{' '}
+                <span style={{
+                  display: 'inline-block',
+                  color: '#E55729',
+                  background: 'linear-gradient(135deg, #EE6E44 0%, #E55729 50%, #CB451A 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}>
+                  IEEE report &amp; Viva prep.
+                </span>
+              </>
+            ) : (
+              <>
+                Execute your startup idea into{' '}
+                <span style={{
+                  display: 'inline-block',
+                  color: '#E55729',
+                  background: 'linear-gradient(135deg, #EE6E44 0%, #E55729 50%, #CB451A 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}>
+                  working production software.
+                </span>
+              </>
+            )}
           </h1>
-          <p style={{ fontSize: "clamp(.9375rem, 2vw, 1.125rem)", color: "var(--ink-3)", lineHeight: 1.75, marginBottom: "1.5rem" }}>
-            Have a custom college engineering topic, or a startup SaaS idea but zero coding background? Our senior software engineers build <strong style={{ color: "var(--navy)" }}>100% working code</strong>, full UI, database, IEEE documentation, and guide you through a 1-on-1 walkthrough.
+          <p style={{ fontSize: "clamp(.875rem, 2vw, 1.125rem)", color: "var(--ink-3)", lineHeight: 1.6, marginBottom: "1.25rem" }}>
+            <span className="sm:hidden">
+              {mode === "college"
+                ? "Senior engineers build 100% working code, complete 60-page IEEE .docx report & Viva PPT in 48–72 hours for top grades."
+                : "Turn your software or SaaS idea into working production software with full commercial IP ownership in 48–72 hours."}
+            </span>
+            <span className="hidden sm:inline">
+              {mode === "college"
+                ? "Have an approved college topic or syllabus guidelines? Senior engineers build 100% working code, complete 60-page IEEE .docx Black Book report, PPT defense deck, and conduct a 1-on-1 walkthrough so you score an O-Grade in your university Viva examination."
+                : "Turn your software or SaaS concept into reality without writing code or hiring expensive agencies. Senior engineers build full-stack code, modern UI, backend APIs, and complete intellectual property ownership within 48–72 hours."}
+            </span>
           </p>
-          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: ".625rem 1.5rem", fontSize: ".9rem" }}>
+          <div className="grid grid-cols-2 sm:flex sm:flex-wrap justify-center gap-2 sm:gap-x-6 sm:gap-y-2 text-xs sm:text-sm">
             {[
-              { Icon: Clock, t: "Delivered in 48–72 hours" },
-              { Icon: ShieldCheck, t: "100% Plagiarism-Free & Clean Code" },
-              { Icon: Star, t: "1-on-1 Code & Demo Walkthrough" },
-              { Icon: MessageCircle, t: "Direct Senior Engineer WhatsApp" },
+              { Icon: Clock, t: "48–72h Delivery" },
+              { Icon: ShieldCheck, t: mode === "college" ? "100% IEEE Report" : "100% IP & Code" },
+              { Icon: Star, t: "1-on-1 Walkthrough" },
+              { Icon: MessageCircle, t: "Direct WhatsApp SLA" },
             ].map(({ Icon, t }) => (
-              <div key={t} style={{ display: "flex", alignItems: "center", gap: ".375rem", color: "var(--ink-3)", fontWeight: 500 }}>
-                <Icon style={{ width: ".9375rem", height: ".9375rem", color: "var(--teal)" }} />
-                {t}
+              <div key={t} style={{ display: "flex", alignItems: "center", gap: ".35rem", color: "var(--ink-3)", fontWeight: 600 }}>
+                <Icon style={{ width: ".875rem", height: ".875rem", color: "#E55729", flexShrink: 0 }} />
+                <span>{t}</span>
               </div>
             ))}
           </div>
@@ -295,98 +521,250 @@ export function CustomProjectClient() {
 
         {/* 3-Step Non-Coder Workflow Strip */}
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.18, delay: 0.05 }}
+          transition={{ duration: 0.45, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           style={{
-            maxWidth: "62rem",
-            margin: "0 auto 3rem",
-            padding: "clamp(1.25rem, 3vw, 1.75rem)",
-            borderRadius: "20px",
-            background: "linear-gradient(165deg, #FFFFFF 0%, #FDFBF8 40%, #F6ECE0 100%)",
-            border: "1.5px solid rgba(220, 208, 188, 0.95)",
-            boxShadow: "inset 0 1px 0 #FFFFFF, 0 8px 24px -4px rgba(180, 145, 100, 0.12)",
+            maxWidth: "68rem",
+            margin: "0 auto clamp(1.25rem, 3vw, 2.25rem)",
+            padding: "clamp(1rem, 2.5vw, 1.85rem)",
+            borderRadius: "24px",
+            background: "linear-gradient(180deg, #FFFFFF 0%, #FAF5EE 100%)",
+            border: "1.5px solid #EFE6DC",
+            boxShadow: "0 8px 32px -4px rgba(24, 24, 27, 0.05), inset 0 1px 0 #FFFFFF",
+            position: "relative",
           }}
         >
-          <div style={{ textAlign: "center", marginBottom: "1.25rem" }}>
-            <span style={{ fontSize: ".6875rem", fontWeight: 800, color: "var(--teal)", textTransform: "uppercase", letterSpacing: ".12em" }}>
-              How Non-Coders &amp; Founders Build With SubmitKit
-            </span>
-            <h3 style={{ fontSize: "1.2rem", fontWeight: 900, color: "var(--navy)", letterSpacing: "-.025em", margin: ".25rem 0 0" }}>
-              Zero Technical Knowledge Required · 3 Simple Steps
+          {/* Eyebrow & Header */}
+          <div style={{ textAlign: "center", marginBottom: "clamp(1rem, 2.5vw, 1.75rem)" }}>
+            <div style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0.45rem",
+              padding: "0.3rem 0.85rem",
+              borderRadius: "9999px",
+              background: "#FDF6F2",
+              border: "1px solid #F3CFBF",
+              fontSize: "0.6875rem",
+              fontWeight: 800,
+              color: "#E55729",
+              textTransform: "uppercase",
+              letterSpacing: "0.08em",
+              marginBottom: "0.75rem",
+              boxShadow: "0 1px 3px rgba(229, 87, 41, 0.08)",
+            }}>
+              <AirplaneLogo size={12} color="#E55729" />
+              <span>{mode === "college" ? "How Students Build With SubmitKit" : "How Founders Build With SubmitKit"}</span>
+            </div>
+            <h3 style={{
+              fontSize: "clamp(1.25rem, 2.5vw, 1.75rem)",
+              fontWeight: 900,
+              color: "#18181B",
+              letterSpacing: "-0.03em",
+              margin: 0,
+              lineHeight: 1.25,
+            }}>
+              {mode === "college" ? "From Approved Topic to Submission in 3 Steps" : "From Concept to Production Software in 3 Steps"}
             </h3>
+            <p style={{ fontSize: "0.875rem", color: "#52525B", margin: "0.5rem auto 0", maxWidth: "34rem", lineHeight: 1.55 }}>
+              {mode === "college"
+                ? "Zero coding stress. Senior engineers handle everything from source code to IEEE documentation."
+                : "Zero technical knowledge required. Senior engineers turn your vision into ready software."}
+            </p>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 16rem), 1fr))", gap: "1rem" }}>
-            {[
-              {
-                step: "01",
-                title: "Describe in Plain Words",
-                desc: "No tech jargon, code, or architecture required. Simply tell us your idea, problem statement, or guide requirements via text or voice note.",
-              },
-              {
-                step: "02",
-                title: "Senior Engineers Build It",
-                desc: "Our engineering team handles 100% of the UI, backend APIs, database, and IEEE black book report in 48–72 hours.",
-              },
-              {
-                step: "03",
-                title: "1-Click Launch & Walkthrough",
-                desc: "Double-click run.bat (Windows) or run.sh (Mac) to open the app instantly, followed by a live 1-on-1 walkthrough call with an engineer.",
-              },
-            ].map((s) => (
-              <div
-                key={s.step}
-                style={{
-                  padding: "1rem 1.125rem",
-                  borderRadius: "14px",
-                  background: "var(--surface)",
-                  border: "1px solid var(--line)",
-                }}
-              >
-                <div style={{ fontSize: ".75rem", fontFamily: "var(--font-mono)", fontWeight: 800, color: "var(--teal)", marginBottom: ".35rem" }}>
-                  STEP {s.step}
+
+          {/* Figma Design-Thinking Horizontal Journey Track with Arrow Connectors */}
+          <div className="journey-cards-track mobile-snap-row">
+            {/* Step 01 */}
+            <div className="journey-step-card">
+              <div>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1rem" }}>
+                  <div style={{
+                    width: "2.75rem",
+                    height: "2.75rem",
+                    borderRadius: "14px",
+                    background: "#FDF6F2",
+                    border: "1.5px solid #F3CFBF",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    boxShadow: "0 2px 6px rgba(229, 87, 41, 0.08)",
+                  }}>
+                    <MessageSquare style={{ width: "1.25rem", height: "1.25rem", color: "#E55729" }} />
+                  </div>
+                  <span style={{
+                    fontFamily: "var(--font-mono)",
+                    fontSize: "0.6875rem",
+                    fontWeight: 800,
+                    letterSpacing: "0.08em",
+                    color: "#E55729",
+                    background: "#FDF6F2",
+                    padding: "0.2rem 0.6rem",
+                    borderRadius: "9999px",
+                    border: "1px solid #F3CFBF",
+                  }}>
+                    STEP 01
+                  </span>
                 </div>
-                <h4 style={{ fontSize: ".9375rem", fontWeight: 800, color: "var(--navy)", letterSpacing: "-.02em", margin: "0 0 .35rem" }}>
-                  {s.title}
+                <h4 style={{ fontSize: "1.0625rem", fontWeight: 850, color: "#18181B", letterSpacing: "-0.02em", margin: "0 0 0.5rem" }}>
+                  {mode === "college" ? "Describe Your Topic" : "Describe in Plain Words"}
                 </h4>
-                <p style={{ fontSize: ".8125rem", color: "var(--ink-3)", lineHeight: 1.55, margin: 0 }}>
-                  {s.desc}
+                <p style={{ fontSize: "0.8125rem", color: "#52525B", lineHeight: 1.6, margin: 0 }}>
+                  {mode === "college"
+                    ? "Tell us your approved university problem statement, college syllabus, or guide requirements via text or voice note."
+                    : "No tech jargon, code, or architecture required. Simply tell us your idea, target audience, or problem statement via text or voice note."}
                 </p>
               </div>
-            ))}
+            </div>
+
+            {/* Connector 01 ➔ 02 */}
+            <div className="journey-connector" aria-hidden="true">
+              <div className="journey-connector-line" />
+              <div className="journey-arrow-badge">
+                <ArrowRight className="hidden md:block" style={{ width: "13px", height: "13px" }} />
+                <ArrowDown className="block md:hidden" style={{ width: "13px", height: "13px" }} />
+              </div>
+            </div>
+
+            {/* Step 02 */}
+            <div className="journey-step-card">
+              <div>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1rem" }}>
+                  <div style={{
+                    width: "2.75rem",
+                    height: "2.75rem",
+                    borderRadius: "14px",
+                    background: "#FDF6F2",
+                    border: "1.5px solid #F3CFBF",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    boxShadow: "0 2px 6px rgba(229, 87, 41, 0.08)",
+                  }}>
+                    <Code2 style={{ width: "1.25rem", height: "1.25rem", color: "#E55729" }} />
+                  </div>
+                  <span style={{
+                    fontFamily: "var(--font-mono)",
+                    fontSize: "0.6875rem",
+                    fontWeight: 800,
+                    letterSpacing: "0.08em",
+                    color: "#E55729",
+                    background: "#FDF6F2",
+                    padding: "0.2rem 0.6rem",
+                    borderRadius: "9999px",
+                    border: "1px solid #F3CFBF",
+                  }}>
+                    STEP 02
+                  </span>
+                </div>
+                <h4 style={{ fontSize: "1.0625rem", fontWeight: 850, color: "#18181B", letterSpacing: "-0.02em", margin: "0 0 0.5rem" }}>
+                  Senior Engineers Build It
+                </h4>
+                <p style={{ fontSize: "0.8125rem", color: "#52525B", lineHeight: 1.6, margin: 0 }}>
+                  {mode === "college"
+                    ? "Our engineering team handles 100% of the UI, backend APIs, database, and 60-page IEEE black book report in 48–72 hours."
+                    : "Our senior team builds full-stack source code, modern UI, database, auth, and APIs tailored to your vision in 48–72 hours."}
+                </p>
+              </div>
+            </div>
+
+            {/* Connector 02 ➔ 03 */}
+            <div className="journey-connector" aria-hidden="true">
+              <div className="journey-connector-line" />
+              <div className="journey-arrow-badge">
+                <ArrowRight className="hidden md:block" style={{ width: "13px", height: "13px" }} />
+                <ArrowDown className="block md:hidden" style={{ width: "13px", height: "13px" }} />
+              </div>
+            </div>
+
+            {/* Step 03 */}
+            <div className="journey-step-card">
+              <div>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1rem" }}>
+                  <div style={{
+                    width: "2.75rem",
+                    height: "2.75rem",
+                    borderRadius: "14px",
+                    background: "#FDF6F2",
+                    border: "1.5px solid #F3CFBF",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    boxShadow: "0 2px 6px rgba(229, 87, 41, 0.08)",
+                  }}>
+                    <Rocket style={{ width: "1.25rem", height: "1.25rem", color: "#E55729" }} />
+                  </div>
+                  <span style={{
+                    fontFamily: "var(--font-mono)",
+                    fontSize: "0.6875rem",
+                    fontWeight: 800,
+                    letterSpacing: "0.08em",
+                    color: "#E55729",
+                    background: "#FDF6F2",
+                    padding: "0.2rem 0.6rem",
+                    borderRadius: "9999px",
+                    border: "1px solid #F3CFBF",
+                  }}>
+                    STEP 03
+                  </span>
+                </div>
+                <h4 style={{ fontSize: "1.0625rem", fontWeight: 850, color: "#18181B", letterSpacing: "-0.02em", margin: "0 0 0.5rem" }}>
+                  {mode === "college" ? "1-Click Launch & Viva Prep" : "1-Click Launch & 100% IP"}
+                </h4>
+                <p style={{ fontSize: "0.8125rem", color: "#52525B", lineHeight: 1.6, margin: 0 }}>
+                  {mode === "college"
+                    ? "Double-click run.bat (Windows) or run.sh (Mac) to open the app instantly, with 20-slide Viva PPT, examiner Q&A notes, and a live 1-on-1 walkthrough."
+                    : "Double-click run.bat (Windows) or run.sh (Mac) to test locally, with 100% intellectual property transfer, deployment guide, and a live 1-on-1 handover."}
+                </p>
+              </div>
+            </div>
           </div>
+          <div className="mobile-swipe-hint">← Swipe 3 steps →</div>
         </motion.div>
 
-        {/* 3 Real Tiers */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 18rem), 1fr))", gap: "1rem", marginBottom: "3rem", maxWidth: "62rem", margin: "0 auto 3rem" }}>
-          {TIERS.map((tier, i) => {
+        {/* Real Tiers — Compact & Premium Figma Cards */}
+        <div
+          className="mobile-snap-row"
+          style={{
+            display: "grid",
+            gridTemplateColumns: mode === "startup" ? "repeat(auto-fit, minmax(min(100%, 19rem), 1fr))" : "repeat(auto-fit, minmax(min(100%, 17rem), 1fr))",
+            gap: "0.85rem",
+            marginBottom: "clamp(1.25rem, 3vw, 2.25rem)",
+            maxWidth: mode === "startup" ? "42rem" : "60rem",
+            margin: "0 auto clamp(1.25rem, 3vw, 2.25rem)",
+          }}
+        >
+          {currentTiers.map((tier, i) => {
             const isSelected = form.tier === tier.id;
             return (
               <motion.div
-                key={tier.id}
+                key={`${mode}-${tier.id}`}
                 role="button"
                 tabIndex={0}
-                initial={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.16, delay: i * 0.03 }}
+                whileHover={{ y: -3 }}
+                transition={{ duration: 0.22, delay: 0.04 * i, ease: [0.16, 1, 0.3, 1] }}
                 onClick={() => setForm((p) => ({ ...p, tier: tier.id }))}
                 onKeyDown={(e) => {
                   if (e.key === "Enter" || e.key === " ") setForm((p) => ({ ...p, tier: tier.id }));
                 }}
                 style={{
                   textAlign: "left",
-                  borderRadius: "18px",
-                  padding: "1.5rem",
+                  borderRadius: "16px",
+                  padding: "1.1rem 1.15rem 1rem",
                   background: isSelected
-                    ? "linear-gradient(175deg, #FFFFFF 0%, #F0FDF9 50%, #E6F8F4 100%)"
-                    : "linear-gradient(175deg, #FFFFFF 0%, #FDFBF8 35%, #F7EFE3 75%, #F0E3CF 100%)",
+                    ? "linear-gradient(175deg, #FFFFFF 0%, #FDF7F3 60%, #FAEDE5 100%)"
+                    : "linear-gradient(175deg, #FFFFFF 0%, #FDFBF8 40%, #F8F1E7 100%)",
                   cursor: "pointer",
-                  border: `1.5px solid ${isSelected ? "var(--teal)" : "rgba(220, 208, 188, 0.95)"}`,
+                  border: `1.5px solid ${isSelected ? "#E55729" : "rgba(220, 208, 188, 0.9)"}`,
                   boxShadow: isSelected
-                    ? "inset 0 1px 0 #FFFFFF, 0 6px 24px -2px rgba(13, 148, 136, 0.22)"
-                    : "inset 0 1px 0 #FFFFFF, 0 4px 18px -3px rgba(180, 145, 100, 0.12)",
-                  transform: isSelected ? "translateY(-2px)" : "none",
-                  transition: "all 180ms cubic-bezier(.16,1,.3,1)",
+                    ? "inset 0 1px 0 #FFFFFF, 0 8px 22px -3px rgba(229, 87, 41, 0.18)"
+                    : "inset 0 1px 0 #FFFFFF, 0 2px 10px -2px rgba(180, 145, 100, 0.08)",
+                  transform: isSelected ? "translateY(-2px)" : "translateZ(0)",
+                  backfaceVisibility: "hidden",
+                  WebkitFontSmoothing: "subpixel-antialiased",
+                  transition: "border-color 160ms ease, box-shadow 160ms ease",
                   position: "relative",
                   overflow: "hidden",
                   display: "flex",
@@ -397,97 +775,83 @@ export function CustomProjectClient() {
                 <div>
                   {tier.popular && (
                     <div style={{ position: "absolute", top: 0, right: 0 }}>
-                      <span style={{ display: "inline-block", padding: ".25rem .875rem", borderRadius: "0 16px 0 12px", background: "var(--teal)", color: "#fff", fontSize: ".6875rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: ".06em" }}>
-                        Most Popular
+                      <span style={{ display: "inline-block", padding: ".2rem .75rem", borderRadius: "0 14px 0 10px", background: "#E55729", color: "#fff", fontSize: ".625rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: ".06em" }}>
+                        Recommended
                       </span>
                     </div>
                   )}
 
-                  <div style={{ marginBottom: ".75rem", marginTop: tier.popular ? ".5rem" : 0 }}>
-                    <p className="font-display" style={{ fontSize: "1.25rem", fontWeight: 800, color: "var(--navy)", marginBottom: ".375rem" }}>
-                      {tier.name}
-                    </p>
-                    <span style={{ fontSize: ".6875rem", fontWeight: 700, padding: ".25rem .625rem", borderRadius: "9999px", background: tier.tagBg, color: tier.tagColor, border: `1px solid ${tier.tagBorder}`, display: "inline-block" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: ".5rem", marginTop: tier.popular ? ".3rem" : 0 }}>
+                    <span style={{ fontSize: ".65625rem", fontWeight: 750, padding: ".18rem .55rem", borderRadius: "9999px", background: tier.tagBg, color: tier.tagColor, border: `1px solid ${tier.tagBorder}` }}>
                       {tier.tag}
                     </span>
-                  </div>
-
-                  {/* Price */}
-                  <div style={{ margin: ".875rem 0 1.25rem", padding: ".75rem .875rem", borderRadius: "12px", background: "var(--surface-2)", border: "1px solid var(--line)" }}>
-                    <div style={{ display: "flex", alignItems: "baseline", gap: ".4rem", flexWrap: "wrap" }}>
-                      <span className="font-display" style={{ fontSize: "1.5rem", fontWeight: 900, color: "var(--navy)", letterSpacing: "-.03em", lineHeight: 1, whiteSpace: "nowrap" }}>
+                    <div style={{ textAlign: "right" }}>
+                      <span className="font-display" style={{ fontSize: "1.15rem", fontWeight: 900, color: "var(--navy)", letterSpacing: "-.03em" }}>
                         {tier.price}
                       </span>
-                      <span style={{ fontSize: ".75rem", color: "var(--ink-4)", fontWeight: 600, whiteSpace: "nowrap" }}>
+                      <span style={{ fontSize: ".6875rem", color: "var(--ink-4)", fontWeight: 600, marginLeft: ".25rem" }}>
                         {tier.usdPrice}
                       </span>
-                      {tier.id === "custom" ? (
-                        <span style={{ fontSize: ".625rem", fontWeight: 800, color: "#D97706", background: "rgba(217,119,6,0.12)", border: "1px solid rgba(217,119,6,0.25)", padding: ".15rem .45rem", borderRadius: "4px", textTransform: "uppercase", letterSpacing: ".04em", whiteSpace: "nowrap" }}>
-                          Base Price
-                        </span>
-                      ) : (
-                        <span style={{ fontSize: ".6875rem", color: "var(--ink-4)", fontWeight: 600, whiteSpace: "nowrap" }}>
-                          · ready kit
-                        </span>
-                      )}
                     </div>
-                    {tier.subtext && (
-                      <p style={{ fontSize: ".6875rem", color: tier.id === "custom" ? "#B45309" : "var(--ink-4)", fontWeight: 600, marginTop: ".35rem", marginBottom: 0, lineHeight: 1.4 }}>
-                        {tier.subtext}
-                      </p>
-                    )}
                   </div>
 
-                  {/* Features */}
-                  <ul style={{ display: "flex", flexDirection: "column", gap: ".5rem" }}>
+                  <p className="font-display" style={{ fontSize: "1.0625rem", fontWeight: 850, color: "var(--navy)", margin: "0 0 .25rem", letterSpacing: "-.02em" }}>
+                    {tier.name}
+                  </p>
+                  {tier.subtext && (
+                    <p style={{ fontSize: ".6875rem", color: "var(--ink-4)", margin: "0 0 .75rem", lineHeight: 1.4 }}>
+                      {tier.subtext}
+                    </p>
+                  )}
+
+                  {/* Concise Feature Bullets */}
+                  <ul style={{ display: "flex", flexDirection: "column", gap: ".35rem", padding: 0, margin: 0, listStyle: "none" }}>
                     {tier.features.map((f) => (
-                      <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: ".5rem", fontSize: ".8125rem", color: "var(--ink-2)", lineHeight: 1.45 }}>
-                        <CheckCircle2 style={{ width: ".875rem", height: ".875rem", color: "var(--teal)", flexShrink: 0, marginTop: ".125rem" }} />
-                        {f}
+                      <li key={f} style={{ display: "flex", alignItems: "flex-start", gap: ".4rem", fontSize: ".78125rem", color: "var(--ink-2)", lineHeight: 1.4 }}>
+                        <CheckCircle2 style={{ width: ".8125rem", height: ".8125rem", color: "#E55729", flexShrink: 0, marginTop: ".15rem" }} />
+                        <span>{f}</span>
                       </li>
                     ))}
                   </ul>
                 </div>
 
-                <div>
-                  {tier.exploreHref && (
-                    <div style={{ marginTop: "1.25rem", paddingTop: ".875rem", borderTop: "1px dashed var(--line)" }}>
-                      <Link
-                        href={tier.exploreHref}
-                        onClick={(e) => e.stopPropagation()}
-                        className="btn btn-outline"
-                        style={{
-                          width: "100%",
-                          minHeight: "40px",
-                          fontSize: ".8125rem",
-                          fontWeight: 700,
-                          justifyContent: "center",
-                          borderRadius: "10px",
-                          color: "var(--teal-dark)",
-                          borderColor: "var(--teal-100)",
-                          background: "var(--surface-teal)",
-                          textDecoration: "none",
-                          gap: ".375rem",
-                        }}
-                      >
-                        <span>{tier.exploreLabel}</span>
-                        <ArrowRight style={{ width: ".875rem", height: ".875rem" }} />
-                      </Link>
-                    </div>
-                  )}
-
-                  {tier.id === "custom" && (
-                    <div style={{ marginTop: "1.25rem", paddingTop: ".875rem", borderTop: "1px dashed var(--line)" }}>
-                      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: ".375rem", fontSize: ".8125rem", fontWeight: 700, color: isSelected ? "var(--teal)" : "var(--ink-4)", minHeight: "40px" }}>
-                        <CheckCircle2 style={{ width: ".9375rem", height: ".9375rem" }} />
-                        <span>{isSelected ? "Selected — Fill Details Below ↓" : "Click to Request Custom Project"}</span>
-                      </div>
-                    </div>
-                  )}
-
-                  {isSelected && tier.id !== "custom" && (
-                    <div style={{ display: "flex", alignItems: "center", gap: ".375rem", marginTop: ".75rem", fontSize: ".8125rem", fontWeight: 700, color: "var(--teal)" }}>
-                      <CheckCircle2 style={{ width: ".9375rem", height: ".9375rem" }} /> Selected
+                <div style={{ marginTop: ".85rem", paddingTop: ".65rem", borderTop: "1px dashed var(--line)" }}>
+                  {tier.exploreHref ? (
+                    <Link
+                      href={tier.exploreHref}
+                      onClick={(e) => e.stopPropagation()}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: "100%",
+                        padding: ".45rem .75rem",
+                        fontSize: ".75rem",
+                        fontWeight: 750,
+                        borderRadius: "8px",
+                        color: "#CB451A",
+                        border: "1px solid #F3CFBF",
+                        background: "#FDF6F2",
+                        textDecoration: "none",
+                        gap: ".3rem",
+                        transition: "all 140ms ease",
+                      }}
+                      onMouseEnter={e => {
+                        e.currentTarget.style.background = "#FAEDE5";
+                        e.currentTarget.style.borderColor = "#E55729";
+                      }}
+                      onMouseLeave={e => {
+                        e.currentTarget.style.background = "#FDF6F2";
+                        e.currentTarget.style.borderColor = "#F3CFBF";
+                      }}
+                    >
+                      <span>{tier.exploreLabel}</span>
+                      <ArrowRight style={{ width: ".75rem", height: ".75rem" }} />
+                    </Link>
+                  ) : (
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: ".3rem", fontSize: ".75rem", fontWeight: 750, color: isSelected ? "#E55729" : "var(--ink-4)", padding: ".35rem 0" }}>
+                      <CheckCircle2 style={{ width: ".875rem", height: ".875rem" }} />
+                      <span>{isSelected ? "Selected for Custom Scope" : "Click to Select Custom"}</span>
                     </div>
                   )}
                 </div>
@@ -495,155 +859,352 @@ export function CustomProjectClient() {
             );
           })}
         </div>
+        <div className="mobile-swipe-hint">← Swipe to choose plan →</div>
 
-        {/* Inquiry Form */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.16 }} style={{ maxWidth: "40rem", margin: "0 auto" }}>
-          <div className="card" style={{ padding: "clamp(1.5rem, 4vw, 2.5rem)", borderRadius: "22px", background: "linear-gradient(170deg, #FFFFFF 0%, #FDFBF8 35%, #F7EEE0 75%, #EFE1CC 100%)", border: "1.5px solid rgba(220, 208, 188, 0.95)", boxShadow: "inset 0 1px 0 #FFFFFF, 0 10px 32px -4px rgba(180, 145, 100, 0.16)" }}>
-            <h2 className="font-display" style={{ fontSize: "1.375rem", fontWeight: 800, color: "var(--navy)", letterSpacing: "-.03em", marginBottom: ".375rem" }}>
-              Request Your Custom Project
+        {/* ═══════════════════════════════════════════════════
+            INQUIRY FORM — MINIMAL FIGMA DESIGN THINKING CARD
+        ═══════════════════════════════════════════════════ */}
+        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }} style={{ maxWidth: "34rem", margin: "0 auto" }}>
+          <div style={{
+            position: "relative",
+            padding: "clamp(1.15rem, 3.5vw, 1.65rem)",
+            borderRadius: "24px",
+            background: "linear-gradient(180deg, #FFFFFF 0%, #FAF8F5 100%)",
+            border: "1.5px solid #EFE6DC",
+            boxShadow: "0 20px 48px -12px rgba(24, 24, 27, 0.08), 0 1px 3px rgba(24, 24, 27, 0.03), inset 0 1px 0 #FFFFFF",
+            overflow: "hidden",
+          }}>
+            {/* Top Matte Terracotta Accent Strip */}
+            <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "3px", background: "linear-gradient(90deg, #EE6E44 0%, #E55729 50%, #CB451A 100%)" }} />
+
+            {/* Header: Clean Studio Desk Pill & SLA */}
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "0.55rem" }}>
+              <div style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem", padding: "0.22rem 0.65rem", borderRadius: "9999px", background: "#FDF6F2", border: "1px solid #F3CFBF", fontSize: "0.65625rem", fontWeight: 800, color: "#E55729", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                <Sparkles style={{ width: "11px", height: "11px", color: "#E55729" }} />
+                <span>{mode === "college" ? "Custom College Studio" : "Startup Execution Desk"}</span>
+              </div>
+              <span style={{ fontSize: "0.6875rem", fontWeight: 700, color: "#71717A", display: "inline-flex", alignItems: "center", gap: "0.3rem" }}>
+                <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#22C55E", boxShadow: "0 0 0 2px rgba(34, 197, 94, 0.2)" }} />
+                <span>2h Response SLA</span>
+              </span>
+            </div>
+
+            <h2 className="font-display font-black" style={{ fontSize: "1.25rem", fontWeight: 900, color: "#18181B", letterSpacing: "-.025em", margin: "0 0 0.25rem", lineHeight: 1.25 }}>
+              {mode === "college" ? "Request Your Custom College Project" : "Request Startup Idea Execution"}
             </h2>
-            <p style={{ fontSize: ".875rem", color: "var(--ink-3)", marginBottom: "1.75rem", lineHeight: 1.65 }}>
-              Fill in your topic details below. We&apos;ll confirm feasibility, roadmap, and exact quotation within 2 hours on WhatsApp.
+            <p style={{ fontSize: "0.8125rem", color: "#71717A", margin: "0 0 1.25rem", lineHeight: 1.5 }}>
+              {mode === "college"
+                ? "Describe your approved topic in plain words. Senior engineers review syllabus guidelines & send an IEEE roadmap on WhatsApp."
+                : "Describe your concept in plain words. Senior engineers review feasibility & send technical architecture on WhatsApp."}
             </p>
 
-            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1.125rem" }}>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 14rem), 1fr))", gap: "1rem" }}>
-                <div>
-                  <label style={{ display: "block", fontSize: ".75rem", fontWeight: 700, color: "var(--ink-3)", textTransform: "uppercase", letterSpacing: ".05em", marginBottom: ".5rem" }}>
-                    Full Name
-                  </label>
-                  <input name="name" value={form.name} onChange={handleChange} placeholder="Your full name" style={inputSty()} />
-                </div>
-                <div>
-                  <label style={{ display: "block", fontSize: ".75rem", fontWeight: 700, color: "var(--ink-3)", textTransform: "uppercase", letterSpacing: ".05em", marginBottom: ".5rem" }}>
-                    Email Address
-                  </label>
-                  <input name="email" type="email" value={form.email} onChange={handleChange} placeholder="you@gmail.com" style={inputSty()} />
-                </div>
-              </div>
-
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 14rem), 1fr))", gap: "1rem" }}>
-                <div>
-                  <label style={{ display: "block", fontSize: ".75rem", fontWeight: 700, color: "var(--ink-3)", textTransform: "uppercase", letterSpacing: ".05em", marginBottom: ".5rem" }}>
-                    WhatsApp Number
-                  </label>
-                  <input name="phone" value={form.phone} onChange={handleChange} placeholder="+91 98765 43210" style={inputSty()} />
-                </div>
-                <div>
-                  <label style={{ display: "block", fontSize: ".75rem", fontWeight: 700, color: "var(--ink-3)", textTransform: "uppercase", letterSpacing: ".05em", marginBottom: ".5rem" }}>
-                    College / University / Company
-                  </label>
-                  <input name="college" value={form.college} onChange={handleChange} placeholder="e.g. VTU, Pune University..." style={inputSty()} />
-                </div>
-              </div>
-
+            <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
+              {/* Moment 1 (Hero Input): What do you want to build? */}
               <div>
-                <label style={{ display: "block", fontSize: ".75rem", fontWeight: 700, color: "var(--ink-3)", textTransform: "uppercase", letterSpacing: ".05em", marginBottom: ".5rem" }}>
-                  Project Category
-                </label>
-                <select name="category" value={form.category} onChange={handleChange} style={{ ...inputSty(), appearance: "auto", cursor: "pointer" }}>
-                  <option value="">Select a category...</option>
-                  {CATEGORY_OPTIONS.map((c) => (
-                    <option key={c} value={c}>
-                      {c}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label style={{ display: "block", fontSize: ".75rem", fontWeight: 700, color: "var(--ink-3)", textTransform: "uppercase", letterSpacing: ".05em", marginBottom: ".5rem" }}>
-                  Project Topic, Startup Idea, or Problem Statement
-                </label>
-                <input name="topic" value={form.topic} onChange={handleChange} placeholder="e.g. AI Resume Screener, Doctor Booking App, or your custom startup SaaS idea..." style={inputSty()} />
-              </div>
-
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 14rem), 1fr))", gap: "1rem" }}>
-                <div>
-                  <label style={{ display: "block", fontSize: ".75rem", fontWeight: 700, color: "var(--ink-3)", textTransform: "uppercase", letterSpacing: ".05em", marginBottom: ".5rem" }}>
-                    Preferred Tech Stack
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "0.35rem" }}>
+                  <label htmlFor="topic-input" style={{ fontSize: "0.75rem", fontWeight: 750, color: "#27272A", letterSpacing: "-0.01em" }}>
+                    {mode === "college" ? "Your Project Topic or Problem Statement" : "Your Startup Idea or Software Concept"} <span style={{ color: "#E55729" }}>*</span>
                   </label>
-                  <select name="techPreference" value={form.techPreference} onChange={handleChange} style={{ ...inputSty(), appearance: "auto", cursor: "pointer" }}>
-                    {TECH_OPTIONS.map((t) => (
-                      <option key={t} value={t}>
-                        {t}
-                      </option>
-                    ))}
-                  </select>
+                  <span style={{ fontSize: "0.6875rem", color: "#A1A1AA" }}>Plain words ok</span>
                 </div>
-                <div>
-                  <label style={{ display: "block", fontSize: ".75rem", fontWeight: 700, color: "var(--ink-3)", textTransform: "uppercase", letterSpacing: ".05em", marginBottom: ".5rem" }}>
-                    Submission Deadline
-                  </label>
-                  <input name="deadline" type="date" value={form.deadline} onChange={handleChange} min={new Date().toISOString().split("T")[0]} style={inputSty()} />
-                </div>
-              </div>
-
-              <div>
-                <label style={{ display: "block", fontSize: ".75rem", fontWeight: 700, color: "var(--ink-3)", textTransform: "uppercase", letterSpacing: ".05em", marginBottom: ".5rem" }}>
-                  Special Requirements / Notes
-                </label>
                 <textarea
-                  name="specialRequirements"
-                  value={form.specialRequirements}
+                  id="topic-input"
+                  name="topic"
+                  value={form.topic}
                   onChange={handleChange}
+                  required
                   rows={3}
-                  placeholder="Any specific algorithms, dataset requirements, university report formats, or custom modules..."
-                  style={{ ...inputSty(), resize: "vertical", minHeight: "4.5rem", lineHeight: 1.65 }}
+                  placeholder={
+                    mode === "college"
+                      ? "e.g. AI-powered attendance system with facial recognition, Doctor booking web app, or paste your university problem statement..."
+                      : "e.g. B2B AI invoice processing SaaS, telehealth appointment portal, or describe what your software should do..."
+                  }
+                  style={{
+                    ...inputSty(),
+                    resize: "vertical",
+                    minHeight: "74px",
+                    lineHeight: 1.5,
+                    padding: "0.65rem 0.75rem",
+                    fontSize: "0.84375rem",
+                  }}
                 />
               </div>
 
-              {/* Selected Tier Summary */}
-              <div style={{ padding: "1rem", borderRadius: "12px", background: "var(--surface-teal)", border: "1px solid var(--teal-100)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              {/* Moment 2: Contact Row (Full Name & WhatsApp Number) */}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 12rem), 1fr))", gap: "0.65rem" }}>
                 <div>
-                  <p style={{ fontSize: ".875rem", fontWeight: 700, color: "var(--navy)" }}>{selectedTier.name}</p>
-                  <p style={{ fontSize: ".8125rem", color: "var(--ink-3)" }}>{selectedTier.tag} · {selectedTier.id === "custom" ? "Starts ₹1,999 (varies with topic)" : "Instant access"}</p>
+                  <label htmlFor="name-input" style={{ display: "block", fontSize: "0.71875rem", fontWeight: 750, color: "#27272A", marginBottom: "0.3rem" }}>
+                    Your Name
+                  </label>
+                  <input
+                    id="name-input"
+                    name="name"
+                    value={form.name}
+                    onChange={handleChange}
+                    placeholder="e.g. Rahul Sharma"
+                    style={{ ...inputSty(), padding: "0.55rem 0.7rem", fontSize: "0.8125rem" }}
+                  />
                 </div>
-                <span className="font-display" style={{ fontSize: "1.375rem", fontWeight: 900, color: "var(--navy)", letterSpacing: "-.04em" }}>
-                  {selectedTier.price} <span style={{ fontSize: ".8125rem", color: "var(--ink-4)", fontWeight: 600 }}>{selectedTier.usdPrice}</span>
+                <div>
+                  <label htmlFor="phone-input" style={{ display: "block", fontSize: "0.71875rem", fontWeight: 750, color: "#27272A", marginBottom: "0.3rem" }}>
+                    WhatsApp Number <span style={{ color: "#E55729" }}>*</span>
+                  </label>
+                  <input
+                    id="phone-input"
+                    name="phone"
+                    value={form.phone}
+                    onChange={handleChange}
+                    required
+                    placeholder="+91 98765 43210"
+                    style={{ ...inputSty(), padding: "0.55rem 0.7rem", fontSize: "0.8125rem" }}
+                  />
+                </div>
+              </div>
+
+              {/* Moment 3: Delivery Timeline Pills (Replaces clunky date picker) */}
+              <div>
+                <label style={{ display: "block", fontSize: "0.71875rem", fontWeight: 750, color: "#27272A", marginBottom: "0.35rem" }}>
+                  Required Delivery Timeline
+                </label>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "0.4rem" }}>
+                  {[
+                    { id: "48h", label: "⚡ 48–72h Express", sub: "Priority" },
+                    { id: "3-5d", label: "📅 3–5 Days", sub: "Standard" },
+                    { id: "flexible", label: "⏳ Flexible", sub: "Relaxed" },
+                  ].map((opt) => {
+                    const active = form.timeline === opt.id;
+                    return (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        onClick={() => setForm((p) => ({ ...p, timeline: opt.id }))}
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          padding: "0.45rem 0.25rem",
+                          borderRadius: "10px",
+                          background: active ? "#FDF6F2" : "#FAF7F2",
+                          border: active ? "1.5px solid #E55729" : "1px solid #E5DCD1",
+                          cursor: "pointer",
+                          transition: "all 140ms ease",
+                        }}
+                      >
+                        <span style={{ fontSize: "0.75rem", fontWeight: active ? 800 : 650, color: active ? "#E55729" : "#3F3F46" }}>
+                          {opt.label}
+                        </span>
+                        <span style={{ fontSize: "0.625rem", color: active ? "#CB451A" : "#A1A1AA", fontWeight: 600 }}>
+                          {opt.sub}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Progressive Disclosure: Optional Details */}
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setShowAdvanced((prev) => !prev)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    padding: "0.25rem 0",
+                    fontSize: "0.75rem",
+                    fontWeight: 700,
+                    color: showAdvanced ? "#E55729" : "#71717A",
+                    cursor: "pointer",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "0.35rem",
+                    transition: "color 150ms ease",
+                  }}
+                >
+                  <span>{showAdvanced ? "− Hide optional details" : "+ Add university, tech stack, or guide guidelines (Optional)"}</span>
+                </button>
+
+                {showAdvanced && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.2 }}
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "0.65rem",
+                      marginTop: "0.5rem",
+                      padding: "0.75rem",
+                      background: "#FAF7F2",
+                      borderRadius: "12px",
+                      border: "1px dashed #E5DCD1",
+                    }}
+                  >
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 12rem), 1fr))", gap: "0.5rem" }}>
+                      <div>
+                        <label htmlFor="college-input" style={{ display: "block", fontSize: "0.6875rem", fontWeight: 700, color: "#52525B", marginBottom: "0.2rem" }}>
+                          {mode === "college" ? "College / University" : "Company / Organization"}
+                        </label>
+                        <input
+                          id="college-input"
+                          name="college"
+                          value={form.college}
+                          onChange={handleChange}
+                          placeholder={mode === "college" ? "e.g. VTU, Pune University" : "e.g. Stealth, Independent"}
+                          style={{ ...inputSty(), background: "#FFFFFF", padding: "0.45rem 0.6rem", fontSize: "0.78125rem" }}
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="email-input" style={{ display: "block", fontSize: "0.6875rem", fontWeight: 700, color: "#52525B", marginBottom: "0.2rem" }}>
+                          Email (Optional)
+                        </label>
+                        <input
+                          id="email-input"
+                          name="email"
+                          type="email"
+                          value={form.email}
+                          onChange={handleChange}
+                          placeholder="you@gmail.com"
+                          style={{ ...inputSty(), background: "#FFFFFF", padding: "0.45rem 0.6rem", fontSize: "0.78125rem" }}
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label htmlFor="tech-select" style={{ display: "block", fontSize: "0.6875rem", fontWeight: 700, color: "#52525B", marginBottom: "0.2rem" }}>
+                        Preferred Tech Stack
+                      </label>
+                      <select
+                        id="tech-select"
+                        name="techPreference"
+                        value={form.techPreference}
+                        onChange={handleChange}
+                        style={{ ...inputSty(), background: "#FFFFFF", padding: "0.45rem 0.6rem", fontSize: "0.78125rem", appearance: "auto", cursor: "pointer" }}
+                      >
+                        {TECH_OPTIONS.map((t) => (
+                          <option key={t} value={t}>{t}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label htmlFor="special-notes-input" style={{ display: "block", fontSize: "0.6875rem", fontWeight: 700, color: "#52525B", marginBottom: "0.2rem" }}>
+                        Guide Guidelines / Special Requirements
+                      </label>
+                      <input
+                        id="special-notes-input"
+                        name="specialRequirements"
+                        value={form.specialRequirements}
+                        onChange={handleChange}
+                        placeholder="e.g. Specific dataset, ML algorithm, or IEEE paper reference..."
+                        style={{ ...inputSty(), background: "#FFFFFF", padding: "0.45rem 0.6rem", fontSize: "0.78125rem" }}
+                      />
+                    </div>
+                  </motion.div>
+                )}
+              </div>
+
+              {/* Value Assurance Chip (Replaced confusing ₹299 bar) */}
+              <div style={{
+                padding: "0.55rem 0.85rem",
+                borderRadius: "12px",
+                background: "linear-gradient(135deg, #FDF6F2 0%, #FAEDE5 100%)",
+                border: "1px solid #F3CFBF",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                marginTop: "0.15rem",
+              }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.45rem", minWidth: 0 }}>
+                  <span style={{ width: "7px", height: "7px", borderRadius: "50%", background: "#E55729", flexShrink: 0 }} />
+                  <span style={{ fontSize: "0.75rem", fontWeight: 800, color: "#18181B", whiteSpace: "nowrap" }}>
+                    {mode === "college" ? "Custom College Build" : "Custom Startup Build"}
+                  </span>
+                  <span style={{ fontSize: "0.6875rem", color: "#71717A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    · {mode === "college" ? "Code + 60p IEEE Docx + Viva PPT" : "Full-Stack Code + 100% IP"}
+                  </span>
+                </div>
+                <span style={{ fontSize: "0.875rem", fontWeight: 900, color: "#E55729", whiteSpace: "nowrap", marginLeft: "0.5rem" }}>
+                  Starts ₹1,999
                 </span>
               </div>
 
               {error && (
-                <div style={{ display: "flex", alignItems: "flex-start", gap: ".625rem", padding: ".875rem", borderRadius: "12px", background: "var(--rose-50)", border: "1px solid var(--rose-100)", fontSize: ".875rem", color: "var(--rose)" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", padding: "0.5rem 0.75rem", borderRadius: "8px", background: "#FFF1F2", border: "1px solid #FFE4E6", fontSize: "0.75rem", color: "#E11D48" }}>
                   ⚠ {error}
                 </div>
               )}
 
+              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={submitting}
-                className="btn btn-teal"
-                style={{ justifyContent: "center", borderRadius: "13px", minHeight: "56px", padding: ".75rem 1rem", fontSize: "clamp(.9375rem, 2vw, 1rem)", fontWeight: 700, textAlign: "center", lineHeight: 1.35, opacity: submitting ? 0.7 : 1 }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "0.5rem",
+                  width: "100%",
+                  padding: "0.75rem 1.25rem",
+                  borderRadius: "9999px",
+                  background: "#18181B",
+                  color: "#FFFFFF",
+                  fontSize: "0.875rem",
+                  fontWeight: 750,
+                  border: "none",
+                  cursor: "pointer",
+                  boxShadow: "0 4px 16px rgba(24, 24, 27, 0.2)",
+                  transition: "all 150ms ease",
+                  marginTop: "0.25rem",
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.background = "#27272A";
+                  e.currentTarget.style.transform = "translateY(-1px)";
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background = "#18181B";
+                  e.currentTarget.style.transform = "none";
+                }}
               >
                 {submitting ? (
                   <>
-                    <Loader2 style={{ width: "1.125rem", height: "1.125rem", animation: "spin .7s linear infinite" }} /> Connecting to WhatsApp…
+                    <Loader2 style={{ width: "1rem", height: "1rem" }} className="animate-spin" />
+                    <span>Opening WhatsApp...</span>
                   </>
                 ) : (
                   <>
-                    <MessageCircle style={{ width: "1.125rem", height: "1.125rem" }} /> Submit &amp; Chat on WhatsApp ({selectedTier.id === "custom" ? "Starts ₹1,999" : selectedTier.price})
+                    <MessageCircle style={{ width: "1.05rem", height: "1.05rem", color: "#25D366" }} />
+                    <span>Get Free Feasibility &amp; Quote on WhatsApp</span>
+                    <ArrowRight style={{ width: "0.875rem", height: "0.875rem" }} />
                   </>
                 )}
               </button>
 
-              <p style={{ textAlign: "center", fontSize: ".8125rem", color: "var(--ink-4)", lineHeight: 1.65 }}>
-                Want to speak immediately?{" "}
-                <a
-                  href={`https://wa.me/918799814256?text=${encodeURIComponent("Hi SubmitKit! I want to request a custom project. My topic is: ")}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ color: "var(--teal)", fontWeight: 700, textDecoration: "none" }}
-                >
-                  Chat directly on WhatsApp
-                </a>{" "}
-                for fastest response.
-              </p>
+              {/* Micro Trust Guarantee & Instant Link */}
+              <div style={{ textAlign: "center", marginTop: "0.35rem" }}>
+                <p style={{ fontSize: "0.6875rem", color: "#71717A", margin: "0 0 0.2rem", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.3rem" }}>
+                  <Lock style={{ width: "10px", height: "10px", color: "#71717A" }} />
+                  <span>100% Confidential · Free Architecture Review · Direct WhatsApp SLA</span>
+                </p>
+                <p style={{ fontSize: "0.6875rem", color: "#A1A1AA", margin: 0 }}>
+                  Need instant answer?{" "}
+                  <a
+                    href={`https://wa.me/918799814256?text=${encodeURIComponent("Hi SubmitKit! I want to request a custom project. My topic is: ")}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ color: "#E55729", fontWeight: 700, textDecoration: "none" }}
+                  >
+                    Chat directly on WhatsApp →
+                  </a>
+                </p>
+              </div>
             </form>
           </div>
         </motion.div>
 
-        {/* ════ POPULAR STARTUP MVP TYPES FOR NON-CODERS ════ */}
+        {/* ════ POPULAR STARTUP TYPES FOR NON-CODERS ════ */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -652,14 +1213,14 @@ export function CustomProjectClient() {
           style={{ maxWidth: "62rem", margin: "4rem auto 0" }}
         >
           <div style={{ textAlign: "center", marginBottom: "2rem" }}>
-            <span style={{ fontSize: ".6875rem", fontWeight: 800, color: "var(--teal)", textTransform: "uppercase", letterSpacing: ".12em" }}>
-              Startup &amp; MVP Specialization
+            <span style={{ fontSize: ".6875rem", fontWeight: 800, color: "#E55729", textTransform: "uppercase", letterSpacing: ".12em" }}>
+              Custom Engineering &amp; Software Specialization
             </span>
             <h3 className="font-display" style={{ fontSize: "clamp(1.35rem, 3vw, 1.85rem)", fontWeight: 800, color: "var(--navy)", letterSpacing: "-.03em", margin: ".35rem 0 .5rem" }}>
-              Popular Software Prototypes We Build For Non-Technical Founders
+              Popular College Projects &amp; Custom Software We Build
             </h3>
             <p style={{ fontSize: ".875rem", color: "var(--ink-3)", maxWidth: "38rem", margin: "0 auto" }}>
-              From AI automation tools to SaaS platforms — we build production-ready software you can demo to customers or pitch to venture investors.
+              From advanced academic capstones to full-scale SaaS platforms — we build production-ready systems tailored to university guidelines or market launch.
             </p>
           </div>
 
@@ -710,7 +1271,7 @@ export function CustomProjectClient() {
                 }}
               >
                 <div>
-                  <span style={{ fontSize: ".625rem", fontWeight: 800, padding: ".2rem .5rem", borderRadius: "6px", background: "var(--teal-50)", color: "var(--teal-dark)", border: "1px solid var(--teal-100)", letterSpacing: ".05em", textTransform: "uppercase" }}>
+                  <span style={{ fontSize: ".625rem", fontWeight: 800, padding: ".2rem .5rem", borderRadius: "6px", background: "#FDF6F2", color: "#E55729", border: "1px solid #F3CFBF", letterSpacing: ".05em", textTransform: "uppercase" }}>
                     {p.tag}
                   </span>
                   <h4 style={{ fontSize: "1.025rem", fontWeight: 800, color: "var(--navy)", letterSpacing: "-.02em", margin: ".625rem 0 .375rem" }}>
@@ -737,7 +1298,7 @@ export function CustomProjectClient() {
             }}
           >
             <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
-              <span style={{ fontSize: ".6875rem", fontWeight: 800, color: "var(--teal)", textTransform: "uppercase", letterSpacing: ".12em" }}>
+              <span style={{ fontSize: ".6875rem", fontWeight: 800, color: "#E55729", textTransform: "uppercase", letterSpacing: ".12em" }}>
                 Fair Comparison
               </span>
               <h3 className="font-display" style={{ fontSize: "1.25rem", fontWeight: 800, color: "var(--navy)", letterSpacing: "-.025em", margin: ".25rem 0 0" }}>
@@ -749,7 +1310,7 @@ export function CustomProjectClient() {
               <thead>
                 <tr style={{ borderBottom: "1.5px solid var(--line)", textAlign: "left" }}>
                   <th style={{ padding: ".75rem", color: "var(--ink-4)", fontWeight: 700 }}>Comparison Factor</th>
-                  <th style={{ padding: ".75rem", color: "var(--teal-dark)", fontWeight: 800, background: "rgba(13, 148, 136, 0.08)", borderRadius: "8px 8px 0 0" }}>SubmitKit Studio</th>
+                  <th style={{ padding: ".75rem", color: "#CB451A", fontWeight: 800, background: "rgba(229, 87, 41, 0.08)", borderRadius: "8px 8px 0 0" }}>SubmitKit Studio</th>
                   <th style={{ padding: ".75rem", color: "var(--ink-4)", fontWeight: 600 }}>Traditional Dev Agency</th>
                   <th style={{ padding: ".75rem", color: "var(--ink-4)", fontWeight: 600 }}>No-Code Tools (Bubble)</th>
                 </tr>
@@ -765,7 +1326,7 @@ export function CustomProjectClient() {
                 ].map((row, idx) => (
                   <tr key={row.factor} style={{ borderBottom: idx === 5 ? "none" : "1px solid var(--line)" }}>
                     <td style={{ padding: ".75rem", fontWeight: 700, color: "var(--navy)" }}>{row.factor}</td>
-                    <td style={{ padding: ".75rem", fontWeight: 750, color: "var(--teal-dark)", background: "rgba(13, 148, 136, 0.04)" }}>
+                    <td style={{ padding: ".75rem", fontWeight: 750, color: "#CB451A", background: "rgba(229, 87, 41, 0.04)" }}>
                       ✓ {row.sk}
                     </td>
                     <td style={{ padding: ".75rem", color: "var(--ink-3)" }}>{row.agency}</td>

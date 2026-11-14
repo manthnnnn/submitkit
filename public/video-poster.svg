@@ -1,76 +1,156 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1376 768" role="img" aria-labelledby="title desc">
-  <title id="title">SubmitKit project setup guide</title>
-  <desc id="desc">A warm, clean illustration of a project bundle ready to launch.</desc>
+  <title id="title">SubmitKit Project Setup Guide</title>
+  <desc id="desc">1-Click execution guide and verified project deliverables walkthrough</desc>
   <defs>
-    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#FBF8F1"/>
-      <stop offset="1" stop-color="#F2EEE4"/>
+    <linearGradient id="bg-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#FCF8F4"/>
+      <stop offset="50%" stop-color="#FAF5EE"/>
+      <stop offset="100%" stop-color="#F5EDE2"/>
     </linearGradient>
-    <filter id="shadow" x="-20%" y="-20%" width="140%" height="150%">
-      <feDropShadow dx="0" dy="18" stdDeviation="20" flood-color="#183B3A" flood-opacity=".12"/>
+    <linearGradient id="terracotta-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#EE6E44"/>
+      <stop offset="50%" stop-color="#E55729"/>
+      <stop offset="100%" stop-color="#CB451A"/>
+    </linearGradient>
+    <filter id="win-shadow" x="-15%" y="-15%" width="130%" height="140%">
+      <feDropShadow dx="0" dy="24" stdDeviation="28" flood-color="#18181B" flood-opacity="0.16"/>
+    </filter>
+    <filter id="play-shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#E55729" flood-opacity="0.25"/>
     </filter>
   </defs>
-  <rect width="1376" height="768" fill="url(#paper)"/>
-  <circle cx="1260" cy="90" r="190" fill="#E5F1E9" opacity=".7"/>
-  <circle cx="84" cy="724" r="160" fill="#F2E8D7" opacity=".75"/>
 
-  <g font-family="Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif">
-    <rect x="88" y="66" width="44" height="44" rx="13" fill="#0D9488"/>
-    <path d="M101 88h18M110 79v18" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
-    <text x="148" y="96" fill="#153B3A" font-size="23" font-weight="800">SubmitKit</text>
-    <text x="88" y="196" fill="#0D8077" font-size="16" font-weight="750" letter-spacing="2">YOUR PROJECT SETUP GUIDE</text>
-    <text x="88" y="278" fill="#173B3A" font-size="58" font-weight="780">Your project,</text>
-    <text x="88" y="347" fill="#173B3A" font-size="58" font-weight="780">ready to run.</text>
-    <text x="88" y="404" fill="#526B68" font-size="22" font-weight="450">Follow along from download to first launch.</text>
+  {/* Background */}
+  <rect width="1376" height="768" fill="url(#bg-grad)"/>
 
-    <g filter="url(#shadow)">
-      <rect x="718" y="132" width="572" height="386" rx="24" fill="#173B3A"/>
-      <rect x="735" y="149" width="538" height="352" rx="13" fill="#FBFCFA"/>
-      <path d="M748 149h512a13 13 0 0 1 13 13v37H735v-37a13 13 0 0 1 13-13Z" fill="#F0F4EF"/>
-      <circle cx="759" cy="171" r="5" fill="#E58B76"/>
-      <circle cx="778" cy="171" r="5" fill="#E8BD64"/>
-      <circle cx="797" cy="171" r="5" fill="#69B99C"/>
-      <text x="825" y="177" fill="#69817B" font-size="13" font-weight="650">PROJECT BUNDLE</text>
+  {/* Soft Ambient Glow Orbs */}
+  <circle cx="1240" cy="120" r="240" fill="#FDF6F2" opacity="0.85"/>
+  <circle cx="120" cy="680" r="200" fill="#FAF5EE" opacity="0.9"/>
+  <circle cx="688" cy="384" r="320" fill="#F3CFBF" opacity="0.18"/>
 
-      <rect x="760" y="223" width="205" height="246" rx="12" fill="#F7F8F5" stroke="#E5EBE5"/>
-      <text x="782" y="256" fill="#234441" font-size="14" font-weight="750">YOUR FILES</text>
-      <g font-size="13" font-weight="560" fill="#405C57">
-        <rect x="780" y="275" width="164" height="37" rx="8" fill="#EAF5F0"/>
-        <rect x="793" y="286" width="14" height="14" rx="3" fill="#0D9488"/>
-        <path d="M797 293h6m-3-3v6" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
-        <text x="817" y="298">Source code</text>
-        <rect x="793" y="328" width="14" height="14" rx="3" fill="#D8E8E1"/>
-        <path d="M796 333h8m-8 3h8" stroke="#4A7A6F" stroke-width="1.4" stroke-linecap="round"/>
-        <text x="817" y="341">Documentation</text>
-        <rect x="793" y="371" width="14" height="14" rx="3" fill="#D8E8E1"/>
-        <path d="M796 376h8m-8 3h8" stroke="#4A7A6F" stroke-width="1.4" stroke-linecap="round"/>
-        <text x="817" y="384">Setup notes</text>
-      </g>
-
-      <rect x="984" y="223" width="265" height="246" rx="12" fill="#F4F8F4"/>
-      <text x="1007" y="256" fill="#234441" font-size="14" font-weight="750">READY TO START</text>
-      <rect x="1007" y="279" width="219" height="57" rx="9" fill="#FFFFFF" stroke="#E3EAE4"/>
-      <circle cx="1031" cy="307" r="12" fill="#E5F3ED"/>
-      <path d="m1026 307 4 4 7-8" fill="none" stroke="#0D9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      <text x="1052" y="304" fill="#234441" font-size="13" font-weight="700">Download the bundle</text>
-      <text x="1052" y="322" fill="#768B84" font-size="11">Files saved to your device</text>
-      <rect x="1007" y="347" width="219" height="57" rx="9" fill="#FFFFFF" stroke="#E3EAE4"/>
-      <circle cx="1031" cy="375" r="12" fill="#E5F3ED"/>
-      <path d="m1026 375 4 4 7-8" fill="none" stroke="#0D9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      <text x="1052" y="372" fill="#234441" font-size="13" font-weight="700">Open the project</text>
-      <text x="1052" y="390" fill="#768B84" font-size="11">See your work come to life</text>
-      <rect x="1007" y="415" width="132" height="34" rx="8" fill="#0D9488"/>
-      <text x="1025" y="437" fill="#FFFFFF" font-size="12" font-weight="720">Start setup</text>
-      <path d="m1120 427 5 5-5 5" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-      <path d="M685 518h638l-36 28H720z" fill="#244947"/>
-      <path d="M704 519h600l-27 19H731z" fill="#DDE8E1"/>
-      <rect x="973" y="521" width="76" height="3" rx="2" fill="#B5C8BE"/>
+  <g font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">
+    
+    {/* ── Brand Header ── */}
+    <g transform="translate(88, 64)">
+      {/* Matte Terracotta Squircle with Delta-Wing Supersonic Airplane */}
+      <rect width="46" height="46" rx="14" fill="url(#terracotta-grad)"/>
+      <path d="M12 25 L34 13 L27 25 L34 33 Z" fill="#FFFFFF"/>
+      <path d="M12 25 L27 25 L21 35 Z" fill="#FDF6F2" opacity="0.9"/>
+      
+      <text x="60" y="31" fill="#18181B" font-size="22" font-weight="900" letter-spacing="-0.03em">SubmitKit</text>
+      
+      {/* Live Badge */}
+      <rect x="175" y="11" width="124" height="24" rx="12" fill="#FDF6F2" stroke="#F3CFBF" stroke-width="1.2"/>
+      <circle cx="189" cy="23" r="3.5" fill="#E55729"/>
+      <text x="199" y="27" fill="#E55729" font-size="11" font-weight="800" letter-spacing="0.04em">1-CLICK RUN</text>
     </g>
 
-    <rect x="88" y="641" width="288" height="58" rx="29" fill="#FFFFFF" stroke="#DCE8DF"/>
-    <circle cx="119" cy="670" r="17" fill="#0D9488"/>
-    <path d="m115 661 14 9-14 9z" fill="#FFFFFF"/>
-    <text x="150" y="676" fill="#234441" font-size="15" font-weight="750">WATCH THE WALKTHROUGH</text>
-    <text x="1250" y="677" text-anchor="end" fill="#70847D" font-size="14" font-weight="650">02:36</text>
+    {/* ── Left Hero Copy ── */}
+    <g transform="translate(88, 180)">
+      <rect x="0" y="0" width="190" height="26" rx="13" fill="#FDF6F2" stroke="#F3CFBF" stroke-width="1.2"/>
+      <text x="16" y="17" fill="#CB451A" font-size="11" font-weight="800" letter-spacing="0.08em">PROJECT SETUP GUIDE</text>
+      
+      <text x="0" y="78" fill="#18181B" font-size="52" font-weight="900" letter-spacing="-0.04em">Your Project,</text>
+      <text x="0" y="142" fill="#E55729" font-size="52" font-weight="900" letter-spacing="-0.04em">Ready to Run.</text>
+      
+      <text x="0" y="200" fill="#52525B" font-size="20" font-weight="500" line-height="1.6">
+        Step-by-step walkthrough from download to first execution.
+      </text>
+
+      {/* Feature Pills */}
+      <g transform="translate(0, 240)">
+        <g transform="translate(0, 0)">
+          <rect width="180" height="42" rx="10" fill="#FFFFFF" stroke="#EFE6DC" stroke-width="1.2"/>
+          <circle cx="24" cy="21" r="5" fill="#E55729"/>
+          <text x="40" y="25" fill="#18181B" font-size="13" font-weight="700">1-Click run.bat launcher</text>
+        </g>
+        <g transform="translate(192, 0)">
+          <rect width="190" height="42" rx="10" fill="#FFFFFF" stroke="#EFE6DC" stroke-width="1.2"/>
+          <circle cx="24" cy="21" r="5" fill="#E55729"/>
+          <text x="40" y="25" fill="#18181B" font-size="13" font-weight="700">60-Page IEEE Report (.docx)</text>
+        </g>
+        <g transform="translate(0, 52)">
+          <rect width="180" height="42" rx="10" fill="#FFFFFF" stroke="#EFE6DC" stroke-width="1.2"/>
+          <circle cx="24" cy="21" r="5" fill="#E55729"/>
+          <text x="40" y="25" fill="#18181B" font-size="13" font-weight="700">Viva PPT &amp; Q&amp;A Notes</text>
+        </g>
+        <g transform="translate(192, 52)">
+          <rect width="190" height="42" rx="10" fill="#FFFFFF" stroke="#EFE6DC" stroke-width="1.2"/>
+          <circle cx="24" cy="21" r="5" fill="#E55729"/>
+          <text x="40" y="25" fill="#18181B" font-size="13" font-weight="700">100% Unencrypted Code</text>
+        </g>
+      </g>
+    </g>
+
+    {/* ── Right 3D Window Preview ── */}
+    <g transform="translate(690, 120)" filter="url(#win-shadow)">
+      {/* Outer Shell */}
+      <rect width="600" height="480" rx="20" fill="#18181B"/>
+      
+      {/* Window Title Bar */}
+      <path d="M0 20 C0 8.95 8.95 0 20 0 L580 0 C591.05 0 600 8.95 600 20 L600 46 L0 46 Z" fill="#27272A"/>
+      <circle cx="24" cy="23" r="5" fill="#E55729"/>
+      <circle cx="42" cy="23" r="5" fill="#F59E0B"/>
+      <circle cx="60" cy="23" r="5" fill="#71717A"/>
+      <text x="240" y="28" fill="#A1A1AA" font-size="12" font-weight="700" letter-spacing="0.05em">SUBMITKIT RUNNER · 1-CLICK ENGINE</text>
+
+      {/* Main Canvas */}
+      <rect x="0" y="46" width="600" height="434" fill="#FAEDE5"/>
+      <rect x="16" y="62" width="260" height="402" rx="12" fill="#FFFFFF" stroke="#F3CFBF" stroke-width="1.2"/>
+      
+      {/* Deliverable Cards inside window */}
+      <text x="32" y="92" fill="#18181B" font-size="12" font-weight="800" letter-spacing="0.06em">INCLUDED DELIVERABLES</text>
+
+      <g transform="translate(32, 108)">
+        {/* Item 1 */}
+        <rect width="228" height="68" rx="10" fill="#FDF6F2" stroke="#F3CFBF" stroke-width="1"/>
+        <text x="14" y="26" fill="#18181B" font-size="13" font-weight="800">⚡ run.bat &amp; run.sh</text>
+        <text x="14" y="46" fill="#52525B" font-size="11" font-weight="500">1-click automated launcher</text>
+
+        {/* Item 2 */}
+        <g transform="translate(0, 78)">
+          <rect width="228" height="68" rx="10" fill="#FFFFFF" stroke="#EFE6DC" stroke-width="1"/>
+          <text x="14" y="26" fill="#18181B" font-size="13" font-weight="800">📄 IEEE_Report.docx</text>
+          <text x="14" y="46" fill="#52525B" font-size="11" font-weight="500">60-page academic standard</text>
+        </g>
+
+        {/* Item 3 */}
+        <g transform="translate(0, 156)">
+          <rect width="228" height="68" rx="10" fill="#FFFFFF" stroke="#EFE6DC" stroke-width="1"/>
+          <text x="14" y="26" fill="#18181B" font-size="13" font-weight="800">📊 Presentation.pptx</text>
+          <text x="14" y="46" fill="#52525B" font-size="11" font-weight="500">15 defense slides + top Q&amp;A</text>
+        </g>
+
+        {/* Item 4 */}
+        <g transform="translate(0, 234)">
+          <rect width="228" height="68" rx="10" fill="#FFFFFF" stroke="#EFE6DC" stroke-width="1"/>
+          <text x="14" y="26" fill="#18181B" font-size="13" font-weight="800">💻 Clean Source Code</text>
+          <text x="14" y="46" fill="#52525B" font-size="11" font-weight="500">100% verified full-stack code</text>
+        </g>
+      </g>
+
+      {/* Terminal View on the Right */}
+      <rect x="290" y="62" width="294" height="402" rx="12" fill="#18181B"/>
+      <g font-family="'JetBrains Mono', monospace" font-size="11" fill="#A1A1AA">
+        <text x="310" y="96" fill="#E55729" font-weight="700">$ .\run.bat</text>
+        <text x="310" y="126" fill="#FDF6F2">[1/4] Checking Node &amp; Python...</text>
+        <text x="310" y="152" fill="#22C55E">✓ Environment ready (Python 3.11)</text>
+        <text x="310" y="182" fill="#FDF6F2">[2/4] Installing dependencies...</text>
+        <text x="310" y="208" fill="#22C55E">✓ 0 vulnerabilities detected</text>
+        <text x="310" y="238" fill="#FDF6F2">[3/4] Initializing database...</text>
+        <text x="310" y="264" fill="#22C55E">✓ Schema and seeds loaded</text>
+        <text x="310" y="294" fill="#FDF6F2">[4/4] Starting server...</text>
+        <text x="310" y="324" fill="#E55729" font-weight="700">➜ Ready: http://localhost:3000</text>
+        <text x="310" y="354" fill="#71717A">Opening application in browser...</text>
+      </g>
+
+      {/* Floating Center Frosted Glass Play Button */}
+      <g transform="translate(300, 240)" filter="url(#play-shadow)">
+        <circle cx="0" cy="0" r="46" fill="#FFFFFF" opacity="0.94"/>
+        <circle cx="0" cy="0" r="46" fill="none" stroke="#F3CFBF" stroke-width="2.5"/>
+        <polygon points="-7,-15 16,0 -7,15" fill="#E55729"/>
+      </g>
+    </g>
+
   </g>
 </svg>

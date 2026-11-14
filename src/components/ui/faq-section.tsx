@@ -28,7 +28,7 @@ const FAQS: FAQItem[] = [
     id: 'non-coder-1',
     category: 'non-coder',
     badge: 'Zero Code',
-    question: 'Can I build software or a startup MVP if I do not know how to code?',
+    question: 'Can I build software or a startup if I do not know how to code?',
     answer: 'Yes, absolutely. SubmitKit is built specifically for non-coders, non-technical founders, and solo entrepreneurs. You do not need to learn programming, Git, or server management. You simply describe your product vision, desired features, or problem statement in plain English or a voice note. Our senior engineering team builds 100% of the production software (frontend UI, backend APIs, database architecture, and authentication), gives you an automated 1-click launcher, and guides you through a 1-on-1 walkthrough so you can operate and showcase your software with complete confidence.',
   },
   {
@@ -36,7 +36,7 @@ const FAQS: FAQItem[] = [
     category: 'non-coder',
     badge: '48h Delivery',
     question: 'How much does it cost to build custom software, and how fast is it delivered?',
-    answer: 'Custom project prototypes and startup MVPs start at ₹1,999 (~$24 USD) for starter proof-of-concepts, with production-grade working applications delivered in just 48 to 72 hours. Traditional software agencies frequently quote $5,000+ and take 3–6 months. Our rapid-build engineering workflow eliminates agency bloat, delivering clean, tested code and working deployments at a fraction of the time and cost.',
+    answer: 'Custom projects and end-to-end startup software start at ₹1,999 (~$24 USD), with production-grade working applications delivered in just 48 to 72 hours. Traditional software agencies frequently quote $5,000+ and take 3–6 months. Our rapid-build engineering workflow eliminates agency bloat, delivering clean, tested code and working deployments at a fraction of the time and cost.',
   },
   {
     id: 'non-coder-3',
@@ -118,31 +118,31 @@ export function FaqSection() {
       style={{ 
         position: 'relative', 
         zIndex: 1, 
-        padding: 'clamp(3rem, 6vw, 5.5rem) 0',
+        padding: 'clamp(1.75rem, 3.5vw, 3.25rem) 0',
         background: 'linear-gradient(180deg, rgba(250, 246, 238, 0.4) 0%, rgba(245, 238, 226, 0.8) 100%)',
         borderTop: '1px solid var(--line)',
       }}
     >
       <div className="shell" style={{ maxWidth: '58rem' }}>
         {/* Section Header */}
-        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '.4rem', fontSize: '.6875rem', fontWeight: 800, color: 'var(--teal)', textTransform: 'uppercase', letterSpacing: '.12em', marginBottom: '.625rem', padding: '.25rem .75rem', borderRadius: '9999px', background: 'var(--teal-50)', border: '1px solid var(--teal-100)' }}>
-            <HelpCircle style={{ width: '13px', height: '13px' }} />
+        <div style={{ textAlign: 'center', marginBottom: 'clamp(1.25rem, 3vw, 2.25rem)' }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '.4rem', fontSize: '.6875rem', fontWeight: 800, color: '#E55729', textTransform: 'uppercase', letterSpacing: '.12em', marginBottom: '.625rem', padding: '.25rem .75rem', borderRadius: '9999px', background: '#FDF6F2', border: '1px solid #F3CFBF' }}>
+            <HelpCircle style={{ width: '13px', height: '13px', color: '#E55729' }} />
             Answers to Common Questions
           </div>
-          <h2 className="font-display font-black" style={{ fontSize: 'clamp(1.75rem, 4vw, 2.75rem)', letterSpacing: '-.035em', color: 'var(--navy)', lineHeight: 1.2, margin: '0 0 .875rem' }}>
+          <h2 className="font-display font-black" style={{ fontSize: 'clamp(1.75rem, 4vw, 2.75rem)', letterSpacing: '-.035em', color: '#18181B', lineHeight: 1.2, margin: '0 0 .875rem' }}>
             Frequently Asked Questions
           </h2>
-          <p style={{ fontSize: 'clamp(.9375rem, 2vw, 1.1rem)', color: 'var(--ink-3)', lineHeight: 1.7, maxWidth: '40rem', margin: '0 auto' }}>
+          <p style={{ fontSize: 'clamp(.9375rem, 2vw, 1.1rem)', color: '#52525B', lineHeight: 1.7, maxWidth: '40rem', margin: '0 auto' }}>
             Everything you need to know about building custom software without coding, instant college project kits, IEEE documentation, and 1-click execution.
           </p>
         </div>
 
         {/* Category Pills */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.5rem', justifyContent: 'center', marginBottom: '2.25rem' }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.5rem', justifyContent: 'center', marginBottom: 'clamp(1rem, 2.5vw, 1.75rem)' }}>
           {[
             { id: 'all', label: 'All Questions', count: FAQS.length, icon: HelpCircle },
-            { id: 'non-coder', label: 'Non-Coders & MVPs', count: 4, icon: Sparkles },
+            { id: 'non-coder', label: 'Non-Coders & Startups', count: 4, icon: Sparkles },
             { id: 'college', label: 'College Project Kits', count: 4, icon: GraduationCap },
             { id: 'setup', label: '1-Click Run & Viva', count: 2, icon: Terminal },
           ].map(tab => {
@@ -162,23 +162,24 @@ export function FaqSection() {
                   fontSize: '.8125rem',
                   fontWeight: isSelected ? 700 : 500,
                   cursor: 'pointer',
-                  border: isSelected ? '1.5px solid var(--teal)' : '1px solid var(--line)',
+                  border: isSelected ? '1.5px solid #F3CFBF' : '1px solid #EFE6DC',
                   background: isSelected 
-                    ? 'linear-gradient(180deg, #FFFFFF 0%, #F0FDF9 100%)' 
-                    : 'var(--surface)',
-                  color: isSelected ? 'var(--teal-dark)' : 'var(--ink-3)',
-                  boxShadow: isSelected ? '0 2px 10px rgba(13, 148, 136, 0.15)' : 'none',
+                    ? '#FFFFFF' 
+                    : '#FAF5EE',
+                  color: isSelected ? '#18181B' : '#71717A',
+                  boxShadow: isSelected ? '0 2px 10px rgba(229, 87, 41, 0.12)' : 'none',
                   transition: 'all 160ms cubic-bezier(.16,1,.3,1)',
                 }}
               >
-                <Icon style={{ width: '14px', height: '14px', color: isSelected ? 'var(--teal)' : 'var(--ink-4)' }} />
+                <Icon style={{ width: '14px', height: '14px', color: isSelected ? '#E55729' : '#A1A1AA' }} />
                 <span>{tab.label}</span>
                 <span style={{ 
                   fontSize: '.6875rem', 
                   padding: '.1rem .4rem', 
                   borderRadius: '9999px',
-                  background: isSelected ? 'var(--teal)' : 'var(--surface-2)',
-                  color: isSelected ? '#FFFFFF' : 'var(--ink-4)',
+                  background: isSelected ? '#FDF6F2' : '#EFE6DC',
+                  color: isSelected ? '#E55729' : '#71717A',
+                  border: isSelected ? '1px solid #F3CFBF' : '1px solid transparent',
                   fontWeight: 700,
                 }}>
                   {tab.count}
@@ -188,7 +189,7 @@ export function FaqSection() {
           })}
         </div>
 
-        {/* Accordion List */}
+        {/* Accordion List with 3D Spring Expansion */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '.875rem' }}>
           {filteredFaqs.map((faq, index) => {
             const isOpen = openIds.includes(faq.id);
@@ -200,11 +201,11 @@ export function FaqSection() {
                 transition={{ duration: 0.16, delay: index * 0.02 }}
                 style={{
                   borderRadius: '16px',
-                  background: 'linear-gradient(175deg, #FFFFFF 0%, #FDFBF8 40%, #F7EEE0 100%)',
-                  border: isOpen ? '1.5px solid var(--teal-200)' : '1.5px solid rgba(220, 208, 188, 0.85)',
+                  background: '#FFFFFF',
+                  border: isOpen ? '1.5px solid #F3CFBF' : '1px solid #EFE6DC',
                   boxShadow: isOpen 
-                    ? 'inset 0 1px 0 #FFFFFF, 0 6px 20px -3px rgba(13, 148, 136, 0.14)' 
-                    : 'inset 0 1px 0 #FFFFFF, 0 2px 8px -2px rgba(180, 145, 100, 0.08)',
+                    ? '0 6px 20px -3px rgba(229, 87, 41, 0.12)' 
+                    : '0 1px 4px rgba(24, 24, 27, 0.04)',
                   overflow: 'hidden',
                   transition: 'border-color 160ms, box-shadow 160ms',
                 }}
@@ -215,7 +216,7 @@ export function FaqSection() {
                   aria-expanded={isOpen}
                   style={{
                     width: '100%',
-                    padding: '1.25rem 1.375rem',
+                    padding: 'clamp(0.95rem, 2.5vw, 1.25rem) clamp(1rem, 2.5vw, 1.375rem)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
@@ -233,9 +234,9 @@ export function FaqSection() {
                         fontWeight: 800,
                         padding: '.15rem .5rem',
                         borderRadius: '6px',
-                        background: faq.category === 'non-coder' ? 'rgba(217, 119, 6, 0.1)' : 'var(--teal-50)',
-                        color: faq.category === 'non-coder' ? '#B45309' : 'var(--teal-dark)',
-                        border: faq.category === 'non-coder' ? '1px solid rgba(217, 119, 6, 0.25)' : '1px solid var(--teal-100)',
+                        background: '#FDF6F2',
+                        color: '#E55729',
+                        border: '1px solid #F3CFBF',
                         letterSpacing: '.04em',
                         textTransform: 'uppercase',
                       }}>
@@ -245,7 +246,7 @@ export function FaqSection() {
                     <span style={{
                       fontSize: '1.025rem',
                       fontWeight: 750,
-                      color: isOpen ? 'var(--navy)' : 'var(--ink)',
+                      color: isOpen ? '#18181B' : '#27272A',
                       letterSpacing: '-.02em',
                       lineHeight: 1.4,
                     }}>
@@ -257,7 +258,7 @@ export function FaqSection() {
                     width: '28px',
                     height: '28px',
                     borderRadius: '8px',
-                    background: isOpen ? 'var(--teal)' : 'var(--surface-2)',
+                    background: isOpen ? '#18181B' : '#F4EBE0',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -267,7 +268,7 @@ export function FaqSection() {
                     <ChevronDown style={{
                       width: '16px',
                       height: '16px',
-                      color: isOpen ? '#FFFFFF' : 'var(--ink-3)',
+                      color: isOpen ? '#FFFFFF' : '#71717A',
                       transform: isOpen ? 'rotate(180deg)' : 'rotate(0deg)',
                       transition: 'transform 180ms cubic-bezier(.16,1,.3,1)',
                     }} />
@@ -284,7 +285,7 @@ export function FaqSection() {
                       style={{ overflow: 'hidden' }}
                     >
                       <div style={{
-                        padding: '0 1.375rem 1.25rem',
+                        padding: '0 clamp(1rem, 2.5vw, 1.375rem) clamp(0.95rem, 2.5vw, 1.25rem)',
                         borderTop: '1px solid rgba(220, 208, 188, 0.5)',
                         paddingTop: '1rem',
                         fontSize: '.9375rem',
@@ -316,13 +317,13 @@ export function FaqSection() {
           boxShadow: 'inset 0 1px 0 #FFFFFF, 0 8px 24px -4px rgba(180, 145, 100, 0.12)',
         }}>
           <div>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '.4rem', fontSize: '.6875rem', fontWeight: 800, color: 'var(--teal)', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '.3rem' }}>
-              <ShieldCheck style={{ width: '14px', height: '14px' }} /> Have a unique topic or custom startup idea?
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '.4rem', fontSize: '.6875rem', fontWeight: 800, color: '#E55729', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: '.3rem' }}>
+              <ShieldCheck style={{ width: '14px', height: '14px', color: '#E55729' }} /> Have a unique topic or custom startup idea?
             </div>
-            <h3 style={{ fontSize: '1.125rem', fontWeight: 800, color: 'var(--navy)', letterSpacing: '-.025em', margin: 0 }}>
+            <h3 style={{ fontSize: '1.125rem', fontWeight: 800, color: '#18181B', letterSpacing: '-.025em', margin: 0 }}>
               Talk directly with a Senior Engineer on WhatsApp
             </h3>
-            <p style={{ fontSize: '.84375rem', color: 'var(--ink-3)', margin: '.25rem 0 0', lineHeight: 1.5 }}>
+            <p style={{ fontSize: '.84375rem', color: '#52525B', margin: '.25rem 0 0', lineHeight: 1.5 }}>
               Average response time under 10 minutes. Get instant project scope, tech recommendations, or a quote.
             </p>
           </div>
@@ -331,16 +332,40 @@ export function FaqSection() {
               href="https://wa.me/918799814256?text=Hi%20SubmitKit!%20I%20have%20a%20question%20about%20a%20project%20build."
               target="_blank"
               rel="noopener noreferrer"
-              className="btn btn-teal"
-              style={{ gap: '.5rem', fontSize: '.875rem', minHeight: '42px', padding: '0 1.25rem' }}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '.5rem',
+                fontSize: '.875rem',
+                fontWeight: 700,
+                minHeight: '42px',
+                padding: '0 1.25rem',
+                borderRadius: '9999px',
+                background: '#18181B',
+                color: '#FFFFFF',
+                textDecoration: 'none',
+                boxShadow: '0 2px 8px rgba(24, 24, 27, 0.25)',
+              }}
             >
               <MessageCircle style={{ width: '1.125rem', height: '1.125rem' }} />
               Chat on WhatsApp
             </a>
             <Link
               href="/custom"
-              className="btn btn-outline"
-              style={{ gap: '.4rem', fontSize: '.875rem', minHeight: '42px', padding: '0 1.125rem', textDecoration: 'none' }}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '.4rem',
+                fontSize: '.875rem',
+                fontWeight: 700,
+                minHeight: '42px',
+                padding: '0 1.125rem',
+                borderRadius: '9999px',
+                background: '#FFFFFF',
+                color: '#18181B',
+                border: '1.5px solid #EFE6DC',
+                textDecoration: 'none',
+              }}
             >
               Request Custom Build <ArrowRight style={{ width: '1rem', height: '1rem' }} />
             </Link>

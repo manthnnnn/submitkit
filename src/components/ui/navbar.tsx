@@ -21,45 +21,47 @@ interface NavItem {
 }
 
 const DESKTOP_NAV: NavItem[] = [
-  { href: '/projects',     label: 'College Projects',        sub: '11 verified runnable kits with IEEE report & PPT', icon: Package },
-  { href: '/custom',       label: 'Customize Project / Idea', sub: 'Custom college project or startup MVP built from scratch', icon: Zap, badge: 'CUSTOM' },
-  { href: '/blueprint',    label: 'Ideas & Blueprints',       sub: '1,000+ structured engineering blueprints', icon: BookOpen, badge: 'FREE' },
-  { href: '/order/lookup', label: 'Track Order',              sub: 'Access your purchased project downloads', icon: Search },
+  { href: '/projects',     label: 'Pre-Made Projects',        sub: '11 verified runnable kits with IEEE report & PPT', icon: Package },
+  { href: '/custom',       label: 'Custom Project & Ideas',  sub: 'Custom college projects or startup ideas built in 48–72h', icon: Zap, badge: 'Custom' },
+  { href: '/blueprint',    label: 'Ideas & Blueprints',       sub: '1,000+ free architectural blueprints', icon: BookOpen, badge: 'Free' },
+  { href: '/order/lookup', label: 'Track Order',              sub: 'Access your purchased system downloads', icon: Search },
 ];
 
 const MOBILE_DRAWER_NAV: NavItem[] = [
-  { href: '/projects',     label: 'College Projects',        sub: '11 verified runnable kits with IEEE report & PPT', icon: Package },
-  { href: '/custom',       label: 'Customize Project / Idea', sub: 'Custom college project or startup MVP built from scratch', icon: Zap, badge: 'CUSTOM' },
-  { href: '/blueprint',    label: 'Ideas & Blueprints',       sub: '1,000+ structured engineering blueprints — free', icon: BookOpen, badge: 'Free' },
-  { href: '/order/lookup', label: 'Track Your Order',         sub: 'Access your purchased project downloads', icon: Search },
+  { href: '/projects',     label: 'Pre-Made Projects',        sub: '11 verified runnable kits with IEEE report & PPT', icon: Package },
+  { href: '/custom',       label: 'Custom Project & Ideas',  sub: 'Custom college projects or startup ideas built in 48–72h', icon: Zap, badge: 'Custom' },
+  { href: '/blueprint',    label: 'Ideas & Blueprints',       sub: '1,000+ free architectural blueprints', icon: BookOpen, badge: 'Free' },
+  { href: '/order/lookup', label: 'Track Order',              sub: 'Access your purchased system downloads', icon: Search },
 ];
 
-/* ── 120 FPS Stagger Orchestration: Menu items cascade in one by one ── */
+/* ── 3D Minimal Cascading Menu Orchestration (Slow, Premium & Fluid) ── */
 const drawerContainerVariants: Variants = {
   hidden: {
     opacity: 0,
-    y: -16,
-    scale: 0.95,
+    y: -20,
+    rotateX: 4,
+    scale: 0.96,
   },
   visible: {
     opacity: 1,
     y: 0,
+    rotateX: 0,
     scale: 1,
     transition: {
       type: 'spring',
       damping: 24,
-      stiffness: 300,
-      mass: 0.8,
-      staggerChildren: 0.08,
-      delayChildren: 0.06,
+      stiffness: 260,
+      mass: 0.9,
+      staggerChildren: 0.09,
+      delayChildren: 0.08,
     },
   },
   exit: {
     opacity: 0,
-    y: -12,
-    scale: 0.95,
+    y: -14,
+    scale: 0.96,
     transition: {
-      duration: 0.2,
+      duration: 0.22,
       ease: [0.32, 0.72, 0, 1],
     },
   },
@@ -68,20 +70,22 @@ const drawerContainerVariants: Variants = {
 const drawerItemVariants: Variants = {
   hidden: {
     opacity: 0,
-    x: -16,
-    y: 14,
-    scale: 0.94,
+    y: 22,
+    rotateX: -14,
+    scale: 0.93,
+    filter: 'blur(3px)',
   },
   visible: {
     opacity: 1,
-    x: 0,
     y: 0,
+    rotateX: 0,
     scale: 1,
+    filter: 'blur(0px)',
     transition: {
       type: 'spring',
-      damping: 22,
-      stiffness: 320,
-      mass: 0.7,
+      damping: 20,
+      stiffness: 240,
+      mass: 0.85,
     },
   },
 };
@@ -187,23 +191,23 @@ export function Navbar() {
           top: 0,
           left: 0,
           right: 0,
-          zIndex: 125, // Always higher than backdrop (115) and drawer (120) so hamburger/close button is always clickable
+          zIndex: 125,
           transition: 'background-color 200ms ease, border-color 200ms ease, box-shadow 200ms ease',
           willChange: 'background-color, border-color',
           ...(scrolled
             ? {
-                background: 'rgba(253, 251, 247, 0.94)',
+                background: 'rgba(252, 248, 244, 0.94)',
                 backdropFilter: 'blur(20px) saturate(180%)',
                 WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-                borderBottom: '1px solid rgba(232, 225, 213, 0.85)',
-                boxShadow: '0 2px 10px -2px rgba(15, 23, 42, 0.06)',
+                borderBottom: '1px solid rgba(239, 230, 220, 0.85)',
+                boxShadow: '0 2px 12px -2px rgba(24, 24, 27, 0.05)',
               }
             : {
-                background: 'rgba(250, 248, 244, 0.85)',
+                background: 'rgba(252, 248, 244, 0.82)',
                 backdropFilter: 'blur(16px)',
                 WebkitBackdropFilter: 'blur(16px)',
-                borderBottom: '1px solid rgba(232, 225, 213, 0.5)',
-                boxShadow: '0 1px 3px rgba(15, 23, 42, 0.02)',
+                borderBottom: '1px solid rgba(239, 230, 220, 0.5)',
+                boxShadow: 'none',
               }),
         }}
       >
@@ -213,21 +217,24 @@ export function Navbar() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            height: '64px',
+            height: '68px',
           }}
         >
           <Logo size="sm" href="/" />
 
           {/* Desktop nav: With iOS Fluid Spring Active Tab Slider */}
-          <nav className="hidden lg:flex" style={{ alignItems: 'center', gap: '0.25rem' }}>
+          <nav className="hidden lg:flex" style={{ alignItems: 'center', gap: '0.4rem' }}>
             {DESKTOP_NAV.map(({ href, label, badge }) => {
               const active = isActive(href);
+              const isCustom = badge?.toLowerCase() === 'custom';
+              const isFree = badge?.toLowerCase() === 'free';
               return (
                 <motion.div
                   key={href}
-                  whileTap={{ scale: 0.95 }}
-                  transition={{ type: 'spring', stiffness: 500, damping: 28 }}
-                  style={{ position: 'relative', display: 'inline-flex' }}
+                  whileTap={{ scale: 0.96 }}
+                  whileHover={{ y: -2, rotateX: 3, scale: 1.02 }}
+                  transition={{ type: 'spring', stiffness: 450, damping: 26 }}
+                  style={{ position: 'relative', display: 'inline-flex', perspective: 800, transformStyle: 'preserve-3d' }}
                 >
                   <Link
                     href={href}
@@ -237,24 +244,24 @@ export function Navbar() {
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: '0.45rem',
-                      padding: '0.45rem 0.95rem',
-                      borderRadius: '12px',
+                      padding: '0.45rem 0.9rem',
+                      borderRadius: '9999px',
                       fontSize: '0.9rem',
                       fontWeight: active ? 650 : 500,
                       textDecoration: 'none',
                       letterSpacing: '-0.01em',
-                      color: active ? 'var(--navy)' : 'var(--ink-3)',
+                      color: active ? '#18181B' : '#52525B',
                       transition: 'color 140ms ease',
                       zIndex: 1,
                     }}
                     onMouseEnter={e => {
                       if (!active) {
-                        e.currentTarget.style.color = 'var(--navy)';
+                        e.currentTarget.style.color = '#18181B';
                       }
                     }}
                     onMouseLeave={e => {
                       if (!active) {
-                        e.currentTarget.style.color = 'var(--ink-3)';
+                        e.currentTarget.style.color = '#52525B';
                       }
                     }}
                   >
@@ -271,10 +278,10 @@ export function Navbar() {
                         style={{
                           position: 'absolute',
                           inset: 0,
-                          borderRadius: '12px',
-                          background: 'linear-gradient(180deg, #FFFFFF 0%, #FAF8F5 100%)',
-                          border: '1.2px solid rgba(220, 212, 198, 0.95)',
-                          boxShadow: '0 2px 6px -1px rgba(60, 45, 20, 0.05), inset 0 1px 0 #FFFFFF',
+                          borderRadius: '9999px',
+                          background: '#FFFFFF',
+                          border: '1.2px solid rgba(239, 230, 220, 0.95)',
+                          boxShadow: '0 2px 6px -1px rgba(24, 24, 27, 0.05)',
                           zIndex: -1,
                         }}
                       />
@@ -289,8 +296,8 @@ export function Navbar() {
                           width: '5px',
                           height: '5px',
                           borderRadius: '50%',
-                          background: 'var(--teal)',
-                          boxShadow: '0 0 0 2px rgba(13, 148, 136, 0.22)',
+                          background: '#E55729',
+                          boxShadow: '0 0 0 2px rgba(229, 87, 41, 0.22)',
                           flexShrink: 0,
                         }}
                       />
@@ -300,19 +307,13 @@ export function Navbar() {
                       <span
                         style={{
                           fontSize: '0.625rem',
-                          padding: '0.1rem 0.45rem',
-                          fontWeight: 750,
-                          letterSpacing: '0.04em',
+                          padding: '0.12rem 0.5rem',
+                          fontWeight: 700,
+                          letterSpacing: '0.03em',
                           borderRadius: '9999px',
-                          background: badge === 'FREE'
-                            ? 'rgba(217, 119, 6, 0.09)'
-                            : 'rgba(13, 148, 136, 0.09)',
-                          color: badge === 'FREE'
-                            ? '#B45309'
-                            : 'var(--teal-darker)',
-                          border: badge === 'FREE'
-                            ? '1px solid rgba(217, 119, 6, 0.25)'
-                            : '1px solid rgba(13, 148, 136, 0.22)',
+                          background: isCustom ? '#FDF6F2' : '#FAF5EE',
+                          color: isCustom ? '#E55729' : '#71717A',
+                          border: `1px solid ${isCustom ? '#F3CFBF' : '#EFE6DC'}`,
                         }}
                       >
                         {badge}
@@ -324,41 +325,69 @@ export function Navbar() {
             })}
           </nav>
 
-          {/* Desktop right-side CTA with tactile spring */}
+          {/* Desktop right-side CTA: Elegant Near-Black Pill Button with 3D Spring Lift */}
           <div className="hidden lg:flex" style={{ alignItems: 'center', gap: '.75rem' }}>
             {pathname === '/custom' ? (
-              <motion.div whileTap={{ scale: 0.96 }} transition={{ type: 'spring', stiffness: 500, damping: 28 }}>
+              <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -2 }} transition={{ type: 'spring', stiffness: 500, damping: 28 }}>
                 <Link
                   href="/projects"
-                  className="btn btn-hero-secondary"
                   style={{
-                    padding: '.45rem 1.125rem',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '.45rem',
+                    padding: '.55rem 1.35rem',
                     fontSize: '.875rem',
-                    borderRadius: '12px',
-                    gap: '.4rem',
                     fontWeight: 650,
-                    minHeight: '38px',
+                    borderRadius: '9999px',
+                    color: '#FFFFFF',
+                    background: '#18181B',
+                    border: '1px solid rgba(255, 255, 255, 0.12)',
+                    boxShadow: '0 2px 8px rgba(24, 24, 27, 0.25)',
+                    textDecoration: 'none',
+                    transition: 'all 200ms cubic-bezier(.16, 1, .3, 1)',
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.background = '#27272A';
+                    e.currentTarget.style.boxShadow = '0 6px 18px -2px rgba(24, 24, 27, 0.35)';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.background = '#18181B';
+                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(24, 24, 27, 0.25)';
                   }}
                 >
-                  <Package style={{ width: '14px', height: '14px', color: 'var(--teal)' }} />
-                  Browse 11 Kits
+                  <Package style={{ width: '14px', height: '14px', color: '#EE6E44' }} />
+                  Explore Systems
                 </Link>
               </motion.div>
             ) : (
-              <motion.div whileTap={{ scale: 0.96 }} transition={{ type: 'spring', stiffness: 500, damping: 28 }}>
+              <motion.div whileTap={{ scale: 0.96 }} whileHover={{ y: -2 }} transition={{ type: 'spring', stiffness: 500, damping: 28 }}>
                 <Link
                   href="/custom"
-                  className="btn btn-hero-primary"
                   style={{
-                    padding: '.45rem 1.125rem',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '.45rem',
+                    padding: '.55rem 1.35rem',
                     fontSize: '.875rem',
-                    borderRadius: '12px',
-                    gap: '.375rem',
                     fontWeight: 650,
-                    minHeight: '38px',
+                    borderRadius: '9999px',
+                    color: '#FFFFFF',
+                    background: '#18181B',
+                    border: '1px solid rgba(255, 255, 255, 0.12)',
+                    boxShadow: '0 2px 8px rgba(24, 24, 27, 0.25)',
+                    textDecoration: 'none',
+                    transition: 'all 200ms cubic-bezier(.16, 1, .3, 1)',
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.background = '#27272A';
+                    e.currentTarget.style.boxShadow = '0 6px 18px -2px rgba(24, 24, 27, 0.35)';
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.background = '#18181B';
+                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(24, 24, 27, 0.25)';
                   }}
                 >
-                  Customize Idea <ChevronRight style={{ width: '14px', height: '14px' }} />
+                  Customize Project <ChevronRight style={{ width: '14px', height: '14px' }} />
                 </Link>
               </motion.div>
             )}
@@ -382,9 +411,9 @@ export function Navbar() {
                 alignItems: 'center',
                 justifyContent: 'center',
                 background: open ? 'linear-gradient(180deg, #FFFFFF 0%, #FAF8F5 100%)' : 'var(--surface-2)',
-                border: open ? '1.2px solid rgba(13, 148, 136, 0.4)' : '1px solid var(--line)',
-                color: open ? 'var(--teal-darker)' : 'var(--ink)',
-                boxShadow: open ? '0 2px 8px -2px rgba(13, 148, 136, 0.2)' : 'none',
+                border: open ? '1.2px solid #F3CFBF' : '1px solid var(--line)',
+                color: open ? '#E55729' : 'var(--ink)',
+                boxShadow: open ? '0 2px 8px -2px rgba(229, 87, 41, 0.2)' : 'none',
                 touchAction: 'manipulation',
                 userSelect: 'none',
                 WebkitUserSelect: 'none',
@@ -466,12 +495,12 @@ export function Navbar() {
                 maxWidth: '24rem',
                 marginLeft: 'auto',
                 zIndex: 120,
-                background: 'rgba(253, 251, 247, 0.98)',
+                background: 'rgba(252, 248, 244, 0.98)',
                 backdropFilter: 'blur(24px) saturate(180%)',
                 WebkitBackdropFilter: 'blur(24px) saturate(180%)',
                 borderRadius: '20px',
-                border: '1px solid rgba(232, 225, 213, 0.95)',
-                boxShadow: '0 20px 40px -12px rgba(15, 23, 42, 0.22), 0 0 0 1px rgba(13, 148, 136, 0.08)',
+                border: '1px solid rgba(239, 230, 220, 0.95)',
+                boxShadow: '0 20px 40px -12px rgba(24, 24, 27, 0.15)',
                 display: 'flex',
                 flexDirection: 'column',
                 overflow: 'hidden',
@@ -493,7 +522,7 @@ export function Navbar() {
                   <span style={{ fontSize: '0.6875rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--ink-4)' }}>
                     Menu
                   </span>
-                  <span className="tag tag-emerald" style={{ fontSize: '0.625rem', padding: '0.1rem 0.45rem', fontWeight: 800 }}>
+                  <span style={{ fontSize: '0.625rem', padding: '0.1rem 0.45rem', fontWeight: 800, borderRadius: '9999px', background: '#FFF0EB', color: '#FF5C35', border: '1px solid #FFD4C8' }}>
                     ● 11 Verified Kits
                   </span>
                 </div>
@@ -523,6 +552,8 @@ export function Navbar() {
               <nav style={{ padding: '0.5rem', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
                 {MOBILE_DRAWER_NAV.map(({ href, label, sub, icon: Icon, badge }) => {
                   const active = isActive(href);
+                  const isCustom = badge?.toLowerCase() === 'custom';
+                  const isFree = badge?.toLowerCase() === 'free';
                   return (
                     <motion.div
                       key={href}
@@ -543,15 +574,15 @@ export function Navbar() {
                           textDecoration: 'none',
                           transition: 'background-color 150ms ease, transform 150ms cubic-bezier(0.32, 0.72, 0, 1)',
                           background: active
-                            ? 'linear-gradient(180deg, #FFFFFF 0%, #FAF8F5 100%)'
+                            ? '#FFFFFF'
                             : 'transparent',
                           border: active
-                            ? '1.2px solid rgba(220, 212, 198, 0.95)'
+                            ? '1.2px solid rgba(239, 230, 220, 0.95)'
                             : '1.2px solid transparent',
                           boxShadow: active
-                            ? '0 2px 6px -1px rgba(60, 45, 20, 0.05)'
+                            ? '0 2px 6px -1px rgba(24, 24, 27, 0.05)'
                             : 'none',
-                          color: 'var(--navy)',
+                          color: '#18181B',
                         }}
                       >
                         <div
@@ -561,17 +592,17 @@ export function Navbar() {
                             borderRadius: '11px',
                             flexShrink: 0,
                             background: active
-                              ? 'rgba(13, 148, 136, 0.1)'
+                              ? '#FFF0EB'
                               : 'var(--surface-2)',
                             border: active
-                              ? '1px solid rgba(13, 148, 136, 0.25)'
+                              ? '1px solid #FFD4C8'
                               : '1px solid var(--line)',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                           }}
                         >
-                          <Icon style={{ width: '1.1rem', height: '1.1rem', color: active ? 'var(--teal)' : 'var(--ink-2)' }} />
+                          <Icon style={{ width: '1.1rem', height: '1.1rem', color: active ? '#FF5C35' : 'var(--ink-2)' }} />
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
@@ -584,15 +615,9 @@ export function Navbar() {
                                   fontWeight: 750,
                                   letterSpacing: '0.04em',
                                   borderRadius: '9999px',
-                                  background: badge.toUpperCase() === 'FREE'
-                                    ? 'rgba(217, 119, 6, 0.09)'
-                                    : 'rgba(13, 148, 136, 0.09)',
-                                  color: badge.toUpperCase() === 'FREE'
-                                    ? '#B45309'
-                                    : 'var(--teal-darker)',
-                                  border: badge.toUpperCase() === 'FREE'
-                                    ? '1px solid rgba(217, 119, 6, 0.25)'
-                                    : '1px solid rgba(13, 148, 136, 0.22)',
+                                  background: isCustom ? '#FDF6F2' : '#FAF5EE',
+                                  color: isCustom ? '#E55729' : '#71717A',
+                                  border: `1px solid ${isCustom ? '#F3CFBF' : '#EFE6DC'}`,
                                 }}
                               >
                                 {badge}
@@ -616,7 +641,7 @@ export function Navbar() {
                 style={{
                   padding: '0.625rem 0.75rem 0.75rem',
                   borderTop: '1px solid var(--line)',
-                  background: 'rgba(248, 245, 238, 0.7)',
+                  background: 'rgba(250, 245, 238, 0.7)',
                   display: 'flex',
                   flexDirection: 'column',
                   gap: '0.5rem',
@@ -627,21 +652,23 @@ export function Navbar() {
                     href="/projects"
                     prefetch={true}
                     onClick={() => setOpen(false)}
-                    className="btn btn-teal drawer-cta-btn"
                     style={{
                       width: '100%',
                       minHeight: '44px',
                       fontSize: '0.875rem',
                       fontWeight: 700,
-                      borderRadius: '12px',
+                      borderRadius: '9999px',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       gap: '0.5rem',
-                      boxShadow: 'var(--sh-xs)',
+                      background: '#18181B',
+                      color: '#FFFFFF',
+                      textDecoration: 'none',
+                      boxShadow: '0 2px 8px rgba(24, 24, 27, 0.25)',
                     }}
                   >
-                    <Package style={{ width: '0.9375rem', height: '0.9375rem', color: '#FFFFFF' }} />
+                    <Package style={{ width: '0.9375rem', height: '0.9375rem', color: '#FF7B59' }} />
                     Browse 11 College Kits (₹299)
                   </Link>
                 </motion.div>
@@ -658,7 +685,7 @@ export function Navbar() {
                     gap: '0.375rem',
                     fontSize: '0.75rem',
                     fontWeight: 600,
-                    color: '#059669',
+                    color: '#E55729',
                     textDecoration: 'none',
                     padding: '0.375rem 0',
                   }}

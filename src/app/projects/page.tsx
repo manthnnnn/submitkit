@@ -12,9 +12,19 @@ import { Home, ChevronRight } from "lucide-react";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: { absolute: `Software Systems & Production Blueprints | ${CONSTANTS.APP_NAME}` },
-  description: `Explore fully engineered project systems and production codebases. Complete working source code, architecture specifications, presentation decks, and deployment scripts.`,
+  title: { absolute: `Pre-Made College Projects & Production Software Systems (₹299/₹499) | ${CONSTANTS.APP_NAME}` },
+  description: `Verified pre-made college projects and production software systems for resume enhancement. Includes 1-click run.bat launcher, 60-page IEEE report (.docx), Viva presentation PPT, and full source code ready to run in 60s.`,
   alternates: { canonical: '/projects' },
+  keywords: [
+    'pre made college projects',
+    'projects for resume',
+    'final year cse projects with source code',
+    'production software systems',
+    'ieee project report docx',
+    'viva presentation ppt',
+    'software systems 299',
+    ...CONSTANTS.SEO_KEYWORDS,
+  ],
 };
 
 /* ── Skeleton while data loads ── */

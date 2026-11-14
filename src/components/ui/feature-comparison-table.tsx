@@ -148,7 +148,7 @@ function Cell({ value, highlight }: { value: boolean | string; highlight?: boole
               style={{
                 width: '1.25rem',
                 height: '1.25rem',
-                color: highlight ? 'var(--teal)' : '#10B981'
+                color: highlight ? 'var(--orange)' : '#E55729'
               }}
               aria-hidden="true"
             />
@@ -195,7 +195,7 @@ function MobileRow({ label, value, highlight }: { label: string; value: boolean 
           display: 'flex',
           alignItems: 'center',
           gap: '.5rem',
-          color: highlight ? 'var(--teal)' : 'var(--ink-2)',
+          color: highlight ? 'var(--orange)' : 'var(--ink-2)',
           fontWeight: highlight ? 700 : 600
         }}
       >
@@ -206,7 +206,7 @@ function MobileRow({ label, value, highlight }: { label: string; value: boolean 
                 style={{
                   width: '1.125rem',
                   height: '1.125rem',
-                  color: highlight ? 'var(--teal)' : '#10B981'
+                  color: highlight ? 'var(--orange)' : '#E55729'
                 }}
                 aria-hidden="true"
               />

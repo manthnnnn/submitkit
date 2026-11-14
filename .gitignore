@@ -35,6 +35,7 @@ temp_projects.json
 # Dev artifacts (agent orchestration)
 roster.json
 hive/
+.claude/
 
 # Project bundles (should live in R2, not git)
 *.zip

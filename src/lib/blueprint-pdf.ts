@@ -695,8 +695,8 @@ export async function generateBlueprintDocx(
           emptyLine(),
 
           calloutCard(
-            "💡 Base MVP Foundation & Your Creative Freedom",
-            "NOTE: This Master Prompt delivers a 100% functional, end-to-end Base MVP (Minimum Viable Product) of your project right out of the box. Treat this as your solid operational launchpad! As per your personal creativity and college project guidelines, you can freely update, refine, and customize the system (e.g. asking the AI: 'Now add real-time Excel export', 'Change the dashboard theme', or 'Integrate cloud authentication'). You have complete freedom to expand it as far as you wish.",
+            "💡 Base Software Foundation & Your Creative Freedom",
+            "NOTE: This Master Prompt delivers a 100% functional, end-to-end Base Software Application of your project right out of the box. Treat this as your solid operational launchpad! As per your personal creativity and project guidelines, you can freely update, refine, and customize the system (e.g. asking the AI: 'Now add real-time Excel export', 'Change the dashboard theme', or 'Integrate cloud authentication'). You have complete freedom to expand it as far as you wish.",
             AMBER_BORDER,
             AMBER_BG
           ),

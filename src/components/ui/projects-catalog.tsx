@@ -9,6 +9,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { CONSTANTS } from '@/lib/constants';
 import { motion } from 'framer-motion';
+import { AirplaneLogo } from '@/components/ui/logo';
 
 type StatusFilter = 'ALL' | 'AVAILABLE' | 'UPCOMING';
 type TierFilter   = 'ALL' | 'MINI' | 'MAJOR';
@@ -127,26 +128,35 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
       {/* ── Page Header ── */}
       <div style={{ marginBottom: '2.5rem' }}>
         <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '.625rem', marginBottom: '1.125rem' }}>
-          <span className="tag tag-teal">SubmitKit Fleet Catalog</span>
-          <span className="tag tag-emerald">
-            <span className="dot-live apulse" style={{ width: '5px', height: '5px' }} />
+          <span style={{ fontSize: '.6875rem', fontWeight: 800, padding: '.2rem .65rem', borderRadius: '9999px', background: '#FDF6F2', color: '#E55729', border: '1px solid #F3CFBF', textTransform: 'uppercase', letterSpacing: '.04em', display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+            <AirplaneLogo size={12} color="#E55729" /> SubmitKit Systems
+          </span>
+          <span style={{ fontSize: '.6875rem', fontWeight: 700, padding: '.2rem .65rem', borderRadius: '9999px', background: '#FAF5EE', color: '#18181B', border: '1px solid #EFE6DC', display: 'inline-flex', alignItems: 'center', gap: '.35rem' }}>
+            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#E55729' }} />
             {availCount} Ready to Ship
           </span>
-          <span className="tag tag-amber">
+          <span style={{ fontSize: '.6875rem', fontWeight: 700, padding: '.2rem .65rem', borderRadius: '9999px', background: '#FFFBEB', color: '#B45309', border: '1px solid #FDE68A', display: 'inline-flex', alignItems: 'center', gap: '.35rem' }}>
             <Clock style={{ width: '.75rem', height: '.75rem' }} />
             {upCount} Upcoming
           </span>
         </div>
-        <h1 className="font-display" style={{ fontSize: 'clamp(1.875rem,5vw,3rem)', fontWeight: 900, letterSpacing: '-.04em', color: 'var(--navy)', marginBottom: '.875rem' }}>
-          Verified Projects.{' '}
-          <span className="text-teal-grad">Ready to Run &amp; Submit.</span>
+        <h1 className="font-display font-black" style={{ fontSize: 'clamp(2rem,5vw,3.25rem)', letterSpacing: '-.04em', color: '#18181B', marginBottom: '.875rem', lineHeight: 1.15 }}>
+          Production Software Systems.{' '}
+          <span style={{
+            color: '#E55729',
+            background: 'linear-gradient(135deg, #EE6E44 0%, #E55729 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+          }}>
+            Ready to Run &amp; Deploy.
+          </span>
         </h1>
-        <p style={{ fontSize: 'clamp(.9375rem,2vw,1.0625rem)', color: 'var(--ink-3)', maxWidth: '42rem', lineHeight: 1.75 }}>
-          Skip the GitHub bugs. Every kit has 100% working code, IEEE Black Book, defense PPT, and top 25 Viva Q&amp;A.
+        <p style={{ fontSize: 'clamp(.9375rem,2vw,1.1rem)', color: '#52525B', maxWidth: '44rem', lineHeight: 1.7 }}>
+          Pre-made software systems (₹299) and production systems (₹499) for college students. Need a ready-made project for your resume or want to enhance your profile for placements? Download, execute with 1-click, and submit with full IEEE documentation.
         </p>
       </div>
 
-      {/* ── Customize Project / Startup Idea Banner ── */}
+      {/* ── Build Startup Idea / Custom Build Banner ── */}
       <div style={{
         padding: 'clamp(1rem, 3vw, 1.375rem) clamp(1rem, 3vw, 1.5rem)',
         display: 'flex',
@@ -155,42 +165,77 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
         justifyContent: 'space-between',
         gap: '1rem',
         marginBottom: '2rem',
-        borderRadius: '16px',
-        background: 'linear-gradient(160deg, #FFFFFF 0%, #FDFBF8 30%, #F6EDE0 65%, #EFE1CC 100%)',
-        border: '1.5px solid rgba(220, 208, 188, 0.95)',
-        boxShadow: 'inset 0 1px 0 #FFFFFF, 0 6px 24px -4px rgba(180, 145, 100, 0.14)',
+        borderRadius: '20px',
+        background: 'linear-gradient(135deg, #FDF6F2 0%, #FFFFFF 100%)',
+        border: '1.5px solid #F3CFBF',
+        boxShadow: '0 4px 16px rgba(229, 87, 41, 0.08)',
+        transition: 'all 200ms cubic-bezier(.16, 1, .3, 1)',
       }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: '.875rem' }}>
-          <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: '12px', flexShrink: 0, background: 'var(--teal-50)', border: '1px solid var(--teal-100)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <Sparkles style={{ width: '1.125rem', height: '1.125rem', color: 'var(--teal)' }} />
+          <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: '12px', flexShrink: 0, background: '#FFFFFF', border: '1px solid #F3CFBF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <AirplaneLogo size={18} color="#E55729" />
           </div>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '.625rem', flexWrap: 'wrap', marginBottom: '.3125rem' }}>
-              <h3 style={{ fontSize: '.9375rem', fontWeight: 800, color: 'var(--navy)', margin: 0, letterSpacing: '-.02em' }}>
-                Customize Your Project or Build a Startup Idea
+              <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#18181B', margin: 0, letterSpacing: '-.02em' }}>
+                Custom College Projects &amp; Startup Ideas Execution
               </h3>
-              <span className="tag tag-teal" style={{ fontSize: '.6rem' }}>100% From Scratch</span>
+              <span style={{ fontSize: '.625rem', fontWeight: 800, padding: '.15rem .5rem', borderRadius: '9999px', background: '#FFFFFF', color: '#E55729', border: '1px solid #F3CFBF' }}>
+                48–72h Turnaround
+              </span>
             </div>
-            <p style={{ fontSize: '.8125rem', color: 'var(--ink-3)', margin: 0 }}>
-              Custom college topic or startup MVP · Working code · Full IEEE report · 1-on-1 walkthrough ·{' '}
-              <strong style={{ color: '#B45309' }}>Starts ₹1,999 (48–72h delivery)</strong>
+            <p style={{ fontSize: '.84375rem', color: '#52525B', margin: 0 }}>
+              Have an approved college topic or a custom startup idea? Senior engineers build your project from scratch with IEEE report &amp; 1-on-1 walkthrough ·{' '}
+              <strong style={{ color: '#CB451A' }}>Starts ₹1,999 (48–72h delivery)</strong>
             </p>
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem', flexWrap: 'wrap' }}>
           <Link
             href="/custom"
-            className="btn btn-teal btn-sm"
-            style={{ justifyContent: 'center' }}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '.375rem',
+              padding: '.55rem 1.15rem',
+              borderRadius: '9999px',
+              background: '#18181B',
+              color: '#FFFFFF',
+              fontSize: '.8125rem',
+              fontWeight: 700,
+              textDecoration: 'none',
+              boxShadow: '0 2px 8px rgba(24, 24, 27, 0.25)',
+              transition: 'all 200ms cubic-bezier(.16, 1, .3, 1)',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.background = '#27272A';
+              e.currentTarget.style.transform = 'translateY(-2px)';
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.background = '#18181B';
+              e.currentTarget.style.transform = 'none';
+            }}
           >
-            Customize Now
+            <span>Build Custom Project</span>
             <ArrowRight style={{ width: '.8125rem', height: '.8125rem' }} />
           </Link>
           <a
             href={`https://wa.me/918799814256?text=${encodeURIComponent('Hi SubmitKit! I want to customize a project or startup idea.\n\nTopic:\nTech Stack:\nFeatures:\nDeadline:')}`}
             target="_blank" rel="noopener noreferrer"
-            className="btn btn-outline btn-sm"
-            style={{ justifyContent: 'center' }}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '.4rem',
+              padding: '.5rem 1.25rem',
+              borderRadius: '9999px',
+              background: '#FFFFFF',
+              color: '#18181B',
+              border: '1.5px solid #EFE6DC',
+              fontSize: '.84375rem',
+              fontWeight: 650,
+              textDecoration: 'none',
+              transition: 'all 200ms cubic-bezier(.16, 1, .3, 1)',
+            }}
           >
             <WaIcon />
             WhatsApp
@@ -257,7 +302,7 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
                 />
               )}
               {live && (
-                <span className="dot-live apulse" style={{ width: '6px', height: '6px' }} />
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#E55729', display: 'inline-block' }} />
               )}
               <span>{label}</span>
               <span
@@ -266,9 +311,9 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
                   borderRadius: '9999px',
                   fontSize: '.6875rem',
                   fontWeight: 700,
-                  background: active ? 'var(--teal-50)' : 'var(--surface-3)',
-                  color: active ? 'var(--teal-dark)' : 'var(--ink-4)',
-                  border: active ? '1px solid var(--teal-100)' : '1px solid transparent',
+                  background: active ? '#FDF6F2' : '#F4EBE0',
+                  color: active ? '#E55729' : 'var(--ink-4)',
+                  border: active ? '1px solid #F3CFBF' : '1px solid transparent',
                   transition: 'all 150ms ease',
                 }}
               >
@@ -279,11 +324,11 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
         })}
       </div>
 
-      {/* ── Unified Filter Toolbar: Tier & Domain ── */}
+      {/* ── Unified Filter Toolbar: Startup Software vs Engineering Systems ── */}
       <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '.875rem', marginBottom: '2rem' }}>
         {/* Tier filter segmented track */}
-        <div className="scroll-x no-scrollbar max-w-full" style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', gap: '.25rem', padding: '.25rem', background: 'var(--surface-2)', border: '1px solid var(--line)', borderRadius: '10px' }}>
-          {(['ALL', 'MINI', 'MAJOR'] as TierFilter[]).map(t => {
+        <div className="scroll-x no-scrollbar max-w-full" style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', gap: '.25rem', padding: '.25rem', background: '#F0E6DA', border: '1px solid #E5D8CA', borderRadius: '10px' }}>
+          {(['ALL', 'MAJOR', 'MINI'] as TierFilter[]).map(t => {
             const active = tier === t;
             return (
               <motion.button
@@ -294,15 +339,18 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
                 className="shrink-0 whitespace-nowrap"
                 style={{
                   position: 'relative',
-                  padding: '.375rem .75rem',
-                  borderRadius: '7px',
+                  padding: '.45rem .85rem',
+                  borderRadius: '8px',
                   border: 'none',
                   fontSize: '.8125rem',
-                  fontWeight: active ? 700 : 500,
+                  fontWeight: active ? 750 : 550,
                   cursor: 'pointer',
                   background: 'transparent',
-                  color: active ? 'var(--navy)' : 'var(--ink-4)',
+                  color: active ? '#18181B' : '#71717A',
                   zIndex: 1,
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.4rem',
                 }}
               >
                 {active && (
@@ -312,14 +360,30 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
                     style={{
                       position: 'absolute',
                       inset: 0,
-                      borderRadius: '7px',
-                      background: 'var(--surface)',
+                      borderRadius: '8px',
+                      background: '#FFFFFF',
                       boxShadow: '0 1px 3px rgba(60,40,10,0.07)',
                       zIndex: -1,
                     }}
                   />
                 )}
-                <span>{t === 'ALL' ? 'All Tiers' : t === 'MINI' ? `Mini (₹${CONSTANTS.PRICING.MINI_PROJECT})` : `Major (₹${CONSTANTS.PRICING.MAJOR_PROJECT})`}</span>
+                <span>
+                  {t === 'ALL'
+                    ? 'All Systems (11)'
+                    : t === 'MAJOR'
+                    ? 'Production Systems (₹499)'
+                    : 'Software Systems (₹299)'}
+                </span>
+                {t === 'MAJOR' && (
+                  <span style={{ fontSize: '.5625rem', fontWeight: 800, padding: '.1rem .4rem', borderRadius: '4px', background: active ? '#FDF6F2' : '#FFFFFF', color: '#E55729', border: '1px solid #F3CFBF' }}>
+                    Production-Grade
+                  </span>
+                )}
+                {t === 'MINI' && (
+                  <span style={{ fontSize: '.5625rem', fontWeight: 800, padding: '.1rem .4rem', borderRadius: '4px', background: active ? '#FAF5EE' : '#FFFFFF', color: '#52525B', border: '1px solid #EFE6DC' }}>
+                    Pre-Made Kit
+                  </span>
+                )}
               </motion.button>
             );
           })}
@@ -334,9 +398,9 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
             style={{
               padding: '.375rem .8125rem',
               borderRadius: '9999px',
-              border: `1px solid ${cat === 'ALL' ? 'var(--teal)' : 'var(--line)'}`,
-              background: cat === 'ALL' ? 'var(--teal-50)' : 'var(--surface)',
-              color: cat === 'ALL' ? 'var(--teal-dark)' : 'var(--ink-3)',
+              border: `1px solid ${cat === 'ALL' ? '#F3CFBF' : '#EFE6DC'}`,
+              background: cat === 'ALL' ? '#FDF6F2' : '#FFFFFF',
+              color: cat === 'ALL' ? '#E55729' : 'var(--ink-3)',
               fontSize: '.75rem',
               fontWeight: cat === 'ALL' ? 700 : 500,
               cursor: 'pointer',
@@ -357,9 +421,9 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
                 style={{
                   padding: '.375rem .8125rem',
                   borderRadius: '9999px',
-                  border: `1px solid ${active ? 'var(--teal)' : 'var(--line)'}`,
-                  background: active ? 'var(--teal-50)' : 'var(--surface)',
-                  color: active ? 'var(--teal-dark)' : 'var(--ink-3)',
+                  border: `1px solid ${active ? '#F3CFBF' : '#EFE6DC'}`,
+                  background: active ? '#FDF6F2' : '#FFFFFF',
+                  color: active ? '#E55729' : 'var(--ink-3)',
                   fontSize: '.75rem',
                   fontWeight: active ? 700 : 500,
                   cursor: 'pointer',
@@ -374,22 +438,24 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
         </div>
       </div>
 
-      {/* ── Context Banners ── */}
+      {/* ── Context Banners (Zero Green) ── */}
       {status === 'AVAILABLE' && (
-        <div style={{ display: 'flex', gap: '.875rem', padding: '1rem 1.25rem', borderRadius: '14px', background: 'var(--emerald-50)', border: '1px solid var(--emerald-100)', marginBottom: '2rem' }}>
-          <CheckCircle2 style={{ width: '1.25rem', height: '1.25rem', color: 'var(--emerald)', flexShrink: 0, marginTop: '.125rem' }} />
+        <div style={{ display: 'flex', gap: '.875rem', padding: '1rem 1.25rem', borderRadius: '16px', background: '#FDF6F2', border: '1.5px solid #F3CFBF', marginBottom: '2rem' }}>
+          <div style={{ width: '2rem', height: '2rem', borderRadius: '8px', background: '#FFFFFF', border: '1px solid #F3CFBF', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+            <AirplaneLogo size={14} color="#E55729" />
+          </div>
           <div>
-            <h4 style={{ fontSize: '.9375rem', fontWeight: 700, color: 'var(--emerald)', margin: '0 0 .25rem' }}>11 Verified Kits Ready for Instant Submission</h4>
-            <p style={{ fontSize: '.875rem', color: 'var(--ink-3)', margin: 0, lineHeight: 1.65 }}>100% execution-tested code, 60-page IEEE Black Book (.docx), defense presentation slides, and top 25 Viva Q&amp;A. Checkout → instant download.</p>
+            <h4 style={{ fontSize: '.9375rem', fontWeight: 800, color: '#18181B', margin: '0 0 .25rem' }}>11 Verified Systems Ready for Instant Launch</h4>
+            <p style={{ fontSize: '.84375rem', color: '#52525B', margin: 0, lineHeight: 1.65 }}>100% execution-tested code, double-click run.bat launcher, 60-page IEEE standard report (.docx), and defense presentation slides.</p>
           </div>
         </div>
       )}
       {status === 'UPCOMING' && (
-        <div style={{ display: 'flex', gap: '.875rem', padding: '1rem 1.25rem', borderRadius: '14px', background: 'var(--amber-50)', border: '1px solid var(--amber-100)', marginBottom: '2rem' }}>
-          <Clock style={{ width: '1.25rem', height: '1.25rem', color: '#D97706', flexShrink: 0, marginTop: '.125rem' }} />
+        <div style={{ display: 'flex', gap: '.875rem', padding: '1rem 1.25rem', borderRadius: '16px', background: '#FAF5EE', border: '1.5px solid #EFE6DC', marginBottom: '2rem' }}>
+          <Clock style={{ width: '1.25rem', height: '1.25rem', color: '#71717A', flexShrink: 0, marginTop: '.125rem' }} />
           <div>
-            <h4 style={{ fontSize: '.9375rem', fontWeight: 700, color: '#92400E', margin: '0 0 .25rem' }}>Pre-Order Early Access Pipeline</h4>
-            <p style={{ fontSize: '.875rem', color: '#B45309', margin: 0, lineHeight: 1.65 }}>These projects are in active QA and Black Book formatting. Pre-book now for ₹299 (Mini) / ₹499 (Major) to lock in 50% early bird discount and receive priority delivery.</p>
+            <h4 style={{ fontSize: '.9375rem', fontWeight: 800, color: '#18181B', margin: '0 0 .25rem' }}>Early Access Pipeline</h4>
+            <p style={{ fontSize: '.84375rem', color: '#52525B', margin: 0, lineHeight: 1.65 }}>These architectures are in final verification and documentation formatting. Pre-book now to lock in 50% early bird access and priority handover.</p>
           </div>
         </div>
       )}
@@ -406,57 +472,111 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
         </div>
       )}
 
-      {/* ── Project Grid ── */}
+      {/* ── Project Grid with Staggered 3D Reveal ── */}
       {displayed.length > 0 ? (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%,22rem),1fr))', gap: '1.25rem' }}>
-          {displayed.map(p => (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%,22rem),1fr))', gap: '1.25rem', perspective: 1200 }}>
+          {displayed.map((p, idx) => (
             /* Entire card is clickable — Link wraps ProjectCard */
-            <Link
+            <motion.div
               key={p.id}
-              href={`/projects/${p.slug}`}
-              style={{ textDecoration: 'none', display: 'block' }}
+              initial={{ opacity: 0, y: 22, rotateX: 2.5, scale: 0.99 }}
+              animate={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
+              transition={{
+                duration: 0.52,
+                delay: Math.min(idx * 0.05, 0.35),
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              style={{ perspective: 1000 }}
             >
-              <ProjectCard project={p} onReserve={(name) => { setReserve(name); }} />
-            </Link>
+              <Link
+                href={`/projects/${p.slug}`}
+                style={{ textDecoration: 'none', display: 'block' }}
+              >
+                <ProjectCard project={p} onReserve={(name) => { setReserve(name); }} />
+              </Link>
+            </motion.div>
           ))}
 
           {/* Custom Project Card */}
-          <div className="card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', background: 'linear-gradient(145deg, #FFFFFF 0%, #FAF6EE 55%, #F4ECE0 100%)', border: '1px solid var(--line)' }}>
-            <span className="tag tag-teal" style={{ fontSize: '.6rem', width: 'fit-content', marginBottom: '.875rem' }}>Custom Development</span>
-            <h3 style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '.5rem' }}>Need a Custom Project from Scratch?</h3>
-            <p style={{ fontSize: '.875rem', color: 'var(--ink-3)', lineHeight: 1.65, marginBottom: '1.25rem', flex: 1 }}>
-              Specific topic or stack? Our engineers build your exact project with clean code, a technical report, and setup support.
-            </p>
-            <div style={{ paddingTop: '.875rem', borderTop: '1px solid var(--line)', display: 'flex', flexDirection: 'column', gap: '.5rem', marginBottom: '1rem' }}>
-              {[{ l: 'Turnaround', v: '48 Hours', c: 'var(--teal)' }, { l: 'Starting at', v: '₹1,999*', c: 'var(--navy)' }].map(r => (
-                <div key={r.l} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '.875rem' }}>
-                  <span style={{ color: 'var(--ink-4)' }}>{r.l}</span>
-                  <span style={{ fontWeight: 700, color: r.c }}>{r.v}</span>
-                </div>
-              ))}
+          <motion.div
+            initial={{ opacity: 0, y: 22, rotateX: 2.5, scale: 0.99 }}
+            animate={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
+            transition={{ duration: 0.52, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            style={{ perspective: 1000 }}
+          >
+            <div className="card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', background: 'linear-gradient(145deg, #FFFFFF 0%, #FDF6F2 55%, #FAEDE5 100%)', border: '1.5px solid #F3CFBF', borderRadius: '20px', height: '100%', boxShadow: '0 4px 16px rgba(229, 87, 41, 0.08)' }}>
+              <span style={{ fontSize: '.625rem', fontWeight: 800, padding: '.15rem .55rem', borderRadius: '9999px', background: '#FFFFFF', color: '#E55729', border: '1px solid #F3CFBF', width: 'fit-content', marginBottom: '.875rem', textTransform: 'uppercase', letterSpacing: '.04em' }}>
+                Custom Engineering
+              </span>
+              <h3 style={{ fontSize: '1.0625rem', fontWeight: 800, color: '#18181B', marginBottom: '.5rem', letterSpacing: '-.02em' }}>
+                Need Custom Software Built from Scratch?
+              </h3>
+              <p style={{ fontSize: '.84375rem', color: '#52525B', lineHeight: 1.65, marginBottom: '1.25rem', flex: 1 }}>
+                Specific problem statement or custom stack? Senior software engineers build 100% of your code, UI, database, documentation, and walkthrough.
+              </p>
+              <div style={{ paddingTop: '.875rem', borderTop: '1px dashed rgba(229, 87, 41, 0.25)', display: 'flex', flexDirection: 'column', gap: '.5rem', marginBottom: '1.25rem' }}>
+                {[{ l: 'Turnaround', v: '48–72 Hours', c: '#CB451A' }, { l: 'Starting at', v: '₹1,999*', c: '#18181B' }].map(r => (
+                  <div key={r.l} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '.84375rem' }}>
+                    <span style={{ color: '#71717A' }}>{r.l}</span>
+                    <span style={{ fontWeight: 750, color: r.c }}>{r.v}</span>
+                  </div>
+                ))}
+              </div>
+              <a href={`https://wa.me/918799814256?text=${encodeURIComponent('Hi SubmitKit! I want a custom project / startup build. My idea: ')}`}
+                target="_blank" rel="noopener noreferrer"
+                style={{
+                  justifyContent: 'center',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '.45rem',
+                  padding: '.625rem 1.25rem',
+                  borderRadius: '9999px',
+                  background: '#18181B',
+                  color: '#FFFFFF',
+                  fontSize: '.84375rem',
+                  fontWeight: 700,
+                  textDecoration: 'none',
+                  boxShadow: '0 2px 6px rgba(24, 24, 27, 0.25)',
+                  transition: 'all 200ms cubic-bezier(.16, 1, .3, 1)',
+                }}
+                onMouseEnter={e => {
+                  e.currentTarget.style.background = '#27272A';
+                  e.currentTarget.style.transform = 'translateY(-1px) scale(1.02)';
+                }}
+                onMouseLeave={e => {
+                  e.currentTarget.style.background = '#18181B';
+                  e.currentTarget.style.transform = 'none';
+                }}
+                onClick={e => e.stopPropagation()}
+              >
+                <WaIcon /> Submit Idea on WhatsApp
+              </a>
             </div>
-            <a href={`https://wa.me/918799814256?text=${encodeURIComponent('Hi SubmitKit! I want a custom project. My idea: ')}`}
-              target="_blank" rel="noopener noreferrer"
-              className="btn btn-teal btn-sm"
-              style={{ justifyContent: 'center' }}
-              onClick={e => e.stopPropagation()}
-            >
-              <WaIcon /> Submit Idea on WhatsApp
-            </a>
-          </div>
+          </motion.div>
         </div>
       ) : (
-        <div className="card" style={{ padding: '4rem 2rem', textAlign: 'center', maxWidth: '32rem', margin: '0 auto' }}>
-          <Sparkles style={{ width: '2.5rem', height: '2.5rem', color: 'var(--teal)', margin: '0 auto 1rem' }} />
-          <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '.5rem' }}>No projects match your filters</h3>
-          <p style={{ fontSize: '.9375rem', color: 'var(--ink-3)', marginBottom: '1.5rem', lineHeight: 1.65 }}>
+        <div className="card" style={{ padding: '4rem 2rem', textAlign: 'center', maxWidth: '32rem', margin: '0 auto', background: '#FFFFFF', border: '1.5px solid #EFE6DC', borderRadius: '20px' }}>
+          <Sparkles style={{ width: '2.5rem', height: '2.5rem', color: '#E55729', margin: '0 auto 1rem' }} />
+          <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: '#18181B', marginBottom: '.5rem' }}>No projects match your filters</h3>
+          <p style={{ fontSize: '.9375rem', color: '#52525B', marginBottom: '1.5rem', lineHeight: 1.65 }}>
             Try clearing filters, or let us build a custom project for you in 48h.
           </p>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '.75rem', justifyContent: 'center' }}>
             <a href={`https://wa.me/918799814256?text=${encodeURIComponent('Hi SubmitKit! I need a custom project.')}`}
               target="_blank" rel="noopener noreferrer"
-              className="btn btn-teal"
-              style={{ padding: '0 1.5rem' }}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '.4rem',
+                padding: '.625rem 1.5rem',
+                borderRadius: '9999px',
+                background: '#18181B',
+                color: '#FFFFFF',
+                fontWeight: 700,
+                fontSize: '.875rem',
+                textDecoration: 'none',
+                boxShadow: '0 2px 6px rgba(24, 24, 27, 0.25)',
+              }}
             >
               <WaIcon /> Custom on WhatsApp
             </a>
@@ -484,7 +604,7 @@ export function ProjectsCatalog({ initialProjects }: { initialProjects: Project[
               </div>
             </div>
             {resOk ? (
-              <div style={{ display: 'flex', alignItems: 'center', gap: '.625rem', padding: '.875rem', borderRadius: '12px', background: 'var(--emerald-50)', border: '1px solid var(--emerald-100)', fontSize: '.875rem', color: 'var(--emerald)', fontWeight: 600 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '.625rem', padding: '.875rem', borderRadius: '12px', background: '#FDF6F2', border: '1px solid #F3CFBF', fontSize: '.875rem', color: '#E55729', fontWeight: 650 }}>
                 <Check style={{ width: '1rem', height: '1rem', flexShrink: 0 }} /> Reserved! You&apos;ll be emailed the moment this drops.
               </div>
             ) : (

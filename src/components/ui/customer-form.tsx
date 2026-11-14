@@ -41,7 +41,7 @@ export function CustomerForm({ projectId, price }: Props) {
           } catch { setError('Error after payment. Please contact support.'); setLoading(false); }
         },
         prefill: { name: form.customerName, email: form.customerEmail, contact: form.customerPhone },
-        theme: { color: '#0D9488' },
+        theme: { color: '#E55729' },
       };
       const rzp = new (window as any).Razorpay(opts);
       rzp.on('payment.failed', () => { setError('Payment failed or cancelled. Please try again.'); setLoading(false); });
@@ -56,8 +56,8 @@ export function CustomerForm({ projectId, price }: Props) {
   };
 
   const focus = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
-    e.target.style.borderColor = 'var(--teal)';
-    e.target.style.boxShadow   = '0 0 0 3px rgba(13,148,136,.15)';
+    e.target.style.borderColor = '#E55729';
+    e.target.style.boxShadow   = '0 0 0 3px rgba(229, 87, 41, .15)';
   };
   const blur = (e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>) => {
     e.target.style.borderColor = 'var(--line)';

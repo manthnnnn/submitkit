@@ -31,7 +31,7 @@ export async function GET(
   if (level >= 5) levelLabel = 'Production Ready';
   else if (level >= 4) levelLabel = 'Scalable';
   else if (level >= 3) levelLabel = 'Functional';
-  else if (level >= 2) levelLabel = 'MVP';
+  else if (level >= 2) levelLabel = 'Startup Ready';
 
   return new ImageResponse(
     (

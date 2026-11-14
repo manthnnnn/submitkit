@@ -38,5 +38,5 @@ Every project kit and custom build delivered by SubmitKit strictly includes:
 - **Architecture Blueprints (1,000+ Topics)**: ₹0 / 100% FREE.
 - **Mini Ready Kit**: ₹299 (~$3.60 USD) — Verified working code, 35+ page IEEE report, Viva PPT, 1-click launcher.
 - **Major Capstone Kit**: ₹499 (~$6.00 USD) — Production-grade architecture, 60+ page IEEE report, 15-slide PPT, complete Viva Voce exam prep guide.
-- **Custom Build / Startup MVP**: Starts at ₹1,999 (~$24 USD) — Custom software or startup prototype built to client specifications from scratch in 48–72 hours with 1-on-1 walkthrough.
+- **Custom Build / Startup Platform**: Starts at ₹1,999 (~$24 USD) — Custom college projects (https://submitkit.in/custom) or startup software execution (https://submitkit.in/startup) built to client specifications from scratch in 48–72 hours with 1-on-1 walkthrough.
 

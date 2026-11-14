@@ -1,4 +1,43 @@
-<svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="40" height="40" rx="10" fill="#0D9488" />
-  <text x="20" y="27" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="20" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="-0.04em">SK</text>
+<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="appIconGrad" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#EE6E44" />
+      <stop offset="55%" stop-color="#E55729" />
+      <stop offset="100%" stop-color="#CB451A" />
+    </linearGradient>
+    <filter id="appIconShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="rgba(24, 24, 27, 0.25)" />
+    </filter>
+  </defs>
+
+  <!-- Premium Matte Terracotta Squircle Background -->
+  <rect x="2" y="2" width="44" height="44" rx="12" fill="url(#appIconGrad)" />
+  <rect x="2.5" y="2.5" width="43" height="43" rx="11.5" stroke="rgba(255,255,255,0.28)" stroke-width="1" />
+
+  <!-- Supersonic Aerodynamic Airplane (Ivory & Faceted Wings) -->
+  <g filter="url(#appIconShadow)">
+    <!-- Right Wing (Direct Light) -->
+    <path
+      d="M36 12L31 34L23 28L36 12Z"
+      fill="#FFFFFF"
+      fill-opacity="0.98"
+    />
+    <!-- Left Wing (Ambient Shade) -->
+    <path
+      d="M36 12L23 28L13 25L36 12Z"
+      fill="#FAF5EE"
+      fill-opacity="0.82"
+    />
+    <!-- Center Fuselage Keel Fold -->
+    <path
+      d="M36 12L23 28"
+      stroke="#CB451A"
+      stroke-width="1.2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <!-- Dynamic Speed Elements -->
+    <circle cx="16" cy="33" r="1.5" fill="#FFFFFF" fill-opacity="0.7" />
+    <circle cx="11" cy="36" r="1" fill="#FFFFFF" fill-opacity="0.45" />
+  </g>
 </svg>

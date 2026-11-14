@@ -73,51 +73,51 @@ function deriveConceptualSteps(title: string): string[] {
 function getTopicMetrics(category: string) {
   if (category === 'FullStack' || category === 'Mobile') {
     return [
-      { label: 'API Response Time', value: '< 200ms', sub: 'p95 latency', color: 'text-emerald-400' },
-      { label: 'Lighthouse Score',  value: '> 95',    sub: 'Performance', color: 'text-brand-400' },
-      { label: 'Uptime Target',     value: '99.9%',   sub: 'SLA goal',    color: 'text-teal-600' },
+      { label: 'API Response Time', value: '< 200ms', sub: 'p95 latency', color: 'text-[#E55729]' },
+      { label: 'Lighthouse Score',  value: '> 95',    sub: 'Performance', color: 'text-[#18181B]' },
+      { label: 'Uptime Target',     value: '99.9%',   sub: 'SLA goal',    color: 'text-[#CB451A]' },
     ];
   }
   if (category === 'Blockchain') {
     return [
-      { label: 'Block Confirmation', value: '< 3s',     sub: 'Avg tx time',     color: 'text-emerald-400' },
-      { label: 'Gas Efficiency',     value: '~21,000',  sub: 'Gas units (ETH)', color: 'text-brand-400' },
-      { label: 'Contract Uptime',    value: '99.9%',    sub: 'On-chain',         color: 'text-teal-600' },
+      { label: 'Block Confirmation', value: '< 3s',     sub: 'Avg tx time',     color: 'text-[#E55729]' },
+      { label: 'Gas Efficiency',     value: '~21,000',  sub: 'Gas units (ETH)', color: 'text-[#18181B]' },
+      { label: 'Contract Uptime',    value: '99.9%',    sub: 'On-chain',         color: 'text-[#CB451A]' },
     ];
   }
   if (category === 'IoT') {
     return [
-      { label: 'Sensor Latency', value: '< 100ms',  sub: 'Real-time data',   color: 'text-emerald-400' },
-      { label: 'Battery Life',   value: '> 24hr',   sub: 'ESP32 optimized',  color: 'text-brand-400' },
-      { label: 'Packet Loss',    value: '< 0.5%',   sub: 'MQTT reliability', color: 'text-teal-600' },
+      { label: 'Sensor Latency', value: '< 100ms',  sub: 'Real-time data',   color: 'text-[#E55729]' },
+      { label: 'Battery Life',   value: '> 24hr',   sub: 'ESP32 optimized',  color: 'text-[#18181B]' },
+      { label: 'Packet Loss',    value: '< 0.5%',   sub: 'MQTT reliability', color: 'text-[#CB451A]' },
     ];
   }
   if (category === 'Cybersecurity') {
     return [
-      { label: 'Detection Rate',  value: '99.5%', sub: 'True positive rate', color: 'text-emerald-400' },
-      { label: 'False Positives', value: '< 2%',  sub: 'Precision',          color: 'text-brand-400' },
-      { label: 'Scan Speed',      value: '< 5s',  sub: 'Per target host',    color: 'text-teal-600' },
+      { label: 'Detection Rate',  value: '99.5%', sub: 'True positive rate', color: 'text-[#E55729]' },
+      { label: 'False Positives', value: '< 2%',  sub: 'Precision',          color: 'text-[#18181B]' },
+      { label: 'Scan Speed',      value: '< 5s',  sub: 'Per target host',    color: 'text-[#CB451A]' },
     ];
   }
   if (category === 'NLP') {
     return [
-      { label: 'BLEU Score',    value: '≥ 0.82',    sub: 'Translation quality', color: 'text-emerald-400' },
-      { label: 'Response Time', value: '< 120ms',   sub: 'Inference speed',     color: 'text-brand-400' },
-      { label: 'Accuracy',      value: '91% – 96%', sub: 'Classification',       color: 'text-teal-600' },
+      { label: 'BLEU Score',    value: '≥ 0.82',    sub: 'Translation quality', color: 'text-[#E55729]' },
+      { label: 'Response Time', value: '< 120ms',   sub: 'Inference speed',     color: 'text-[#18181B]' },
+      { label: 'Accuracy',      value: '91% – 96%', sub: 'Classification',       color: 'text-[#CB451A]' },
     ];
   }
   if (category === 'Fintech' || category === 'DataScience') {
     return [
-      { label: 'Model Accuracy', value: '90% – 97%', sub: 'On test split',    color: 'text-emerald-400' },
-      { label: 'F1 Score',       value: '≥ 0.89',    sub: 'Balanced metric',  color: 'text-brand-400' },
-      { label: 'Dataset Split',  value: '80 / 20',   color: 'text-teal-600' },
+      { label: 'Model Accuracy', value: '90% – 97%', sub: 'On test split',    color: 'text-[#E55729]' },
+      { label: 'F1 Score',       value: '≥ 0.89',    sub: 'Balanced metric',  color: 'text-[#18181B]' },
+      { label: 'Dataset Split',  value: '80 / 20',   color: 'text-[#CB451A]' },
     ];
   }
   // Default: AIML
   return [
-    { label: 'Model Accuracy / F1', value: '92% – 98%', sub: 'On standard test split', color: 'text-emerald-400' },
-    { label: 'Inference Speed',     value: '< 45ms',    sub: 'Real-time response',     color: 'text-brand-400' },
-    { label: 'Dataset Split',       value: '80 / 20',   sub: 'Train / Test ratio',     color: 'text-teal-600' },
+    { label: 'Model Accuracy / F1', value: '92% – 98%', sub: 'On standard test split', color: 'text-[#E55729]' },
+    { label: 'Inference Speed',     value: '< 45ms',    sub: 'Real-time response',     color: 'text-[#18181B]' },
+    { label: 'Dataset Split',       value: '80 / 20',   sub: 'Train / Test ratio',     color: 'text-[#CB451A]' },
   ];
 }
 
@@ -301,11 +301,11 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
             )}
             <span style={{
               fontSize: '.6875rem', fontWeight: 700, padding: '.25rem .65rem',
-              borderRadius: '9999px', background: '#ECFDF5', color: '#065F46',
-              border: '1px solid #A7F3D0', display: 'inline-flex', alignItems: 'center', gap: '.3rem',
+              borderRadius: '9999px', background: '#FDF6F2', color: '#E55729',
+              border: '1px solid #F3CFBF', display: 'inline-flex', alignItems: 'center', gap: '.3rem',
             }}>
-              <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#10B981' }} />
-              Approved by Examiners
+              <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#E55729' }} />
+              Approved Systems
             </span>
             <span style={{
               fontSize: '.6875rem', fontWeight: 700, padding: '.25rem .65rem',
@@ -372,10 +372,10 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                   </span>
                   <span style={{
                     fontSize: '.6875rem', fontWeight: 700, padding: '.25rem .6rem',
-                    borderRadius: '9999px', background: '#ECFDF5', color: '#065F46',
-                    border: '1px solid #A7F3D0', display: 'inline-flex', alignItems: 'center', gap: '.3rem',
+                    borderRadius: '9999px', background: '#FDF6F2', color: '#E55729',
+                    border: '1px solid #F3CFBF', display: 'inline-flex', alignItems: 'center', gap: '.3rem',
                   }}>
-                    <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#10B981' }} />
+                    <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: '#E55729' }} />
                     Multi-Tier System
                   </span>
                 </div>
@@ -577,7 +577,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                             className="flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 rounded-lg text-xs font-medium border border-slate-200 shadow-xs transition-all"
                           >
                             {copiedIndex === 9999 ? (
-                              <><Check className="w-3.5 h-3.5 text-emerald-600" /> Copied!</>
+                              <><Check className="w-3.5 h-3.5 text-[#E55729]" /> Copied!</>
                             ) : (
                               <><Copy className="w-3.5 h-3.5" /> Copy</>
                             )}
@@ -586,43 +586,43 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                       </div>
                     </div>
 
-                    {/* Creative Freedom & Base MVP Callout */}
-                    <div style={{ borderRadius: '14px', border: '1px solid #E2E8F0', background: '#F8FAFC', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '.625rem' }}>
+                    {/* Creative Freedom & Base Software Foundation Callout */}
+                    <div style={{ borderRadius: '14px', border: '1px solid #F3CFBF', background: '#FDF6F2', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '.625rem' }}>
                       <div className="flex items-center gap-2 font-bold text-slate-900 text-sm">
-                        <Sparkles className="w-4 h-4 text-teal-600 shrink-0" />
-                        Base MVP Foundation &amp; Complete Creative Freedom
+                        <Sparkles className="w-4 h-4 text-[#E55729] shrink-0" />
+                        Base Software Foundation &amp; Complete Creative Freedom
                       </div>
                       <p className="text-slate-600 leading-relaxed text-xs">
-                        <strong>Important Note:</strong> This Master Prompt generates a complete, fully working <strong>Base MVP (Minimum Viable Product)</strong> of your project right out of the box. Use this as your solid operational foundation! As per your personal creativity and college project guidelines, you can freely update, refine, and customize the system whenever you want simply by asking the AI (e.g. <em>&ldquo;Add dark/light theme switch&rdquo;</em>, <em>&ldquo;Export records as Excel / PDF&rdquo;</em>, or <em>&ldquo;Integrate email alerts&rdquo;</em>). You have complete freedom to make it uniquely yours!
+                        <strong>Important Note:</strong> This Master Prompt generates a complete, fully working <strong>Base Software Application</strong> of your project right out of the box. Use this as your solid operational foundation! As per your personal creativity and guidelines, you can freely update, refine, and customize the system whenever you want simply by asking the AI (e.g. <em>&ldquo;Add dark/light theme switch&rdquo;</em>, <em>&ldquo;Export records as Excel / PDF&rdquo;</em>, or <em>&ldquo;Integrate email alerts&rdquo;</em>). You have complete freedom to make it uniquely yours!
                       </p>
                     </div>
 
                     {/* Why this master prompt works */}
-                    <div style={{ background: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '16px', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+                    <div style={{ background: '#FFFFFF', border: '1px solid #EFE6DC', borderRadius: '16px', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
                       <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                        <CheckCircle className="w-4 h-4 text-emerald-600" />
+                        <CheckCircle className="w-4 h-4 text-[#E55729]" />
                         Why This Master Prompt Produces Working Code On First Try:
                       </h3>
                       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 14rem), 1fr))', gap: '.875rem', fontSize: '.8125rem' }}>
-                        <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '.875rem', display: 'flex', flexDirection: 'column', gap: '.375rem' }}>
+                        <div style={{ background: '#FAF5EE', border: '1px solid #EFE6DC', borderRadius: '12px', padding: '.875rem', display: 'flex', flexDirection: 'column', gap: '.375rem' }}>
                           <strong style={{ color: '#0F172A', display: 'block', fontWeight: 600 }}>Includes Synthetic Data Generator</strong>
                           <p className="text-slate-600 leading-relaxed">
                             Instructs the AI to generate a standalone data script so your project works right out of the box without needing 2GB dataset downloads.
                           </p>
                         </div>
-                        <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '.875rem', display: 'flex', flexDirection: 'column', gap: '.375rem' }}>
+                        <div style={{ background: '#FAF5EE', border: '1px solid #EFE6DC', borderRadius: '12px', padding: '.875rem', display: 'flex', flexDirection: 'column', gap: '.375rem' }}>
                           <strong className="text-slate-900 block font-semibold">Strict No-Placeholder Rule</strong>
                           <p className="text-slate-600 leading-relaxed">
                             Forbids lazy comments like &ldquo;// implement here&rdquo;. Demands complete, line-by-line execution logic.
                           </p>
                         </div>
-                        <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '.875rem', display: 'flex', flexDirection: 'column', gap: '.375rem' }}>
+                        <div style={{ background: '#FAF5EE', border: '1px solid #EFE6DC', borderRadius: '12px', padding: '.875rem', display: 'flex', flexDirection: 'column', gap: '.375rem' }}>
                           <strong className="text-slate-900 block font-semibold">Modern Responsive Dashboard</strong>
                           <p className="text-slate-600 leading-relaxed">
                             Mandates an intuitive modern interactive UI with live metrics and real-time visualization that impresses college evaluators.
                           </p>
                         </div>
-                        <div style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: '12px', padding: '.875rem', display: 'flex', flexDirection: 'column', gap: '.375rem' }}>
+                        <div style={{ background: '#FAF5EE', border: '1px solid #EFE6DC', borderRadius: '12px', padding: '.875rem', display: 'flex', flexDirection: 'column', gap: '.375rem' }}>
                           <strong className="text-slate-900 block font-semibold">Built-in Automated Tests</strong>
                           <p className="text-slate-600 leading-relaxed">
                             Forces unit tests verifying accuracy and error handling, giving you tangible proof to show in Chapter 5 of your Black Book.
@@ -639,7 +639,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                     <div className="flex flex-wrap items-center justify-between border-b border-slate-200/80 pb-3 gap-2">
                       <div>
                         <h2 className="text-xl font-display font-bold text-slate-900 flex items-center gap-2">
-                          <Wrench className="w-5 h-5 text-teal-600" />
+                          <Wrench className="w-5 h-5 text-[#E55729]" />
                           Step-by-Step Implementation Guide
                         </h2>
                         <p className="text-xs text-slate-500 mt-0.5">
@@ -699,13 +699,13 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                                   <div className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 font-mono text-xs text-slate-800 space-y-1 overflow-x-auto shadow-xs">
                                     {step.commands.map((cmd, cIdx) => (
                                       <div key={cIdx} className="flex items-center justify-between gap-2">
-                                        <span className="text-emerald-700 font-semibold">$ {cmd}</span>
+                                        <span className="text-[#CB451A] font-semibold">$ {cmd}</span>
                                         <button
                                           onClick={() => copyToClipboard(cmd, idx * 100 + cIdx)}
                                           className="text-slate-400 hover:text-slate-700 p-1"
                                           title="Copy command"
                                         >
-                                          {copiedIndex === idx * 100 + cIdx ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                                          {copiedIndex === idx * 100 + cIdx ? <Check className="w-3.5 h-3.5 text-[#E55729]" /> : <Copy className="w-3.5 h-3.5" />}
                                         </button>
                                       </div>
                                     ))}
@@ -715,24 +715,24 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
 
                               {/* Expected Output */}
                               {step.expectedOutput && (
-                                <div className="rounded-xl bg-emerald-50 border border-emerald-200 p-3 text-xs text-slate-700 flex items-start gap-2">
-                                  <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+                                <div className="rounded-xl bg-[#FDF6F2] border border-[#F3CFBF] p-3 text-xs text-slate-700 flex items-start gap-2">
+                                  <CheckCircle className="w-4 h-4 text-[#E55729] shrink-0 mt-0.5" />
                                   <div>
-                                    <strong className="text-emerald-800 font-bold block">Expected Output &amp; Verification:</strong>
+                                    <strong className="text-[#18181B] font-bold block">Expected Output &amp; Verification:</strong>
                                     <span>{step.expectedOutput}</span>
                                   </div>
                                 </div>
                               )}
 
                               {/* Zero-Code Antigravity Callout */}
-                              <div className="flex items-center justify-between p-3.5 rounded-xl bg-teal-50/60 border border-teal-200/80 text-xs text-teal-950">
+                              <div className="flex items-center justify-between p-3.5 rounded-xl bg-[#FDF6F2] border border-[#F3CFBF] text-xs text-[#18181B]">
                                 <span className="flex items-center gap-2">
-                                  <Sparkles className="w-3.5 h-3.5 text-teal-600 shrink-0" />
+                                  <Sparkles className="w-3.5 h-3.5 text-[#E55729] shrink-0" />
                                   <span>Build this step without code in seconds using the Antigravity Master Prompt.</span>
                                 </span>
                                 <button
                                   onClick={() => setActiveTab("antigravity")}
-                                  className="text-xs font-bold text-teal-700 hover:text-teal-900 underline shrink-0 ml-2"
+                                  className="text-xs font-bold text-[#E55729] hover:text-[#CB451A] underline shrink-0 ml-2"
                                 >
                                   View Master Prompt →
                                 </button>
@@ -752,7 +752,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                   <div className="space-y-6 tab-panel-enter">
                     <div className="border-b border-slate-200/80 pb-3">
                       <h2 className="text-xl font-display font-bold text-slate-900 flex items-center gap-2">
-                        <Database className="w-5 h-5 text-emerald-600" />
+                        <Database className="w-5 h-5 text-[#E55729]" />
                         Dataset &amp; Data Collection Master Guide
                       </h2>
                       <p className="text-xs text-slate-500 mt-0.5">
@@ -1013,7 +1013,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                           <p className="text-xs text-slate-600">
                             <strong className="text-slate-800">Why it happens:</strong> {item.cause}
                           </p>
-                          <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 text-xs text-emerald-800 font-mono shadow-xs font-semibold">
+                          <div className="bg-[#FDF6F2] border border-[#F3CFBF] rounded-xl p-3 text-xs text-[#18181B] font-mono shadow-xs font-semibold">
                             Fix: {item.fix}
                           </div>
                         </div>
@@ -1221,7 +1221,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                 <section className="bg-white border border-slate-200/90 rounded-2xl p-6 space-y-4 shadow-sm">
                   <div className="flex items-center justify-between">
                     <h2 className="text-lg font-display font-bold text-slate-900 flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4 text-emerald-600" />
+                      <CheckCircle className="w-4 h-4 text-[#E55729]" />
                       Expected Performance &amp; Results
                     </h2>
                     <span className="text-[11px] text-slate-500 font-medium">Evaluation Targets</span>
@@ -1246,7 +1246,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                 <section className="bg-white border border-slate-200/90 rounded-2xl p-6 space-y-4 shadow-sm">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <Wrench className="w-4 h-4 text-teal-600" />
+                      <Wrench className="w-4 h-4 text-[#E55729]" />
                       <h2 className="text-lg font-display font-bold text-slate-900">Step-by-Step Build Guide</h2>
                     </div>
                     <span className="text-[11px] text-slate-700 font-mono font-bold bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full">Complete Roadmap</span>
@@ -1279,7 +1279,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                 {/* Dataset Preview */}
                 <section className="bg-white border border-slate-200/90 rounded-2xl p-6 space-y-3 shadow-sm">
                   <div className="flex items-center gap-2">
-                    <Database className="w-4 h-4 text-emerald-600" />
+                    <Database className="w-4 h-4 text-[#E55729]" />
                     <h2 className="text-lg font-display font-bold text-slate-900">Dataset Guide</h2>
                   </div>
                   <div className="bg-slate-50 rounded-xl border border-slate-200/80 p-4 space-y-2">
@@ -1296,7 +1296,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
 
                 {/* Urgency Hook */}
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5 flex gap-3.5 shadow-xs">
-                  <span className="text-teal-600 text-xl shrink-0">⏰</span>
+                  <span className="text-[#E55729] text-xl shrink-0">⏰</span>
                   <p className="text-slate-700 text-xs sm:text-sm leading-relaxed font-medium">
                     Final year deadlines are approaching fast. Every day you wait is one less day to test your project, fix bugs, and master your evaluator defense.
                   </p>
@@ -1313,15 +1313,15 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
 
                 <div className="bg-white border border-slate-200/90 rounded-2xl p-6 space-y-4 shadow-sm">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-teal-800 font-bold text-sm">
-                      <CheckCircle className="w-4 h-4 text-teal-600" />
+                    <div className="flex items-center gap-2 text-[#18181B] font-bold text-sm">
+                      <CheckCircle className="w-4 h-4 text-[#E55729]" />
                       Blueprint Free Access
                     </div>
                   </div>
                   <button
                     onClick={handleDownloadPdf}
                     disabled={pdfLoading}
-                    className="w-full py-3.5 bg-teal-600 hover:bg-teal-700 text-white font-bold rounded-xl transition-all shadow-md shadow-teal-600/20 disabled:opacity-60 flex items-center justify-center gap-2 text-sm"
+                    className="w-full py-3.5 bg-[#18181B] hover:bg-[#27272A] text-white font-bold rounded-xl transition-all shadow-md shadow-zinc-900/10 disabled:opacity-60 flex items-center justify-center gap-2 text-sm"
                   >
                     {pdfLoading ? (
                       <><Loader2 className="w-4 h-4 animate-spin" /> Generating Document…</>
@@ -1337,15 +1337,15 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                     href={`https://wa.me/918799814256?text=${encodeURIComponent(`Hi SubmitKit! I have downloaded the blueprint for: ${topic.title} and would like project assistance.`)}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold hover:bg-emerald-100 transition-colors"
+                    className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-[#FDF6F2] border border-[#F3CFBF] text-[#E55729] text-xs font-semibold hover:bg-[#FAEDE5] transition-colors"
                   >
-                    <MessageCircle className="w-4 h-4 text-emerald-600" /> Chat with Project Guide
+                    <MessageCircle className="w-4 h-4 text-[#E55729]" /> Chat with Project Guide
                   </a>
 
                   {/* Cross-Sell Card to Full Projects */}
                   <div className="rounded-xl border border-slate-200 bg-slate-50/80 p-4 space-y-2.5 mt-2">
                     <div className="flex items-center gap-1.5 text-xs font-bold text-slate-900">
-                      <Sparkles className="w-3.5 h-3.5 text-teal-600" />
+                      <Sparkles className="w-3.5 h-3.5 text-[#E55729]" />
                       Want the full working project?
                     </div>
                     <p className="text-[11px] text-slate-600 leading-relaxed">
@@ -1353,7 +1353,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                     </p>
                     <Link
                       href={isProjectAvailable(topic.id) ? `/projects/${topic.id}` : "/projects"}
-                      className="block w-full text-center py-2 bg-teal-600 hover:bg-teal-700 text-white text-xs font-bold rounded-lg transition-colors shadow-sm"
+                      className="block w-full text-center py-2 bg-[#E55729] hover:bg-[#CB451A] text-white text-xs font-bold rounded-lg transition-colors shadow-sm"
                     >
                       {isProjectAvailable(topic.id) ? "Get Full Project Kit (Mini ₹299 / Major ₹499) →" : "Explore Ready Kits (₹299 / ₹499) →"}
                     </Link>
@@ -1377,7 +1377,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-xl font-display font-bold text-slate-900 flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-teal-600" />
+                  <Sparkles className="w-4 h-4 text-[#E55729]" />
                   Related {topic.category} Project Blueprints
                 </h3>
                 <p className="text-xs text-slate-500 mt-0.5">
@@ -1386,7 +1386,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
               </div>
               <Link
                 href={`/blueprint`}
-                className="text-xs text-teal-600 hover:text-teal-700 font-semibold flex items-center gap-1"
+                className="text-xs text-[#E55729] hover:text-[#CB451A] font-semibold flex items-center gap-1"
               >
                 View all topics <ChevronRight className="w-3.5 h-3.5" />
               </Link>
@@ -1399,7 +1399,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                   <Link
                     key={rel.id}
                     href={`/blueprint/${rel.id}`}
-                    className="group bg-white hover:bg-slate-50/80 border border-slate-200/90 hover:border-teal-300 rounded-2xl p-5 transition-all duration-150 flex flex-col justify-between space-y-4 shadow-sm hover:shadow-md"
+                    className="group bg-white hover:bg-[#FAF5EE] border border-slate-200/90 hover:border-[#F3CFBF] rounded-2xl p-5 transition-all duration-150 flex flex-col justify-between space-y-4 shadow-sm hover:shadow-md"
                   >
                     <div className="space-y-2">
                       <div className="flex items-center justify-between gap-2">
@@ -1412,7 +1412,7 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                           </span>
                         )}
                       </div>
-                      <h4 className="text-sm font-bold text-slate-900 group-hover:text-teal-600 transition-colors line-clamp-2">
+                      <h4 className="text-sm font-bold text-slate-900 group-hover:text-[#E55729] transition-colors line-clamp-2">
                         {rel.title}
                       </h4>
                       <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
@@ -1421,10 +1421,10 @@ export default function BlueprintDetailClient({ topic }: { topic: FullBlueprint 
                     </div>
 
                     <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
-                      <span className="flex items-center gap-1 text-emerald-700 font-semibold">
-                        <CheckCircle className="w-3 h-3 text-emerald-600" /> {relBuild.canBuild ? "1-Prompt AI" : "Full Guide"}
+                      <span className="flex items-center gap-1 text-[#CB451A] font-semibold">
+                        <CheckCircle className="w-3 h-3 text-[#E55729]" /> {relBuild.canBuild ? "1-Prompt AI" : "Full Guide"}
                       </span>
-                      <span className="text-teal-600 font-medium group-hover:translate-x-0.5 transition-transform inline-flex items-center gap-0.5">
+                      <span className="text-[#E55729] font-medium group-hover:translate-x-0.5 transition-transform inline-flex items-center gap-0.5">
                         View Blueprint →
                       </span>
                     </div>

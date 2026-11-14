@@ -12,12 +12,12 @@ const R = [
 ];
 
 const AVBG = [
-  { bg:'#E6F7F5', c:'#0A7C72' },
-  { bg:'#ECFDF5', c:'#059669' },
-  { bg:'#F0FDFA', c:'#0F766E' },
+  { bg:'#FDF6F2', c:'#E55729' },
+  { bg:'#FAF5EE', c:'#CB451A' },
+  { bg:'#FDF6F2', c:'#D95A2B' },
   { bg:'#FFFBEB', c:'#D97706' },
-  { bg:'#FFF1F2', c:'#E11D48' },
-  { bg:'#F0F9FF', c:'#0284C7' },
+  { bg:'#FDF6F2', c:'#E55729' },
+  { bg:'#FAF5EE', c:'#71717A' },
 ];
 
 export function Testimonials() {

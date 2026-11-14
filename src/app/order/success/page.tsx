@@ -204,19 +204,22 @@ function SuccessContent() {
         <div className="aorb" style={{ position: 'absolute', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(245, 237, 222, 0.6) 0%, transparent 70%)', top: '-10%', left: '50%', transform: 'translateX(-50%)', filter: 'blur(70px)' }} />
       </div>
 
-      <div className="shell" style={{ paddingTop: '2rem', position: 'relative', zIndex: 1 }}>
+      <div className="shell" style={{ paddingTop: '2rem', position: 'relative', zIndex: 1, perspective: 1200 }}>
         {/* Success header */}
-        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .4 }}
+        <motion.div
+          initial={{ opacity: 0, y: 20, rotateX: 3, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
+          transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
           style={{ textAlign: 'center', marginBottom: '2rem' }}
         >
-          <div style={{ width: '4rem', height: '4rem', borderRadius: '18px', background: 'var(--emerald-50)', border: '1px solid var(--emerald-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto .875rem' }}>
-            <CheckCircle2 style={{ width: '1.875rem', height: '1.875rem', color: 'var(--emerald)' }} />
+          <div style={{ width: '4rem', height: '4rem', borderRadius: '18px', background: '#FDF6F2', border: '1.5px solid #F3CFBF', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto .875rem', boxShadow: '0 4px 16px rgba(229, 87, 41, 0.15)' }}>
+            <CheckCircle2 style={{ width: '1.875rem', height: '1.875rem', color: '#E55729' }} />
           </div>
-          <h1 className="font-display" style={{ fontSize: 'clamp(1.75rem,4vw,2.25rem)', fontWeight: 900, color: 'var(--navy)', letterSpacing: '-.04em', marginBottom: '.5rem' }}>
+          <h1 className="font-display" style={{ fontSize: 'clamp(1.75rem,4vw,2.25rem)', fontWeight: 900, color: '#18181B', letterSpacing: '-.04em', marginBottom: '.5rem' }}>
             Payment Successful! 🎉
           </h1>
-          <p style={{ fontSize: '.9375rem', color: 'var(--teal-dark)', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '.375rem' }}>
-            <span className="dot-live apulse" />
+          <p style={{ fontSize: '.9375rem', color: '#CB451A', fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '.375rem' }}>
+            <span className="dot-live apulse" style={{ background: '#E55729' }} />
             Your payment has been verified
           </p>
         </motion.div>
@@ -227,12 +230,16 @@ function SuccessContent() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', minWidth: 0 }}>
 
             {/* Order card */}
-            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .4, delay: .08 }}
-              className="card" style={{ overflow: 'hidden', borderTop: '4px solid var(--teal)' }}
+            <motion.div
+              initial={{ opacity: 0, y: 22, rotateX: 2.5, scale: 0.99 }}
+              animate={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
+              transition={{ duration: 0.55, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
+              className="card"
+              style={{ overflow: 'hidden', borderTop: '4px solid #E55729', borderRadius: '20px', border: '1.5px solid #EFE6DC', boxShadow: '0 4px 20px rgba(24, 24, 27, 0.05)' }}
             >
-              <div style={{ padding: '1.375rem', borderBottom: '1px solid var(--line)' }}>
+              <div style={{ padding: '1.375rem', borderBottom: '1px solid #EFE6DC' }}>
                 <p style={{ fontSize: '.6875rem', fontWeight: 700, color: 'var(--ink-4)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: '.375rem' }}>Purchased Item</p>
-                <p style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--navy)' }}>{projectTitle}</p>
+                <p style={{ fontSize: '1rem', fontWeight: 700, color: '#18181B' }}>{projectTitle}</p>
                 <div className="order-success-summary">
                   <span><strong>Paid</strong>{formatCurrency(confirmation?.amountPaid ?? 0)}</span>
                   <span><strong>Order date</strong>{purchaseDateLabel}</span>
@@ -240,17 +247,17 @@ function SuccessContent() {
 
                 {/* Order ID */}
                 {confirmation && (
-                  <div style={{ marginTop: '1rem', padding: '1rem', borderRadius: '12px', background: 'var(--amber-50)', border: '1.5px solid var(--amber-100)' }}>
+                  <div style={{ marginTop: '1rem', padding: '1rem', borderRadius: '12px', background: '#FDF6F2', border: '1.5px solid #F3CFBF' }}>
                     <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '1rem' }}>
                       <div>
-                        <p style={{ fontSize: '.6875rem', fontWeight: 800, color: 'var(--amber)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: '.375rem' }}>
+                        <p style={{ fontSize: '.6875rem', fontWeight: 800, color: '#CB451A', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: '.375rem' }}>
                           Save your Order ID
                         </p>
-                        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '1.75rem', fontWeight: 900, color: 'var(--navy)', letterSpacing: '.1em', lineHeight: 1 }}>{shortId}</p>
-                        <p style={{ fontSize: '.75rem', color: 'var(--ink-3)', marginTop: '.375rem' }}>You need this to re-download or contact support</p>
+                        <p style={{ fontFamily: 'var(--font-mono)', fontSize: '1.75rem', fontWeight: 900, color: '#18181B', letterSpacing: '.1em', lineHeight: 1 }}>{shortId}</p>
+                        <p style={{ fontSize: '.75rem', color: '#52525B', marginTop: '.375rem' }}>You need this to re-download or contact support</p>
                       </div>
                       <button type="button" aria-label="Copy order ID" title={idCopied ? 'Copied' : 'Copy order ID'} onClick={() => { navigator.clipboard.writeText(confirmation.orderId); setIdCopied(true); setTimeout(() => setIdCopied(false), 2000); }}
-                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: idCopied ? 'var(--teal)' : 'var(--ink-4)', padding: '.25rem', marginTop: '.25rem' }}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: idCopied ? '#E55729' : 'var(--ink-4)', padding: '.25rem', marginTop: '.25rem' }}
                       >
                         {idCopied ? <Check style={{ width: '1rem', height: '1rem' }} /> : <Copy style={{ width: '1rem', height: '1rem' }} />}
                       </button>
@@ -272,21 +279,47 @@ function SuccessContent() {
                   </div>
                 ) : null}
 
-                <div style={{ background: 'var(--emerald-50)', border: '1px solid var(--emerald-100)', borderRadius: '14px', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '.875rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '.8125rem', color: 'var(--emerald)', fontWeight: 600 }}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '.375rem' }}><Zap style={{ width: '.875rem', height: '.875rem' }} /> {downloadsLeft} download{downloadsLeft === 1 ? '' : 's'} remaining</span>
+                <div style={{ background: 'linear-gradient(145deg, #FDF6F2 0%, #FAEDE5 65%, #FFFFFF 100%)', border: '1.5px solid #F3CFBF', borderRadius: '16px', padding: '1.25rem', display: 'flex', flexDirection: 'column', gap: '.875rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '.8125rem', color: '#CB451A', fontWeight: 650 }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '.375rem' }}><Zap style={{ width: '.875rem', height: '.875rem', color: '#E55729' }} /> {downloadsLeft} download{downloadsLeft === 1 ? '' : 's'} remaining</span>
                     <span>{confirmation?.downloadCount ?? 0} / {confirmation?.downloadLimit ?? 0} used</span>
                   </div>
                   <button onClick={handleDownload} disabled={downloading || downloadsLeft === 0}
-                    className="btn btn-teal"
-                    style={{ width: '100%', justifyContent: 'center', minHeight: '56px', fontSize: '1.0625rem', fontWeight: 800, borderRadius: '12px', opacity: downloading || downloadsLeft === 0 ? .7 : 1 }}
+                    style={{
+                      width: '100%',
+                      justifyContent: 'center',
+                      minHeight: '56px',
+                      fontSize: '1.0625rem',
+                      fontWeight: 800,
+                      borderRadius: '12px',
+                      opacity: downloading || downloadsLeft === 0 ? .7 : 1,
+                      background: 'linear-gradient(135deg, #EE6E44 0%, #E55729 50%, #CB451A 100%)',
+                      color: '#FFFFFF',
+                      border: 'none',
+                      cursor: downloading || downloadsLeft === 0 ? 'not-allowed' : 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.5rem',
+                      boxShadow: '0 4px 16px rgba(229, 87, 41, 0.3)',
+                      transition: 'all 200ms cubic-bezier(.16, 1, .3, 1)',
+                    }}
+                    onMouseEnter={e => {
+                      if (!downloading && downloadsLeft > 0) {
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                        e.currentTarget.style.boxShadow = '0 8px 24px rgba(229, 87, 41, 0.4)';
+                      }
+                    }}
+                    onMouseLeave={e => {
+                      e.currentTarget.style.transform = 'none';
+                      e.currentTarget.style.boxShadow = '0 4px 16px rgba(229, 87, 41, 0.3)';
+                    }}
                   >
                     {downloading ? <><Loader2 style={{ width: '1.125rem', height: '1.125rem', animation: 'spin .7s linear infinite' }} /> Preparing Your Bundle…</> : downloadsLeft === 0 ? 'Download limit reached' : <><Download style={{ width: '1.125rem', height: '1.125rem' }} /> Download Complete Bundle (.zip)</>}
                   </button>
-                  <p style={{ textAlign: 'center', fontSize: '.8125rem', color: 'var(--ink-4)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '.375rem', fontWeight: 500 }}>
-                    <ShieldCheck style={{ width: '.875rem', height: '.875rem', color: 'var(--teal)' }} /> Each download link is valid for 10 minutes
+                  <p style={{ textAlign: 'center', fontSize: '.8125rem', color: '#71717A', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '.375rem', fontWeight: 500 }}>
+                    <ShieldCheck style={{ width: '.875rem', height: '.875rem', color: '#E55729' }} /> Each download link is valid for 10 minutes
                   </p>
-                  {downloadsLeft === 0 && <p style={{ textAlign: 'center', fontSize: '.8125rem', color: 'var(--ink-3)' }}>Need another copy? Email <a href={`mailto:team@submitkit.in?subject=${encodeURIComponent(`Download reset for order ${shortId}`)}`} style={{ color: 'var(--teal-dark)', fontWeight: 700 }}>support</a> with your Order ID.</p>}
+                  {downloadsLeft === 0 && <p style={{ textAlign: 'center', fontSize: '.8125rem', color: 'var(--ink-3)' }}>Need another copy? Email <a href={`mailto:team@submitkit.in?subject=${encodeURIComponent(`Download reset for order ${shortId}`)}`} style={{ color: '#E55729', fontWeight: 700 }}>support</a> with your Order ID.</p>}
                 </div>
 
                 {/* Quick access links */}
@@ -308,15 +341,28 @@ function SuccessContent() {
             </motion.div>
 
             {/* Setup guide immediately follows the bundle download actions. */}
-            <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .4, delay: .12 }}
-              className="card order-success-video" style={{ overflow: 'hidden' }}
+            <motion.div
+              initial={{ opacity: 0, y: 22, rotateX: 2.5, scale: 0.99 }}
+              animate={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
+              transition={{ duration: 0.55, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}
+              className="card order-success-video"
+              style={{ overflow: 'hidden', borderRadius: '20px', border: '1.5px solid #EFE6DC', boxShadow: '0 8px 30px rgba(24, 24, 27, 0.06)' }}
             >
-              <div style={{ padding: '1.125rem 1.375rem', borderBottom: '1px solid var(--line)' }}>
-                <h3 style={{ fontSize: '.9375rem', fontWeight: 700, color: 'var(--navy)' }}>Setup guide</h3>
-                <p style={{ fontSize: '.8125rem', color: 'var(--ink-3)', marginTop: '.25rem' }}>Watch while your project bundle downloads.</p>
+              <div style={{ padding: '1.25rem 1.375rem', borderBottom: '1px solid #EFE6DC', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#FFFFFF' }}>
+                <div>
+                  <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#18181B', letterSpacing: '-0.02em', margin: 0 }}>
+                    1-Click Project Setup Guide
+                  </h3>
+                  <p style={{ fontSize: '.8125rem', color: '#52525B', margin: '.25rem 0 0' }}>
+                    Follow this concise walkthrough while your project bundle downloads.
+                  </p>
+                </div>
+                <span style={{ fontSize: '.6875rem', fontWeight: 750, padding: '.2rem .65rem', borderRadius: '9999px', background: '#FDF6F2', color: '#E55729', border: '1px solid #F3CFBF' }}>
+                  HD Video Walkthrough
+                </span>
               </div>
-              <div style={{ background: 'var(--surface-2)' }}>
-                <video aria-label="SubmitKit project setup guide" controls playsInline preload="none" poster="/video-poster.svg" className="w-full aspect-video">
+              <div style={{ background: '#18181B', position: 'relative' }}>
+                <video aria-label="SubmitKit project setup guide" controls playsInline preload="none" poster="/video-poster.svg" className="w-full aspect-video" style={{ display: 'block' }}>
                   <source src="/demo.mp4" type="video/mp4" />
                   Your browser does not support video playback.
                 </video>
@@ -325,28 +371,32 @@ function SuccessContent() {
 
             {/* Report + PPT generator */}
             {confirmation && (
-              <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .4, delay: .14 }}
-                className="card" style={{ padding: '1.375rem' }}
+              <motion.div
+                initial={{ opacity: 0, y: 22, rotateX: 2.5, scale: 0.99 }}
+                animate={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
+                transition={{ duration: 0.55, delay: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                className="card"
+                style={{ padding: '1.375rem', borderRadius: '20px', border: '1.5px solid #EFE6DC', boxShadow: '0 4px 20px rgba(24, 24, 27, 0.05)' }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: '.875rem', marginBottom: '1.25rem' }}>
-                  <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: '10px', background: 'var(--teal-50)', border: '1px solid var(--teal-100)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                    <BookOpen style={{ width: '1.125rem', height: '1.125rem', color: 'var(--teal)' }} />
+                  <div style={{ width: '2.5rem', height: '2.5rem', borderRadius: '10px', background: '#FDF6F2', border: '1px solid #F3CFBF', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <BookOpen style={{ width: '1.125rem', height: '1.125rem', color: '#E55729' }} />
                   </div>
                   <div>
-                    <p style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--navy)', letterSpacing: '-.02em' }}>IEEE Report &amp; Presentation</p>
-                    <p style={{ fontSize: '.8125rem', color: 'var(--ink-3)' }}>Generate your Black Book report and PPT slides{hasPerson ? ' — with your name on the cover' : ''}</p>
+                    <p style={{ fontSize: '1rem', fontWeight: 800, color: '#18181B', letterSpacing: '-.02em', margin: 0 }}>IEEE Report &amp; Presentation</p>
+                    <p style={{ fontSize: '.8125rem', color: '#52525B', margin: '.2rem 0 0' }}>Generate your Black Book report and PPT slides{hasPerson ? ' — with your name on the cover' : ''}</p>
                   </div>
                 </div>
 
                 {/* Report size */}
-                <p style={{ fontSize: '.6875rem', fontWeight: 700, color: 'var(--ink-4)', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: '.625rem' }}>Report Size</p>
+                <p style={{ fontSize: '.6875rem', fontWeight: 700, color: '#71717A', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: '.625rem' }}>Report Size</p>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '.5rem', marginBottom: '1rem' }}>
                   {([{ v: 'mini', l: '15 Pages', d: 'Quick' }, { v: 'standard', l: '20 Pages', d: 'Recommended ✓' }, { v: 'full', l: '60 Pages', d: 'Full IEEE' }] as const).map(o => (
                     <button key={o.v} onClick={() => setReportSize(o.v)}
-                      style={{ padding: '.625rem .5rem', borderRadius: '10px', border: `1.5px solid ${reportSize === o.v ? 'var(--teal)' : 'var(--line)'}`, background: reportSize === o.v ? 'var(--teal-50)' : 'var(--surface)', cursor: 'pointer', transition: 'all 150ms', textAlign: 'center', fontFamily: 'var(--font-sans)' }}
+                      style={{ padding: '.625rem .5rem', borderRadius: '10px', border: `1.5px solid ${reportSize === o.v ? '#E55729' : '#EFE6DC'}`, background: reportSize === o.v ? '#FDF6F2' : '#FFFFFF', cursor: 'pointer', transition: 'all 150ms', textAlign: 'center', fontFamily: 'var(--font-sans)' }}
                     >
-                      <p style={{ fontSize: '.8125rem', fontWeight: 700, color: reportSize === o.v ? 'var(--teal-dark)' : 'var(--ink-2)' }}>{o.l}</p>
-                      <p style={{ fontSize: '.6875rem', color: 'var(--ink-4)', marginTop: '.125rem' }}>{o.d}</p>
+                      <p style={{ fontSize: '.8125rem', fontWeight: 700, color: reportSize === o.v ? '#CB451A' : '#18181B', margin: 0 }}>{o.l}</p>
+                      <p style={{ fontSize: '.6875rem', color: '#71717A', marginTop: '.125rem' }}>{o.d}</p>
                     </button>
                   ))}
                 </div>
@@ -355,7 +405,7 @@ function SuccessContent() {
                 {hasPerson && (
                   <div style={{ marginBottom: '1rem' }}>
                     <button onClick={() => setShowReportForm(v => !v)}
-                      style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '.875rem', fontWeight: 700, color: 'var(--teal)', display: 'flex', alignItems: 'center', gap: '.25rem', marginBottom: '.625rem', fontFamily: 'var(--font-sans)' }}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '.875rem', fontWeight: 700, color: '#E55729', display: 'flex', alignItems: 'center', gap: '.25rem', marginBottom: '.625rem', fontFamily: 'var(--font-sans)' }}
                     >
                       {showReportForm ? <ChevronUp style={{ width: '.875rem', height: '.875rem' }} /> : <ChevronDown style={{ width: '.875rem', height: '.875rem' }} />}
                       {showReportForm ? 'Hide name details' : 'Add your name to cover (purchased)'}
@@ -375,15 +425,42 @@ function SuccessContent() {
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '.625rem' }}>
                   <button onClick={() => { setGenReport(true); window.location.href = buildReportUrl('report'); setTimeout(() => setGenReport(false), 4000); }} disabled={genReport}
-                    className="btn btn-teal"
-                    style={{ justifyContent: 'center', borderRadius: '10px', opacity: genReport ? .7 : 1 }}
+                    style={{
+                      justifyContent: 'center',
+                      borderRadius: '10px',
+                      opacity: genReport ? .7 : 1,
+                      background: '#18181B',
+                      color: '#FFFFFF',
+                      padding: '.65rem 1rem',
+                      fontWeight: 700,
+                      fontSize: '.875rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '.5rem',
+                      border: 'none',
+                      cursor: genReport ? 'not-allowed' : 'pointer',
+                      boxShadow: '0 2px 6px rgba(24, 24, 27, 0.25)',
+                    }}
                   >
                     {genReport ? <Loader2 style={{ width: '1rem', height: '1rem', animation: 'spin .7s linear infinite' }} /> : <BookOpen style={{ width: '1rem', height: '1rem' }} />}
                     {genReport ? 'Building…' : 'Download Report'}
                   </button>
                   <button onClick={() => { setGenPPT(true); window.location.href = buildReportUrl('ppt'); setTimeout(() => setGenPPT(false), 4000); }} disabled={genPPT}
-                    className="btn btn-outline"
-                    style={{ justifyContent: 'center', borderRadius: '10px', opacity: genPPT ? .7 : 1 }}
+                    style={{
+                      justifyContent: 'center',
+                      borderRadius: '10px',
+                      opacity: genPPT ? .7 : 1,
+                      background: '#FFFFFF',
+                      color: '#18181B',
+                      border: '1.5px solid #EFE6DC',
+                      padding: '.65rem 1rem',
+                      fontWeight: 700,
+                      fontSize: '.875rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '.5rem',
+                      cursor: genPPT ? 'not-allowed' : 'pointer',
+                    }}
                   >
                     {genPPT ? <Loader2 style={{ width: '1rem', height: '1rem', animation: 'spin .7s linear infinite' }} /> : <Presentation style={{ width: '1rem', height: '1rem' }} />}
                     {genPPT ? 'Building…' : 'Download PPT'}
@@ -394,20 +471,24 @@ function SuccessContent() {
 
             {/* Personalization add-on */}
             {hasPerson && (
-              <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .4, delay: .18 }}
-                className="card-teal" style={{ padding: '1.375rem' }}
+              <motion.div
+                initial={{ opacity: 0, y: 22, rotateX: 2.5, scale: 0.99 }}
+                animate={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
+                transition={{ duration: 0.55, delay: 0.36, ease: [0.16, 1, 0.3, 1] }}
+                className="card"
+                style={{ padding: '1.375rem', borderRadius: '20px', border: '1.5px solid #F3CFBF', background: '#FDF6F2' }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: personDone ? '0' : '1rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '.875rem' }}>
-                    <FileText style={{ width: '1.25rem', height: '1.25rem', color: 'var(--teal)', flexShrink: 0 }} />
+                    <FileText style={{ width: '1.25rem', height: '1.25rem', color: '#E55729', flexShrink: 0 }} />
                     <div>
-                      <p style={{ fontSize: '.9375rem', fontWeight: 700, color: 'var(--navy)' }}>Add My Name on Front Page</p>
-                      <p style={{ fontSize: '.8125rem', color: 'var(--ink-3)' }}>We&apos;ll type your name &amp; roll no on the Black Book cover</p>
+                      <p style={{ fontSize: '.9375rem', fontWeight: 800, color: '#18181B', margin: 0 }}>Add My Name on Front Page</p>
+                      <p style={{ fontSize: '.8125rem', color: '#52525B', margin: '.2rem 0 0' }}>We&apos;ll type your name &amp; roll no on the Black Book cover</p>
                     </div>
                   </div>
                   {!personDone && (
                     <button onClick={() => setShowPersonForm(v => !v)}
-                      style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '.8125rem', fontWeight: 700, color: 'var(--teal)', display: 'flex', alignItems: 'center', gap: '.25rem', fontFamily: 'var(--font-sans)', flexShrink: 0 }}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '.8125rem', fontWeight: 700, color: '#E55729', display: 'flex', alignItems: 'center', gap: '.25rem', fontFamily: 'var(--font-sans)', flexShrink: 0 }}
                     >
                       {showPersonForm ? <ChevronUp style={{ width: '.875rem', height: '.875rem' }} /> : <ChevronDown style={{ width: '.875rem', height: '.875rem' }} />}
                       {showPersonForm ? 'Hide' : 'Fill Details'}
@@ -416,7 +497,7 @@ function SuccessContent() {
                 </div>
 
                 {personDone && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem', color: 'var(--teal)', fontWeight: 600, fontSize: '.9rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '.5rem', color: '#22C55E', fontWeight: 650, fontSize: '.9rem' }}>
                     <Check style={{ width: '1rem', height: '1rem' }} /> 60-page IEEE report downloading! Check your Downloads folder.
                   </div>
                 )}
@@ -428,7 +509,21 @@ function SuccessContent() {
                     <input type="text" placeholder="Roll Number (e.g. 1RV21CS045)" value={sRoll} onChange={e => setSRoll(e.target.value)} style={inputSty} />
                     <input type="text" placeholder="Guide / Professor Name (optional)" value={sGuide} onChange={e => setSGuide(e.target.value)} style={inputSty} />
                     {personError && <p style={{ fontSize: '.8125rem', color: 'var(--rose)' }}>{personError}</p>}
-                    <button type="submit" disabled={personalizing} className="btn btn-teal" style={{ justifyContent: 'center', borderRadius: '10px', opacity: personalizing ? .7 : 1 }}>
+                    <button type="submit" disabled={personalizing}
+                      style={{
+                        justifyContent: 'center',
+                        borderRadius: '12px',
+                        opacity: personalizing ? .7 : 1,
+                        background: 'linear-gradient(135deg, #EE6E44 0%, #E55729 50%, #CB451A 100%)',
+                        color: '#FFFFFF',
+                        border: 'none',
+                        padding: '.75rem',
+                        fontWeight: 750,
+                        fontSize: '.9375rem',
+                        cursor: personalizing ? 'not-allowed' : 'pointer',
+                        boxShadow: '0 4px 14px rgba(229, 87, 41, 0.3)',
+                      }}
+                    >
                       {personalizing ? <><Loader2 style={{ width: '1rem', height: '1rem', animation: 'spin .7s linear infinite' }} /> Generating 60-Page Report…</> : '⬇️ Generate & Download IEEE Report (60 Pages)'}
                     </button>
                   </form>
@@ -436,16 +531,34 @@ function SuccessContent() {
               </motion.div>
             )}
 
-            {/* Custom Changes add-on */}
+            {/* Direct Engineer Walkthrough */}
             {hasViva && (
-              <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .4, delay: .22 }}
-                className="card" style={{ padding: '1.375rem', display: 'flex', alignItems: 'flex-start', gap: '.875rem' }}
+              <motion.div
+                initial={{ opacity: 0, y: 22, rotateX: 2.5, scale: 0.99 }}
+                animate={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
+                transition={{ duration: 0.55, delay: 0.44, ease: [0.16, 1, 0.3, 1] }}
+                className="card"
+                style={{ padding: '1.375rem', display: 'flex', alignItems: 'flex-start', gap: '.875rem', borderRadius: '20px', border: '1.5px solid #EFE6DC' }}
               >
-                <MessageCircle style={{ width: '1.25rem', height: '1.25rem', color: 'var(--teal)', flexShrink: 0, marginTop: '.125rem' }} />
+                <MessageCircle style={{ width: '1.25rem', height: '1.25rem', color: '#E55729', flexShrink: 0, marginTop: '.125rem' }} />
                 <div>
-                  <p style={{ fontSize: '.9375rem', fontWeight: 700, color: 'var(--navy)', marginBottom: '.25rem' }}>Custom Changes Request</p>
-                  <p style={{ fontSize: '.875rem', color: 'var(--ink-3)', marginBottom: '.875rem', lineHeight: 1.65 }}>Contact our developers on WhatsApp to request tweaks and modifications to the code.</p>
-                  <a href={waLink} target="_blank" rel="noopener noreferrer" className="btn btn-teal btn-sm" style={{ gap: '.375rem' }}>
+                  <p style={{ fontSize: '.9375rem', fontWeight: 800, color: '#18181B', marginBottom: '.25rem' }}>Direct Engineer Walkthrough</p>
+                  <p style={{ fontSize: '.875rem', color: '#52525B', marginBottom: '.875rem', lineHeight: 1.65 }}>Contact our software engineering team on WhatsApp for your 1-on-1 walkthrough and code guidance.</p>
+                  <a href={waLink} target="_blank" rel="noopener noreferrer"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '.375rem',
+                      padding: '.45rem 1rem',
+                      borderRadius: '9999px',
+                      background: '#18181B',
+                      color: '#FFFFFF',
+                      fontSize: '.8125rem',
+                      fontWeight: 650,
+                      textDecoration: 'none',
+                      boxShadow: '0 2px 6px rgba(24, 24, 27, 0.25)',
+                    }}
+                  >
                     <MessageCircle style={{ width: '.875rem', height: '.875rem' }} /> WhatsApp +91 87998 14256
                   </a>
                 </div>
@@ -468,7 +581,7 @@ function SuccessContent() {
 
             {/* Support note */}
             <p style={{ fontSize: '.8125rem', color: 'var(--ink-4)', textAlign: 'center' }}>
-              Need help? Email <a href="mailto:team@submitkit.in" style={{ color: 'var(--teal)', fontWeight: 600, textDecoration: 'none' }}>team@submitkit.in</a> with your Order ID <strong style={{ color: 'var(--navy)', fontFamily: 'var(--font-mono)' }}>{shortId}</strong>
+              Need help? Email <a href="mailto:team@submitkit.in" style={{ color: '#E55729', fontWeight: 600, textDecoration: 'none' }}>team@submitkit.in</a> with your Order ID <strong style={{ color: 'var(--navy)', fontFamily: 'var(--font-mono)' }}>{shortId}</strong>
             </p>
           </div>
 
@@ -484,7 +597,7 @@ export default function OrderSuccessPage() {
   return (
     <Suspense fallback={
       <div style={{ minHeight: '100vh', background: 'var(--canvas)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <div style={{ width: '2.5rem', height: '2.5rem', border: '3px solid var(--teal-100)', borderTopColor: 'var(--teal)', borderRadius: '50%', animation: 'spin .7s linear infinite' }} />
+        <div style={{ width: '2.5rem', height: '2.5rem', border: '3px solid #F3CFBF', borderTopColor: '#E55729', borderRadius: '50%', animation: 'spin .7s linear infinite' }} />
         <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     }>

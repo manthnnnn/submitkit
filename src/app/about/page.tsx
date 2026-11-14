@@ -29,11 +29,11 @@ export default function AboutPage() {
         <div style={{ marginBottom: '3rem' }}>
           <div style={{
             display: 'inline-flex', alignItems: 'center', gap: '.4rem',
-            fontSize: '.6875rem', fontWeight: 800, color: 'var(--teal)',
+            fontSize: '.6875rem', fontWeight: 800, color: '#E55729',
             textTransform: 'uppercase', letterSpacing: '.12em',
             marginBottom: '.75rem', padding: '.25rem .75rem',
-            borderRadius: '9999px', background: 'var(--teal-50)',
-            border: '1px solid var(--teal-100)',
+            borderRadius: '9999px', background: '#FDF6F2',
+            border: '1px solid #F3CFBF',
           }}>
             About SubmitKit
           </div>
@@ -64,10 +64,10 @@ export default function AboutPage() {
           {/* Avatar */}
           <div style={{
             width: '4.5rem', height: '4.5rem', borderRadius: '50%', flexShrink: 0,
-            background: 'linear-gradient(135deg, #079B8D 0%, #047668 100%)',
+            background: 'linear-gradient(135deg, #E86337 0%, #D4491D 100%)',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             color: '#FFFFFF', fontSize: '1.75rem', fontWeight: 900,
-            boxShadow: '0 6px 18px rgba(13,148,136,0.3)',
+            boxShadow: '0 6px 18px rgba(229, 87, 41, 0.3)',
           }}>
             M
           </div>
@@ -75,7 +75,7 @@ export default function AboutPage() {
             <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--navy)', margin: '0 0 .2rem', letterSpacing: '-.025em' }}>
               Manthan
             </h2>
-            <p style={{ fontSize: '.875rem', color: '#047668', fontWeight: 700, margin: '0 0 .15rem' }}>
+            <p style={{ fontSize: '.875rem', color: '#CB451A', fontWeight: 700, margin: '0 0 .15rem' }}>
               Founder &amp; Lead Architect · SubmitKit
             </p>
             <p style={{ fontSize: '.8125rem', color: 'var(--ink-4)', margin: '0 0 1rem' }}>
@@ -108,7 +108,7 @@ export default function AboutPage() {
             },
             {
               title: 'What We Build',
-              body: 'Custom MVPs, SaaS prototypes, AI agents, academic project kits with IEEE reports, and 1-click runnable desktop applications.',
+              body: 'End-to-end custom startups, full-stack software, AI agents, academic project kits with IEEE reports, and 1-click runnable applications.',
             },
             {
               title: 'Our Guarantee',
@@ -156,7 +156,7 @@ export default function AboutPage() {
               href="https://wa.me/918799814256"
               target="_blank"
               rel="noopener noreferrer"
-              className="btn btn-teal"
+              className="btn btn-orange"
               style={{ fontSize: '.875rem', minHeight: '42px', padding: '0 1.25rem' }}
             >
               WhatsApp
@@ -175,3 +175,4 @@ export default function AboutPage() {
     </main>
   );
 }
+

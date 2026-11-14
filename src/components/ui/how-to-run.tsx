@@ -48,7 +48,7 @@ function CodeBlock({ value, label }: { value: string; label: string }) {
         <span style={{ fontFamily: 'var(--font-mono)', fontSize: '.625rem', color: '#475569', textTransform: 'uppercase', letterSpacing: '.08em', fontWeight: 700 }}>{label}</span>
         <button
           onClick={() => { navigator.clipboard.writeText(value); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
-          style={{ display: 'flex', alignItems: 'center', gap: '.25rem', background: 'none', border: 'none', cursor: 'pointer', fontSize: '.75rem', color: copied ? '#059669' : '#64748B', fontWeight: 600, padding: '.1875rem .375rem' }}
+          style={{ display: 'flex', alignItems: 'center', gap: '.25rem', background: 'none', border: 'none', cursor: 'pointer', fontSize: '.75rem', color: copied ? '#E55729' : '#64748B', fontWeight: 600, padding: '.1875rem .375rem' }}
         >
           {copied ? <Check style={{ width: '.75rem', height: '.75rem' }} /> : <Copy style={{ width: '.75rem', height: '.75rem' }} />}
           {copied ? 'Copied!' : 'Copy'}

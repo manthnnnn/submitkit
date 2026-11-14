@@ -32,8 +32,8 @@ export function LiveTicker() {
   if (items.length === 0) return null;
 
   return (
-    <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-emerald-200/90 bg-emerald-50/80 text-emerald-900 text-xs font-medium backdrop-blur-sm shadow-sm max-w-full" style={{ minWidth: 0 }}>
-      <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+    <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#F3CFBF] bg-[#FDF6F2] text-[#18181B] text-xs font-medium backdrop-blur-sm shadow-sm max-w-full" style={{ minWidth: 0 }}>
+      <span className="flex h-2 w-2 rounded-full bg-[#E55729] animate-pulse shrink-0" />
       <div className="relative h-4 flex items-center justify-center overflow-hidden" style={{ minWidth: 0, maxWidth: '100%' }}>
         <AnimatePresence mode="wait">
           <motion.div
@@ -42,7 +42,7 @@ export function LiveTicker() {
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -10, opacity: 0 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            className="whitespace-nowrap text-center text-xs text-emerald-900 font-semibold truncate"
+            className="whitespace-nowrap text-center text-xs text-[#18181B] font-semibold truncate"
             style={{ minWidth: 0 }}
           >
             {items[currentIndex]}
