@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project Synopsis - Real-Time Automated Attendance System with Facial Biometrics</title>
+<style>
+  @page {
+    size: A4;
+    margin: 20mm 15mm 20mm 15mm;
+  }
+  body {
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 11pt;
+    line-height: 1.5;
+    color: #111;
+    margin: 0;
+    padding: 20px 40px;
+    background: #fff;
+  }
+  .header-box {
+    text-align: center;
+    border-bottom: 2px solid #222;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+  }
+  .header-box h1 {
+    font-size: 15pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin: 0 0 6px;
+    letter-spacing: 0.5px;
+  }
+  .header-box h2 {
+    font-size: 12pt;
+    font-weight: normal;
+    font-style: italic;
+    margin: 0 0 4px;
+    color: #333;
+  }
+  .meta-table {
+    width: 100%;
+    margin-bottom: 18px;
+    border-collapse: collapse;
+    font-size: 10pt;
+  }
+  .meta-table td {
+    padding: 4px 8px;
+    border: 1px solid #ccc;
+  }
+  .meta-table td.label {
+    font-weight: bold;
+    background: #f8f8f8;
+    width: 28%;
+  }
+  h3 {
+    font-size: 11.5pt;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-bottom: 1px solid #444;
+    padding-bottom: 3px;
+    margin-top: 18px;
+    margin-bottom: 8px;
+  }
+  p {
+    margin: 0 0 10px;
+    text-align: justify;
+  }
+  ul, ol {
+    margin: 0 0 12px 20px;
+    padding: 0;
+  }
+  li {
+    margin-bottom: 4px;
+  }
+  .arch-box {
+    background: #fdfdfd;
+    border: 1px dashed #666;
+    padding: 12px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 9.5pt;
+    line-height: 1.35;
+    margin: 12px 0;
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .cta-banner {
+    background: #fff8f5;
+    border: 2px solid #e55729;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-top: 25px;
+    text-align: center;
+    page-break-inside: avoid;
+  }
+  .cta-banner h4 {
+    color: #e55729;
+    font-family: Arial, sans-serif;
+    font-size: 12pt;
+    margin: 0 0 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .cta-banner p {
+    font-family: Arial, sans-serif;
+    font-size: 9.5pt;
+    color: #333;
+    text-align: center;
+    margin: 0 0 8px;
+    line-height: 1.4;
+  }
+  .cta-banner a {
+    display: inline-block;
+    background: #e55729;
+    color: #fff;
+    text-decoration: none;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    font-size: 10pt;
+    padding: 7px 16px;
+    border-radius: 4px;
+    margin-top: 4px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header-box">
+  <h1>A Project Synopsis On</h1>
+  <h1>Real-Time Automated Attendance System with Facial Biometrics &amp; Anti-Spoofing Liveness Detection</h1>
+  <h2>Submitted in partial fulfillment of the requirements for the Degree of Bachelor of Engineering / Technology in Computer Science &amp; Engineering</h2>
+</div>
+
+<table class="meta-table">
+  <tr>
+    <td class="label">Project Title:</td>
+    <td><strong>AI-Powered Facial Biometric Attendance System</strong></td>
+    <td class="label">Domain / Category:</td>
+    <td>Computer Vision, Deep Learning &amp; Web Systems</td>
+  </tr>
+  <tr>
+    <td class="label">Tech Stack:</td>
+    <td>Python 3.10+, OpenCV, dlib / ResNet-34, SQLite / PostgreSQL, FastAPI / Flask, Streamlit UI</td>
+    <td class="label">Execution Mode:</td>
+    <td>1-Click Runnable (`run.bat` / `run.sh`)</td>
+  </tr>
+  <tr>
+    <td class="label">Target Curriculum:</td>
+    <td>CSE, IT, AI &amp; DS, Software Engineering (IEEE Format Standard)</td>
+    <td class="label">Academic Year:</td>
+    <td>2025 – 2026</td>
+  </tr>
+</table>
+
+<h3>1. Abstract</h3>
+<p>
+Traditional attendance tracking in educational institutions and enterprise environments heavily relies on paper-based sign-in sheets or fingerprint biometric hardware. These conventional modalities suffer from significant limitations, including physical proxy marking, identity theft, operational latency during peak arrival intervals, and sanitary vulnerabilities. This project introduces a contactless, automated biometric attendance architecture utilizing deep convolutional feature extraction and real-time facial recognition. By embedding an active eye-blink and micro-texture anti-spoofing mechanism, the proposed platform successfully eliminates 2D photographic and video-replay presentation attacks. The system integrates automated daily attendance logging into relational databases, an analytical administrative dashboard, and automated email/SMS deficit notifications for parents and mentors.
+</p>
+
+<h3>2. Problem Statement</h3>
+<p>
+Manual attendance registers consume 10–15% of instructional lecture time and are susceptible to deliberate proxy attendances. Hardware biometric terminals (e.g., optical fingerprint scanners) experience severe queuing bottlenecks and fail under uncooperative dermatological conditions. Furthermore, rudimentary webcam facial recognition scripts are routinely deceived by high-resolution smartphone photographs held before the optical sensor. There exists a critical necessity for a non-intrusive, real-time facial recognition system equipped with hardware-independent liveness verification, automated timestamping, and faculty audit reporting.
+</p>
+
+<h3>3. Objectives of the Proposed Work</h3>
+<ul>
+  <li><strong>Sub-Second Multi-Face Detection:</strong> Detect and track human frontal faces within live RTSP/USB video feeds under fluctuating ambient illumination.</li>
+  <li><strong>128-Dimensional Facial Encoding:</strong> Extract discriminative Euclidean embeddings using a pre-trained Deep Residual Network (ResNet-34) to achieve a recognition accuracy exceeding 98.4%.</li>
+  <li><strong>Presentation Attack Defense (Anti-Spoofing):</strong> Implement Eye Aspect Ratio (EAR) blink calculation and chromatic distortion heuristics to ensure authentic physical subject presence.</li>
+  <li><strong>Automated Database Logging:</strong> Timestamp real-time entry and exit logs without manual supervisory intervention.</li>
+  <li><strong>Faculty Administration Portal:</strong> Provide an intuitive graphical interface for batch student enrollment, timetable scheduling, and 1-click Excel/PDF report generation.</li>
+</ul>
+
+<h3>4. System Architecture &amp; Execution Pipeline</h3>
+<div class="arch-box">+-------------------+       +--------------------+       +-----------------------+
+|  Video Input Feed | ----> | Face Detection     | ----> | Liveness Check        |
+|  (HD WebCam/RTSP) |       | (HOG / MTCNN)      |       | (Eye Aspect Ratio EAR)|
++-------------------+       +--------------------+       +-----------------------+
+                                                                     |
+                                                              [If Real Subject]
+                                                                     v
++-------------------+       +--------------------+       +-----------------------+
+| Attendance Log &  | <---- | Euclidean Distance | <---- | Deep Metric Encoding  |
+| Analytics Export  |       | Classification     |       | (128-D ResNet Vector) |
++-------------------+       +--------------------+       +-----------------------+</div>
+
+<h3>5. Modular Breakdown</h3>
+<ol>
+  <li><strong>Acquisition &amp; Preprocessing Module:</strong> Captures video frames at 30 FPS, converts BGR streams into normalized grayscale and RGB channels, and normalizes histogram variations.</li>
+  <li><strong>Facial Landmark Localization:</strong> Identifies 68 facial fiducial coordinates utilizing dlib's Kazemi-Sullivan shape predictor.</li>
+  <li><strong>Active Liveness Detection Module:</strong> Computes the vertical-to-horizontal distance ratio of eye landmarks over sequential temporal windows to detect involuntary saccadic blinks.</li>
+  <li><strong>Biometric Matching Engine:</strong> Computes Euclidean distance matrix:
+  <em>D(x, y) = || f(x) - f(y) ||_2</em> against enrolled student profiles; matches with threshold &lt; 0.6 are marked present.</li>
+  <li><strong>Database &amp; Analytics Module:</strong> Logs Student ID, Name, Department, Date, Timestamp, and Confidence Level into SQLite/PostgreSQL with instant CSV/Excel export.</li>
+</ol>
+
+<h3>6. Hardware &amp; Software Specifications</h3>
+<ul>
+  <li><strong>Operating System:</strong> Windows 10/11 (64-bit), macOS, or Ubuntu Linux 20.04+</li>
+  <li><strong>Programming Environment:</strong> Python 3.10+ (Virtual Environment isolated)</li>
+  <li><strong>Core Libraries:</strong> OpenCV (cv2), dlib, face_recognition, NumPy, Pandas, Pillow</li>
+  <li><strong>Web Application Framework:</strong> Streamlit / FastAPI / Flask</li>
+  <li><strong>Hardware Minimums:</strong> Intel Core i3 8th Gen / AMD Ryzen 3, 8 GB RAM, 720p HD Webcam</li>
+</ul>
+
+<h3>7. Expected Outcomes &amp; Examiner Viva Angles</h3>
+<ul>
+  <li><strong>Zero Physical Proxy Marking:</strong> Facial embeddings combined with liveness validation guarantee authentic subject attendance.</li>
+  <li><strong>Auditable Faculty Black Book:</strong> Instantaneous generation of monthly deficit sheets and eligibility rosters.</li>
+  <li><strong>Common Examiner Viva Voce Questions Addressed:</strong>
+    <ul>
+      <li><em>"How does the system distinguish twin siblings or aged photographs?"</em> (Via 128D deep metric margins).</li>
+      <li><em>"How is spoofing via mobile screen playback prevented?"</em> (Via temporal EAR blink frequency analysis).</li>
+    </ul>
+  </li>
+</ul>
+
+<!-- HIGH CONVERTING SUBMITKIT PROMOTIONAL CALLOUT -->
+<div class="cta-banner">
+  <h4>Get the Full Project Kit &amp; Complete Documentation</h4>
+  <p>
+    Need the <strong>complete 60-page IEEE standard .docx Black Book report</strong>, 
+    <strong>100% verified working source code with 1-click double-click launcher (`run.bat`)</strong>, 
+    <strong>15-slide Viva defense presentation deck (.pptx)</strong>, and <strong>Top 20 Examiner Q&amp;A Notes</strong>?
+  </p>
+  <p>Available for instant download with verified zero-error execution guarantee:</p>
+  <a href="https://submitkit.in/projects" target="_blank">Download Full Project Kit on SubmitKit.in &rarr;</a>
+  <p style="margin-top: 8px; font-size: 8.5pt; color: #777;">
+    Have a custom university topic or guide requirements? Chat directly with senior engineers on WhatsApp: <strong>+91 87998 14256</strong> (https://submitkit.in/custom)
+  </p>
+</div>
+
+</body>
+</html>
